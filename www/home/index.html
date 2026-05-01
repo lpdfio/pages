@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <script src="../assets/js/theme-init.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Lpdf is an accurate, efficient, cross-platform PDF engine." />
+    <title>lpdf.io — PDF as Code</title>
+    <link rel="icon" href="../assets/images/l-dark-48.png" type="image/png" />
+    <meta property="og:title" content="lpdf.io — PDF as Code" />
+    <meta property="og:description" content="Lpdf is an accurate, efficient, cross-platform PDF engine." />
+    <meta property="og:image" content="https://lpdf.io/assets/images/hero.jpg" />
+    <meta property="og:url" content="https://lpdf.io/home" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="../assets/css/relayout.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <link rel="stylesheet" href="../assets/css/lpdf-demo.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="../assets/js/md-html.min.js"></script>
+    <script src="../assets/js/theme.js" defer></script>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<html-include src="../assets/html/nav-home.html"></html-include>
+
+
+<!-- ── Page content ── -->
+<main class="rl-stack">
+
+    <!-- Hero -->
+    <section id="hero" class="section" style="border-top:none; padding-top:4rem; padding-bottom:6rem; position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image:radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--brand) 8%, transparent), transparent 60%); pointer-events:none;"></div>
+        <div class="container rl-stack rl-gap-2xl rl-align-center" style="text-align:center; max-width:70rem; position:relative;">
+            <div class="rl-stack rl-align-center rl-gap-2xl">
+                <span class="badge">
+                    <span class="badge-dot"></span>
+                    Live Demo
+                    <!-- Free Community License · No usage metering -->
+                </span>
+                <div class="rl-stack rl-gap-xl">
+                    <div class="section-title" style="font-size:clamp(2.3125rem, 5vw, 3.8125rem); letter-spacing:-.03em; line-height:1.04;">PDF as Code<br><span style="color:var(--text-muted);">on every platform</span></div>
+                    <p class="section-body" style="max-width:38rem; margin:0 auto;">You describe a document as code or XML.<br />Lpdf renders a compact, pixel-perfect PDF — identical across platforms.</p>
+                </div>
+                <!-- <div class="rl-cluster rl-gap-m rl-justify-center">
+                    <a href="/docs" class="btn btn-primary btn-lg">Read the docs</a>
+                    <a href="https://github.com/lpdfio/lpdf" target="_blank" class="btn btn-secondary btn-lg">View on GitHub</a>
+                </div> -->
+            </div>
+            <div class="rl-stack rl-gap-xl rl-align-center">
+                <p style="font-size:0.9375rem; color:var(--text-subtle); margin:0;">Native SDKs — plus a VS Code extension.</p>
+                <div class="sdk-strip">
+                <div class="sdk-item">
+                    <i class="fa-brands fa-node-js sdk-icon-fa"></i>
+                    <span class="sdk-item-name">Node.js</span>
+                    <span class="sdk-item-links">
+                        <a href="https://github.com/lpdfio/lpdf-js" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <span class="sdk-dot">·</span>
+                        <a href="https://www.npmjs.com/package/@lpdfio/lpdf" target="_blank" rel="noopener noreferrer">npm</a>
+                    </span>
+                </div>
+                <div class="sdk-item">
+                    <i class="fa-solid fa-hashtag sdk-icon-fa"></i>
+                    <span class="sdk-item-name">.NET</span>
+                    <span class="sdk-item-links">
+                        <a href="https://github.com/lpdfio/lpdf-dotnet" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <span class="sdk-dot">·</span>
+                        <a href="https://www.nuget.org/packages/Lpdfio.Lpdf" target="_blank" rel="noopener noreferrer">NuGet</a>
+                    </span>
+                </div>
+                <div class="sdk-item">
+                    <i class="fa-brands fa-php sdk-icon-fa"></i>
+                    <span class="sdk-item-name">PHP</span>
+                    <span class="sdk-item-links">
+                        <a href="https://github.com/lpdfio/lpdf-php" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <span class="sdk-dot">·</span>
+                        <a href="https://packagist.org/packages/lpdfio/lpdf" target="_blank" rel="noopener noreferrer">Packagist</a>
+                    </span>
+                </div>
+                <div class="sdk-item">
+                    <i class="fa-brands fa-python sdk-icon-fa"></i>
+                    <span class="sdk-item-name">Python</span>
+                    <span class="sdk-item-links">
+                        <a href="https://github.com/lpdfio/lpdf-python" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <span class="sdk-dot">·</span>
+                        <a href="https://pypi.org/project/lpdfio-lpdf/" target="_blank" rel="noopener noreferrer">PyPI</a>
+                    </span>
+                </div>
+                <!-- <span class="sdk-sep" aria-hidden="true"></span> -->
+                <div class="sdk-item">
+                    <svg class="sdk-icon-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    <span class="sdk-item-name">VS Code</span>
+                    <span class="sdk-item-links">
+                        <a href="https://marketplace.visualstudio.com/items?itemName=lpdfio.lpdf" target="_blank" rel="noopener noreferrer">Marketplace</a>
+                    </span>
+                </div>
+                </div><!-- /.sdk-strip -->
+            </div><!-- /.rl-stack sdk wrapper -->
+            <a id="how"></a>
+            <!-- <p style="font-size:1rem; color:var(--text-subtle);">
+                Write PDFs in your favorite programming language or XML
+            </p> -->
+            <lpdf-demo></lpdf-demo>
+        </div>
+    </section>
+
+    <html-include src="../assets/html/footer.html"></html-include>
+
+</main>
+
+    <script async src="https://scripts.withcabin.com/hello.js"></script>
+    <script type="module" src="../assets/js/lpdf-demo.js"></script>
+</body>
+</html>

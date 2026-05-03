@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8" />
-    <script src="../assets/js/theme-init.js"></script>
+    <script>try{var _t=localStorage.getItem('lpdf-theme');if(_t)document.documentElement.setAttribute('data-theme',_t)}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="lpdf.io — Documentation" />
     <title>Docs — lpdf.io</title>
@@ -15,8 +15,7 @@
     <meta name="twitter:card" content="summary" />
     <link rel="stylesheet" href="../assets/css/relayout.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="../assets/js/md-html.min.js"></script>
-    <script src="../assets/js/theme.js" defer></script>
+    <script src="../assets/js/lpdf-pages.js"></script>
     <style>
         /* ── Docs layout ── */
         .docs-layout {
@@ -121,7 +120,7 @@
 </head>
 <body>
 
-<html-include src="../assets/html/nav-docs.html"></html-include>
+<site-nav variant="docs"></site-nav>
 
 <div class="docs-layout">
 

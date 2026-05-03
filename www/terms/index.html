@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8" />
-    <script src="../assets/js/theme-init.js"></script>
+    <script>try{var _t=localStorage.getItem('lpdf-theme');if(_t)document.documentElement.setAttribute('data-theme',_t)}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Terms of Service for lpdf.io" />
     <title>Terms of Service — lpdf.io</title>
@@ -15,21 +15,20 @@
     <meta name="twitter:card" content="summary" />
     <link rel="stylesheet" href="../assets/css/relayout.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="../assets/js/md-html.min.js"></script>
-    <script src="../assets/js/theme.js" defer></script>
+    <script src="../assets/js/lpdf-pages.js"></script>
     <style>
         :root              { --text: #3c3c39; }
         [data-theme="dark"] { --text: #b8b8b2; }
     </style>
 </head>
 <body>
-    <html-include src="../assets/html/nav-legal.html"></html-include>
+    <site-nav variant="legal"></site-nav>
     <main>
         <div class="container rl-stack rl-gap-2xl rl-padding-2xl">
             <md-html src="../content/TERMS.md"></md-html>
         </div>
     </main>
-    <html-include src="../assets/html/footer.html"></html-include>
+    <site-footer></site-footer>
     <script async src="https://scripts.withcabin.com/hello.js"></script>
 </body>
 </html>

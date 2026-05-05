@@ -206,7 +206,45 @@ export class LpdfEngine {
 if (Symbol.dispose) LpdfEngine.prototype[Symbol.dispose] = LpdfEngine.prototype.free;
 
 /**
- * Generate SDK source code from an LPDF XML string.
+ * Generate SDK source code from one or more bare Lpdf XML elements (a fragment).
+ *
+ * Unlike `codegen_wasm`, this accepts a snippet without the `<lpdf>` wrapper and
+ * returns just the node expression(s) — no imports, no engine setup, no boilerplate.
+ * Ideal for documentation code examples where the same XML snippet should be shown
+ * in multiple target languages.
+ *
+ * `options_json` accepts the same shape as `codegen_wasm`:
+ * - `target`: `"js"`, `"dotnet"`, `"php"`, or `"python"` (required)
+ * - `indent`: `2` or `4` (optional, default `4`)
+ * @param {string} xml
+ * @param {string} options_json
+ * @returns {string}
+ */
+export function codegen_fragment_wasm(xml, options_json) {
+    let deferred4_0;
+    let deferred4_1;
+    try {
+        const ptr0 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(options_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.codegen_fragment_wasm(ptr0, len0, ptr1, len1);
+        var ptr3 = ret[0];
+        var len3 = ret[1];
+        if (ret[3]) {
+            ptr3 = 0; len3 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred4_0 = ptr3;
+        deferred4_1 = len3;
+        return getStringFromWasm0(ptr3, len3);
+    } finally {
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
+}
+
+/**
+ * Generate SDK source code from an Lpdf XML string.
  *
  * `options_json` is a JSON object with:
  * - `target`: `"js"` (required)

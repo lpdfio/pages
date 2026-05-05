@@ -15,7 +15,7 @@
     <meta name="twitter:card" content="summary" />
     <link rel="stylesheet" href="../assets/css/relayout.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="../assets/js/lpdf-pages.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* ── Docs layout ── */
         .docs-layout {
@@ -23,17 +23,19 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 1rem;
-            min-height: calc(100vh - var(--nav-h));
+            min-height: 100vh;
         }
 
         /* ── Sidebar ── */
         nav.sidebar {
             width: 220px;
             flex-shrink: 0;
+            align-self: flex-start;
             padding: 2rem 1rem 2rem 0;
             position: sticky;
             top: var(--nav-h);
-            height: calc(100vh - var(--nav-h));
+            max-height: calc(100vh - var(--nav-h));
+            padding-top: 2rem;
             overflow-y: auto;
         }
 
@@ -66,191 +68,127 @@
 
         .nav-group a.active { color: var(--brand); }
 
+        .nav-group a.nav-sub {
+            padding-left: 1.4rem;
+            font-size: 0.8125rem;
+        }
+
         /* ── Content ── */
         .docs-content {
             flex: 1;
             min-width: 0;
-            padding: 2.5rem 0 4rem 2.5rem;
+            padding: calc(var(--nav-h) + 2.5rem) 0 4rem 2.5rem;
             border-left: 1px solid var(--border);
-        }
-
-        .doc-section { margin-bottom: 4rem; }
-
-        .doc-section h1 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.6rem;
-        }
-
-        .doc-section h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            margin: 2rem 0 0.75rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .doc-section h3 {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        .doc-section p { color: var(--text-muted); margin-bottom: 0.75rem; }
-
-        .stub-block {
-            background: var(--bg-sunken);
-            border: 1px dashed var(--border);
-            border-radius: 6px;
-            padding: 1.25rem 1.5rem;
-            color: var(--text-subtle);
-            font-size: 0.85rem;
-            font-style: italic;
-            margin: 1rem 0;
         }
 
         /* ── Mobile ── */
         @media (max-width: 700px) {
             nav.sidebar { display: none; }
-            .docs-content { padding: 1.5rem 0; border-left: none; }
+            .docs-content { padding: calc(var(--nav-h) + 1.5rem) 0 1.5rem; border-left: none; }
         }
+
+        /* Ensure hidden attribute is respected even when CSS sets display */
+        .docs-layout[hidden], #docs-landing[hidden] { display: none !important; }
     </style>
 </head>
 <body>
 
 <site-nav variant="docs"></site-nav>
 
-<div class="docs-layout">
+<!-- ── Landing (shown when no ?p= param) ── -->
+<div id="docs-landing" hidden>
+    <div class="docs-landing-glow"></div>
+    <div class="docs-landing-inner">
+        <h1 class="docs-landing-title">Docs</h1>
+        <p class="docs-landing-sub">Choose your platform to get started.</p>
+        <div class="docs-sdk-grid">
+            <a class="docs-sdk-tile" href="?sdk=js">
+                <i class="fa-brands fa-node-js sdk-tile-icon"></i>
+                <span class="sdk-tile-name">Node.js</span>
+            </a>
+            <a class="docs-sdk-tile" href="?sdk=dotnet">
+                <i class="fa-solid fa-hashtag sdk-tile-icon"></i>
+                <span class="sdk-tile-name">.NET</span>
+            </a>
+            <a class="docs-sdk-tile" href="?sdk=php">
+                <i class="fa-brands fa-php sdk-tile-icon"></i>
+                <span class="sdk-tile-name">PHP</span>
+            </a>
+            <a class="docs-sdk-tile" href="?sdk=python">
+                <i class="fa-brands fa-python sdk-tile-icon"></i>
+                <span class="sdk-tile-name">Python</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ── Docs layout (shown when ?p= param present) ── -->
+<div class="docs-layout" hidden>
 
     <nav class="sidebar" aria-label="Documentation navigation">
         <div class="nav-group">
             <div class="nav-group-title">Getting Started</div>
-            <a href="#introduction">Introduction</a>
-            <a href="#installation">Installation</a>
-            <a href="#quick-start">Quick Start</a>
+            <a href="?p=install">Installation</a>
+            <a href="?p=example">Your First Document</a>
         </div>
         <div class="nav-group">
-            <div class="nav-group-title">Adapters</div>
-            <a href="#adapter-node">Node.js</a>
-            <a href="#adapter-python">Python</a>
-            <a href="#adapter-php">PHP</a>
-            <a href="#adapter-dotnet">.NET</a>
+            <div class="nav-group-title">Examples</div>
+            <a href="?p=examples/invoice">Invoice</a>
+            <a href="?p=examples/report">Report</a>
+            <a href="?p=examples/certificate">Certificate</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-title">Document</div>
+            <a href="?p=doc/section">Section</a>
+            <a href="?p=doc/layout">Layout</a>
+            <a class="nav-sub" href="?p=doc/layout/stack">Stack</a>
+            <a class="nav-sub" href="?p=doc/layout/flank">Flank</a>
+            <a class="nav-sub" href="?p=doc/layout/split">Split</a>
+            <a class="nav-sub" href="?p=doc/layout/cluster">Cluster</a>
+            <a class="nav-sub" href="?p=doc/layout/text">Text</a>
+            <a class="nav-sub" href="?p=doc/layout/divider">Divider</a>
+            <a class="nav-sub" href="?p=doc/layout/frame">Frame</a>
+            <a class="nav-sub" href="?p=doc/layout/img">Image</a>
+            <a class="nav-sub" href="?p=doc/layout/grid">Grid</a>
+            <a class="nav-sub" href="?p=doc/layout/table">Table</a>
+            <a class="nav-sub" href="?p=doc/layout/barcode">Barcode</a>
+            <a class="nav-sub" href="?p=doc/layout/link">Link</a>
+            <a class="nav-sub" href="?p=doc/layout/field">Field</a>
+            <a href="?p=doc/canvas">Canvas</a>
+            <a class="nav-sub" href="?p=doc/canvas/rect">Rect</a>
+            <a class="nav-sub" href="?p=doc/canvas/circle">Circle / Ellipse</a>
+            <a class="nav-sub" href="?p=doc/canvas/line">Line</a>
+            <a class="nav-sub" href="?p=doc/canvas/path">Path</a>
+            <a class="nav-sub" href="?p=doc/canvas/text">Text</a>
+            <a class="nav-sub" href="?p=doc/canvas/img">Image</a>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-title">Data</div>
+            <a href="?p=data/binding">Data Binding</a>
         </div>
         <div class="nav-group">
             <div class="nav-group-title">Reference</div>
-            <a href="#xml-schema">XML Schema</a>
-            <a href="#api-reference">API Reference</a>
-            <a href="#configuration">Configuration</a>
-        </div>
-        <div class="nav-group">
-            <div class="nav-group-title">Resources</div>
-            <a href="#examples">Examples</a>
-            <a href="#changelog">Changelog</a>
+            <a href="?p=xml/schema">XML Schema</a>
+            <a href="?p=xml/elements">All Elements</a>
         </div>
     </nav>
 
     <main class="docs-content">
-
-        <!-- Introduction -->
-        <section class="doc-section" id="introduction">
-            <h1>Documentation</h1>
-            <p>lpdf is a PDF generation library driven by structured XML. It runs as a WASI binary, with adapters for Node.js, Python, PHP, and .NET.</p>
-            <div class="stub-block">Full introduction content coming soon.</div>
-        </section>
-
-        <!-- Installation -->
-        <section class="doc-section" id="installation">
-            <h2>Installation</h2>
-            <h3>Node.js</h3>
-            <div class="stub-block">Installation instructions for Node.js adapter coming soon.</div>
-            <h3>Python</h3>
-            <div class="stub-block">Installation instructions for Python adapter coming soon.</div>
-            <h3>PHP</h3>
-            <div class="stub-block">Installation instructions for PHP adapter coming soon.</div>
-            <h3>.NET</h3>
-            <div class="stub-block">Installation instructions for .NET adapter coming soon.</div>
-        </section>
-
-        <!-- Quick Start -->
-        <section class="doc-section" id="quick-start">
-            <h2>Quick Start</h2>
-            <div class="stub-block">Quick start guide coming soon.</div>
-        </section>
-
-        <!-- Adapters -->
-        <section class="doc-section" id="adapter-node">
-            <h2>Node.js Adapter</h2>
-            <div class="stub-block">Node.js adapter documentation coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="adapter-python">
-            <h2>Python Adapter</h2>
-            <div class="stub-block">Python adapter documentation coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="adapter-php">
-            <h2>PHP Adapter</h2>
-            <div class="stub-block">PHP adapter documentation coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="adapter-dotnet">
-            <h2>.NET Adapter</h2>
-            <div class="stub-block">.NET adapter documentation coming soon.</div>
-        </section>
-
-        <!-- Reference -->
-        <section class="doc-section" id="xml-schema">
-            <h2>XML Schema</h2>
-            <p>The canonical schema is published at <a href="/schema/lpdf.xsd" style="color:var(--brand);">/schema/lpdf.xsd</a>.</p>
-            <div class="stub-block">Schema reference coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="api-reference">
-            <h2>API Reference</h2>
-            <div class="stub-block">API reference coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="configuration">
-            <h2>Configuration</h2>
-            <div class="stub-block">Configuration reference coming soon.</div>
-        </section>
-
-        <!-- Resources -->
-        <section class="doc-section" id="examples">
-            <h2>Examples</h2>
-            <div class="stub-block">Examples coming soon.</div>
-        </section>
-
-        <section class="doc-section" id="changelog">
-            <h2>Changelog</h2>
-            <div class="stub-block">Changelog coming soon.</div>
-        </section>
-
+        <md-html id="doc-content" src=""></md-html>
     </main>
 
 </div>
 
-<script>
-    // Highlight active sidebar link based on scroll position
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('nav.sidebar a');
-
-    function setActive() {
-        let current = '';
-        sections.forEach(s => {
-            if (window.scrollY >= s.offsetTop - 80) current = s.id;
-        });
-        navLinks.forEach(a => {
-            a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-        });
-    }
-
-    window.addEventListener('scroll', setActive, { passive: true });
-    setActive();
+<script src="../assets/js/lpdf-pages.js"></script>
+<script src="../assets/js/lpdf-docs.js"></script>
+<script type="module">
+    window.__lpdfFragmentWasm = (async () => {
+        const mod = await import('/assets/js/lpdf-demo/lpdf-web.js');
+        await mod.default();
+        return mod.codegen_fragment_wasm;
+    })();
 </script>
-
-    <script async src="https://scripts.withcabin.com/hello.js"></script>
+<script async src="https://scripts.withcabin.com/hello.js"></script>
 </body>
 </html>
+

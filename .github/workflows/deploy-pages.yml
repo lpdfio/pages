@@ -12,14 +12,13 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   deploy-pre:
     name: Deploy to pre (pages-pre)
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages-pre
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -34,8 +33,10 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod (GitHub Pages)
-    needs: deploy-pre
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}

@@ -28,6 +28,7 @@ jobs:
           publish_branch: gh-pages
           publish_dir: www/
           cname: pre.lpdf.io
+          force_orphan: true
 
   deploy-prod:
     name: Deploy to prod (GitHub Pages)

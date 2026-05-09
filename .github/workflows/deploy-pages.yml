@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set portal URL for pre
+        run: sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-pages.js
+
       - name: Set pre CNAME
         run: echo "pre.lpdf.io" > www/CNAME
 
@@ -44,6 +47,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set portal URL for prod
+        run: sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-pages.js
 
       - uses: actions/configure-pages@v5
 

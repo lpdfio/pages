@@ -182,8 +182,9 @@
         .tier-cta:active { transform: translateY(1px); }
         .tier-cta:hover { opacity: .86; }
         .tier-cta.primary { background: var(--text); color: var(--bg); }
-        .tier-cta.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
-        .tier-cta.brand { background: var(--brand); color: oklch(98% 0 0); }
+        .tier-cta.community { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .tier-cta.professional { background: var(--brand); color: oklch(98% 0 0); }
+
         .tier-cta.enterprise-cta {
             background: transparent;
             color: var(--tier-ent);
@@ -333,7 +334,10 @@
 
                 </ul>
 
-                <checkout-link tier="community" variant="secondary">Get free license</checkout-link>
+                <checkout-link 
+                    tier="community" 
+                    label="Get free license"
+                ></checkout-link>
             </div>
 
             <!-- Professional -->
@@ -379,7 +383,10 @@
                     </li>
                 </ul>
 
-                <checkout-link tier="professional" variant="brand">Get Professional</checkout-link>
+                <checkout-link
+                    tier="professional" 
+                    label="Get Professional"
+                ></checkout-link>
             </div>
 
             <!-- Enterprise -->

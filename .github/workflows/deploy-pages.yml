@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set pre CNAME
+        run: echo "pre.lpdf.io" > www/CNAME
+
       - name: Push to pages-pre
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -27,7 +30,6 @@ jobs:
           external_repository: lpdfio/pages-pre
           publish_branch: gh-pages
           publish_dir: www/
-          cname: pre.lpdf.io
           force_orphan: true
 
   deploy-prod:

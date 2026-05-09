@@ -17,11 +17,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to GitHub Pages
+  deploy-pre:
+    name: Deploy to pre (pages-pre)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push to pages-pre
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PAGES_PRE_TOKEN }}
+          external_repository: lpdfio/pages-pre
+          publish_branch: gh-pages
+          publish_dir: www/
+          cname: pre.lpdf.io
+
+  deploy-prod:
+    name: Deploy to prod (GitHub Pages)
+    needs: deploy-pre
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
+      name: production
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4

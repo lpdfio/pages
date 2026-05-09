@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <script>try{var _t=localStorage.getItem('lpdf-theme');if(_t)document.documentElement.setAttribute('data-theme',_t)}catch(e){}</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Lpdf pricing — Community, Professional, and Enterprise licenses." />
+    <title>Pricing — lpdf.io</title>
+    <link rel="icon" href="../assets/images/l-dark-48.png" type="image/png" />
+    <meta property="og:title" content="Pricing — lpdf.io" />
+    <meta property="og:description" content="Lpdf pricing — Community, Professional, and Enterprise licenses." />
+    <meta property="og:image" content="https://lpdf.io/assets/images/lpdf-dark-48.png" />
+    <meta property="og:url" content="https://lpdf.io/pricing" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="../assets/css/relayout.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <script src="../assets/js/lpdf-pages.js"></script>
+    <style>
+        /* ── Pricing-page-specific styles ── */
+
+        :root {
+            --tier-ent: oklch(65% 0.18 260);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 72rem;
+            margin: 0 auto;
+        }
+        @media (max-width: 800px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 28rem; }
+        }
+
+        .tier-card {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+        .tier-card.featured {
+            border-color: color-mix(in oklch, var(--brand) 50%, transparent);
+            background: color-mix(in oklch, var(--brand) 4%, var(--bg-elev));
+        }
+        .tier-card.enterprise {
+            border-color: color-mix(in oklch, var(--tier-ent) 50%, transparent);
+            background: color-mix(in oklch, var(--tier-ent) 4%, var(--bg-elev));
+        }
+        .tier-featured-badge {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.25rem 0.875rem;
+            background: var(--brand);
+            color: oklch(98% 0 0);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-radius: 0 0 8px 8px;
+            white-space: nowrap;
+        }
+
+        .tier-name {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg-sunken);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+        }
+        .tier-card.featured .tier-name {
+            color: var(--brand);
+            background: color-mix(in oklch, var(--brand) 10%, var(--bg-sunken));
+            border-color: color-mix(in oklch, var(--brand) 30%, transparent);
+        }
+        .tier-card.enterprise .tier-name {
+            color: var(--tier-ent);
+            background: color-mix(in oklch, var(--tier-ent) 10%, var(--bg-sunken));
+            border-color: color-mix(in oklch, var(--tier-ent) 30%, transparent);
+        }
+
+        .tier-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-sunken);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .tier-card.featured .tier-icon {
+            background: color-mix(in oklch, var(--brand) 12%, var(--bg-sunken));
+            border-color: color-mix(in oklch, var(--brand) 30%, transparent);
+            color: var(--brand);
+        }
+        .tier-card.enterprise .tier-icon {
+            background: color-mix(in oklch, var(--tier-ent) 12%, var(--bg-sunken));
+            border-color: color-mix(in oklch, var(--tier-ent) 30%, transparent);
+            color: var(--tier-ent);
+        }
+
+        .tier-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+        .tier-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+        .tier-period {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .tier-desc {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .tier-divider {
+            height: 1px;
+            background: var(--border);
+        }
+
+        .tier-features {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            flex: 1;
+        }
+        .tier-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.625rem;
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+        .tier-features li svg {
+            flex-shrink: 0;
+            margin-top: 0.2em;
+            color: var(--success);
+        }
+
+        .tier-cta {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.6875rem 1rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: var(--rl-font-sans);
+            transition: opacity .15s, transform .08s;
+            text-decoration: none;
+        }
+        .tier-cta:active { transform: translateY(1px); }
+        .tier-cta:hover { opacity: .86; }
+        .tier-cta.primary { background: var(--text); color: var(--bg); }
+        .tier-cta.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .tier-cta.brand { background: var(--brand); color: oklch(98% 0 0); }
+        .tier-cta.enterprise-cta {
+            background: transparent;
+            color: var(--tier-ent);
+            border: 1px solid color-mix(in oklch, var(--tier-ent) 50%, transparent);
+        }
+        .tier-cta.enterprise-cta:hover {
+            opacity: 1;
+            background: color-mix(in oklch, var(--tier-ent) 8%, transparent);
+        }
+        .tier-cta.enterprise-cta[disabled] {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+        .tier-card { box-sizing: border-box; }
+        checkout-link { display: contents; }
+
+        /* ── FAQ ── */
+        .faq-item {
+            border-top: 1px solid var(--border);
+            padding: 1.25rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: 1px solid var(--border);
+        }
+        .faq-q {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        .faq-a {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .faq-a a {
+            color: var(--brand);
+        }
+        /* ── All plans include strip ── */
+        .all-plans-strip {
+            width: fit-content;
+            margin: 0 auto 2rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-sunken);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .all-plans-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--text-subtle);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .all-plans-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .all-plans-list li {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        .all-plans-list li:not(:first-child)::before {
+            content: '·';
+            margin: 0 0.5rem;
+            color: var(--text-subtle);
+        }
+    </style>
+</head>
+<body>
+
+<site-nav variant="pricing"></site-nav>
+
+<main class="rl-stack">
+
+    <!-- ── Hero ── -->
+    <section class="section" style="border-top:none; padding-top:4rem; padding-bottom:6rem; position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image:radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--brand) 8%, transparent), transparent 60%); pointer-events:none;"></div>
+        <div class="container rl-stack rl-gap-2xl rl-align-center" style="text-align:center; max-width:70rem; position:relative;">
+            <div class="rl-stack rl-align-center rl-gap-l">
+                <span class="badge">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    No seat counting · No usage tracking
+                </span>
+                <div class="rl-stack rl-gap-l">
+                    <h1 class="section-title" style="font-size:clamp(2.3125rem, 5vw, 3.8125rem); letter-spacing:-.03em; line-height:1.04;">
+                        Honest, flat licensing<br><span style="color:var(--text-muted); font-weight:500;">per production context</span>
+                    </h1>
+                    <p class="section-body" style="max-width:38rem; margin:0 auto;">One license covers one production context — every server, environment, platform, and developer included.<br /><a href="#what-is-a-production-context" style="color:var(--brand);">Learn more</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Tier cards ── -->
+    <section style="padding: 0 2rem 5rem;">
+
+        <div class="pricing-grid">
+
+            <!-- Community -->
+            <div class="tier-card">
+                <div class="rl-stack rl-gap-s">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" style="color:var(--text-muted); flex-shrink:0;"><path d="M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z"/></svg>
+                        <span class="tier-name">Community</span>
+                    </div>
+                    <div class="tier-price-row">
+                        <span class="tier-price">Free</span>
+                        <span class="tier-period">· no credit card</span>
+                    </div>
+                    <p class="tier-desc">For individuals, open-source, non-profits, educational and academic institutions, and companies under $1M annual gross revenue.</p>
+                </div>
+
+                <div class="tier-divider"></div>
+
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Self-hosted — no data leaves your infrastructure
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Any platform — Node/JS, .NET/C#, PHP, Python, with identical output
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tooling — VSCode Extension with live editing and preview, data binding, and code generator
+                    </li>
+                </ul>
+                <div class="tier-divider"></div>
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Community support
+                    </li>
+
+                </ul>
+
+                <checkout-link tier="community" variant="secondary">Get free license</checkout-link>
+            </div>
+
+            <!-- Professional -->
+            <div class="tier-card featured">
+                <span class="tier-featured-badge">Most popular</span>
+                <div class="rl-stack rl-gap-s">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" style="color:var(--brand); flex-shrink:0;"><path d="M88,128a8,8,0,0,1,8-8h24V96a8,8,0,0,1,16,0v24h24a8,8,0,0,1,0,16H136v24a8,8,0,0,1-16,0V136H96A8,8,0,0,1,88,128ZM224,56v56c0,52.72-25.52,84.67-46.93,102.19-23.06,18.86-46,25.27-47,25.53a8,8,0,0,1-4.2,0c-1-.26-23.91-6.67-47-25.53C57.52,196.67,32,164.72,32,112V56A16,16,0,0,1,48,40H208A16,16,0,0,1,224,56Zm-16,0L48,56l0,56c0,37.3,13.82,67.51,41.07,89.81A128.25,128.25,0,0,0,128,223.62a129.3,129.3,0,0,0,39.41-22.2C194.34,179.16,208,149.07,208,112Z"/></svg>
+                        <span class="tier-name">Professional</span>
+                    </div>
+                    <div class="tier-price-row">
+                        <span class="tier-price">$299</span>
+                        <span class="tier-period">/ context / year</span>
+                    </div>
+                    <p class="tier-desc">For companies with $1M–$10M annual gross revenue — or any organization that wants Professional terms.</p>
+                </div>
+
+                <div class="tier-divider"></div>
+
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Self-hosted — no data leaves your infrastructure
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Any platform — Node/JS, .NET/C#, PHP, Python, with identical output
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tooling — VSCode Extension with live editing and preview, data binding, and code generator
+                    </li>
+                </ul>
+                <div class="tier-divider"></div>
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Priority email support
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Perpetual license
+                    </li>
+                </ul>
+
+                <checkout-link tier="professional" variant="brand">Get Professional</checkout-link>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="tier-card enterprise">
+                <div class="rl-stack rl-gap-s">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" style="color:var(--tier-ent); flex-shrink:0;"><path d="M80.57,117A8,8,0,0,1,91,112.57l29,11.61V96a8,8,0,0,1,16,0v28.18l29-11.61A8,8,0,1,1,171,127.43l-30.31,12.12L158.4,163.2a8,8,0,1,1-12.8,9.6L128,149.33,110.4,172.8a8,8,0,1,1-12.8-9.6l17.74-23.65L85,127.43A8,8,0,0,1,80.57,117ZM224,56v56c0,52.72-25.52,84.67-46.93,102.19-23.06,18.86-46,25.27-47,25.53a8,8,0,0,1-4.2,0c-1-.26-23.91-6.67-47-25.53C57.52,196.67,32,164.72,32,112V56A16,16,0,0,1,48,40H208A16,16,0,0,1,224,56Zm-16,0L48,56l0,56c0,37.3,13.82,67.51,41.07,89.81A128.25,128.25,0,0,0,128,223.62a129.3,129.3,0,0,0,39.41-22.2C194.34,179.16,208,149.07,208,112Z"/></svg>
+                        <span class="tier-name">Enterprise</span>
+                    </div>
+                    <div class="tier-price-row">
+                        <span class="tier-price">$999</span>
+                        <span class="tier-period">/ context / year</span>
+                    </div>
+                    <p class="tier-desc">For companies above $10M annual gross revenue — or any organization that wants Enterprise terms.</p>
+                </div>
+
+                <div class="tier-divider"></div>
+
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Self-hosted — no data leaves your infrastructure
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Any platform — Node/JS, .NET/C#, PHP, Python, with identical output
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tooling — VSCode Extension with live editing and preview, data binding, and code generator
+                    </li>
+                </ul>
+                <div class="tier-divider"></div>
+                <ul class="tier-features">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Dedicated support &amp; SLA
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Perpetual license
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        No annual key rotation
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Custom invoicing &amp; MSA
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Subsidiaries covered
+                    </li>
+                </ul>
+
+                <button class="tier-cta enterprise-cta" disabled>Coming soon</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="section section-sunken">
+        <div class="container rl-stack rl-gap-2xl" style="max-width: 48rem;">
+            <div class="rl-stack rl-gap-m">
+                <p class="section-label">FAQ</p>
+                <h2 class="section-title" style="font-size:clamp(1.5rem, 3vw, 2rem);">Common questions</h2>
+            </div>
+
+            <div>
+                <div class="faq-item" id="what-is-a-production-context">
+                    <p class="faq-q">What is a production context?</p>
+                    <p class="faq-a">A production context is a distinct application or service you operate — one license covers it entirely, however many servers, environments, or team members are behind it. A few examples:<br><br>
+                    · A SaaS product with a web app, mobile app, and API → <strong>one context</strong> (same product, same users)<br>
+                    · All internal tooling your team uses → <strong>one context</strong> (internal use counts as a single context regardless of how many tools)<br>
+                    · A second product serving a different customer base → <strong>separate context</strong><br><br>
+                    A $2M company shipping one product pays $299/yr total.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">What counts as commercial use?</p>
+                    <p class="faq-a">Any use in a product or service that generates revenue, or within a company's internal tooling. Personal projects, open-source libraries, and evaluation are covered by the Community license.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">Can I try Lpdf before buying?</p>
+                    <p class="faq-a">Yes. The Community license is free and covers personal, open-source, and commercial use for organizations under $1M annual revenue. No credit card required.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">What happens when my license key expires?</p>
+                    <p class="faq-a">PDF generation keeps working — the app never breaks. When a key expires, the attribution line ("Made with lpdf.io") reappears on generated PDFs until you renew. Community and Professional keys expire after one year; Professional keys renew automatically with your subscription. Enterprise keys have no expiry date — they are valid for the current major version of lpdf.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">Do I need to rotate my license key?</p>
+                    <p class="faq-a">Community and Professional require a new key each year — it deploys like any config value and renews automatically for paid plans. Enterprise keys are version-locked: the same key works until a new major version of lpdf is released, at which point you generate a new key from the portal as part of the upgrade. No calendar-driven rotation for Enterprise.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">Is there a self-hosted option?</p>
+                    <p class="faq-a">Lpdf runs entirely on your infrastructure — there's no cloud dependency and no data leaves your servers. Professional and Enterprise both include full self-hosted use.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-q">How do I know which tier I need?</p>
+                    <p class="faq-a">It depends on your organization's annual gross revenue: Community covers you under $1M, Professional from $1M to $10M, and Enterprise above $10M. All tiers include the full engine with no feature differences — the license is purely a compliance right. If you're unsure, start free and upgrade when you cross a threshold.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <site-footer></site-footer>
+
+</main>
+
+<script async src="https://scripts.withcabin.com/hello.js"></script>
+</body>
+</html>

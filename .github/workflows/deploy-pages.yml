@@ -3,8 +3,6 @@ name: Deploy Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'www/**'
   workflow_dispatch:
 
 permissions:
@@ -33,6 +31,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod (GitHub Pages)
+    needs: deploy-pre
     runs-on: ubuntu-latest
     concurrency:
       group: pages

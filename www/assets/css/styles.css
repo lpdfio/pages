@@ -3,16 +3,16 @@
 /* ── Theme tokens ── */
 :root {
     color-scheme: light;
-    --bg: #fcfcfc;
+    --bg: #f2f2f0;
     --bg-elev: #ffffff;
-    --bg-sunken: #f6f6f4;
-    --border: #e8e8e5;
+    --bg-sunken: #e8e8e6;
+    --border: #d8d8d5;
     --text: #0a0a09;
     --text-muted: #6b6b66;
     --text-subtle: #95958f;
     --brand: oklch(65% 0.16 55);
     --success: oklch(58% 0.12 155);
-    --nav-h: 60px;
+    --nav-h: 48px;
 }
 [data-theme="dark"] {
     color-scheme: dark;
@@ -49,8 +49,8 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
 }
-.nav-inner { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; }
-.nav-logo img { height: 28px; width: auto; display: block; }
+.nav-inner { height: 100%; padding: 0 2rem; }
+.nav-logo img { height: 24px; width: auto; display: block; }
 .nav-links a { font-size: 0.9375rem; color: var(--text-muted); transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 .nav-links a.active { color: var(--text); font-weight: 500; }
@@ -353,6 +353,8 @@ footer { border-top: 1px solid var(--border); }
 .docs-content ul, .docs-content ol { color: var(--text-muted); line-height: 1.7; padding-left: 1.5rem; margin: 0.75rem 0; }
 .docs-content li { margin: 0.25rem 0; }
 .docs-content code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--bg-sunken); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+.docs-content h1, .docs-content h2, .docs-content h3,
+.docs-content p, .docs-content ul, .docs-content ol { max-width: 680px; }
 
 /* ── Docs code blocks (CodeMirror) ── */
 .doc-code {

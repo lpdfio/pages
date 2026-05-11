@@ -1,0 +1,157 @@
+/* ── OKLCH tier accent tokens ── */
+:root {
+    --color-community-border: oklch(0.65 0.12 45);
+    --color-community-badge:  oklch(0.62 0.14 43);
+
+    --color-pro-border:       oklch(0.55 0.12 190);
+    --color-pro-badge:        oklch(0.50 0.14 188);
+
+    --color-ent-border:       oklch(0.58 0.14 280);
+    --color-ent-badge:        oklch(0.55 0.16 278);
+}
+
+[data-theme="dark"] {
+    --color-community-border: oklch(0.60 0.10 45);
+    --color-community-badge:  oklch(0.57 0.12 43);
+
+    --color-pro-border:       oklch(0.50 0.08 195);
+    --color-pro-badge:        oklch(0.48 0.09 193);
+
+    --color-ent-border:       oklch(0.52 0.09 285);
+    --color-ent-badge:        oklch(0.50 0.10 283);
+}
+
+/* ── tier-card-wrap — reserves space above card for floating top badge ── */
+.tier-card-wrap {
+    position: relative;
+    padding-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.tier-card__top-badge {
+    position: absolute;
+    top: 1.25rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+/* ── tier-card — neutral border, no colored background ── */
+.tier-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    border-radius: 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    flex: 1;
+}
+
+/* ── tier label badge (solid pill inside card) ── */
+.tier-label {
+    align-self: flex-start;
+    display: inline-block;
+    padding: 0.2em 0.7em;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: oklch(0.98 0 0);
+}
+.tier-label--community    { background: var(--color-community-badge); }
+.tier-label--professional { background: var(--color-pro-badge); }
+.tier-label--enterprise   { background: var(--color-ent-badge); }
+
+/* ── top badge pill (outlined, straddles card border) ── */
+.tier-top-pill {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border: 1.5px solid;
+    background: var(--bg);
+}
+.tier-top-pill--community    { color: var(--color-community-badge); border-color: var(--color-community-badge); }
+.tier-top-pill--professional { color: var(--color-pro-badge);       border-color: var(--color-pro-badge); }
+.tier-top-pill--enterprise   { color: var(--color-ent-badge);       border-color: var(--color-ent-badge); }
+
+/* ── price ── */
+.tier-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+}
+
+/* ── tier icons — colored per tier ── */
+.tier-icon { display: flex; align-items: center; }
+.tier-icon--community    { color: var(--color-community-badge); }
+.tier-icon--professional { color: var(--color-pro-badge); }
+.tier-icon--enterprise   { color: var(--color-ent-badge); }
+
+/* ── CTA base — outline, fills with tier color on hover ── */
+.tier-card__cta {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6875rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid;
+    cursor: pointer;
+    font-family: var(--rl-font-sans);
+    text-decoration: none;
+    background: transparent;
+    transition: background .15s, color .15s, transform .08s;
+}
+.tier-card__cta:active { transform: translateY(1px); }
+
+/* Community — amber outline → amber fill on hover */
+.tier-card--community .tier-card__cta {
+    color: var(--color-community-badge);
+    border-color: var(--color-community-border);
+}
+.tier-card--community .tier-card__cta:hover {
+    background: var(--color-community-badge);
+    color: oklch(0.98 0 0);
+}
+
+/* Professional — teal outline → teal fill on hover */
+.tier-card--professional .tier-card__cta {
+    color: var(--color-pro-badge);
+    border-color: var(--color-pro-border);
+}
+.tier-card--professional .tier-card__cta:hover {
+    background: var(--color-pro-badge);
+    color: oklch(0.98 0 0);
+}
+
+/* Enterprise CTA — disabled, no hover */
+.tier-card__cta--disabled {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6875rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid var(--color-ent-border);
+    font-family: var(--rl-font-sans);
+    color: var(--text-subtle);
+    background: transparent;
+    cursor: default;
+    opacity: 0.6;
+}

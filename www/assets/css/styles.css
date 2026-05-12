@@ -256,9 +256,20 @@ footer { border-top: 1px solid var(--border); }
 }
 
 .sdk-icon-fa {
-    font-size: 2rem;
-    line-height: 1;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
     color: var(--text-muted);
+}
+.sdk-tile-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--text-muted);
+}
+.icon-sm {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
 }
 
 .sdk-icon-svg {
@@ -454,7 +465,7 @@ footer { border-top: 1px solid var(--border); }
     transform: translateY(-2px);
 }
 .sdk-tile-name {
-    font-size: 1.0625rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
 }
@@ -463,6 +474,108 @@ footer { border-top: 1px solid var(--border); }
     color: var(--text-subtle);
 }
 
+/* ── Legal / prose pages ── */
+.page-legal { --text: #3c3c39; }
+[data-theme="dark"] .page-legal { --text: #b8b8b2; }
+
 /* ── SDK-specific sections (::: platform) ── */
 .sdk-section { display: none; }
 .sdk-section.sdk-active { display: block; }
+
+/* ── Docs layout ── */
+.docs-layout {
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+nav.sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding: 2rem 1rem 2rem 0;
+    position: sticky;
+    top: var(--nav-h);
+    max-height: calc(100vh - var(--nav-h));
+    padding-top: 2rem;
+    overflow-y: auto;
+}
+
+.nav-group { margin-bottom: 1.75rem; }
+
+.nav-group-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 0.5rem;
+}
+
+.nav-group a {
+    display: block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+}
+
+.nav-group a:hover,
+.nav-group a.active {
+    color: var(--text);
+    background: var(--bg-sunken);
+}
+
+.nav-group a.active { color: var(--brand); }
+
+.nav-group a.nav-sub {
+    padding-left: 1.4rem;
+    font-size: 0.8125rem;
+}
+
+/* ── Docs content ── */
+.docs-content {
+    flex: 1;
+    min-width: 0;
+    padding: calc(var(--nav-h) + 2.5rem) 0 4rem 2.5rem;
+    border-left: 1px solid var(--border);
+}
+
+.docs-layout[hidden], #docs-landing[hidden] { display: none !important; }
+
+@media (max-width: 700px) {
+    nav.sidebar { display: none; }
+    .docs-content { padding: calc(var(--nav-h) + 1.5rem) 0 1.5rem; border-left: none; }
+}
+
+/* ── Pricing FAQ ── */
+.faq-item {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 0;
+}
+.faq-item:last-child {
+    border-bottom: 1px solid var(--border);
+}
+.faq-q {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+.faq-a {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+.faq-a a { color: var(--brand); }
+
+/* ── 404 page ── */
+.nav-logo-only { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+.fourohfour { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }
+a.home-link { color: #f97316; text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+a.home-link:hover { opacity: 0.8; }

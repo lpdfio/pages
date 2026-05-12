@@ -21,7 +21,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set portal URL for pre
-        run: sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-pages.js
+        run: |
+          sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-pages.js
+          sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-checkout.js
 
       - name: Set pages URL for pre
         run: sed -i 's|__PAGES_URL__|https://pre.lpdf.io|g' www/assets/js/lpdf-pages.js
@@ -52,7 +54,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set portal URL for prod
-        run: sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-pages.js
+        run: |
+          sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-pages.js
+          sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-checkout.js
 
       - name: Set pages URL for prod
         run: sed -i 's|__PAGES_URL__|https://lpdf.io|g' www/assets/js/lpdf-pages.js

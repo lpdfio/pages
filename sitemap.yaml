@@ -1,0 +1,58 @@
+# SEO source of truth for lpdf.io pages.
+#
+# Fields:
+#   canonical   — prod canonical URL; CI uses this for <link rel="canonical"> injection
+#   title       — <title> and og:title
+#   description — <meta name="description"> and og:description (150-160 chars)
+#   og_image    — absolute prod URL; defaults to og_image_default if omitted
+#   noindex     — true: CI injects <meta name="robots" content="noindex">, excluded from sitemap.xml
+#
+# Title format: "Lpdf — Page Name" (em dash, brand prefix)
+# Home exception: tagline replaces brand suffix
+
+base_url: https://lpdf.io
+og_image: https://lpdf.io/assets/images/og-default.png
+
+pages:
+
+  - path: /home
+    canonical: https://lpdf.io/home
+    title: "Lpdf — PDF as Code"
+    description: "Generate pixel-perfect PDFs in Node.js, .NET, PHP, and Python using a declarative XML or code-based document model. No cloud dependency, no seat limits."
+    index: true
+    
+  - path: /pricing
+    canonical: https://lpdf.io/pricing
+    title: "Lpdf — Pricing"
+    description: "Flat licensing per production system. Community free under $1M revenue, Professional and Enterprise for larger organizations. No seat counting, no usage metering."
+    index: true
+
+  - path: /docs
+    canonical: https://lpdf.io/docs
+    title: "Lpdf — Docs"
+    description: "Full reference for the lpdf XML schema, data binding, design tokens, and SDK integration across Node.js, .NET, PHP, and Python."
+    index: true
+
+  - path: /license
+    canonical: https://lpdf.io/license
+    title: "Lpdf — License"
+    description: "lpdf Software License — Community (free), Professional, and Enterprise terms. No seat limits, per-production-system pricing."
+    index: false
+
+  - path: /privacy
+    canonical: https://lpdf.io/privacy
+    title: "Lpdf — Privacy Policy"
+    description: "Privacy Policy for lpdf.io. Covers data collected, third-party services, and your rights."
+    index: false
+
+  - path: /terms
+    canonical: https://lpdf.io/terms
+    title: "Lpdf — Terms of Service"
+    description: "Terms of Service for lpdf.io. Covers acceptable use, licensing, payments, and liability."
+    index: false
+
+  - path: /checkout
+    canonical: https://lpdf.io/checkout
+    title: "Lpdf — Checkout"
+    description: "Complete your lpdf license purchase."
+    index: false

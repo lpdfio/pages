@@ -27,7 +27,7 @@
 <body>
     <site-nav variant="home"></site-nav>
     <main class="rl-stack">
-        <section id="hero" class="section" style="border-top:none; padding-top:4rem; padding-bottom:6rem; position:relative; overflow:hidden;">
+        <section id="hero" class="section" style="border-top:none;position:relative; overflow:hidden;">
             <div style="position:absolute; inset:0; background-image:radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--brand) 8%, transparent), transparent 35%); pointer-events:none;"></div>
             <div class="container rl-stack rl-gap-2xl rl-align-center" style="text-align:center; max-width:70rem; position:relative;">
                 <div class="rl-stack rl-align-center rl-gap-l">
@@ -36,17 +36,20 @@
                         Live Demo
                     </span>
                     <div class="rl-stack rl-gap-l">
-                        <h1 class="section-title" style="font-size:clamp(2.3125rem, 5vw, 3.8125rem); letter-spacing:-.03em; line-height:1.04;">PDF as Code<br><span style="color:var(--text-muted);">on every platform</span></h1>
-                        <p class="section-body" style="max-width:38rem; margin:0 auto;">Describe documents as code or XML<br />and get compact, pixel-perfect PDFs — identical across platforms.</p>
-                        <div class="rl-cluster rl-gap-m rl-justify-center">
-                            <a href="/docs" class="btn btn-secondary btn-lg">Documentation</a>
-                            <a href="/pricing" class="btn btn-secondary btn-lg">Start Free</a>
+                        <h1 class="section-title" style="font-size:clamp(2.3125rem, 5vw, 3.8125rem); letter-spacing:-.03em; line-height:1.04;">
+                            <span class="hero-title">PDF as Code</span><br>
+                            <span style="color:var(--text-muted);">on every platform</span>
+                        </h1>
+                        <p class="section-body" style="max-width:38rem; margin:0 auto;">Write documents as code.<br />Get pixel-perfect PDFs — identical across every platform.</p>
+                        <div class="rl-cluster rl-gap-m rl-justify-center" style="width:100%; max-width:24rem; margin:0 auto;">
+                            <a href="/pricing" class="btn btn-amber btn-lg" style="flex:1; text-align:center; justify-content:center;">Start Free</a>
+                            <a href="/docs" class="btn btn-ghost btn-lg" style="flex:1; text-align:center; justify-content:center;">Documentation</a>
                         </div>
                     </div>
                 </div>
                 
                 <div class="rl-stack rl-gap-xl rl-align-center">
-                    <p style="font-size:0.9375rem; color:var(--text-subtle); margin:0;">Native SDKs for Node/JS, .NET/C#, PHP, and Python — plus a VS Code extension.</p>
+                    <p style="font-size:0.9375rem; color:var(--text-subtle); margin:0;">Native SDKs for Node/JS, .NET/C#, PHP, and Python,<br /> plus a VS Code extension with live editing, preview, and code generator.</p>
                     <div class="sdk-strip">
                         <div class="sdk-item">
                             <svg class="sdk-icon-fa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320.5 572C313.8 572 307 570.2 301.1 566.8L239.4 530.3C230.2 525.1 234.7 523.3 237.7 522.3C250 518 252.5 517.1 265.6 509.6C267 508.8 268.8 509.1 270.2 510L317.6 538.1C319.3 539.1 321.7 539.1 323.3 538.1L508 431.5C509.7 430.5 510.8 428.5 510.8 426.5L510.8 213.3C510.8 211.2 509.7 209.3 507.9 208.2L323.3 101.7C321.6 100.7 319.3 100.7 317.6 101.7L133.1 208.3C131.3 209.3 130.2 211.3 130.2 213.4L130.2 426.5C130.2 428.5 131.3 430.5 133.1 431.4L183.7 460.6C211.2 474.3 228 458.2 228 441.9L228 231.5C228 228.5 230.4 226.2 233.4 226.2L256.8 226.2C259.7 226.2 262.2 228.5 262.2 231.5L262.2 442C262.2 478.6 242.2 499.6 207.5 499.6C196.8 499.6 188.4 499.6 165 488L116.6 460.1C104.6 453.2 97.2 440.3 97.2 426.4L97.2 213.3C97.2 199.5 104.6 186.5 116.6 179.6L301.1 73C312.8 66.4 328.3 66.4 339.9 73L524.6 179.7C536.6 186.6 544 199.5 544 213.4L544 426.5C544 440.3 536.6 453.2 524.6 460.2L339.9 566.8C334 570.2 327.3 572 320.5 572zM469.6 361.9C469.6 322 442.6 311.4 385.9 303.9C328.5 296.3 322.7 292.4 322.7 279C322.7 267.9 327.6 253.1 370.1 253.1C408 253.1 422 261.3 427.8 286.9C428.3 289.3 430.5 291.1 433 291.1L457 291.1C458.5 291.1 459.9 290.5 460.9 289.4C461.9 288.3 462.4 286.8 462.3 285.3C458.6 241.2 429.3 220.7 370.1 220.7C317.4 220.7 286 242.9 286 280.2C286 320.6 317.3 331.8 367.8 336.8C428.3 342.7 433 351.6 433 363.5C433 384.1 416.4 392.9 377.5 392.9C328.6 392.9 317.9 380.6 314.3 356.3C313.9 353.7 311.7 351.8 309 351.8L285.1 351.8C282.1 351.8 279.8 354.2 279.8 357.1C279.8 388.2 296.7 425.3 377.6 425.3C436 425.2 469.6 402.1 469.6 361.9z"/></svg>
@@ -57,6 +60,7 @@
                                 <a href="https://www.npmjs.com/package/@lpdfio/lpdf" target="_blank" rel="noopener noreferrer">npm</a>
                             </span>
                         </div>
+                        <rl-divider class="vertical"></rl-divider>
                         <div class="sdk-item">
                             <svg class="sdk-icon-fa" style="width:2.42rem;height:2.42rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M278.7 64.7C296 68.4 307 85.4 303.3 102.7L284.2 192L410.7 192L432.7 89.3C436.4 72 453.4 61 470.7 64.7C488 68.4 499 85.4 495.3 102.7L476.2 192L544 192C561.7 192 576 206.3 576 224C576 241.7 561.7 256 544 256L462.4 256L435 384L502.8 384C520.5 384 534.8 398.3 534.8 416C534.8 433.7 520.5 448 502.8 448L421.2 448L399.2 550.7C395.5 568 378.5 579 361.2 575.3C343.9 571.6 332.9 554.6 336.6 537.3L355.7 448L229.2 448L207.2 550.7C203.5 568 186.5 579 169.2 575.3C151.9 571.6 140.9 554.6 144.6 537.3L163.8 448L96 448C78.3 448 64 433.7 64 416C64 398.3 78.3 384 96 384L177.6 384L205 256L137.2 256C119.5 256 105.2 241.7 105.2 224C105.2 206.3 119.5 192 137.2 192L218.8 192L240.8 89.3C244.4 72 261.4 61 278.7 64.7zM270.4 256L243 384L369.5 384L396.9 256L270.4 256z"/></svg>
                             <span class="sdk-item-name">.NET / C#</span>
@@ -66,6 +70,7 @@
                                 <a href="https://www.nuget.org/packages/Lpdfio.Lpdf" target="_blank" rel="noopener noreferrer">NuGet</a>
                             </span>
                         </div>
+                        <rl-divider class="vertical"></rl-divider>
                         <div class="sdk-item">
                             <svg class="sdk-icon-fa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 168.5C491.4 168.5 623.2 240.7 623.2 320C623.2 399.3 491.3 471.5 320 471.5C148.6 471.5 16.8 399.3 16.8 320C16.8 240.7 148.7 168.5 320 168.5zM320 151.7C143.3 151.7 0 227 0 320C0 413 143.3 488.3 320 488.3C496.7 488.3 640 413 640 320C640 227 496.7 151.7 320 151.7zM218.2 306.5C210.3 347 182.4 342.8 148.1 342.8L161.8 272.2C199.8 272.2 225.6 268.1 218.2 306.5zM97.4 414.3L134.1 414.3L142.8 369.5C183.9 369.5 209.4 372.5 233 350.4C259.1 326.4 265.9 283.7 247.3 262.3C237.6 251.1 222 245.6 200.8 245.6L130.1 245.6L97.4 414.3zM283.1 200.7L319.6 200.7L310.9 245.5C342.4 245.5 371.6 243.2 385.7 256.2C400.5 269.8 393.4 287.2 377.4 369.3L340.4 369.3C355.8 289.9 358.7 283.3 353.1 277.3C347.7 271.5 335.4 272.7 305.7 272.7L286.9 369.3L250.4 369.3L283.1 200.7zM505 306.5C497 347.6 468.3 342.8 434.9 342.8L448.6 272.2C486.8 272.2 512.4 268.1 505 306.5zM384.2 414.3L421 414.3L429.7 369.5C472.9 369.5 496.8 372 519.9 350.4C546 326.4 552.8 283.7 534.2 262.3C524.5 251.1 508.9 245.6 487.7 245.6L417 245.6L384.2 414.3z"/></svg>
                             <span class="sdk-item-name">PHP</span>
@@ -75,6 +80,7 @@
                                 <a href="https://packagist.org/packages/lpdfio/lpdf" target="_blank" rel="noopener noreferrer">Packagist</a>
                             </span>
                         </div>
+                        <rl-divider class="vertical"></rl-divider>
                         <div class="sdk-item">
                             <svg class="sdk-icon-fa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M535.8 264.5C528.1 233.6 513.5 210.3 482.4 210.3L442.3 210.3L442.3 257.7C442.3 294.5 411.1 325.5 375.5 325.5L268.7 325.5C239.5 325.5 215.3 350.5 215.3 379.8L215.3 481.6C215.3 510.6 240.5 527.6 268.7 535.9C302.5 545.8 335 547.6 375.5 535.9C402.4 528.1 428.9 512.4 428.9 481.6L428.9 440.9L322.2 440.9L322.2 427.3L482.4 427.3C513.5 427.3 525 405.6 535.8 373.1C547 339.6 546.5 307.4 535.8 264.5zM382.2 508.7C374.6 509.2 367.3 505.5 363.3 499C359.4 492.4 359.4 484.3 363.3 477.7C367.3 471.2 374.6 467.5 382.2 468C389.8 467.5 397.1 471.2 401.1 477.7C405 484.3 405 492.4 401.1 499C397.1 505.5 389.8 509.2 382.2 508.7zM263.8 312.1L370.6 312.1C400.3 312.1 424 287.6 424 257.8L424 155.9C424 126.9 399.6 105.2 370.6 100.3C334.8 94.4 295.9 94.7 263.8 100.4C218.6 108.4 210.4 125.1 210.4 156L210.4 196.7L317.3 196.7L317.3 210.3L170.3 210.3C139.2 210.3 112 229 103.5 264.5C93.7 305.2 93.3 330.6 103.5 373.1C111.1 404.7 129.2 427.3 160.3 427.3L197 427.3L197 378.5C197 343.2 227.5 312.1 263.8 312.1zM257.2 128.7C268.5 128.7 277.6 137.8 277.6 149.1C277.6 160.4 268.5 169.5 257.2 169.5C245.9 169.5 236.8 160.4 236.8 149.1C236.8 137.8 245.9 128.7 257.2 128.7z"/></svg>
                             <span class="sdk-item-name">Python</span>
@@ -84,6 +90,7 @@
                                 <a href="https://pypi.org/project/lpdfio-lpdf/" target="_blank" rel="noopener noreferrer">PyPI</a>
                             </span>
                         </div>
+                        <rl-divider class="vertical"></rl-divider>
                         <div class="sdk-item">
                             <svg class="sdk-icon-fa" style="width:2.42rem;height:2.42rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z"/></svg>
                             <span class="sdk-item-name">VS Code</span>
@@ -92,6 +99,10 @@
                             </span>
                         </div>
                     </div>
+                </div>
+
+                <div class="rl-stack">
+                    <div class="rl-text-m rl-text-muted">Demo: Switch between examples and languages - watch the PDF update live</div>
                 </div>
 
                 <lpdf-demo></lpdf-demo>

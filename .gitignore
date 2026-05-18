@@ -1,1 +1,27 @@
+# Editor
 .vscode
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Design/work-in-progress folders
+design
+_redesign_

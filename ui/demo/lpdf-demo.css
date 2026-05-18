@@ -1,0 +1,438 @@
+/* ── lpdf-demo web component ─────────────────────────────────────────────────
+   Light-DOM Lit element. All colours that need theme support use the page's
+   CSS custom properties (--bg, --border, --brand, etc.).
+   The editor pane is always-dark (hardcoded palette from the code-editor).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+lpdf-demo {
+    display: block;
+    width: 100%;
+}
+
+/* ── Outer shell (matches .code-window from styles.css) ─────────────────── */
+.lpdf-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 660px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+        0 24px 48px -12px rgba(0, 0, 0, .10),
+        0 8px 16px -4px rgba(0, 0, 0, .05);
+}
+
+[data-theme="dark"] .lpdf-shell {
+    box-shadow:
+        0 24px 48px -12px rgba(0, 0, 0, .55),
+        0 8px 16px -4px rgba(0, 0, 0, .28);
+}
+
+/* ── Top toolbar ─────────────────────────────────────────────────────────── */
+.lpdf-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-sunken);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+/* ── Toolbar wings (keeps mode cluster centred) ──────────────────── */
+.lpdf-toolbar-wing {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.lpdf-toolbar-wing:last-child {
+    justify-content: flex-end;
+}
+.lpdf-toolbar-center {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.lpdf-demo-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.lpdf-mode-cluster {
+    display: flex;
+    gap: 2px;
+}
+
+.lpdf-select {
+    background: var(--bg-elev);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 3px 7px;
+    cursor: pointer;
+    outline: none;
+    width: 180px;
+}
+
+.lpdf-select:focus {
+    border-color: var(--brand);
+}
+
+.lpdf-select:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+/* ── Status area ─────────────────────────────────────────────────────────── */
+.lpdf-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    min-width: 0;
+}
+
+.lpdf-s-idle    { color: var(--text-subtle); }
+.lpdf-s-loading { color: var(--text-muted); }
+.lpdf-s-ok      { color: #4ec9b0; }
+.lpdf-s-error   { color: #f44747; word-break: break-all; }
+
+.lpdf-spinner {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--border);
+    border-top-color: var(--brand);
+    border-radius: 50%;
+    animation: lpdf-spin .65s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes lpdf-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Render button (hidden; kept for API compat) ─────────────────── */
+.lpdf-render-btn {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #007acc;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.lpdf-render-btn:hover:not(:disabled) { background: #005f9e; }
+.lpdf-render-btn:disabled             { opacity: .45; cursor: default; }
+
+/* ── Split panes ─────────────────────────────────────────────────────────── */
+.lpdf-panes {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ── Editor pane ────────────────────────────────────────────────────────────────────────────────── */
+.lpdf-editor-pane {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    min-width: 0;
+    border-right: 1px solid var(--border);
+}
+
+/* ── Editor header (mode buttons, left-aligned) ────────────────── */
+.lpdf-editor-header {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: var(--bg-sunken);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.lpdf-mode-btn {
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    transition: background .1s, color .1s;
+    white-space: nowrap;
+}
+
+.lpdf-mode-btn:hover:not(:disabled) {
+    background: transparent;
+    color: var(--brand);
+}
+
+.lpdf-mode-btn[aria-pressed="true"] {
+    background: transparent;
+    color: var(--brand);
+    font-weight: 600;
+}
+
+.lpdf-mode-btn:disabled { opacity: .4; cursor: default; }
+
+.lpdf-pane-label {
+    padding: 6px 13px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.lpdf-editor-pane .lpdf-pane-label {
+    background: var(--bg-sunken);
+    color: var(--text-subtle);
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── CodeMirror editor container ──────────────────────────────────────────── */
+.lpdf-cm-wrap {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+    text-align: left;
+}
+
+/* Let the CM editor fill the container */
+.lpdf-cm-wrap .cm-editor {
+    height: 100%;
+}
+
+/* Scrollable content area */
+.lpdf-cm-wrap .cm-scroller {
+    overflow: auto;
+}
+
+/* ── Preview pane ────────────────────────────────────────────────────────── */
+.lpdf-preview-pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.lpdf-preview-pane .lpdf-pane-label {
+    background: var(--bg-sunken);
+    color: var(--text-subtle);
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Preview toolbar ─────────────────────────────────────────────────────── */
+.lpdf-preview-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: var(--bg-sunken);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.lpdf-preview-wing {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lpdf-preview-wing--end {
+    justify-content: flex-end;
+}
+
+/* ── Zoom cluster (centred) ───────────────────────────────────────── */
+.lpdf-zoom-cluster {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.lpdf-zoom-btn {
+    width: 24px;
+    height: 22px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background .1s;
+}
+
+.lpdf-zoom-btn:hover:not(:disabled) {
+    background: color-mix(in oklch, var(--brand) 12%, var(--bg-elev));
+    color: var(--text);
+}
+
+.lpdf-zoom-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── Zoom select (replaces zoom label + Fit button) ───────────────────── */
+.lpdf-zoom-select {
+    background: var(--bg-elev);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 5px;
+    cursor: pointer;
+    outline: none;
+    width: 68px;
+    text-align: center;
+}
+
+.lpdf-zoom-select:focus {
+    border-color: var(--brand);
+}
+
+.lpdf-zoom-select:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.lpdf-pdf-size {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.lpdf-page-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* ── Engine status indicator ───────────────────────────────────────────── */
+.lpdf-engine-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.lpdf-dot-ok    { background: #4ec9b0; box-shadow: 0 0 5px rgba(78, 201, 176, .55); }
+.lpdf-dot-error { background: #f44747; }
+
+.lpdf-engine-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.lpdf-download-link {
+    padding: 0;
+    font-size: 11px;
+    font-weight: 500;
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color .15s;
+    white-space: nowrap;
+}
+
+.lpdf-download-link:hover {
+    color: var(--brand);
+}
+
+.lpdf-preview-sep {
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: var(--border);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+/* ── Preview inner (scrollable canvas area) ──────────────────────────────── */
+.lpdf-preview-inner {
+    flex: 1;
+    position: relative;
+    background: var(--bg-sunken);
+    overflow: hidden;
+}
+
+.lpdf-preview-pages {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lpdf-preview-pages canvas {
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .28);
+    flex-shrink: 0;
+}
+
+/* ── Empty state placeholder ─────────────────────────────────────────────── */
+.lpdf-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-subtle);
+    font-size: 13px;
+    gap: 10px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.lpdf-placeholder-icon {
+    font-size: 38px;
+    opacity: .3;
+    line-height: 1;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 719px) {
+    .lpdf-shell { height: auto; }
+
+    .lpdf-panes { flex-direction: column; }
+
+    .lpdf-editor-pane {
+        width: 100%;
+        height: 220px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .lpdf-preview-pane  { height: 280px; }
+
+    .lpdf-preview-inner { min-height: 200px; }
+
+    .lpdf-select { max-width: none; }
+}

@@ -20,10 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The portal is a Codesense-wide product, not an lpdf one — it lives on
+      # codesense.dev for every product. Only the marketing site is on lpdf.io.
       - name: Set portal URL for pre
-        run: |
-          sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-pages.js
-          sed -i 's|__PORTAL_URL__|https://my-pre.lpdf.io|g' www/assets/js/lpdf-checkout.js
+        run: sed -i 's|__PORTAL_URL__|https://my-pre.codesense.dev|g' www/assets/js/lpdf-pages.js
 
       - name: Set pages URL for pre
         run: sed -i 's|__PAGES_URL__|https://pre.lpdf.io|g' www/assets/js/lpdf-pages.js
@@ -53,10 +53,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Prod carries no 'pre' anywhere: my.codesense.dev, lpdf.io.
       - name: Set portal URL for prod
-        run: |
-          sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-pages.js
-          sed -i 's|__PORTAL_URL__|https://my.lpdf.io|g' www/assets/js/lpdf-checkout.js
+        run: sed -i 's|__PORTAL_URL__|https://my.codesense.dev|g' www/assets/js/lpdf-pages.js
 
       - name: Set pages URL for prod
         run: sed -i 's|__PAGES_URL__|https://lpdf.io|g' www/assets/js/lpdf-pages.js

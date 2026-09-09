@@ -8,29 +8,42 @@
     font-display: swap;
 }
 
-/* ── Theme tokens ── */
+/* ── Theme tokens ──────────────────────────────────────────────────────────────
+   Warm neutral, and the same values as portal.css — keep the two in step.
+
+   The three text tiers are set by contrast against --bg rather than by eye, and
+   the light and dark ramps are matched tier for tier, so a page does not read
+   louder in one theme than the other:
+
+       text 16:1 · muted 7:1 · subtle 4.6:1
+
+   --text-subtle carries the footer links, the copyright and other small print,
+   so it is held at 4.6:1 — the old #95958f measured 2.69:1 on this ground, which
+   is below the 3:1 floor for any text at all. */
 :root {
     color-scheme: light;
     --bg: #f2f2f0;
     --bg-elev: #ffffff;
     --bg-sunken: #e8e8e6;
     --border: #d8d8d5;
-    --text: #0a0a09;
-    --text-muted: #6b6b66;
-    --text-subtle: #95958f;
+    --text: #161614;
+    --text-muted: #52524c;
+    --text-subtle: #6e6e68;
     --brand: oklch(65% 0.16 55);
     --success: oklch(58% 0.12 155);
     --nav-h: 48px;
 }
 [data-theme="dark"] {
     color-scheme: dark;
-    --bg: #0a0a09;
-    --bg-elev: #141413;
-    --bg-sunken: #0f0f0e;
-    --border: #232321;
-    --text: #f5f5f2;
-    --text-muted: #9a9a94;
-    --text-subtle: #66665f;
+    /* Off the floor rather than at it: the old #0a0a09 ground left --bg-elev only
+       1.07:1 above it, so a card was a border and nothing else. */
+    --bg: #0f0f0d;
+    --bg-elev: #1a1a18;
+    --bg-sunken: #0a0a09;
+    --border: #2b2b28;
+    --text: #efefea;
+    --text-muted: #9d9d96;
+    --text-subtle: #7d7d76;
 }
 
 /* ── Base ── */
@@ -521,9 +534,97 @@ footer { border-top: 1px solid var(--border); }
     color: var(--text-subtle);
 }
 
-/* ── Legal / prose pages ── */
-.page-legal { --text: #3c3c39; }
-[data-theme="dark"] .page-legal { --text: #b8b8b2; }
+/* ── Legal documents ──────────────────────────────────────────────────────────
+   The license, the support policy and the three Codesense-wide documents in the
+   portal all render through md-html and share this treatment. The register is
+   deliberately not the register of the rest of the site: a serif face, a narrow
+   measure and a quiet heading scale, because these are instruments to be read
+   rather than pages to be scanned.
+
+   Keep this block identical to the one in portal.css. The same reader crosses
+   between the two — the license here, the terms there — and the seam shows. */
+.page-legal {
+    /* No webfont. The stack asks for whichever text serif the reader's platform
+       already ships — Charter on macOS, Sitka on Windows — and lands on Georgia,
+       which is on all of them. Self-hosting one face would make the three render
+       identically, at the cost of the only blocking download on the page. */
+    --legal-serif: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+    /* A step down from --text: a wall of legal prose at full contrast is tiring,
+       and the headings need somewhere to step up to. Mixed rather than fixed so
+       it follows the palette instead of pinning two more hex values to it. */
+    --legal-text: color-mix(in oklch, var(--text) 82%, var(--bg));
+}
+
+/* One column for the document and for whatever sits above it, so they share a
+   left edge. Scoped under main: the footer's own container must stay page-width. */
+.page-legal main .container { max-width: 46rem; }
+
+.page-legal md-html {
+    display: block;
+    font-family: var(--legal-serif);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--legal-text);
+}
+
+.page-legal md-html h1 {
+    font-size: 2rem; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2;
+    color: var(--text); margin: 0 0 0.75rem;
+}
+/* Every one of these documents opens the same way: title, copyright, then an
+   effective date or a contact address. Those two lines are masthead, not prose. */
+.page-legal md-html h1 + p,
+.page-legal md-html h1 + p + p {
+    font-family: var(--rl-font-sans);
+    font-size: 0.8125rem; line-height: 1.5; color: var(--text-subtle); margin: 0.125rem 0;
+}
+/* md-html strips the `---` rules the sources use between sections, so the rule
+   comes back on the heading that followed each one. */
+.page-legal md-html h2 {
+    font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; color: var(--text);
+    margin: 2.75rem 0 0.875rem; padding-top: 2rem; border-top: 1px solid var(--border);
+}
+.page-legal md-html h3 {
+    font-size: 1.0625rem; font-weight: 600; color: var(--text); margin: 1.75rem 0 0.5rem;
+}
+.page-legal md-html p  { margin: 0.875rem 0; }
+.page-legal md-html ul,
+.page-legal md-html ol { margin: 0.875rem 0; padding-left: 1.5rem; }
+.page-legal md-html li { margin: 0.375rem 0; }
+.page-legal md-html strong { font-weight: 700; color: var(--text); }
+.page-legal md-html a {
+    color: var(--brand); text-decoration: underline; text-underline-offset: 2px;
+    text-decoration-color: color-mix(in oklch, var(--brand) 40%, transparent);
+}
+.page-legal md-html a:hover { text-decoration-color: var(--brand); }
+.page-legal md-html code {
+    font-family: var(--rl-font-mono); font-size: 0.8125rem;
+    background: var(--bg-sunken); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px;
+}
+
+/* Tables stay in the sans. The privacy policy's recipient and retention tables
+   are read down their columns rather than across in sentences, and a serif at
+   this size muddies them. */
+.page-legal md-html table {
+    width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+    font-family: var(--rl-font-sans); font-size: 0.875rem; line-height: 1.5;
+}
+.page-legal md-html th {
+    text-align: left; font-weight: 600; color: var(--text);
+    padding: 0 1rem 0.5rem 0; border-bottom: 1px solid var(--border);
+}
+.page-legal md-html td {
+    padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+.page-legal md-html tr:last-child td { border-bottom: none; }
+.page-legal md-html th:last-child,
+.page-legal md-html td:last-child { padding-right: 0; }
+
+/* Switcher between the three portal documents, above the document itself. */
+.legal-switch a { font-size: 0.8125rem; color: var(--text-subtle); transition: color .15s; }
+.legal-switch a:hover { color: var(--text-muted); }
+.legal-switch a.active { color: var(--text); font-weight: 600; }
 
 /* ── SDK-specific sections (::: platform) ── */
 .sdk-section { display: none; }

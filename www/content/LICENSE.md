@@ -208,7 +208,7 @@ Upon payment, the licensee receives a perpetual license for the major version of
 
 ### Support
 
-Enterprise License holders receive priority support from Codesense LLC. Supported response times and escalation procedures are defined in the Enterprise Support Policy at lpdf.io/support/enterprise. Custom SLA terms may be negotiated as part of a Master Service Agreement.
+Enterprise License holders receive priority support from Codesense LLC. Supported response times and escalation procedures are defined at lpdf.io/support. Custom SLA terms may be negotiated as part of a Master Service Agreement.
 
 ### Contract
 

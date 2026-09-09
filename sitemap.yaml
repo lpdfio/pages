@@ -33,6 +33,12 @@ pages:
     description: "Full reference for the lpdf XML schema, data binding, design tokens, and SDK integration across Node.js, .NET, PHP, and Python."
     index: true
 
+  - path: /support
+    canonical: https://lpdf.io/support
+    title: "Lpdf — Support"
+    description: "Support and response times for each Lpdf license tier. Severity levels, what support covers, and what to include in a report."
+    index: true
+
   - path: /license
     canonical: https://lpdf.io/license
     title: "Lpdf — License"

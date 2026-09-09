@@ -175,8 +175,33 @@ main { padding-top: var(--nav-h); }
 /* ── Footer ── */
 footer { border-top: 1px solid var(--border); }
 .footer-logo img { height: 1.5rem; width: auto; display: block; }
-.footer-links a { font-size: 0.875rem; color: var(--text-subtle); }
+.footer-links a { font-size: 0.8125rem; color: var(--text-subtle); }
 .footer-links a:hover { color: var(--text-muted); }
+
+/* ── Site footer ── */
+/* Columns of links, then a centred copyright on its own line. Both share the 2rem gutter that
+   .nav-inner uses, so the footer lines up with the header. No .container — the footer renders over
+   content of unknown width, and a page column here would misalign against whatever sits above. */
+.footer-columns { padding: 2rem; align-items: start; }
+.footer-heading {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text); margin-bottom: 0.25rem;
+}
+/* A step up from the 0.8125rem the portal's single-line bar uses: these are a vertical list to be
+   read, not a row of afterthoughts. */
+.footer-columns .footer-links a { font-size: 0.875rem; }
+.footer-tagline { font-size: 0.875rem; color: var(--text-muted); line-height: 1.35; margin: 0; }
+/* Language name leads its row; the repo and package links sit under it, a step quieter. */
+.footer-sdk { font-size: 0.875rem; color: var(--text-muted); }
+.footer-sdk:hover { color: var(--text); }
+.footer-columns .footer-sdk-links a { font-size: 0.8125rem; color: var(--text-subtle); }
+/* No rule above the copyright. The footer already has one — its own border-top — and a second
+   inside a block that has no other dividers reads as two stacked footers rather than one. Space
+   separates it instead, balanced against the 2rem the columns end on. */
+.footer-baseline { padding: 0.25rem 2rem 2rem; text-align: center; }
+/* margin:0 because there is no `p { margin: 0 }` reset in this stylesheet — the browser default
+   1em would otherwise add ~28px to the baseline row on its own. */
+.footer-copy { font-size: 0.8125rem; color: var(--text-subtle); margin: 0; }
 
 /* ── Badge ── */
 .badge {

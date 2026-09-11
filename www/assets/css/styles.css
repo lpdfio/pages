@@ -9,7 +9,14 @@
 }
 
 /* ── Theme tokens ──────────────────────────────────────────────────────────────
-   Warm neutral, and the same values as portal.css — keep the two in step.
+   Cool neutral: every value below is one OKLCH hue, 258, which sits roughly
+   opposite the brand orange at 55. The set used to run at hue 106, a yellow-green,
+   which read as faded paper in light and as brown in dark — at low lightness a warm
+   grey has nowhere to go but brown. Leaning the greys the other way costs nothing
+   and is what makes the orange read as a colour rather than as a stain.
+
+   Chroma stays between 0.005 and 0.012. That is enough to be seen as a decision
+   and not enough to be seen as blue.
 
    The three text tiers are set by contrast against --bg rather than by eye, and
    the light and dark ramps are matched tier for tier, so a page does not read
@@ -19,31 +26,61 @@
 
    --text-subtle carries the footer links, the copyright and other small print,
    so it is held at 4.6:1 — the old #95958f measured 2.69:1 on this ground, which
-   is below the 3:1 floor for any text at all. */
+   is below the 3:1 floor for any text at all.
+
+   The other product sites and portal.css still carry the warm set. They are no
+   longer in step with this file, by intent, until the same pass is run on them. */
+/* ── Surfaces ──
+   Three levels, and --bg-elev is the top one in both themes. Elevation runs toward
+   light whichever theme you are in: on a dark ground a darker panel reads as a hole
+   punched through rather than as something raised, so the dark set climbs from the
+   page instead of sinking below it.
+
+   Header, footer and cards all sit on --bg-elev. They are one role, content above
+   the page, and splitting them across two values would spend a level to say nothing.
+   Sections then alternate between --bg and --bg-alt beneath them.
+
+   The page-to-band step is held at about 2 points of OKLCH lightness in BOTH themes.
+   That is the whole point of measuring in OKLCH: the scale is perceptually even, so
+   an equal step should read as an equal step whichever ground it sits on. Dark used
+   to step 5 points there against light's 1, and the same page looked boldly banded
+   in one theme and flat in the other.
+
+   Light has only 4.4 points to spend in total, which is forced rather than chosen:
+   the brand orange clears 3:1 on --bg-alt by 0.01, so that is the darkest a light
+   surface can go before the mark drops under the floor for a graphic. The section
+   step takes half of that budget and the step up to --bg-elev takes the other half.
+
+   Dark has no such ceiling, and --bg-elev still stands 5 points off the page rather
+   than the light theme's 2. A card has to hold its own shape against the page, and
+   on a dark ground it needs the extra distance to do it. The section bands, which
+   are edge-to-edge and have a rule along the top, do not. */
 :root {
     color-scheme: light;
-    --bg: #f2f2f0;
+    --bg: #f5f8fb;
+    --bg-alt: #eef1f5;
     --bg-elev: #ffffff;
-    --bg-sunken: #e8e8e6;
-    --border: #d8d8d5;
-    --text: #161614;
-    --text-muted: #52524c;
-    --text-subtle: #6e6e68;
+    --bg-sunken: #e4e7eb;
+    --border: #cdd1d7;
+    --text: #141619;
+    --text-muted: #4e5258;
+    --text-subtle: #6a6e74;
     --brand: oklch(65% 0.16 55);
     --success: oklch(58% 0.12 155);
     --nav-h: 48px;
 }
 [data-theme="dark"] {
     color-scheme: dark;
-    /* Off the floor rather than at it: the old #0a0a09 ground left --bg-elev only
-       1.07:1 above it, so a card was a border and nothing else. */
-    --bg: #0f0f0d;
-    --bg-elev: #1a1a18;
-    --bg-sunken: #0a0a09;
-    --border: #2b2b28;
-    --text: #efefea;
-    --text-muted: #9d9d96;
-    --text-subtle: #7d7d76;
+    --bg: #171a1f;
+    --bg-alt: #121519;
+    --bg-elev: #23262b;
+    /* Insets are the one thing that still goes down: a code chip is pressed into
+       the page, not lifted off it. */
+    --bg-sunken: #080a0d;
+    --border: #2f3339;
+    --text: #eceff3;
+    --text-muted: #989da4;
+    --text-subtle: #797d83;
 }
 
 /* ── Base ── */
@@ -75,9 +112,10 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
     top: 0; left: 0; right: 0;
     z-index: 100;
     height: var(--nav-h);
-    background: color-mix(in oklch, var(--bg) 65%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* Solid rather than translucent. Glass reads as a layer by sampling what scrolls
+       under it, which is a different idea from standing on its own surface, and the
+       two cancel each other out when both are applied. */
+    background: var(--bg-elev);
     border-bottom: 1px solid var(--border);
 }
 .nav-inner { height: 100%; padding: 0 2rem; }
@@ -163,9 +201,14 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
 /* ── Page scroll offset for fixed nav ── */
 main { padding-top: var(--nav-h); }
 
-/* ── Sections ── */
-.section { padding: 2rem; border-top: 1px solid var(--border); }
-.section-sunken { background: var(--bg-sunken); }
+/* ── Sections ──
+   The vertical padding is doing contrast work, not just spacing. Two bands a couple
+   of points of lightness apart are told apart by the length of the edge between them
+   and by the quiet either side of it, so the thinner the fill difference the more
+   air the boundary needs. */
+.section { padding: clamp(3rem, 5vw, 4.5rem) 2rem; border-top: 1px solid var(--border); }
+/* The alternating band, not an inset. The class name predates the distinction. */
+.section-sunken { background: var(--bg-alt); }
 .container { max-width: 1120px; margin: 0 auto; }
 
 /* ── Section header ── */
@@ -186,8 +229,10 @@ main { padding-top: var(--nav-h); }
 }
 
 /* ── Footer ── */
-footer { border-top: 1px solid var(--border); }
-.footer-logo img { height: 1.5rem; width: auto; display: block; }
+footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
+/* A step below the header's 1.5rem. The footer lockup sits above small print rather
+   than leading the page, so matching the header made it the loudest thing down here. */
+.footer-logo img { height: 1.125rem; width: auto; display: block; }
 .footer-links a { font-size: 0.8125rem; color: var(--text-subtle); }
 .footer-links a:hover { color: var(--text-muted); }
 
@@ -203,7 +248,7 @@ footer { border-top: 1px solid var(--border); }
 /* A step up from the 0.8125rem the portal's single-line bar uses: these are a vertical list to be
    read, not a row of afterthoughts. */
 .footer-columns .footer-links a { font-size: 0.875rem; }
-.footer-tagline { font-size: 0.875rem; color: var(--text-muted); line-height: 1.35; margin: 0; }
+.footer-tagline { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.35; margin: 0; }
 /* Language name leads its row; the repo and package links sit under it, a step quieter. */
 .footer-sdk { font-size: 0.875rem; color: var(--text-muted); }
 .footer-sdk:hover { color: var(--text); }

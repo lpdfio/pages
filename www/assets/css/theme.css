@@ -1,24 +1,31 @@
-/* ── OKLCH tier accent tokens ── */
+/* ── tier accent tokens ──
+   Tiers used to carry three unrelated hues, two of which belong to other products
+   in the set. They now step in weight through the one brand colour: Community has
+   no colour because it costs nothing, Professional is outlined in the brand,
+   Enterprise is filled with it.
+
+   --brand-text exists because --brand is chosen against the 3:1 bar a mark is held
+   to, while a pill label is text at 4.5:1. It clears that on the dark card at 5.12
+   but only reaches 3.41 on the light one, so the light theme carries the same hue
+   down in lightness until it passes.
+
+   --brand-on is white, by choice. Against the brand fill it measures 3.21, under
+   the 4.5 a label this size needs, so the filled pill is the one element on the
+   page below the text bar. Darkening that fill alone to oklch(0.56 0.15 55) would
+   carry white at 4.61 if it ever has to pass. */
 :root {
     --color-community-border: oklch(0.65 0.12 45);
     --color-community-badge:  oklch(0.62 0.14 43);
 
-    --color-pro-border:       oklch(0.55 0.12 190);
-    --color-pro-badge:        oklch(0.50 0.14 188);
-
-    --color-ent-border:       oklch(0.58 0.14 280);
-    --color-ent-badge:        oklch(0.55 0.16 278);
+    --brand-text: oklch(0.565 0.15 55);
+    --brand-on:   oklch(0.98 0 0);
 }
 
 [data-theme="dark"] {
     --color-community-border: oklch(0.60 0.10 45);
     --color-community-badge:  oklch(0.57 0.12 43);
 
-    --color-pro-border:       oklch(0.50 0.08 195);
-    --color-pro-badge:        oklch(0.48 0.09 193);
-
-    --color-ent-border:       oklch(0.52 0.09 285);
-    --color-ent-badge:        oklch(0.50 0.10 283);
+    --brand-text: var(--brand);
 }
 
 /* ── tier-card-wrap — reserves space above card for floating top badge ── */
@@ -52,21 +59,21 @@
     flex: 1;
 }
 
-/* ── tier label badge (solid pill inside card) ── */
+/* ── tier label pill inside the card: no colour, outlined, filled ── */
 .tier-label {
     align-self: flex-start;
     display: inline-block;
     padding: 0.2em 0.7em;
+    border: 1px solid transparent;
     border-radius: 100px;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: oklch(0.98 0 0);
 }
-.tier-label--community    { background: var(--color-community-badge); }
-.tier-label--professional { background: var(--color-pro-badge); }
-.tier-label--enterprise   { background: var(--color-ent-badge); }
+.tier-label--community    { border-color: var(--border); color: var(--text-muted); }
+.tier-label--professional { border-color: var(--brand);  color: var(--brand-text); }
+.tier-label--enterprise   { background: var(--brand); border-color: var(--brand); color: var(--brand-on); }
 
 /* ── top badge pill (outlined, straddles card border) ── */
 .tier-top-pill {
@@ -80,9 +87,12 @@
     border: 1.5px solid;
     background: var(--bg);
 }
-.tier-top-pill--community    { color: var(--color-community-badge); border-color: var(--color-community-badge); }
-.tier-top-pill--professional { color: var(--color-pro-badge);       border-color: var(--color-pro-badge); }
-.tier-top-pill--enterprise   { color: var(--color-ent-badge);       border-color: var(--color-ent-badge); }
+/* "Recommended" is the only top badge that argues for something, so it takes the
+   brand. The rest state a fact and stay neutral. Keeping the recommendation out of
+   the tier ladder is what lets it move to another tier without repainting one. */
+.tier-top-pill--community    { color: var(--text-muted); border-color: var(--border); }
+.tier-top-pill--professional { color: var(--brand-text); border-color: var(--brand); }
+.tier-top-pill--enterprise   { color: var(--text-muted); border-color: var(--border); }
 
 /* ── price ── */
 .tier-price {
@@ -101,12 +111,6 @@
     vertical-align: top;
     padding-top: calc(0.18em + 2px);
 }
-
-/* ── tier icons — colored per tier ── */
-.tier-icon { display: flex; align-items: center; }
-.tier-icon--community    { color: var(--color-community-badge); }
-.tier-icon--professional { color: var(--color-pro-badge); }
-.tier-icon--enterprise   { color: var(--color-ent-badge); }
 
 /* ── CTA base — outline, fills with tier color on hover ── */
 .tier-card__cta {
@@ -127,32 +131,15 @@
 }
 .tier-card__cta:active { transform: translateY(1px); }
 
-/* Community — amber outline → amber fill on hover */
-.tier-card--community .tier-card__cta {
-    color: var(--color-community-badge);
-    border-color: var(--color-community-border);
+/* One button treatment for all three, since the tier is already stated by the pill
+   above it and a per-tier button colour only re-said it in a third hue. Brand
+   outline, brand fill on hover. */
+.tier-card__cta {
+    color: var(--brand-text);
+    border-color: color-mix(in oklch, var(--brand) 50%, var(--border));
 }
-.tier-card--community .tier-card__cta:hover {
-    background: var(--color-community-badge);
-    color: oklch(0.98 0 0);
-}
-
-/* Professional — teal outline → teal fill on hover */
-.tier-card--professional .tier-card__cta {
-    color: var(--color-pro-badge);
-    border-color: var(--color-pro-border);
-}
-.tier-card--professional .tier-card__cta:hover {
-    background: var(--color-pro-badge);
-    color: oklch(0.98 0 0);
-}
-
-/* Enterprise — indigo outline → indigo fill on hover */
-.tier-card--enterprise .tier-card__cta {
-    color: var(--color-ent-badge);
-    border-color: var(--color-ent-border);
-}
-.tier-card--enterprise .tier-card__cta:hover {
-    background: var(--color-ent-badge);
-    color: oklch(0.98 0 0);
+.tier-card__cta:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--brand-on);
 }

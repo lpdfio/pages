@@ -1,24 +1,30 @@
 /* ── tier accent tokens ──
    Tiers used to carry three unrelated hues, two of which belong to other products
-   in the set. They now step in weight through the one brand colour: Community has
-   no colour because it costs nothing, Professional is outlined in the brand,
-   Enterprise is filled with it.
+   in the set. They now step in weight through the one brand colour, on a constant
+   brand edge: Community is outlined in it with a muted label, Professional is
+   outlined in it with a brand label, Enterprise is filled with it. The edge is what
+   says "this is a tier"; the label and the fill are what say which one.
 
    --brand-text exists because --brand is chosen against the 3:1 bar a mark is held
    to, while a pill label is text at 4.5:1. It clears that on the dark card at 5.12
    but only reaches 3.41 on the light one, so the light theme carries the same hue
    down in lightness until it passes.
 
-   --brand-on is white, by choice. Against the brand fill it measures 3.21, under
-   the 4.5 a label this size needs, so the filled pill is the one element on the
-   page below the text bar. Darkening that fill alone to oklch(0.56 0.15 55) would
-   carry white at 4.61 if it ever has to pass. */
+   --brand-on is dark, not white. It is the colour of anything sitting *on* the brand
+   fill — the filled Enterprise pill, the CTA hover — and white there measured 3.21
+   against that fill, below the 4.5 a label this size needs, which made the filled
+   pill the one element on the page under the text bar. This tone clears it at 4.76
+   without touching the fill, so the ladder keeps its weight where it belongs, in the
+   fill rather than the label. It stays on the brand hue rather than going to a
+   neutral black, which at 5.32 reads as hazard tape rather than as a brand.
+
+   Mirrored in the portal's `portal.css` — keep the two in step. */
 :root {
     --color-community-border: oklch(0.65 0.12 45);
     --color-community-badge:  oklch(0.62 0.14 43);
 
     --brand-text: oklch(0.565 0.15 55);
-    --brand-on:   oklch(0.98 0 0);
+    --brand-on:   oklch(0.25 0.06 55);
 }
 
 [data-theme="dark"] {
@@ -59,7 +65,11 @@
     flex: 1;
 }
 
-/* ── tier label pill inside the card: no colour, outlined, filled ── */
+/* ── tier label pill inside the card: outlined, outlined, filled ──
+   All three sit on the same brand edge, which is what says "this is a tier". Weight then
+   steps through the label and the fill: Community muted, Professional in the brand, Enterprise
+   filled with it. Community carried a grey edge until it stopped reading as part of the same
+   set as the two beside it. Mirrored in the portal's `portal.css`. */
 .tier-label {
     align-self: flex-start;
     display: inline-block;
@@ -71,7 +81,7 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
 }
-.tier-label--community    { border-color: var(--border); color: var(--text-muted); }
+.tier-label--community    { border-color: var(--brand);  color: var(--text-muted); }
 .tier-label--professional { border-color: var(--brand);  color: var(--brand-text); }
 .tier-label--enterprise   { background: var(--brand); border-color: var(--brand); color: var(--brand-on); }
 
@@ -94,22 +104,30 @@
 .tier-top-pill--professional { color: var(--brand-text); border-color: var(--brand); }
 .tier-top-pill--enterprise   { color: var(--text-muted); border-color: var(--border); }
 
-/* ── price ── */
+/* ── price ──
+   A price is a number to be read, not a shape to be looked at, which is a different
+   job from the wordmark's and now has a different face. The mono gives every digit
+   one width, so a column of prices lines up whatever the amounts are, and a 9 can
+   never be mistaken for anything else. The display face it replaced made "Free" and
+   "Quote" read as small logos beside it. */
 .tier-price {
-    font-family: 'Audiowide', sans-serif;
-    font-weight: 400;
-    font-size: 1.8rem;
-    letter-spacing: 0;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
     color: var(--text);
 }
 
+/* The currency symbol used to be set in Tahoma, because the old display face drew a
+   poor one. The mono's own is fine, so it inherits and the price is one face again. */
 .tier-currency {
-    font-family: Tahoma, sans-serif;
-    font-weight: 300;
+    font-weight: 500;
     font-size: 0.75em;
     vertical-align: top;
-    padding-top: calc(0.18em + 2px);
+    padding-top: calc(0.18em + 1px);
+    color: var(--text-muted);
 }
 
 /* ── CTA base — outline, fills with tier color on hover ── */

@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check the committed bundles carry deploy sentinels
+        run: ./.github/check-sentinels.sh
+
       # The portal is a Codesense-wide product, not an lpdf one — it lives on
       # codesense.dev for every product. Only the marketing site is on lpdf.io.
       - name: Set portal URL for pre
@@ -52,6 +55,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check the committed bundles carry deploy sentinels
+        run: ./.github/check-sentinels.sh
 
       # Prod carries no 'pre' anywhere: my.codesense.dev, lpdf.io.
       - name: Set portal URL for prod

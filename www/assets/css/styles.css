@@ -8,6 +8,29 @@
     font-display: swap;
 }
 
+/* The wordmark face. A slab serif on a document product says what it is, the way
+   the orange does, and at four letters the name can carry a face this wide.
+   Goblin One ships one weight, which is all a wordmark needs and is why nothing
+   else on the page uses it. */
+@font-face {
+    font-family: 'Goblin One';
+    src: url('../fonts/GoblinOne.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* The figures face, for prices and anything else that has to be read as a number
+   rather than looked at. A mono gives every digit the same width, so a column of
+   prices lines up without being told to. Variable, so one file covers the range. */
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('../fonts/JetBrainsMono-Variable.ttf') format('truetype');
+    font-weight: 100 800;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* ── Theme tokens ──────────────────────────────────────────────────────────────
    Cool neutral: every value below is one OKLCH hue, 258, which sits roughly
    opposite the brand orange at 55. The set used to run at hue 106, a yellow-green,
@@ -97,12 +120,19 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
 [data-theme="light"] .logo-dark  { display: none; }
 [data-theme="light"] .logo-light { display: block; }
 
+/* The first line of the hero, in the same face as the wordmark, so the page opens
+   in the product's own voice rather than in a second display face nobody chose.
+
+   The size is relative because the heading around it already carries a clamp, and
+   the second line of the hero is set from that. A fixed size here broke the pair:
+   the display line came out smaller than the sentence following it. Just under the
+   heading's own size, because this face is wider and much heavier than the text
+   beside it and matching them outright makes the first line shout. */
 .hero-title {
-    font-family: 'Audiowide', sans-serif;
+    font-family: 'Goblin One', Georgia, serif;
     font-weight: 400;
-    font-size: 3.25rem;
+    font-size: 0.88em;
     letter-spacing: 0;
-    line-height: 1;
     color: var(--text);
 }
 
@@ -119,7 +149,23 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
     border-bottom: 1px solid var(--border);
 }
 .nav-inner { height: 100%; padding: 0 2rem; }
-.nav-logo img { height: 24px; width: auto; display: block; }
+/* ── the lockup: artwork beside text, not one picture of both ──
+   The mark keeps its own colour and needs no theme swap, so it is one SVG. The word
+   inherits the page's text colour, which is what makes the pair work on either
+   ground. The gap is set in em off the word so the two hold their spacing at any
+   size, and the mark is a little taller than the cap height so it leads the pair
+   rather than sitting level with it. */
+.nav-logo { display: inline-flex; align-items: center; gap: 0.42em; text-decoration: none; }
+.nav-logo-mark { height: 24px; width: auto; display: block; flex: none; }
+.nav-logo-word {
+    font-family: 'Goblin One', Georgia, serif;
+    font-weight: 400;
+    font-size: 1.125rem;
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--text);
+    white-space: nowrap;
+}
 .nav-links a { font-size: 0.9375rem; color: var(--text-muted); transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 .nav-links a.active { color: var(--text); font-weight: 500; }
@@ -230,9 +276,18 @@ main { padding-top: var(--nav-h); }
 
 /* ── Footer ── */
 footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
-/* A step below the header's 1.5rem. The footer lockup sits above small print rather
-   than leading the page, so matching the header made it the loudest thing down here. */
-.footer-logo img { height: 1.125rem; width: auto; display: block; }
+/* A step below the header's. The footer lockup sits above small print rather than
+   leading the page, so matching the header made it the loudest thing down here. */
+.footer-logo { display: inline-flex; align-items: center; gap: 0.42em; text-decoration: none; }
+.footer-logo-mark { height: 1.125rem; width: auto; display: block; flex: none; }
+.footer-logo-word {
+    font-family: 'Goblin One', Georgia, serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1;
+    color: var(--text);
+    white-space: nowrap;
+}
 .footer-links a { font-size: 0.8125rem; color: var(--text-subtle); }
 .footer-links a:hover { color: var(--text-muted); }
 

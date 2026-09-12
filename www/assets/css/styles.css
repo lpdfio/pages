@@ -824,6 +824,30 @@ nav.sidebar {
 }
 .faq-a a { color: var(--brand); }
 
+/* ── Splash lockup (the coming-soon page) ── */
+/* The same two-part lockup as the header — drawn mark beside live text, never one flat
+   picture of both — at the size a page holding nothing else can carry. It replaced a baked
+   PNG of the pair, which is why the word used to be set in the header face instead of the
+   product's own.
+
+   Row and centring are relayout's; only what relayout has no token for is set here. Both the
+   gap and the mark's height are em, and the one font-size below is on the container, so a
+   single clamp scales the whole lockup and the proportions hold at every width. The mark
+   stands a little above the cap height so it leads the pair rather than sitting level. */
+.splash-logo {
+    font-size: clamp(2.25rem, 9vw, 3.5rem);
+    gap: 0.42em;
+}
+.splash-logo-mark { height: 1.3em; width: auto; display: block; flex: none; }
+.splash-logo-word {
+    font-family: 'Radley', Georgia, serif;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--text);
+    white-space: nowrap;
+}
+
 /* ── 404 page ── */
 .nav-logo-only { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
 .fourohfour { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }

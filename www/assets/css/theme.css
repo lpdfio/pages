@@ -18,19 +18,20 @@
    fill rather than the label. It stays on the brand hue rather than going to a
    neutral black, which at 5.32 reads as hazard tape rather than as a brand.
 
-   Mirrored in the portal's `portal.css` — keep the two in step. */
-:root {
-    --color-community-border: oklch(0.65 0.12 45);
-    --color-community-badge:  oklch(0.62 0.14 43);
+   Mirrored in the portal's `portal.css` — keep the two in step.
 
+   --color-community-border and --color-community-badge used to live here, at hues
+   45 and 43. They were the last of the three-hue tier scheme, and once the ladder
+   moved onto --brand their only remaining consumer was .btn-amber on the home hero —
+   which meant the one page a visitor lands on first showed an orange two hues off
+   the brand. Removed rather than re-hued, so there is no second orange left to
+   reach for. */
+:root {
     --brand-text: oklch(0.565 0.15 55);
     --brand-on:   oklch(0.25 0.06 55);
 }
 
 [data-theme="dark"] {
-    --color-community-border: oklch(0.60 0.10 45);
-    --color-community-badge:  oklch(0.57 0.12 43);
-
     --brand-text: var(--brand);
 }
 

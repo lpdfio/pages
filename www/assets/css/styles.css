@@ -241,8 +241,17 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
 .btn-secondary { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
 .btn-lg { padding: 0.6875rem 1rem; font-size: 0.9375rem; border-radius: 8px; }
 .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.875rem; border-radius: 6px; }
-.btn-amber { background: transparent; color: var(--color-community-badge); border: 1px solid var(--color-community-border); transition: background .15s, color .15s, transform .08s; }
-.btn-amber:hover { background: var(--color-community-badge); color: oklch(0.98 0 0); opacity: 1; }
+/* The free-tier CTA where it appears outside the pricing page. Runs the same ladder
+   as .tier-card__cta in theme.css — brand edge at rest, brand fill on hover — so the
+   home hero and the Community card state the same action the same way.
+
+   Was .btn-amber, painted from --color-community-badge at hue 43. That was a second
+   orange, two hues off --brand and duller, left over from when the tiers carried
+   three unrelated colours; it read as a near-miss of the brand rather than as a
+   choice. Its white hover label also measured 3.84 on that fill, under the 4.5 a
+   label this size needs — --brand-on clears it at 4.77. */
+.btn-brand { background: transparent; color: var(--brand-text); border: 1px solid color-mix(in oklch, var(--brand) 50%, var(--border)); transition: background .15s, color .15s, transform .08s; }
+.btn-brand:hover { background: var(--brand); border-color: var(--brand); color: var(--brand-on); opacity: 1; }
 .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); transition: background .15s, color .15s, transform .08s; }
 .btn-ghost:hover { background: var(--text); color: var(--bg); opacity: 1; }
 
@@ -512,7 +521,14 @@ footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
 .cmp-table tr:hover td.cmp-d-lpdf { background: color-mix(in oklch, var(--brand) 7%, var(--bg-sunken)); }
 .cmp-yes     { color: var(--success); }
 .cmp-no      { color: var(--text-subtle); }
-.cmp-partial { color: oklch(68% 0.13 70); }
+/* Moved off hue 70, which sat 15 degrees from --brand and so read as a failed brand
+   orange rather than as a state. This is a semantic colour beside --success and
+   --text-subtle, not a brand one, so it steps away from 55 rather than onto it —
+   85 is the conventional caution hue and the same one the portal's warn badge uses.
+   Lightness and chroma are unchanged, so only the hue moves.
+   Separate, pre-existing: at L 0.68 this measures ~3.2 on the white card, under the
+   4.5 a text label needs. Fixing that properly needs a per-theme pair. */
+.cmp-partial { color: oklch(68% 0.13 85); }
 .cmp-lib { font-size: 0.6875rem; color: var(--text-subtle); display: block; font-weight: 400; margin-top: 2px; font-family: var(--rl-font-mono); }
 
 /* ── Docs prose ── */
@@ -851,5 +867,8 @@ nav.sidebar {
 /* ── 404 page ── */
 .nav-logo-only { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
 .fourohfour { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }
-a.home-link { color: #f97316; text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+/* Was a hardcoded #f97316 — a second orange, close enough to --brand to look
+   deliberate and far enough to drift. Reads the token now, so it follows the brand
+   instead of shadowing it. */
+a.home-link { color: var(--brand-text); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
 a.home-link:hover { opacity: 0.8; }

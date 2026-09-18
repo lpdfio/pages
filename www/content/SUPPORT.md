@@ -68,7 +68,7 @@ answered; that is a description of how we work, not a promise.
 - Writing your documents or templates for you
 - Modified copies of Lpdf, or builds we did not publish
 - Problems caused by third-party libraries, runtimes or infrastructure
-- Unregistered use — evaluation without a license key is unsupported, though we will always answer a
+- Unlicensed use — evaluation without a license key is unsupported, though we will always answer a
   question about how to obtain one
 
 Work that falls outside this scope — template development, integration work, custom features — is

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Reads sitemap.yaml and syncs SEO meta tags in each page's HTML file.
-// Run: node src/pages/update-meta.mjs
+// Run: node update-meta.mjs (or `make meta-pages` from the lpdf repo)
 //
 // index: true  → injects title, description, canonical, og:*, twitter:card
 // index: false → injects title, description, robots noindex (no og/twitter)

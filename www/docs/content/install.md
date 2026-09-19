@@ -27,6 +27,14 @@ const pdf = await engine.renderPdf(xml)
 writeFileSync('document.pdf', pdf)
 ```
 
+## Versioning
+
+The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.22.3` runs engine `0.22`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes, use a tilde range in `package.json`:
+
+```json
+"@lpdfio/lpdf": "~0.22.0"
+```
+
 :::
 
 ::: sdk php
@@ -56,6 +64,14 @@ $pdf = $engine->renderPdf($xml);
 file_put_contents('document.pdf', $pdf);
 ```
 
+## Versioning
+
+The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.22.3` runs engine `0.22`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes:
+
+```bash
+composer require lpdfio/lpdf:~0.22.0
+```
+
 :::
 
 ::: sdk python
@@ -82,6 +98,14 @@ pdf = engine.render(xml)
 Path('document.pdf').write_bytes(pdf)
 ```
 
+## Versioning
+
+The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.22.3` runs engine `0.22`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes:
+
+```bash
+pip install "lpdfio-lpdf~=0.22.0"
+```
+
 :::
 
 ::: sdk dotnet
@@ -105,6 +129,14 @@ var engine = Pdf.Engine("YOUR_LICENSE_KEY");
 var xml = await File.ReadAllTextAsync("document.xml");
 var pdf = await engine.Render(xml);
 await File.WriteAllBytesAsync("document.pdf", pdf);
+```
+
+## Versioning
+
+The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.22.3` runs engine `0.22`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes, use a version range:
+
+```xml
+<PackageReference Include="Lpdfio.Lpdf" Version="[0.22.0,0.23.0)" />
 ```
 
 :::

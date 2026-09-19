@@ -13,7 +13,7 @@ This page describes the support that comes with each Lpdf license tier. It forms
 
 | Tier | Channel |
 |---|---|
-| Community | [GitHub Discussions and Issues](https://github.com/lpdfio) on the relevant SDK repository |
+| Community | [GitHub Issues](https://github.com/lpdfio/lpdf/issues) and [Discussions](https://github.com/lpdfio/lpdf/discussions) on `lpdfio/lpdf`, for every SDK and the VS Code extension |
 | Professional | Email [support@lpdf.io](mailto:support@lpdf.io) from the address on your portal account |
 | Enterprise | Email [support@lpdf.io](mailto:support@lpdf.io); escalation contacts are agreed at purchase |
 
@@ -21,8 +21,9 @@ Licensing, billing and account questions go to [license@lpdf.io](mailto:license@
 including Community.
 
 **Security issues.** Email [support@lpdf.io](mailto:support@lpdf.io) with `SECURITY` at the start of
-the subject line, at any tier including Community. Please do not open a public issue for a suspected
-vulnerability. We aim to acknowledge security reports within one business day.
+the subject line, or open a
+[private vulnerability report](https://github.com/lpdfio/lpdf/security/advisories/new) on GitHub, at
+any tier including Community. Please do not open a public issue for a suspected vulnerability. We aim to acknowledge security reports within one business day.
 
 ---
 

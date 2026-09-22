@@ -1,6 +1,6 @@
 # XML Schema
 
-lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpdf.io/schema/lpdf.xsd).
+lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpdf.io/schema/1/lpdf.xsd) (`version="1"`, what this page documents).
 
 ## Document structure
 

@@ -206,6 +206,42 @@ export class LpdfEngine {
 if (Symbol.dispose) LpdfEngine.prototype[Symbol.dispose] = LpdfEngine.prototype.free;
 
 /**
+ * What this build of the engine makes of a license key, as JSON.
+ *
+ * ```json
+ * { "status": "licensed", "product": "lpdf", "tier": "professional",
+ *   "expires": "2027-09-19T00:00:00Z", "license": "L-7K3M9Q", "key": 3 }
+ * ```
+ *
+ * `status` is one of `licensed`, `free`, `expired`, `version_mismatch`, `wrong_product`,
+ * `unknown_key`, `bad_signature` or `malformed`. The remaining fields appear only once the
+ * signature verified — see [`license::report_json`].
+ *
+ * A free function, not a method: asking what a key is should not require building an engine.
+ * `now_unix` is the caller's clock in seconds, since wasm has none; `0` skips the expiry check.
+ *
+ * The answer is this build's. An engine older than the key, or one built for another
+ * environment, answers `unknown_key` — which is the useful part, not a caveat.
+ * @param {string} token
+ * @param {bigint} now_unix
+ * @returns {string}
+ */
+export function check_license(token, now_unix) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passStringToWasm0(token, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.check_license(ptr0, len0, now_unix);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
  * Generate SDK source code from one or more bare Lpdf XML elements (a fragment).
  *
  * Unlike `codegen_wasm`, this accepts a snippet without the `<lpdf>` wrapper and

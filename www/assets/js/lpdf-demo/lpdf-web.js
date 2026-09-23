@@ -213,7 +213,7 @@ if (Symbol.dispose) LpdfEngine.prototype[Symbol.dispose] = LpdfEngine.prototype.
  *   "expires": "2027-09-19T00:00:00Z", "license": "L-7K3M9Q", "key": 3 }
  * ```
  *
- * `status` is one of `licensed`, `free`, `expired`, `version_mismatch`, `wrong_product`,
+ * `status` is one of `licensed`, `no_key`, `expired`, `version_mismatch`, `wrong_product`,
  * `unknown_key`, `bad_signature` or `malformed`. The remaining fields appear only once the
  * signature verified — see [`license::report_json`].
  *

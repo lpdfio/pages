@@ -32,10 +32,13 @@
             <div style="position:absolute; inset:0; background-image:radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--brand) 8%, transparent), transparent 35%); pointer-events:none;"></div>
             <div class="container rl-stack rl-gap-2xl rl-align-center" style="text-align:center; max-width:70rem; position:relative;">
                 <div class="rl-stack rl-align-center rl-gap-l">
-                    <span class="badge">
-                        <span class="badge-dot"></span>
-                        Live Demo
-                    </span>
+                    <div class="rl-cluster rl-gap-s rl-justify-center">
+                        <span class="badge">
+                            <span class="badge-dot"></span>
+                            Live Demo
+                        </span>
+                        <span class="badge">Pre-release</span>
+                    </div>
                     <div class="rl-stack rl-gap-l">
                         <h1 class="section-title" style="font-size:clamp(2.3125rem, 5vw, 3.8125rem); letter-spacing:-.03em; line-height:1.04;">
                             <span class="hero-title">PDF as Code</span><br>
@@ -43,8 +46,8 @@
                         </h1>
                         <p class="section-body" style="max-width:38rem; margin:0 auto;">Write documents as code.<br />Get pixel-perfect PDFs — identical across every platform.</p>
                         <div class="rl-cluster rl-gap-m rl-justify-center" style="width:100%; max-width:24rem; margin:0 auto;">
-                            <a href="/pricing" class="btn btn-brand btn-lg" style="flex:1; text-align:center; justify-content:center;">Start Free</a>
-                            <a href="/docs" class="btn btn-ghost btn-lg" style="flex:1; text-align:center; justify-content:center;">Documentation</a>
+                            <!-- hidden for now. While it is, Documentation is btn-brand without flex:1; it was btn-ghost with flex:1: <a href="/pricing" class="btn btn-brand btn-lg" style="flex:1; text-align:center; justify-content:center;">Start Free</a> -->
+                            <a href="/docs" class="btn btn-brand btn-lg" style="text-align:center; justify-content:center;">Documentation</a>
                         </div>
                     </div>
                 </div>

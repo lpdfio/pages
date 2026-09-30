@@ -61,6 +61,10 @@ install page shows everywhere, and Starlight remembers it across pages. There is
   not in the window (see "Scrolling" in `src/styles/lpdf.css`), so the header never shifts between pages that
   scroll and pages that don't. This component gives the frame keyboard focus on load and keeps a clicked tab
   in place, both of which assumed a window scroll.
+- `src/components/header.astro`: Starlight's header with the pre-release notice as a second, full-width row
+  under it. The two rows' heights are `--lpdf-header-height` and `--lpdf-notice-height` in `src/styles/lpdf.css`,
+  and `--sl-nav-height`, which Starlight derives the page offsets from, is their sum. Remove the component, its
+  entry in `astro.config.mjs` and those variables at v1.0.
 - `src/components/site-title.astro`: replaces Starlight's site title with the lpdf.io header lockup: the
   mark at 24px, "Lpdf" in Radley (`src/fonts`), a "Docs" label and the code language picker.
 - `src/components/code-lang-select.astro`: the picker. It switches Starlight's synced tabs. A link can open

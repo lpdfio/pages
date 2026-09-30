@@ -1,0 +1,36 @@
+---
+// Starlight's header with the pre-release notice under it, a second row the full width of the page.
+// Lpdf is pre-release, so the schema and the SDK APIs can still change. The notice belongs to the
+// header, not to the content, so it stays put while the page scrolls and spans the sidebar and the
+// contents column as well as the main one. The heights of the two rows are in src/styles/lpdf.css.
+// It goes, with its entry in astro.config.mjs and that CSS, when Lpdf reaches v1.0.
+import Default from '@astrojs/starlight/components/Header.astro';
+---
+
+<Default />
+<p class="notice">Lpdf is pre-release. The XML schema and SDK APIs can change between releases.</p>
+
+<style>
+    /* Just under the header's own row, and its border, which stays as the line between the two. The
+       header's surface and the page's neutral text, not the accent colour: it informs, it does not
+       warn. */
+    .notice {
+        position: absolute;
+        inset-inline: 0;
+        top: calc(100% + 1px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        height: var(--lpdf-notice-height);
+        margin: 0;
+        padding: 0 var(--sl-nav-pad-x);
+        border-bottom: 1px solid var(--sl-color-hairline-shade);
+        background-color: var(--sl-color-bg-nav);
+        color: var(--sl-color-gray-2);
+        font-size: 0.75rem;
+        line-height: 1.2;
+        text-align: center;
+        text-wrap: balance;
+    }
+</style>

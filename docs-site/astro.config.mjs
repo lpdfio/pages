@@ -13,6 +13,7 @@ export default defineConfig({
             description: 'Reference and guides for Lpdf: PDF as code on every platform.',
             favicon: '/favicon.ico',
             components: {
+                Header: './src/components/header.astro',
                 PageFrame: './src/components/page-frame.astro',
                 SiteTitle: './src/components/site-title.astro',
                 SocialIcons: './src/components/lang-links.astro',

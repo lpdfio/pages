@@ -12,11 +12,33 @@
 }
 
 /* ── Header ──
-   3rem at every width, the same as lpdf.io's header, with a 2rem search field. Starlight
-   derives the page offsets from --sl-nav-height. */
+   Two rows fixed at the top. The header proper is 3rem at every width, the same as lpdf.io's,
+   with a 2rem search field. Under it is the pre-release notice (src/components/header.astro),
+   one line, or two on a phone. Starlight derives the page offsets from --sl-nav-height, which
+   is therefore the height of both rows; the header's own height and the mobile menu button,
+   which took it for the header alone, are set from the top row below. */
 :root {
-    --sl-nav-height: 3rem;
+    --lpdf-header-height: 3rem;
+    --lpdf-notice-height: 1.5rem;
+    --sl-nav-height: calc(var(--lpdf-header-height) + var(--lpdf-notice-height));
     --sl-nav-pad-y: 0.5rem;
+}
+
+/* The notice text is about 27rem long, and more in a wider system font, so the row is given two
+   lines' height with room to spare: some spare height on a wide phone beats a wrapped line
+   spilling out of a one-line row. */
+@media (max-width: 32rem) {
+    :root {
+        --lpdf-notice-height: 2.375rem;
+    }
+}
+
+.page > header {
+    height: var(--lpdf-header-height);
+}
+
+.sl-menu-button {
+    top: calc((var(--lpdf-header-height) - var(--sl-menu-button-size)) / 2);
 }
 
 site-search button[data-open-modal] {

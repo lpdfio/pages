@@ -2,7 +2,7 @@
 
 A single-page, canvas-heavy certificate. Decorative border, large centred heading, recipient name from data, signature line.
 
-Demonstrates: canvas `rect` border, `text` with large font, `divider` signature lines, `img` logo, data binding.
+Demonstrates: canvas `rect` border, `text` with large font, `divider` signature lines, `img` logo, data binding. The logo is read from `logo.png` next to where you run it.
 
 ```xml
 <lpdf version="1">
@@ -10,7 +10,7 @@ Demonstrates: canvas `rect` border, `text` with large font, `divider` signature 
     <font name="serif"     core="Times-Roman"/>
     <font name="serif-bold" core="Times-Bold"/>
     <font name="body"      core="Helvetica"/>
-    <image name="logo" src="https://example.com/logo.png"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="letter" orientation="landscape" margin="72pt" font="body">
     <section>
@@ -43,11 +43,13 @@ Demonstrates: canvas `rect` border, `text` with large font, `divider` signature 
             Jane Smith
           </text>
 
-          <divider color="#daa520" thickness="s" width="200pt"/>
+          <stack width="200pt">
+            <divider color="#daa520" thickness="s"/>
+          </stack>
 
           <!-- body text -->
           <text font="serif" font-size="m" color="#334155" align="center"
-                width="480pt" line-height="1.7"
+                width="480pt"
                 data-value="body">
             In recognition of outstanding achievement and dedication
             in the field of software engineering.

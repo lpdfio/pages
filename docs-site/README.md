@@ -16,6 +16,7 @@ Run from this folder, in PowerShell or any shell. The first time, install the de
 | `npm run build` | Builds the static site into `dist/`, with the search index and a sitemap |
 | `npm run preview` | Serves `dist/` at http://localhost:4321/docs/, as it would be deployed |
 | `npm run sync` | Only converts the content into `src/content/docs/` |
+| `npm run check` | Renders every XML example in the docs with the engine and lists the ones it rejects |
 
 **On lpdf.local.** The Caddyfile in `_local` serves `dist/` at http://lpdf.local/docs in place of `www/docs`,
 beside the rest of the site. Run `npm run build`, then reload; there is no server to restart.
@@ -48,6 +49,10 @@ ignored by git:
 
 All tabs share one sync key, so the language picked in the header picker, in any code block or on the
 install page shows everywhere, and Starlight remembers it across pages. There is no PDF preview in this trial.
+
+## Checking the examples
+
+`scripts/check-examples.mjs` renders each XML block in `../www/docs/content` with the demo engine (`../www/assets/js/lpdf-demo`) and exits 1 if the engine rejects one. A partial snippet is wrapped in the elements it needs, chosen from its first element, and the images `logo`, `photo`, `avatar` and `watermark` are declared with a one-pixel placeholder. It proves the engine accepts the example and nothing more: an attribute the engine ignores still passes, so it does not replace reading a change against the schema.
 
 ## Other files
 

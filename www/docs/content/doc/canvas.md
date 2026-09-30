@@ -41,10 +41,23 @@ The element listed first in `section` is painted first:
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `page`      | string  | `each`  | Which pages to render on: `each` `first` `last` `odd` `even` `1` `2-last` |
+| `page`      | string  | `each`  | Which pages to render on: `each` `first` `last` `odd` `even`, or numbers and ranges such as `1`, `2-last` or `1,3-5` |
 | `opacity`   | 0–1     | 1       | Layer-wide opacity |
-| `transform` | string  | —       | SVG-style transform: `"rotate(45, 300, 400)"` |
-| `clip`      | string  | —       | Clip path |
+| `transform` | string  | —       | Transform applied to everything in the layer; see below |
+| `clip`      | string  | —       | Reserved. It is accepted but has no effect yet |
+
+A layer cannot contain another layer. To combine opacity and a transform, put both on one layer.
+
+### Transforms
+
+| Form | Effect |
+|------|--------|
+| `translate(x, y)` | Move by `x` and `y` |
+| `scale(s)` or `scale(sx, sy)` | Scale by `s`, or by `sx` across and `sy` down |
+| `rotate(deg, cx, cy)` | Rotate by `deg` degrees around the point `cx`, `cy` |
+| `matrix(a, b, c, d, e, f)` | A full transform matrix |
+
+The numbers are plain numbers in points, separated by commas or spaces. A number with a unit, such as `translate(10pt 20pt)`, is not read, and the transform does nothing.
 
 ## Coordinate system
 
@@ -54,7 +67,7 @@ The element listed first in `section` is painted first:
 
 ## Positioning with `anchor`
 
-Instead of x/y coordinates, use `anchor` to reference one of nine points on the page. `x` and `y` become signed offsets from that point.
+Instead of x/y coordinates, use `anchor` to reference one of nine points on the page. `x` and `y` become signed offsets from that point. The element is placed so its own matching point lands there: `anchor="bottom-right"` puts the element's bottom-right corner on the page's bottom-right corner, before the offset.
 
 | Anchor values | |
 |---|---|
@@ -72,20 +85,21 @@ Instead of x/y coordinates, use `anchor` to reference one of nine points on the 
 | Element | Description |
 |---------|-------------|
 | [`rect`](?p=doc/canvas/rect) | Filled or stroked rectangle |
-| [`circle`](?p=doc/canvas/circle) | Circle or ellipse |
+| [`circle`](?p=doc/canvas/circle) | Circle |
+| [`ellipse`](?p=doc/canvas/circle) | Ellipse, with separate x and y radii |
 | [`line`](?p=doc/canvas/line) | Straight line between two points |
 | [`path`](?p=doc/canvas/path) | SVG path data |
 | [`text`](?p=doc/canvas/text) | Absolutely positioned text |
 | [`img`](?p=doc/canvas/img) | Absolutely positioned image |
 
+Canvas elements are not data-bound: `data-*` attributes have no effect on them. For text that changes per document, use the layout, or a `region` for page furniture.
+
 ## DRAFT watermark example
 
 ```xml
 <canvas>
-  <layer page="each" opacity="0.12">
-    <layer transform="rotate(45, 306, 396)">
-      <text x="100pt" y="420pt" font-size="72pt" color="#cc0000">DRAFT</text>
-    </layer>
+  <layer page="each" opacity="0.12" transform="rotate(45, 306, 396)">
+    <text x="100pt" y="420pt" font-size="72pt" color="#cc0000">DRAFT</text>
   </layer>
 </canvas>
 ```

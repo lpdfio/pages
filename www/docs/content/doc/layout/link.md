@@ -8,7 +8,6 @@ Wraps any layout content in a clickable hyperlink. The link is active in PDF vie
 |-----------|--------|---------|-------------|
 | `href`    | URL    | —       | **Required.** Link destination |
 | `gap`     | spacing | —      | Gap between child elements |
-| `data-value` | string | —    | Dot-path — replaces `href` with bound value |
 
 ## Text link
 
@@ -26,10 +25,10 @@ Wraps any layout content in a clickable hyperlink. The link is active in PDF vie
 </link>
 ```
 
-## Dynamic link from data
+The destination is fixed in the XML: `data-value` does not change `href`. Text inside the link can still be bound.
 
 ```xml
-<link data-value="product.url" href="https://example.com">
+<link href="https://example.com">
   <text data-value="product.name" color="#1a73e8">Product</text>
 </link>
 ```

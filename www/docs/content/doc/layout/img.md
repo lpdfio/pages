@@ -4,17 +4,19 @@ Embeds an image asset declared in `assets`. Width and height are constraints —
 
 ## Asset declaration
 
-Images must be declared in `assets` before use. The `src` attribute accepts a URL or a base64 data URI.
+Images must be declared in `assets` before use. The `src` attribute is the path of a PNG or JPEG file, which the SDK reads from the machine that renders the PDF. To supply the bytes yourself, call `loadImage` on the engine and leave `src` out (see [Installation](?p=install#images-and-fonts)). The name uses lowercase letters, digits and `-`.
 
 ```xml
 <lpdf version="1">
   <assets>
-    <image name="logo" src="https://example.com/logo.png"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="letter" margin="48pt">
-    <layout>
-      <img name="logo" width="120pt"/>
-    </layout>
+    <section>
+      <layout>
+        <img name="logo" width="120pt"/>
+      </layout>
+    </section>
   </document>
 </lpdf>
 ```
@@ -30,7 +32,6 @@ Images must be declared in `assets` before use. The `src` attribute accepts a UR
 | `background` | color   | —       | Background behind image |
 | `border`     | string  | —       | Border |
 | `radius`     | token/pt | —      | Corner radius (clips image) |
-| `data-value` | string  | —       | Dot-path — replaces `name` with bound value at render time |
 
 ## Fixed width
 

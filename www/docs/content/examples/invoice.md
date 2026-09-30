@@ -1,6 +1,6 @@
 # Invoice
 
-A data-driven invoice: header with logo and number, bill-to/ship-to split, line-items table, totals, and a conditional premium badge.
+A data-driven invoice: header with title and number, bill-to/ship-to split, line-items table, totals, and a conditional premium badge.
 
 Demonstrates: `flank`, `split`, `table` with `data-source`, `<frame data-if>`, data binding.
 
@@ -44,18 +44,18 @@ Demonstrates: `flank`, `split`, `table` with `data-source`, `<frame data-if>`, d
 
           <!-- line items -->
           <table cols="3fr 1fr 1fr 1fr" border="xs #e0e0e0"
-                 stripe="#f9f9f9" padding="xs">
+                 stripe="#f9f9f9">
             <thead background="#f0f0f0">
-              <td><text font="bold" font-size="xs">Description</text></td>
-              <td align="end"><text font="bold" font-size="xs">Qty</text></td>
-              <td align="end"><text font="bold" font-size="xs">Unit</text></td>
-              <td align="end"><text font="bold" font-size="xs">Amount</text></td>
+              <td padding="xs"><text font="bold" font-size="xs">Description</text></td>
+              <td padding="xs" align="end"><text font="bold" font-size="xs">Qty</text></td>
+              <td padding="xs" align="end"><text font="bold" font-size="xs">Unit</text></td>
+              <td padding="xs" align="end"><text font="bold" font-size="xs">Amount</text></td>
             </thead>
             <tr data-source="items">
-              <td><text data-value="description">Consulting</text></td>
-              <td align="end"><text data-value="qty">1</text></td>
-              <td align="end"><text data-value="unit_price">$1,200.00</text></td>
-              <td align="end"><text data-value="amount">$1,200.00</text></td>
+              <td padding="xs"><text data-value="description">Consulting</text></td>
+              <td padding="xs" align="end"><text data-value="qty">1</text></td>
+              <td padding="xs" align="end"><text data-value="unit_price">$1,200.00</text></td>
+              <td padding="xs" align="end"><text data-value="amount">$1,200.00</text></td>
             </tr>
           </table>
 

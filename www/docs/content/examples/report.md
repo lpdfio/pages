@@ -2,7 +2,7 @@
 
 A multi-page report: cover page with a background colour, then a content section with a running header and footer on every page using `region`.
 
-Demonstrates: multiple `section`, canvas underlay for cover, `<region pin="top/bottom">` for running chrome, automatic pagination.
+Demonstrates: multiple `section`, canvas underlay for cover, `<region pin="top/bottom">` for running chrome with page numbers, automatic pagination.
 
 ```xml
 <lpdf version="1">
@@ -54,7 +54,7 @@ Demonstrates: multiple `section`, canvas underlay for cover, `<region pin="top/b
           <divider color="#e2e8f0" thickness="xs"/>
           <flank align="center">
             <text font-size="xs" color="#94a3b8">Confidential</text>
-            <text font-size="xs" color="#94a3b8" align="right">lpdf.io</text>
+            <text font-size="xs" color="#94a3b8" align="right">Page {page} of {pages}</text>
           </flank>
         </region>
 
@@ -67,16 +67,16 @@ Demonstrates: multiple `section`, canvas underlay for cover, `<region pin="top/b
           </text>
 
           <text font-size="xl" font="bold">Financial Highlights</text>
-          <table cols="2fr 1fr 1fr" border="xs #e2e8f0" stripe="#f8fafc" padding="xs">
+          <table cols="2fr 1fr 1fr" border="xs #e2e8f0" stripe="#f8fafc">
             <thead background="#f1f5f9">
-              <td><text font="bold" font-size="xs">Metric</text></td>
-              <td align="end"><text font="bold" font-size="xs">2025</text></td>
-              <td align="end"><text font="bold" font-size="xs">2026</text></td>
+              <td padding="xs"><text font="bold" font-size="xs">Metric</text></td>
+              <td padding="xs" align="end"><text font="bold" font-size="xs">2025</text></td>
+              <td padding="xs" align="end"><text font="bold" font-size="xs">2026</text></td>
             </thead>
             <tr data-source="financials">
-              <td><text data-value="metric">Revenue</text></td>
-              <td align="end"><text data-value="y2025">$0</text></td>
-              <td align="end"><text data-value="y2026">$0</text></td>
+              <td padding="xs"><text data-value="metric">Revenue</text></td>
+              <td padding="xs" align="end"><text data-value="y2025">$0</text></td>
+              <td padding="xs" align="end"><text data-value="y2026">$0</text></td>
             </tr>
           </table>
         </stack>

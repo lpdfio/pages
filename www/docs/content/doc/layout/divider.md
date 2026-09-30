@@ -7,8 +7,8 @@ A horizontal or vertical rule.
 | Attribute   | Type    | Default      | Description |
 |-------------|---------|--------------|-------------|
 | `direction` | string  | `horizontal` | `horizontal` or `vertical` |
-| `color`     | color   | `#cccccc`    | Line color |
-| `thickness` | token/pt | `xs`        | Line thickness: `xs` `s` `m` or `1pt` |
+| `color`     | color   | `#000000`    | Line color |
+| `thickness` | token/pt | `1pt`       | Line thickness: a border token (`xs` 0.5pt, `s` 1pt, `m` 1.5pt, `l` 2pt, `xl` 3pt, `xxl` 4pt) or a length such as `1pt` |
 
 ## Horizontal rule
 

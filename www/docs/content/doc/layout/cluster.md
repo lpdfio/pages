@@ -1,13 +1,13 @@
 # Cluster
 
-Lays out children in a wrapping inline row — like CSS `flex-wrap`. When items don't fit on one line they wrap onto the next.
+Lays out children in a wrapping inline row — like CSS `flex-wrap`. When items don't fit on one line they wrap onto the next. A cluster can split across pages between lines.
 
 ## Attributes
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `align`      | string  | `start` | Cross-axis alignment: `start` `center` `end` `stretch` |
-| `justify`    | string  | `start` | Main-axis distribution: `start` `center` `end` `between` |
+| `justify`    | string  | `start` | Main-axis distribution: `start` `center` `end`. `between` is an error on a cluster |
 | `gap`        | token/pt | —      | Gap between items (horizontal and vertical) |
 | `width`      | token/pt | —      | Constrain width |
 | `padding`    | spacing | —       | Inner padding |

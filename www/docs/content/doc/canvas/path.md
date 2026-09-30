@@ -6,7 +6,7 @@ Draws an arbitrary shape using SVG path data. Supports filled shapes, stroked ou
 
 | Attribute      | Type    | Default    | Description |
 |----------------|---------|------------|-------------|
-| `d`            | string  | —          | **Required.** SVG path data (`M`, `L`, `C`, `A`, `Z`, …) |
+| `d`            | string  | —          | **Required.** SVG path data (`M`, `L`, `H`, `V`, `C`, `Q`, `Z`) |
 | `fill`         | color   | —          | Fill color |
 | `stroke`       | color   | —          | Stroke color |
 | `fill-rule`    | string  | `nonzero`  | `nonzero` or `evenodd` |
@@ -48,7 +48,9 @@ Draws an arbitrary shape using SVG path data. Supports filled shapes, stroked ou
 | `H x`   | Horizontal line to |
 | `V y`   | Vertical line to |
 | `C x1 y1 x2 y2 x y` | Cubic Bézier |
-| `A rx ry rot large-arc sweep x y` | Arc |
+| `Q x1 y1 x y` | Quadratic Bézier |
 | `Z`     | Close path |
 
 Lowercase commands use relative coordinates.
+
+Arcs (`A`) and the smooth curves `S` and `T` are not supported. The engine skips a command it does not know, without an error, so a path that uses one is drawn incompletely. Build arcs from `C` curves.

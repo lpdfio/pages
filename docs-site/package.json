@@ -7,6 +7,7 @@
         "sync": "node scripts/sync-content.mjs",
         "dev": "node scripts/dev.mjs",
         "build": "node scripts/sync-content.mjs && astro build",
+        "check": "node scripts/check-examples.mjs",
         "preview": "astro preview"
     },
     "dependencies": {

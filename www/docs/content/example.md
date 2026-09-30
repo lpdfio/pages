@@ -17,7 +17,7 @@ A complete document: heading, body text, a divider, and a page footer stamped vi
       </layout>
       <canvas>
         <layer page="each">
-          <text x="0pt" y="756pt" anchor="bottom-left"
+          <text anchor="bottom-left" x="48pt" y="-24pt"
                 font-size="9pt" color="#aaaaaa">lpdf.io</text>
         </layer>
       </canvas>
@@ -29,5 +29,5 @@ A complete document: heading, body text, a divider, and a page footer stamped vi
 Three things to notice:
 
 - **`layout`** is the flow container — elements stack vertically and paginate automatically.
-- **`canvas`** is the absolute-positioning layer — elements are placed by coordinates, independent of the flow.
+- **`canvas`** is the absolute-positioning layer — elements are placed by coordinates, independent of the flow. Here `anchor="bottom-left"` with `y="-24pt"` puts the footer 24pt above the bottom edge.
 - **`section`** is the page boundary — content that overflows creates additional pages automatically.

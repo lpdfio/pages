@@ -15,7 +15,6 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 | `hrt`        | boolean | false   | Show human-readable text below Code128/EAN-13 |
 | `color`      | color   | `#000000` | Barcode foreground color |
 | `background` | color   | —       | Background color |
-| `data-value` | string  | —       | Dot-path — replaces `data` with bound value |
 
 ## QR code
 
@@ -41,8 +40,4 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 <barcode type="ean13" data="5901234123457" width="120pt" height="48pt" hrt="true"/>
 ```
 
-## Dynamic barcode from data
-
-```xml
-<barcode type="qr" data="https://example.com" data-value="product.url" size="80pt"/>
-```
+The payload is fixed in the XML: `data-value` does not change `data`.

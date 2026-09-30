@@ -2,7 +2,7 @@
 
 Absolutely positioned image. Both `w` and `h` are required — canvas images do not auto-size.
 
-The image must be declared in `assets` before use.
+The image must be declared in `assets` before use, with a `src` file path or bytes you load on the engine (see [Installation](?p=install#images-and-fonts)).
 
 ## Attributes
 
@@ -14,7 +14,6 @@ The image must be declared in `assets` before use.
 | `w`          | pt        | —       | **Required.** Width |
 | `h`          | pt        | —       | **Required.** Height |
 | `anchor`     | string    | —       | Reference point |
-| `data-value` | string    | —       | Dot-path — replaces `name` with bound value |
 
 Either `anchor` or both `x` and `y` must be provided.
 
@@ -23,7 +22,7 @@ Either `anchor` or both `x` and `y` must be provided.
 ```xml
 <lpdf version="1">
   <assets>
-    <image name="logo" src="https://example.com/logo.png"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="letter" margin="48pt">
     <section>

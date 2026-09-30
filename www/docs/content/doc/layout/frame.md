@@ -1,6 +1,6 @@
 # Frame
 
-An atomic box. A frame will never split across pages — if it doesn't fit on the current page it moves in full to the next. Use it for callout boxes, cards, and labelled regions.
+An atomic box around a single child, which it centres. A frame will never split across pages — if it doesn't fit on the current page it moves in full to the next. Use it for callout boxes, cards, and labelled regions. To put several elements in a frame, wrap them in a [`stack`](?p=doc/layout/stack). A frame takes no `gap`, `align` or `justify`, and a second child is an error.
 
 > To allow contents to flow across pages, use [`stack`](?p=doc/layout/stack) with `padding` and `background` instead.
 

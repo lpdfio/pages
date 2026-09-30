@@ -30,14 +30,16 @@ Either `anchor` or both `x` and `y` must be provided.
 </canvas>
 ```
 
-## Border box anchored to page corners
+## Inset border (stroke only)
+
+A rectangle with no `fill` is drawn as an outline.
 
 ```xml
 <canvas>
   <layer page="each">
     <!-- inset border 20pt from each edge on letter size -->
     <rect x="20pt" y="20pt" w="572pt" h="752pt"
-          stroke="#cccccc" stroke-width="1pt" fill=""/>
+          stroke="#cccccc" stroke-width="1pt"/>
   </layer>
 </canvas>
 ```

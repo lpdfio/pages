@@ -1,12 +1,12 @@
 # Installation
 
-lpdf generates PDF from XML. It runs as a WASI binary with adapters for Node.js, PHP, Python, and .NET — identical output on every platform.
+lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, and to a WASI binary for PHP, Python, and .NET.
 
 ::: sdk js
 
 ## Requirements
 
-- Node.js 18 or later
+- Node.js 20 or later
 - No external runtime dependencies — the WASM engine is bundled in the package
 
 ## Install
@@ -18,12 +18,12 @@ npm install @lpdfio/lpdf
 ## Create PDF
 
 ```javascript
-const { LpdfEngine } = require('@lpdfio/lpdf')
+const { L } = require('@lpdfio/lpdf')
 const { readFileSync, writeFileSync } = require('node:fs')
 
-const engine = new LpdfEngine('YOUR_LICENSE_KEY')
+const engine = L.engine()
 const xml = readFileSync('document.xml', 'utf8')
-const pdf = await engine.renderPdf(xml)
+const pdf = await engine.render(xml)
 writeFileSync('document.pdf', pdf)
 ```
 
@@ -41,8 +41,9 @@ The first two numbers are the Lpdf engine, and the last number counts changes to
 
 ## Requirements
 
-- PHP 8.2 or later
+- PHP 8.3 or later
 - Composer
+- The [`wasmtime`](https://wasmtime.dev) command-line tool on your `PATH`, which runs the bundled WASI binary
 
 ## Install
 
@@ -56,11 +57,11 @@ composer require lpdfio/lpdf
 <?php
 require_once 'vendor/autoload.php';
 
-use Lpdf\LpdfEngine;
+use Lpdf\L;
 
-$engine = new LpdfEngine('YOUR_LICENSE_KEY');
+$engine = L::engine();
 $xml = file_get_contents('document.xml');
-$pdf = $engine->renderPdf($xml);
+$pdf = $engine->render($xml);
 file_put_contents('document.pdf', $pdf);
 ```
 
@@ -78,7 +79,8 @@ composer require lpdfio/lpdf:~0.22.0
 
 ## Requirements
 
-- Python 3.9 or later
+- Python 3.10 or later
+- The [`wasmtime`](https://wasmtime.dev) command-line tool on your `PATH`, which runs the bundled WASI binary
 
 ## Install
 
@@ -90,9 +92,9 @@ pip install lpdfio-lpdf
 
 ```python
 from pathlib import Path
-from lpdf import Pdf
+from lpdf import L
 
-engine = Pdf.engine('YOUR_LICENSE_KEY')
+engine = L.engine()
 xml = Path('document.xml').read_text()
 pdf = engine.render(xml)
 Path('document.pdf').write_bytes(pdf)
@@ -113,6 +115,7 @@ pip install "lpdfio-lpdf~=0.22.0"
 ## Requirements
 
 - .NET 8 or later
+- No external runtime dependencies — the Wasmtime runtime and the WASI binary are bundled in the package
 
 ## Install
 
@@ -125,7 +128,7 @@ dotnet add package Lpdfio.Lpdf
 ```csharp
 using Lpdf;
 
-var engine = Pdf.Engine("YOUR_LICENSE_KEY");
+var engine = L.Engine();
 var xml = await File.ReadAllTextAsync("document.xml");
 var pdf = await engine.Render(xml);
 await File.WriteAllBytesAsync("document.pdf", pdf);
@@ -140,3 +143,9 @@ The first two numbers are the Lpdf engine, and the last number counts changes to
 ```
 
 :::
+
+## Images and fonts
+
+An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory. The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.
+
+Asset names use lowercase letters, digits, and `-`, and start with a letter: `logo`, `serif-bold`.

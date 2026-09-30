@@ -8,7 +8,7 @@ A flow text block. Supports multi-line wrapping, font styling, and inline `span`
 |-------------|---------|---------|-------------|
 | `font-size` | token/pt | inherit | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
 | `font`      | string  | inherit | Font name declared in `assets` |
-| `color`     | color   | inherit | Text color: `#333333` or a named token |
+| `color`     | color   | `#1a1a1a` | Text color: `#333333` or a named token. Not inherited: a color named `text` in `tokens` changes the default |
 | `align`     | string  | `left`  | `left` `center` `right` `justify` |
 | `width`     | token/pt | —      | Constrain text block width |
 | `data-value` | string | —       | Dot-path — replaces text content with bound value |
@@ -56,4 +56,4 @@ Use `span` children to apply different styles within a single text block.
 <text data-value="customer.name">Fallback name</text>
 ```
 
-The content of the element is replaced by the bound value at render time. The literal content serves as a fallback placeholder in the XML.
+The content of the element is replaced by the bound value at render time. The literal content is what renders when no data is passed.

@@ -1,13 +1,13 @@
 # Stack
 
-Stacks children vertically with a configurable gap. The default axis is vertical — all children fill the available width.
+Stacks children vertically with a configurable gap. By default each child fills the available width.
 
 ## Attributes
 
 | Attribute    | Type    | Default  | Description |
 |--------------|---------|----------|-------------|
 | `gap`        | token/pt | —       | Space between children: `xs` `s` `m` `l` `xl` `xxl` or `12pt` |
-| `align`      | string  | `start`  | Cross-axis alignment: `start` `center` `end` `stretch` |
+| `align`      | string  | `stretch` | Cross-axis alignment: `start` `center` `end` `stretch` |
 | `justify`    | string  | `start`  | Main-axis distribution: `start` `center` `end` `between` |
 | `width`      | token/pt | —       | Constrain width |
 | `padding`    | spacing | —        | Inner padding: `16pt` or shorthand `"16pt 12pt"` |

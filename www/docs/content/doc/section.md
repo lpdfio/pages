@@ -1,19 +1,21 @@
 # Section
 
-A `section` is a full-page container within a document. Each section maps to one or more pages depending on its content height. A document can have multiple sections with different page sizes or orientations.
+A `section` is a run of pages inside a document. Each section paginates on its own: its content starts on a new page and continues onto as many pages as it needs. A document can have several sections with different page sizes or orientations.
 
 ## Attributes
 
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
-| `size`        | string  | inherit | Page size override: `letter`, `a4`, `legal`, `a3` |
+| `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | inherit | `portrait` or `landscape` |
-| `margin`      | string  | inherit | Page margin, e.g. `48pt` or `1in` |
+| `margin`      | spacing | inherit | Page margin: `48pt`, a token such as `l`, or one to four values like `"48pt 24pt"` |
 | `background`  | color   | inherit | Page background color |
-| `title`       | string  | —       | Section title in PDF metadata |
+| `title`       | string  | —       | Section title, shown as a bookmark in the PDF outline |
 | `debug`       | boolean | false   | Render layout boxes for debugging |
 
 All attributes are optional and inherit from `document` when not set.
+
+A section holds a [`layout`](?p=doc/layout), a [`canvas`](?p=doc/canvas), or both. The one listed first is painted first.
 
 ## Multiple sections
 
@@ -35,7 +37,7 @@ All attributes are optional and inherit from `document` when not set.
 ## Mixed page sizes
 
 ```xml
-<document font="body">
+<document>
   <section size="letter" margin="48pt">
     <layout>
       <text>Letter page content</text>
@@ -59,14 +61,23 @@ All attributes are optional and inherit from `document` when not set.
 </section>
 ```
 
-## Single-section shorthand
+## Section titles
 
-When you have only one section, `layout` and `canvas` can appear directly inside `document`, omitting the `section` wrapper:
+Each `title` becomes an entry in the PDF's outline, so a reader can jump to it from the bookmarks panel.
 
 ```xml
-<document size="letter" margin="48pt">
-  <layout>
-    <text>Hello world</text>
-  </layout>
+<document size="a4" margin="48pt">
+  <section title="Introduction">
+    <layout>
+      <text font-size="20pt">Introduction</text>
+    </layout>
+  </section>
+  <section title="Results">
+    <layout>
+      <text font-size="20pt">Results</text>
+    </layout>
+  </section>
 </document>
 ```
+
+Content always goes in a `section`. A `layout` placed directly inside `document` is an error.

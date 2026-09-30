@@ -1,13 +1,13 @@
 # Flank
 
-Places one item flush-left and one flush-right. Ideal for label/value rows, invoice lines, and header bars.
+One row where every child keeps its own width except one, which fills the rest. By default the last child fills; set `end="true"` and the first child fills while the others sit at the right. Ideal for label/value rows, invoice lines, and header bars. A flank never splits across pages.
 
 ## Attributes
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `align`      | string  | `start` | Vertical alignment of children: `start` `center` `end` |
-| `end`        | boolean | false   | Place first child on the right instead of left |
+| `end`        | boolean | false   | `false`: the last child fills the rest. `true`: the first child fills, and the others keep their own width at the right |
 | `gap`        | token/pt | —      | Minimum gap between left and right items |
 | `width`      | token/pt | —      | Constrain width |
 | `padding`    | spacing | —       | Inner padding |

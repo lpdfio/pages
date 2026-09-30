@@ -11,8 +11,51 @@ permissions:
   id-token: write
 
 jobs:
+  # The marketing pages are static, so the only thing built here is the docs. It is built once and
+  # the same files go to pre and then prod: what was looked at on pre.lpdf.io is what ships. The
+  # docs carry the prod canonical address, like every other page, so nothing in them differs
+  # between the two stages.
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the committed bundles carry deploy sentinels
+        run: ./.github/check-sentinels.sh
+
+      # Astro 7 needs Node 22.12 or newer.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: docs-site/package-lock.json
+
+      - name: Install the docs dependencies
+        run: npm ci
+        working-directory: docs-site
+
+      # Converts the markdown in www/docs/content and generates each example in every SDK with the
+      # engine's code generator (www/assets/js/lpdf-demo), then builds the pages and the search index.
+      - name: Build the docs
+        run: npm run build
+        working-directory: docs-site
+
+      - name: Assemble the site
+        run: bash ./.github/assemble-site.sh _site
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site
+          # .nojekyll starts with a dot, which upload-artifact leaves out unless asked.
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
   deploy-pre:
     name: Deploy to pre (pages-pre)
+    needs: build
     runs-on: ubuntu-latest
     concurrency:
       group: pages-pre
@@ -20,19 +63,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the committed bundles carry deploy sentinels
-        run: ./.github/check-sentinels.sh
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
 
-      # The portal is a Codesense-wide product, not an lpdf one — it lives on
-      # codesense.dev for every product. Only the marketing site is on lpdf.io.
-      - name: Set portal URL for pre
-        run: sed -i 's|__PORTAL_URL__|https://my-pre.codesense.dev|g' www/assets/js/lpdf-pages.js
-
-      - name: Set pages URL for pre
-        run: sed -i 's|__PAGES_URL__|https://pre.lpdf.io|g' www/assets/js/lpdf-pages.js
-
-      - name: Set pre CNAME
-        run: echo "pre.lpdf.io" > www/CNAME
+      - name: Set the pre URLs and CNAME
+        run: bash ./.github/set-stage.sh _site pre
 
       - name: Push to pages-pre
         uses: peaceiris/actions-gh-pages@v4
@@ -40,7 +77,7 @@ jobs:
           personal_token: ${{ secrets.PAGES_PRE_TOKEN }}
           external_repository: lpdfio/pages-pre
           publish_branch: gh-pages
-          publish_dir: www/
+          publish_dir: _site/
           force_orphan: true
 
   deploy-prod:
@@ -56,21 +93,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the committed bundles carry deploy sentinels
-        run: ./.github/check-sentinels.sh
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
 
-      # Prod carries no 'pre' anywhere: my.codesense.dev, lpdf.io.
-      - name: Set portal URL for prod
-        run: sed -i 's|__PORTAL_URL__|https://my.codesense.dev|g' www/assets/js/lpdf-pages.js
-
-      - name: Set pages URL for prod
-        run: sed -i 's|__PAGES_URL__|https://lpdf.io|g' www/assets/js/lpdf-pages.js
+      - name: Set the prod URLs
+        run: bash ./.github/set-stage.sh _site prod
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: www/
+          path: _site/
 
       - uses: actions/deploy-pages@v4
         id: deployment

@@ -1,0 +1,17 @@
+---
+// Replaces Starlight's theme provider. The theme is the stored choice, or dark, which is how
+// lpdf.io starts; there is no "follow the system" state. Inline so the theme is set before the
+// page paints.
+import { THEME_STORAGE_KEY } from '../theme';
+---
+
+<script define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+    let theme = 'dark';
+    try
+    {
+        const cookie = document.cookie.split('; ').find(c => c.startsWith(`${storageKey}=`))?.split('=')[1];
+        if ((cookie ?? localStorage.getItem(storageKey)) === 'light') theme = 'light';
+    }
+    catch { /* storage blocked: the page stays dark */ }
+    document.documentElement.dataset.theme = theme;
+</script>

@@ -25,3 +25,6 @@ desktop.ini
 # Design/work-in-progress folders
 design
 _redesign_
+
+# Assembled site (.github/assemble-site.sh)
+_site/

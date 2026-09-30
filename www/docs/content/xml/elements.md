@@ -82,42 +82,43 @@ Vertical column of children.
 |------------|---------|---------|-------------|
 | `gap`      | token/pt| `0`     | Space between children |
 | `padding`  | token/pt| `0`     | Inner padding |
-| `align`    | string  | `start` | Horizontal alignment: `start` `center` `end` `stretch` |
+| `align`    | string  | `stretch` | Horizontal alignment: `start` `center` `end` `stretch` |
 | `justify`  | string  | `start` | Vertical distribution: `start` `center` `end` `between` |
 | `background`| color  | —       | Background fill |
 | `border`   | BorderValue| —    | Border |
 | `radius`   | token/pt| —       | Corner radius |
-| `width`    | pt/%    | —       | Fixed width |
-| `height`   | pt/%    | —       | Fixed height |
+| `width`    | token/pt| —       | Fixed width |
+| `height`   | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available |
 
 ### `flank`
 
-Row with content pushed to both ends (left / right).
+Row where every child keeps its own width except one, which fills the rest: the last child by default, the first with `end="true"`.
 
 | Attribute  | Type    | Default | Description |
 |------------|---------|---------|-------------|
-| `gap`      | token/pt| `0`     | Gap between left and right |
+| `end`      | boolean | `false` | `false`: the last child fills. `true`: the first child fills, the others sit at the right |
+| `gap`      | token/pt| `0`     | Gap between children |
 | `padding`  | token/pt| `0`     | Inner padding |
 | `align`    | string  | `start` | Vertical alignment: `start` `center` `end` |
 | `background`| color  | —       | Background fill |
 | `border`   | BorderValue| —    | Border |
 | `radius`   | token/pt| —       | Corner radius |
-| `width`    | pt/%    | —       | Fixed width |
+| `width`    | token/pt| —       | Fixed width |
 
 ### `split`
 
-Row that divides available width equally (or by column definition) among children.
+Two children side by side: by default each keeps its own width, the first at the left edge and the second at the right; with `equal="true"` they take half the width each. Further children are ignored. For more columns use `grid`; for explicit column widths use `table`.
 
 | Attribute  | Type    | Default | Description |
 |------------|---------|---------|-------------|
-| `gap`      | token/pt| `0`     | Gap between columns |
+| `equal`    | boolean | `false` | `true`: the two children take half the width each |
+| `gap`      | token/pt| `0`     | Gap between the two children |
 | `padding`  | token/pt| `0`     | Inner padding |
-| `align`    | string  | `start` | Vertical alignment |
-| `cols`     | string  | equal   | Column widths: `"1fr 2fr"` or `"200pt 1fr"` |
+| `align`    | string  | `start` | Vertical alignment: `start` `center` `end` |
 | `background`| color  | —       | Background fill |
 | `border`   | BorderValue| —    | Border |
 | `radius`   | token/pt| —       | Corner radius |
-| `width`    | pt/%    | —       | Fixed width |
+| `width`    | token/pt| —       | Fixed width |
 
 ### `cluster`
 
@@ -167,13 +168,13 @@ Horizontal (or vertical) rule.
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `color`     | color   | `#cccccc`    | Line color |
-| `thickness` | token/pt| `xs`         | Line thickness |
+| `color`     | color   | `#000000`    | Line color |
+| `thickness` | token/pt| `1pt`        | Line thickness |
 | `direction` | string  | `horizontal` | `horizontal` or `vertical` |
 
 ### `frame`
 
-Single-child container with padding, border, and background.
+Single-child container with padding, border, and background. Always centres its child, so it takes no `gap`, `align` or `justify`.
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
@@ -181,8 +182,8 @@ Single-child container with padding, border, and background.
 | `background`| color   | —       | Background fill |
 | `border`    | BorderValue| —    | Border |
 | `radius`    | token/pt| —       | Corner radius |
-| `width`     | pt/%    | —       | Fixed width |
-| `height`    | pt/%    | —       | Fixed height |
+| `width`     | token/pt| —       | Fixed width |
+| `height`    | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available |
 
 ### `img` (layout)
 
@@ -191,7 +192,7 @@ Inline image.
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
 | `name`    | string | —       | **Required.** Asset name |
-| `width`   | pt/%   | —       | Display width |
+| `width`   | token/pt | —     | Display width |
 | `height`  | pt     | —       | Display height |
 | `radius`  | token/pt| —      | Corner radius |
 
@@ -201,7 +202,8 @@ Multi-column flow grid.
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `cols`    | integer | `2`     | Number of columns |
+| `cols`    | integer | `1`     | Number of columns (1–12) |
+| `col-width` | token/pt | —    | Minimum column width: fits as many columns as the width allows, at least one, stretched to fill the row (overrides `cols`) |
 | `gap`     | token/pt| `0`     | Gap between cells |
 | `padding` | token/pt| `0`     | Inner padding |
 | `background`| color | —       | Background fill |

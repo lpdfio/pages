@@ -1,0 +1,72 @@
+---
+// Replaces Starlight's site title with the lockup the lpdf.io header uses: the mark at 24px,
+// the word in Radley, then the section label and the code language picker. The lockup goes to
+// the lpdf.io home page, as the site's own does, and the label to the docs home, so either is
+// one click from any docs page.
+import mark from '../assets/lpdf-mark.svg';
+import CodeLangSelect from './code-lang-select.astro';
+
+const { siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<div class="brand">
+    <a href="/home" class="site-title">
+        <img src={mark.src} width={mark.width} height={mark.height} alt="" />
+        <span class="word" translate="no">Lpdf</span>
+    </a>
+    <a href={siteTitleHref} class="label">Docs</a>
+    <CodeLangSelect />
+</div>
+
+<style>
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 0;
+    }
+    /* The same structure as lpdf.io's .nav-logo: the gap is 0.42em of the link's own text size,
+       and the word sets its own 1.125rem below. Putting the size on the link instead made the
+       gap 7.56px against the site's 6.72px. The mark is a little taller than the cap height so
+       it leads the pair. */
+    .site-title {
+        display: flex;
+        align-items: center;
+        gap: 0.42em;
+        color: var(--sl-color-white);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    img {
+        height: 24px;
+        width: auto;
+        flex: none;
+    }
+    .word {
+        font-family: 'Radley', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.125rem;
+        line-height: 1;
+    }
+    /* Turns the brand orange on hover, like the header's icons, since it is a link now. */
+    .label {
+        padding-inline-start: 1rem;
+        border-inline-start: 1px solid var(--sl-color-gray-5);
+        color: var(--sl-color-white);
+        font-size: 0.875rem;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: color 0.15s;
+    }
+    .label:hover {
+        color: var(--lpdf-brand);
+    }
+    /* Below 360px the label would push the picker under the search button, so it gives way. */
+    @media (max-width: 22.49rem) {
+        .label {
+            display: none;
+        }
+    }
+</style>

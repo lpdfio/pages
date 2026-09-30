@@ -1,0 +1,214 @@
+/* Lpdf brand on Starlight's own design: neutral surfaces, the accent colours, and the brand
+   orange for the marks that say "Lpdf". */
+
+/* The wordmark face, used only in the site title. Radley is published as a regular only, so
+   the descriptor says 400 and the title's 600 is thickened by the browser, as on lpdf.io. */
+@font-face {
+    font-family: 'Radley';
+    src: url('../fonts/Radley-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ── Header ──
+   3rem at every width, the same as lpdf.io's header, with a 2rem search field. Starlight
+   derives the page offsets from --sl-nav-height. */
+:root {
+    --sl-nav-height: 3rem;
+    --sl-nav-pad-y: 0.5rem;
+}
+
+site-search button[data-open-modal] {
+    height: 2rem;
+}
+
+/* ── Scrolling ──
+   Only the content scrolls. The header, the sidebar and the "On this page" bar stay put, and
+   the scrollbar sits below them instead of beside the header, so the header does not shift
+   between pages that scroll and pages that don't.
+
+   Starlight scrolls the window. Here the window is fixed and Starlight's own .main-frame is
+   the scroll container, from under the header (and, on narrower screens, under the "On this
+   page" bar — --sl-mobile-toc-height is 0 when there is none) to the bottom of the window.
+   The scrollbar gutter stays reserved, as in the sidebar, so the column does not shift
+   either. src/components/page-frame.astro handles what assumed a window scroll. */
+html {
+    overflow: hidden;
+}
+
+.main-frame {
+    position: fixed;
+    inset: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height)) 0 0;
+    padding-top: 0;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scroll-padding-top: 1.5rem;
+}
+
+/* The frame takes focus on load so the keyboard scrolls it; it is not a control. */
+.main-frame:focus {
+    outline: none;
+}
+
+/* Behind the search dialog the page stays put, as Starlight does for the window. */
+[data-search-modal-open] .main-frame {
+    overflow: hidden;
+}
+
+@media print {
+    html {
+        overflow: visible;
+    }
+
+    .main-frame {
+        position: static;
+        overflow: visible;
+    }
+}
+
+/* ── Surfaces and text ──
+   Starlight's greys lean blue (hue 224). These are the same lightness steps in lpdf.io's cool
+   neutral, OKLCH hue 258 at chroma 0.008, and reuse its tokens where one fits: the dark
+   header, sidebar and code are lpdf.io's --bg-alt, --bg and --bg-elev, and the light main and
+   sidebar are its --bg and --bg-alt.
+
+   Three surfaces per theme, about 2 points of OKLCH lightness apart, as on lpdf.io:
+
+   dark   header and code #121519 · sidebar #171a1f · main #1d2024
+   light  header and code #ffffff · sidebar #eef1f5 · main #f5f8fb
+
+   The header is the extreme of each theme, near black or white, and code blocks share it, so
+   a block reads as a piece of the header's ground set into the page. The sidebar is always
+   the quieter of the two panes, a step darker than the main column.
+
+   Measured 2026-09-30, lowest across the surfaces: headings 16.35 / 15.58, body 9.25 /
+   10.37, muted 4.85 / 6.21 (dark / light). */
+:root {
+    --sl-color-white: #ffffff;
+    --sl-color-gray-1: #ebeff4;
+    --sl-color-gray-2: #c0c3c8;
+    --sl-color-gray-3: #898c91;
+    --sl-color-gray-4: #56595e;
+    --sl-color-gray-5: #36383c;
+    --sl-color-gray-6: #23262b;
+    --sl-color-black: #16191c;
+
+    --sl-color-bg-nav: #121519;
+    --sl-color-bg-sidebar: #171a1f;
+    --sl-color-bg: #1d2024;
+}
+
+:root[data-theme='light'] {
+    --sl-color-white: #16191c;
+    --sl-color-gray-1: #24272a;
+    --sl-color-gray-2: #36383c;
+    --sl-color-gray-3: #56595e;
+    --sl-color-gray-4: #898c91;
+    --sl-color-gray-5: #c0c3c8;
+    --sl-color-gray-6: #e4e7eb;
+    --sl-color-gray-7: #ffffff;
+    --sl-color-black: #ffffff;
+
+    --sl-color-bg-nav: #ffffff;
+    --sl-color-bg-sidebar: #eef1f5;
+    --sl-color-bg: #f5f8fb;
+}
+
+/* The "On this page" bar that replaces the right-hand contents on narrower screens belongs to
+   the page, not the header, so it takes the main column's colour. */
+mobile-starlight-toc nav {
+    background-color: var(--sl-color-bg);
+}
+
+/* Code blocks on the header's colour. Expressive Code otherwise takes gray-6 in dark and
+   gray-7 in light; its variables sit in a Starlight layer, so this plain rule wins. */
+.expressive-code {
+    --ec-frm-edBg: var(--sl-color-bg-nav);
+    --ec-frm-trmBg: var(--sl-color-bg-nav);
+    --ec-frm-edActTabBg: var(--sl-color-bg-nav);
+}
+
+/* ── Accent ──
+   Starlight uses the accent for search highlights, the active tab's underline and fills with
+   text on them, which need 4.5:1, so each theme gets a tone stepped along the brand hue.
+   Lowest across the four surfaces: dark #f3b680 8.54, light #a54c00 5.10. The raw orange
+   measured 3.21 under white text on the Lpdf site, which is why the light theme does not use
+   it for the accent. */
+:root {
+    --sl-color-accent-low: #482304;
+    --sl-color-accent: #d76f04;
+    --sl-color-accent-high: #f3b680;
+}
+
+:root[data-theme='light'] {
+    --sl-color-accent-low: #fde7d4;
+    --sl-color-accent: #a54c00;
+    --sl-color-accent-high: #6a2f00;
+}
+
+/* ── Brand ──
+   The brand orange itself, the same in both themes, for the marks that say "Lpdf": the current
+   page in the sidebar and in "On this page", links in the content, the selected tab's underline,
+   and the hover on the header's registry, GitHub and theme icons (which rest in gray-2). Plain
+   text in the brand colour, no fill. Measured 2026-09-30:
+
+   dark   header 5.37 · sidebar 5.12 · main 4.80
+   light  header 3.41 · sidebar 3.01 · main 3.20
+
+   Text needs 4.5, marks need 3. Dark clears both. In light the header icons clear 3, but the
+   links and the current page fall short of 4.5; the accent tone #a54c00 is the fallback. */
+:root {
+    --lpdf-brand: #d76f04;
+}
+
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
+    background-color: transparent;
+    color: var(--lpdf-brand);
+    font-weight: 600;
+}
+
+:is(starlight-toc, mobile-starlight-toc) a[aria-current='true'] {
+    color: var(--lpdf-brand);
+}
+
+starlight-tabs [role='tab'][aria-selected='true'] {
+    --sl-tab-color-border: var(--lpdf-brand);
+}
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+    color: var(--lpdf-brand);
+    font-weight: 400;
+}
+.sl-markdown-content a:hover:not(:where(.not-content *)) {
+    color: var(--sl-color-white);
+}
+
+/* The search dialog follows the header's icons: a result's outline and title, and the clear
+   and cancel buttons, rest neutral and take the brand orange on hover or focus. */
+#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):is(:hover, :focus-within),
+#starlight__search .pagefind-ui__result-nested:is(:hover, :focus-within) {
+    outline-color: var(--lpdf-brand);
+}
+#starlight__search :is(.pagefind-ui__result-title, .pagefind-ui__result-nested):hover .pagefind-ui__result-link {
+    --pagefind-ui-text: var(--lpdf-brand);
+}
+#starlight__search .pagefind-ui__search-clear::before {
+    background-color: var(--sl-color-gray-2);
+    transition: background-color 0.15s;
+}
+#starlight__search .pagefind-ui__search-clear:is(:hover, :focus)::before {
+    background-color: var(--lpdf-brand);
+}
+#starlight__search .pagefind-ui__search-clear:focus {
+    outline-color: var(--lpdf-brand);
+}
+site-search button[data-close-modal] {
+    color: var(--sl-color-gray-2);
+    transition: color 0.15s;
+}
+site-search button[data-close-modal]:hover {
+    color: var(--lpdf-brand);
+}

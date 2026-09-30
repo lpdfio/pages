@@ -1,0 +1,20 @@
+---
+title: Lpdf Docs
+# Starlight appends the site title to every page's, which would read "Lpdf Docs | Lpdf Docs" here.
+head:
+    - tag: title
+      content: Lpdf Docs
+description: Reference and guides for Lpdf, the PDF engine that turns XML or code into the same PDF on Node.js, the browser, .NET, PHP and Python.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Lpdf renders a document described in XML or with the builder API into a compact PDF, identical on every
+platform.
+
+<CardGrid>
+    <LinkCard title="Installation" description="Add Lpdf to a Node.js, .NET, PHP or Python project." href="/docs/install/" />
+    <LinkCard title="Your First Document" description="From XML to a PDF in a few lines." href="/docs/example/" />
+    <LinkCard title="Examples" description="Invoice, report and certificate, complete and ready to run." href="/docs/examples/invoice/" />
+    <LinkCard title="All Elements" description="Every element and attribute in the XML format." href="/docs/xml/elements/" />
+</CardGrid>

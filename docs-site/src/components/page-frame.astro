@@ -1,0 +1,61 @@
+---
+// Extends Starlight's page frame for scrolling inside it. The content scrolls in .main-frame
+// rather than in the window (see "Scrolling" in src/styles/lpdf.css), which leaves two things
+// that assume a window scroll needing help.
+import Default from '@astrojs/starlight/components/PageFrame.astro';
+---
+
+<Default {...Astro.props}>
+    <slot name="header" slot="header" />
+    <slot name="sidebar" slot="sidebar" />
+    <slot />
+</Default>
+
+<script>
+    const FRAME = '.main-frame';
+    const TAB = 'starlight-tabs [role="tab"]';
+
+    /**
+     * Keyboard scrolling. Space, PageDown and the arrow keys scroll whatever holds focus, and a
+     * page that has not been clicked yet has none, so the frame takes it on load. A link to a
+     * heading sets its own starting point, which is left alone.
+     */
+    function focusFrame(): void
+    {
+        const frame = document.querySelector<HTMLElement>(FRAME);
+        if (!frame || location.hash) return;
+        frame.tabIndex = -1;
+        frame.focus({ preventScroll: true });
+    }
+
+    /**
+     * Starlight keeps a clicked tab where it was on screen by scrolling the window, which no
+     * longer scrolls, so switching to a tab of another height moved the content under the
+     * reader's pointer. Starlight's own handlers run first, so the tab is measured before and
+     * after them and the frame scrolls by the difference.
+     */
+    let pending: { tab: Element; top: number } | undefined;
+
+    function remember(e: Event): void
+    {
+        const tab = e.target instanceof Element ? e.target.closest(TAB) : null;
+        pending = tab ? { tab, top: tab.getBoundingClientRect().top } : undefined;
+    }
+
+    function keepInPlace(): void
+    {
+        if (!pending) return;
+        const { tab, top } = pending;
+        pending = undefined;
+        const delta = tab.getBoundingClientRect().top - top;
+        if (delta) tab.closest<HTMLElement>(FRAME)?.scrollBy({ top: delta, behavior: 'instant' });
+    }
+
+    for (const type of ['click', 'keydown'])
+    {
+        document.addEventListener(type, remember, true);
+        document.addEventListener(type, keepInPlace);
+    }
+
+    focusFrame();
+</script>

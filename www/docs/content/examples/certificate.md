@@ -2,7 +2,7 @@
 
 A single-page, canvas-heavy certificate. Decorative border, large centred heading, recipient name from data, signature line.
 
-Demonstrates: canvas `rect` border, `text` with large font, `line` signature line, `img` logo, data binding.
+Demonstrates: canvas `rect` border, `text` with large font, `divider` signature lines, `img` logo, data binding.
 
 ```xml
 <lpdf version="1">
@@ -60,17 +60,15 @@ Demonstrates: canvas `rect` border, `text` with large font, `line` signature lin
 
           <!-- signature row -->
           <split gap="xl" width="440pt">
-            <stack gap="xs" align="center">
-              <line x1="0pt" y1="0pt" x2="160pt" y2="0pt"
-                    stroke="#aaaaaa" stroke-width="0.5pt"/>
+            <stack gap="xs" width="160pt">
+              <divider color="#aaaaaa" thickness="0.5pt"/>
               <text font-size="xs" color="#888888" align="center"
                     data-value="signer_name">Alex Johnson</text>
               <text font-size="xs" color="#aaaaaa" align="center"
                     data-value="signer_title">Chief Executive Officer</text>
             </stack>
-            <stack gap="xs" align="center">
-              <line x1="0pt" y1="0pt" x2="160pt" y2="0pt"
-                    stroke="#aaaaaa" stroke-width="0.5pt"/>
+            <stack gap="xs" width="160pt">
+              <divider color="#aaaaaa" thickness="0.5pt"/>
               <text font-size="xs" color="#888888" align="center"
                     data-value="co_signer_name">Morgan Lee</text>
               <text font-size="xs" color="#aaaaaa" align="center"

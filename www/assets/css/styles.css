@@ -58,14 +58,17 @@
    The other product sites and portal.css still carry the warm set. They are no
    longer in step with this file, by intent, until the same pass is run on them. */
 /* ── Surfaces ──
-   Three levels, and --bg-elev is the top one in both themes. Elevation runs toward
-   light whichever theme you are in: on a dark ground a darker panel reads as a hole
-   punched through rather than as something raised, so the dark set climbs from the
-   page instead of sinking below it.
+   Three levels for content, and --bg-elev is the top one in both themes. Elevation runs
+   toward light whichever theme you are in: on a dark ground a darker panel reads as a
+   hole punched through rather than as something raised, so dark cards climb from the
+   page instead of sinking below it. Sections alternate between --bg and --bg-alt
+   beneath them.
 
-   Header, footer and cards all sit on --bg-elev. They are one role, content above
-   the page, and splitting them across two values would spend a level to say nothing.
-   Sections then alternate between --bg and --bg-alt beneath them.
+   The header and footer are the frame round the page rather than content on it, and
+   sit on --bg-chrome. Its values, and the dark --bg and --bg-alt, are the docs site's
+   header, main column and sidebar, so the site and the docs share one frame and one
+   page: white in light, where the frame is the same as --bg-elev, and near black in
+   dark, the one surface that goes below the page.
 
    The page-to-band step is held at about 2 points of OKLCH lightness in BOTH themes.
    That is the whole point of measuring in OKLCH: the scale is perceptually even, so
@@ -78,15 +81,19 @@
    surface can go before the mark drops under the floor for a graphic. The section
    step takes half of that budget and the step up to --bg-elev takes the other half.
 
-   Dark has no such ceiling, and --bg-elev still stands 5 points off the page rather
-   than the light theme's 2. A card has to hold its own shape against the page, and
-   on a dark ground it needs the extra distance to do it. The section bands, which
-   are edge-to-edge and have a rule along the top, do not. */
+   Dark has no such ceiling. --bg-elev stood 5 points off the page until the dark page
+   moved up to the docs' main column; it now stands 2.6, close to light's 2, so the
+   cards lean more on their borders to hold their shape. The section bands, which are
+   edge-to-edge and have a rule along the top, never needed the distance.
+
+   The header height and the header and footer gutter are the docs site's too: a 3rem
+   header at every width, and Starlight's 1rem gutter, 1.5rem from 50rem. */
 :root {
     color-scheme: light;
     --bg: #f5f8fb;
     --bg-alt: #eef1f5;
     --bg-elev: #ffffff;
+    --bg-chrome: #ffffff;
     --bg-sunken: #e4e7eb;
     --border: #cdd1d7;
     --text: #141619;
@@ -94,13 +101,18 @@
     --text-subtle: #6a6e74;
     --brand: oklch(65% 0.16 55);
     --success: oklch(58% 0.12 155);
-    --nav-h: 48px;
+    --nav-h: 3rem;
+    --gutter: 1rem;
+}
+@media (min-width: 50rem) {
+    :root { --gutter: 1.5rem; }
 }
 [data-theme="dark"] {
     color-scheme: dark;
-    --bg: #171a1f;
-    --bg-alt: #121519;
+    --bg: #1d2024;
+    --bg-alt: #171a1f;
     --bg-elev: #23262b;
+    --bg-chrome: #121519;
     /* Insets are the one thing that still goes down: a code chip is pressed into
        the page, not lifted off it. */
     --bg-sunken: #080a0d;
@@ -111,8 +123,29 @@
 }
 
 /* ── Base ── */
-html { scroll-behavior: smooth; }
 html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+/* Only the content scrolls. The header stays put and the scrollbar sits below it instead of
+   beside it, so the header does not shift between pages that scroll and pages that don't.
+
+   The window is fixed and <body> is the scroll container, from under the header to the bottom
+   of the window. The header is position:fixed, so it still belongs to the window rather than
+   to the body. The scrollbar gutter stays reserved so the content does not shift either. */
+html { overflow: hidden; }
+body {
+    position: fixed;
+    inset: var(--nav-h) 0 0;
+    height: auto;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth;
+    scroll-padding-top: 1.5rem;
+}
+/* <body> takes focus on load so the keyboard scrolls it (pages.ts); it is not a control. */
+body:focus { outline: none; }
+@media print {
+    html { overflow: visible; }
+    body { position: static; overflow: visible; }
+}
 body { font-family: var(--rl-font-sans); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 h1 { margin-block: 0.22em; }
@@ -143,14 +176,16 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
+    /* The border counts inside the height, as in the docs header, so both are --nav-h. */
+    box-sizing: border-box;
     height: var(--nav-h);
     /* Solid rather than translucent. Glass reads as a layer by sampling what scrolls
        under it, which is a different idea from standing on its own surface, and the
        two cancel each other out when both are applied. */
-    background: var(--bg-elev);
+    background: var(--bg-chrome);
     border-bottom: 1px solid var(--border);
 }
-.nav-inner { height: 100%; padding: 0 2rem; }
+.nav-inner { height: 100%; padding: 0 var(--gutter); }
 /* ── the lockup: artwork beside text, not one picture of both ──
    The mark keeps its own colour and needs no theme swap, so it is one SVG. The word
    inherits the page's text colour, which is what makes the pair work on either
@@ -255,9 +290,6 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
 .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); transition: background .15s, color .15s, transform .08s; }
 .btn-ghost:hover { background: var(--text); color: var(--bg); opacity: 1; }
 
-/* ── Page scroll offset for fixed nav ── */
-main { padding-top: var(--nav-h); }
-
 /* ── Sections ──
    The vertical padding is doing contrast work, not just spacing. Two bands a couple
    of points of lightness apart are told apart by the length of the edge between them
@@ -286,7 +318,7 @@ main { padding-top: var(--nav-h); }
 }
 
 /* ── Footer ── */
-footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
+footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 /* A step below the header's. The footer lockup sits above small print rather than
    leading the page, so matching the header made it the loudest thing down here. */
 .footer-logo { display: inline-flex; align-items: center; gap: 0.42em; text-decoration: none; }
@@ -299,14 +331,15 @@ footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
     color: var(--text);
     white-space: nowrap;
 }
-.footer-links a { font-size: 0.8125rem; color: var(--text-subtle); }
-.footer-links a:hover { color: var(--text-muted); }
+/* Links turn the brand orange on hover, as the docs site's header icons do. */
+.footer-links a { font-size: 0.8125rem; color: var(--text-subtle); transition: color .15s; }
+.footer-links a:hover { color: var(--brand); }
 
 /* ── Site footer ── */
-/* Columns of links, then a centred copyright on its own line. Both share the 2rem gutter that
+/* Columns of links, then a centred copyright on its own line. Both share the --gutter that
    .nav-inner uses, so the footer lines up with the header. No .container — the footer renders over
    content of unknown width, and a page column here would misalign against whatever sits above. */
-.footer-columns { padding: 2rem; align-items: start; }
+.footer-columns { padding: 2rem var(--gutter); align-items: start; }
 .footer-heading {
     font-size: 0.75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
     color: var(--text); margin-bottom: 0.25rem;
@@ -316,13 +349,13 @@ footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
 .footer-columns .footer-links a { font-size: 0.875rem; }
 .footer-tagline { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.35; margin: 0; }
 /* Language name leads its row; the repo and package links sit under it, a step quieter. */
-.footer-sdk { font-size: 0.875rem; color: var(--text-muted); }
-.footer-sdk:hover { color: var(--text); }
+.footer-sdk { font-size: 0.875rem; color: var(--text-muted); transition: color .15s; }
+.footer-sdk:hover { color: var(--brand); }
 .footer-columns .footer-sdk-links a { font-size: 0.8125rem; color: var(--text-subtle); }
 /* No rule above the copyright. The footer already has one — its own border-top — and a second
    inside a block that has no other dividers reads as two stacked footers rather than one. Space
    separates it instead, balanced against the 2rem the columns end on. */
-.footer-baseline { padding: 0.25rem 2rem 2rem; text-align: center; }
+.footer-baseline { padding: 0.25rem var(--gutter) 2rem; text-align: center; }
 /* margin:0 because there is no `p { margin: 0 }` reset in this stylesheet — the browser default
    1em would otherwise add ~28px to the baseline row on its own. */
 .footer-copy { font-size: 0.8125rem; color: var(--text-subtle); margin: 0; }
@@ -589,7 +622,7 @@ footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     padding: 0 2rem;
     position: relative;
@@ -754,7 +787,7 @@ footer { background: var(--bg-elev); border-top: 1px solid var(--border); }
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 1rem;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 /* ── Sidebar ── */
@@ -764,7 +797,7 @@ nav.sidebar {
     align-self: flex-start;
     padding: 2rem 1rem 2rem 0;
     position: sticky;
-    top: var(--nav-h);
+    top: 0;
     max-height: calc(100vh - var(--nav-h));
     padding-top: 2rem;
     overflow-y: auto;
@@ -808,7 +841,7 @@ nav.sidebar {
 .docs-content {
     flex: 1;
     min-width: 0;
-    padding: calc(var(--nav-h) + 2.5rem) 0 4rem 2.5rem;
+    padding: 2.5rem 0 4rem 2.5rem;
     border-left: 1px solid var(--border);
 }
 
@@ -816,7 +849,7 @@ nav.sidebar {
 
 @media (max-width: 700px) {
     nav.sidebar { display: none; }
-    .docs-content { padding: calc(var(--nav-h) + 1.5rem) 0 1.5rem; border-left: none; }
+    .docs-content { padding: 1.5rem 0 1.5rem; border-left: none; }
 }
 
 /* ── Pricing FAQ ── */

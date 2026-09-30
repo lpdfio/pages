@@ -1,0 +1,107 @@
+---
+// Replaces Starlight's social links with the links for the language picked in the code
+// picker: the SDK's package registry and GitHub repository, or only the core repository for
+// XML. Every language's set is in the page and the picker shows one, so the links never wait
+// on a script. Starlight renders this in the header and again in the phone menu.
+import { Icon } from '@astrojs/starlight/components';
+import { CODE_LANGUAGES, CODE_LANG_STORAGE_KEY } from '../code-languages';
+// Registry marks from Simple Icons (CC0), unmodified.
+import NpmIcon from '../icons/npm.svg';
+import NuGetIcon from '../icons/nuget.svg';
+import PackagistIcon from '../icons/packagist.svg';
+import PyPIIcon from '../icons/pypi.svg';
+
+const REGISTRY_ICONS: Record<string, typeof NpmIcon> = {
+    npm: NpmIcon,
+    NuGet: NuGetIcon,
+    Packagist: PackagistIcon,
+    PyPI: PyPIIcon,
+};
+const firstLabel = CODE_LANGUAGES[0].label;
+---
+
+<lpdf-lang-links>
+    {
+        CODE_LANGUAGES.map(({ label, github, registry }) =>
+        {
+            const RegistryIcon = registry ? REGISTRY_ICONS[registry.name] : undefined;
+            return (
+                <span class="set" data-code-lang={label} hidden={label !== firstLabel}>
+                    {registry && RegistryIcon && (
+                        <a href={registry.url} title={registry.name} target="_blank" rel="noopener noreferrer">
+                            <span class="sr-only">{registry.name}</span>
+                            <RegistryIcon class="mark" aria-hidden="true" />
+                        </a>
+                    )}
+                    <a href={github} title="GitHub" target="_blank" rel="noopener noreferrer">
+                        <span class="sr-only">GitHub</span>
+                        <Icon name="github" class="mark" />
+                    </a>
+                </span>
+            );
+        })
+    }
+</lpdf-lang-links>
+
+<script define:vars={{ storageKey: CODE_LANG_STORAGE_KEY }}>
+    // Runs as soon as this set of links is parsed, so the stored language's links show first.
+    try
+    {
+        const stored = localStorage.getItem(storageKey);
+        const sets = document.currentScript?.previousElementSibling?.querySelectorAll('[data-code-lang]') ?? [];
+        if (stored && [...sets].some(set => set.dataset.codeLang === stored))
+        {
+            for (const set of sets) set.hidden = set.dataset.codeLang !== stored;
+        }
+    }
+    catch { /* storage blocked: the first language's links stay */ }
+</script>
+
+<script>
+    import { CODE_LANG_EVENT } from '../code-languages';
+
+    document.addEventListener(CODE_LANG_EVENT, e =>
+    {
+        const label = (e as CustomEvent<string>).detail;
+        for (const links of document.querySelectorAll('lpdf-lang-links'))
+        {
+            const sets = [...links.querySelectorAll<HTMLElement>('[data-code-lang]')];
+            if (!sets.some(set => set.dataset.codeLang === label)) continue;
+            for (const set of sets) set.hidden = set.dataset.codeLang !== label;
+        }
+    });
+</script>
+
+<style>
+    /* The same look as the theme toggle: secondary text colour at rest, the brand orange on
+       hover. The measured contrast is in src/styles/lpdf.css. The margin opens the gap before
+       the divider that separates the marks from the theme toggle. */
+    lpdf-lang-links {
+        display: flex;
+        margin-inline-end: 0.25rem;
+    }
+    .set {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    .set[hidden] {
+        display: none;
+    }
+    a {
+        display: flex;
+        padding: 0.5em;
+        margin: -0.5em;
+        color: var(--sl-color-gray-2);
+        transition: color 0.15s;
+    }
+    a:hover {
+        color: var(--lpdf-brand);
+    }
+    /* A quarter larger than Starlight's 1em social icons. */
+    .mark {
+        width: 1.25em;
+        height: 1.25em;
+        fill: currentColor;
+    }
+</style>

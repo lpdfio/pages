@@ -8,8 +8,8 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
-| `cols`       | integer | —       | Number of columns (1–12) |
-| `col-width`  | token/pt | —      | Fixed column width (overrides `cols`) |
+| `cols`       | integer | 1       | Number of columns (1–12) |
+| `col-width`  | token/pt | —      | Minimum column width: the grid fits as many columns as the width allows, at least one, and stretches them to fill the row (overrides `cols`) |
 | `gap`        | token/pt | —      | Gap between cells |
 | `width`      | token/pt | —      | Constrain total width |
 | `padding`    | spacing | —       | Inner padding |

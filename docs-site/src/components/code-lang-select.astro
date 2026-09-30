@@ -1,0 +1,141 @@
+---
+// The code language picker in the header. It drives Starlight's synced tabs: every XML block
+// with generated code, and the install page's SDK tabs.
+import { Icon } from '@astrojs/starlight/components';
+import { CODE_LANGUAGES, CODE_LANG_STORAGE_KEY } from '../code-languages';
+
+const labelsById = Object.fromEntries(CODE_LANGUAGES.map(({ id, label }) => [id, label]));
+---
+
+<lpdf-code-lang>
+    <label>
+        <span class="sr-only">Code language</span>
+        <select autocomplete="off">
+            {CODE_LANGUAGES.map(({ label }) => <option value={label}>{label}</option>)}
+        </select>
+        <Icon name="down-caret" class="caret" />
+    </label>
+</lpdf-code-lang>
+
+<script define:vars={{ storageKey: CODE_LANG_STORAGE_KEY, labelsById }}>
+    // Runs while the header is parsed, so the picker shows the stored language from the start.
+    // A link can choose the language with ?sdk=js and the like; storing it here, before the
+    // header links and the page's tabs read the stored language, makes the whole page follow.
+    try
+    {
+        const linked = labelsById[new URLSearchParams(location.search).get('sdk') ?? ''];
+        if (linked) localStorage.setItem(storageKey, linked);
+        const stored = localStorage.getItem(storageKey);
+        const select = document.querySelector('lpdf-code-lang select');
+        if (stored && select && [...select.options].some(o => o.value === stored)) select.value = stored;
+    }
+    catch { /* storage blocked: the picker starts on the first language */ }
+</script>
+
+<script>
+    import { CODE_LANG_EVENT, CODE_LANG_STORAGE_KEY } from '../code-languages';
+
+    const SYNCED_TABS = 'starlight-tabs[data-sync-key="lang"]';
+
+    /** The public surface of Starlight's <starlight-tabs> element. */
+    interface StarlightTabs extends HTMLElement
+    {
+        tabs: HTMLAnchorElement[];
+        switchTab(tab: HTMLAnchorElement, index: number, shouldSync?: boolean): void;
+    }
+
+    function readStored(): string | undefined
+    {
+        try { return localStorage.getItem(CODE_LANG_STORAGE_KEY) ?? undefined; }
+        catch { return undefined; }
+    }
+
+    /**
+     * Shows one language in every synced tab set on the page. The tabs switch without syncing
+     * themselves, which would move focus out of the picker, and the first set still on screen
+     * keeps its place while the blocks above it change height. The content scrolls in the
+     * page frame, below the header, so that is where "on screen" starts.
+     */
+    function showLanguage(label: string): void
+    {
+        const all = [...document.querySelectorAll<StarlightTabs>(SYNCED_TABS)];
+        const frame = document.querySelector<HTMLElement>('.main-frame');
+        const frameTop = frame?.getBoundingClientRect().top ?? 0;
+        const anchor = all.find(tabs => tabs.getBoundingClientRect().bottom > frameTop);
+        const before = anchor?.getBoundingClientRect().top ?? 0;
+        for (const tabs of all)
+        {
+            const index = tabs.tabs.findIndex(tab => tab.textContent?.trim() === label);
+            if (index !== -1) tabs.switchTab(tabs.tabs[index], index, false);
+        }
+        if (anchor) frame?.scrollBy({ top: anchor.getBoundingClientRect().top - before, behavior: 'instant' });
+        try { localStorage.setItem(CODE_LANG_STORAGE_KEY, label); }
+        catch { /* storage blocked: the choice lasts for this page */ }
+    }
+
+    class LpdfCodeLang extends HTMLElement
+    {
+        connectedCallback(): void
+        {
+            const select = this.querySelector('select');
+            if (!select) return;
+            const announce = (label: string): void =>
+            {
+                document.dispatchEvent(new CustomEvent(CODE_LANG_EVENT, { detail: label }));
+            };
+
+            select.addEventListener('change', () =>
+            {
+                showLanguage(select.value);
+                announce(select.value);
+            });
+
+            // A tab picked in the page is stored by Starlight as it syncs; mirror it here.
+            const mirror = (e: Event): void =>
+            {
+                if (!(e.target instanceof Element) || !e.target.closest(SYNCED_TABS)) return;
+                const stored = readStored();
+                if (!stored || stored === select.value || ![...select.options].some(o => o.value === stored)) return;
+                select.value = stored;
+                announce(stored);
+            };
+            document.addEventListener('click', mirror);
+            document.addEventListener('keyup', mirror);
+        }
+    }
+
+    customElements.define('lpdf-code-lang', LpdfCodeLang);
+</script>
+
+<style>
+    /* Starlight's own select look, as in its theme picker, without the leading icon. */
+    label {
+        position: relative;
+        display: flex;
+        align-items: center;
+        color: var(--sl-color-gray-2);
+    }
+    label:hover {
+        color: var(--sl-color-white);
+    }
+    select {
+        appearance: none;
+        border: 0;
+        padding-block: 0.625rem;
+        padding-inline: 0.5rem 1.5rem;
+        background-color: transparent;
+        color: inherit;
+        font-size: var(--sl-text-sm);
+        cursor: pointer;
+    }
+    option {
+        background-color: var(--sl-color-bg-nav);
+        color: var(--sl-color-gray-1);
+    }
+    .caret {
+        position: absolute;
+        inset-inline-end: 0;
+        font-size: 1.25rem;
+        pointer-events: none;
+    }
+</style>

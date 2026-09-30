@@ -1,15 +1,16 @@
 # Split
 
-Divides available width equally between its children. Use `equal="false"` for the first child to take only its natural width and the rest to share the remainder.
+Two children side by side. By default each keeps its own width, the first at the left edge and the second at the right. Set `equal="true"` and they take half the width each. Any further children are ignored. A split never splits across pages.
+
+For three or more columns, use [`grid`](?p=doc/layout/grid). For explicit column widths, use [`table`](?p=doc/layout/table).
 
 ## Attributes
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
-| `align`      | string  | `start` | Vertical alignment: `start` `center` `end` |
-| `equal`      | boolean | true    | Equal-width columns; `false` lets first child size naturally |
-| `cols`       | string  | —       | Custom column widths: `"1fr 2fr"` or `"200pt 1fr"` (overrides `equal`) |
-| `gap`        | token/pt | —      | Gap between columns |
+| `align`      | string  | `start` | Vertical alignment of the two children: `start` `center` `end` |
+| `equal`      | boolean | false   | `false`: each child keeps its own width, pushed to opposite edges. `true`: the two children take half the width each |
+| `gap`        | token/pt | —      | Gap between the two children; the minimum gap when `equal` is false |
 | `width`      | token/pt | —      | Constrain total width |
 | `padding`    | spacing | —       | Inner padding |
 | `background` | color   | —       | Background color |
@@ -21,7 +22,7 @@ Divides available width equally between its children. Use `equal="false"` for th
 ## Two equal columns
 
 ```xml
-<split gap="24pt">
+<split equal="true" gap="24pt">
   <stack gap="8pt">
     <text font-size="s">Bill To</text>
     <text>Acme Inc</text>
@@ -35,12 +36,11 @@ Divides available width equally between its children. Use `equal="false"` for th
 </split>
 ```
 
-## Three columns
+## Opposite edges
 
 ```xml
-<split gap="16pt">
-  <text align="center">Column A</text>
-  <text align="center">Column B</text>
-  <text align="center">Column C</text>
+<split align="center">
+  <text font-size="20pt">Invoice</text>
+  <text color="#888888">2026-05-04</text>
 </split>
 ```

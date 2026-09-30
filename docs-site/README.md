@@ -69,6 +69,14 @@ install page shows everywhere, and Starlight remembers it across pages. There is
   and GitHub repository, or only the core repository for XML. Registry marks in `src/icons` are from Simple
   Icons (CC0).
 - `src/code-languages.ts`: the languages in picker order, with their repository and registry links.
+- `engine.json` and `scripts/build-info.mjs`: the stamp in the header, like `v0.22-r0930.3`. The first part is
+  the core the docs describe: `engine.json` is written by `make stamp-pages-docs` in the core repo (which
+  `make build-pages` and `make dev-pages` run) and committed with the engine copy it names. Hovering the stamp says
+  how many commits past the v0.22 release that engine is. The second part is the revision of the pages build: the date of the
+  commit and its place among that day's commits, so a commit always gets the same one. `build-info.mjs` works it
+  out from git at build time into `src/build-info.json`, which is generated and ignored. It needs the full history,
+  so CI checks out with `fetch-depth: 0`; without it the revision is left out. The deploy jobs carry the revision in
+  their names in the Actions run.
 - `src/components/theme-toggle.astro` and `theme-provider.astro`: the lpdf.io half-circle theme toggle in
   place of Starlight's three-way picker. Dark by default, no "follow the system" state, stored the way
   lpdf.io stores it (`src/theme.ts`), so the choice carries between the site and the docs.

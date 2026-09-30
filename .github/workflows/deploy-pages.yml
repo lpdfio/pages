@@ -18,8 +18,13 @@ jobs:
   build:
     name: Build the site
     runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.revision.outputs.revision }}
     steps:
+      # The whole history, because the docs revision counts the commits of the day.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check the committed bundles carry deploy sentinels
         run: ./.github/check-sentinels.sh
@@ -35,11 +40,23 @@ jobs:
         run: npm ci
         working-directory: docs-site
 
+      # r<mmdd>.<n>: the commit's date and its place among that day's commits, so a re-run of the same
+      # commit gives the same number. The docs header shows it, and the deploy jobs carry it in their names.
+      # A run's own name cannot: it is fixed before any step has run.
+      - name: Work out the docs revision
+        id: revision
+        run: |
+          revision=$(node docs-site/scripts/build-info.mjs --revision)
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+          echo "Docs revision: $revision" >> "$GITHUB_STEP_SUMMARY"
+
       # Converts the markdown in www/docs/content and generates each example in every SDK with the
       # engine's code generator (www/assets/js/lpdf-demo), then builds the pages and the search index.
       - name: Build the docs
         run: npm run build
         working-directory: docs-site
+        env:
+          DOCS_REVISION: ${{ steps.revision.outputs.revision }}
 
       - name: Assemble the site
         run: bash ./.github/assemble-site.sh _site
@@ -54,7 +71,7 @@ jobs:
           retention-days: 1
 
   deploy-pre:
-    name: Deploy to pre (pages-pre)
+    name: Deploy to pre (pages-pre) ${{ needs.build.outputs.revision }}
     needs: build
     runs-on: ubuntu-latest
     concurrency:
@@ -81,8 +98,8 @@ jobs:
           force_orphan: true
 
   deploy-prod:
-    name: Deploy to prod (GitHub Pages)
-    needs: deploy-pre
+    name: Deploy to prod (GitHub Pages) ${{ needs.build.outputs.revision }}
+    needs: [build, deploy-pre]
     runs-on: ubuntu-latest
     concurrency:
       group: pages

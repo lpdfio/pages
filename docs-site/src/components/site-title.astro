@@ -4,9 +4,22 @@
 // the lpdf.io home page, as the site's own does, and the label to the docs home, so either is
 // one click from any docs page.
 import mark from '../assets/lpdf-mark.svg';
+import buildInfo from '../build-info.json';
 import CodeLangSelect from './code-lang-select.astro';
 
 const { siteTitleHref } = Astro.locals.starlightRoute;
+
+// The core the docs describe and the revision of this build, like v0.22-r0930.3. Both come from
+// scripts/build-info.mjs, and either is left out when it is not known. How far the engine is past
+// the release is only in the hover text, since most readers do not need it.
+const { engine, revision } = buildInfo;
+const plural = (n: number) => `${n} commit${n === 1 ? '' : 's'}`;
+const version = engine ? `v${engine.engine}` : '';
+const stamp = [version, revision].filter(Boolean).join('-');
+const detail = [
+    engine && `Docs for the Lpdf ${engine.engine} engine` + (engine.ahead ? `, ${plural(engine.ahead)} past ${engine.release} (${engine.commit})` : ` (${engine.release})`),
+    revision && `Docs revision ${revision}`,
+].filter(Boolean).join('. ');
 ---
 
 <div class="brand">
@@ -16,6 +29,7 @@ const { siteTitleHref } = Astro.locals.starlightRoute;
     </a>
     <a href={siteTitleHref} class="label">Docs</a>
     <CodeLangSelect />
+    {stamp && <span class="stamp" title={detail}>{stamp}</span>}
 </div>
 
 <style>
@@ -63,9 +77,23 @@ const { siteTitleHref } = Astro.locals.starlightRoute;
     .label:hover {
         color: var(--lpdf-brand);
     }
+    /* Quiet: it is for whoever wants to know which core the page is for and how recent it is. */
+    .stamp {
+        color: var(--sl-color-gray-2);
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        cursor: default;
+    }
     /* Below 360px the label would push the picker under the search button, so it gives way. */
     @media (max-width: 22.49rem) {
         .label {
+            display: none;
+        }
+    }
+    /* The stamp sits between the picker and the centred search box, so it goes before they meet. */
+    @media (max-width: 64rem) {
+        .stamp {
             display: none;
         }
     }

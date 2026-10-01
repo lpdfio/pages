@@ -157,7 +157,7 @@
    outline, brand fill on hover. */
 .tier-card__cta {
     color: var(--brand-text);
-    border-color: color-mix(in oklch, var(--brand) 50%, var(--border));
+    border-color: color-mix(in oklab, var(--brand) 50%, var(--border));
 }
 .tier-card__cta:hover {
     background: var(--brand);

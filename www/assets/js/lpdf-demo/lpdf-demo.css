@@ -280,7 +280,7 @@ lpdf-demo {
 }
 
 .lpdf-zoom-btn:hover:not(:disabled) {
-    background: color-mix(in oklch, var(--brand) 12%, var(--bg-elev));
+    background: color-mix(in oklab, var(--brand) 12%, var(--bg-elev));
     color: var(--text);
 }
 

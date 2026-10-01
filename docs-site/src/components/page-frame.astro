@@ -1,7 +1,7 @@
 ---
-// Extends Starlight's page frame for scrolling inside it. The content scrolls in .main-frame
-// rather than in the window (see "Scrolling" in src/styles/lpdf.css), which leaves two things
-// that assume a window scroll needing help.
+// Extends Starlight's page frame for scrolling inside it. Where the pointer is a mouse, the content
+// scrolls in .main-frame rather than in the window (see "Scrolling" in src/styles/lpdf.css), which
+// leaves two things that assume a window scroll needing help.
 import Default from '@astrojs/starlight/components/PageFrame.astro';
 ---
 
@@ -23,7 +23,8 @@ import Default from '@astrojs/starlight/components/PageFrame.astro';
     function focusFrame(): void
     {
         const frame = document.querySelector<HTMLElement>(FRAME);
-        if (!frame || location.hash) return;
+        // On a touch screen the window scrolls and the frame does not, so there is nothing to focus.
+        if (!frame || location.hash || getComputedStyle(frame).overflowY !== 'auto') return;
         frame.tabIndex = -1;
         frame.focus({ preventScroll: true });
     }

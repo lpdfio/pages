@@ -129,19 +129,32 @@ html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); color: 
 
    The window is fixed and <body> is the scroll container, from under the header to the bottom
    of the window. The header is position:fixed, so it still belongs to the window rather than
-   to the body. The scrollbar gutter stays reserved so the content does not shift either. */
-html { overflow: hidden; }
-body {
-    position: fixed;
-    inset: var(--nav-h) 0 0;
-    height: auto;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-    scroll-behavior: smooth;
-    scroll-padding-top: 1.5rem;
+   to the body. The scrollbar gutter stays reserved so the content does not shift either.
+
+   Only where the pointer is a mouse: that is where a scrollbar is drawn beside the header.
+   Touch screens scroll the window, below. */
+@media (hover: hover) and (pointer: fine) {
+    html { overflow: hidden; }
+    body {
+        position: fixed;
+        inset: var(--nav-h) 0 0;
+        height: auto;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        scroll-behavior: smooth;
+        scroll-padding-top: 1.5rem;
+    }
 }
 /* <body> takes focus on load so the keyboard scrolls it (pages.ts); it is not a control. */
 body:focus { outline: none; }
+/* Touch screens scroll the window, below the fixed header. iOS Safari clips a position:fixed
+   element that sits inside a scrolling element but outside its box, and the header is both:
+   it is in <body> and above it. It disappeared there. A touch screen has no scrollbar beside
+   the header to move, so nothing is lost. */
+@media (hover: none), (pointer: coarse) {
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 1.5rem); }
+    body { box-sizing: border-box; height: auto; min-height: 100%; padding-top: var(--nav-h); }
+}
 @media print {
     html { overflow: visible; }
     body { position: static; overflow: visible; }
@@ -284,8 +297,13 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
    orange, two hues off --brand and duller, left over from when the tiers carried
    three unrelated colours; it read as a near-miss of the brand rather than as a
    choice. Its white hover label also measured 3.84 on that fill, under the 4.5 a
-   label this size needs — --brand-on clears it at 4.77. */
-.btn-brand { background: transparent; color: var(--brand-text); border: 1px solid color-mix(in oklch, var(--brand) 50%, var(--border)); transition: background .15s, color .15s, transform .08s; }
+   label this size needs — --brand-on clears it at 4.77.
+
+   The mix is in oklab, as is every other mix of the brand with a grey in the site. In oklch
+   the grey's faint blue hue counts, and Safari takes the short way round the colour wheel
+   from orange to it, through pink: the same 50% came out brown in Chrome and magenta in
+   Safari. oklab has no hue to take the wrong way round. */
+.btn-brand { background: transparent; color: var(--brand-text); border: 1px solid color-mix(in oklab, var(--brand) 50%, var(--border)); transition: background .15s, color .15s, transform .08s; }
 .btn-brand:hover { background: var(--brand); border-color: var(--brand); color: var(--brand-on); opacity: 1; }
 .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); transition: background .15s, color .15s, transform .08s; }
 .btn-ghost:hover { background: var(--text); color: var(--bg); opacity: 1; }
@@ -394,7 +412,7 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 }
 
 /* ── Syntax tokens ── */
-.t-tag  { color: color-mix(in oklch, var(--brand) 85%, var(--text-muted)); }
+.t-tag  { color: color-mix(in oklab, var(--brand) 85%, var(--text-muted)); }
 .t-attr { color: var(--text-muted); }
 .t-val  { color: oklch(60% 0.14 145); }
 .t-cmt  { color: var(--text-subtle); }
@@ -539,7 +557,7 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 }
 .cmp-table th:first-child { text-align: left; }
 .cmp-table th.cmp-h-lpdf {
-    background: color-mix(in oklch, var(--brand) 8%, var(--bg-sunken));
+    background: color-mix(in oklab, var(--brand) 8%, var(--bg-sunken));
     color: var(--brand);
     border-bottom: 2px solid color-mix(in oklch, var(--brand) 40%, transparent);
 }
@@ -548,10 +566,10 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
     border-bottom: 1px solid var(--border); text-align: center; vertical-align: middle;
 }
 .cmp-table td:first-child { text-align: left; font-weight: 500; color: var(--text); }
-.cmp-table td.cmp-d-lpdf { background: color-mix(in oklch, var(--brand) 4%, var(--bg-elev)); }
+.cmp-table td.cmp-d-lpdf { background: color-mix(in oklab, var(--brand) 4%, var(--bg-elev)); }
 .cmp-table tr:last-child td { border-bottom: none; }
 .cmp-table tr:hover td { background: var(--bg-sunken); }
-.cmp-table tr:hover td.cmp-d-lpdf { background: color-mix(in oklch, var(--brand) 7%, var(--bg-sunken)); }
+.cmp-table tr:hover td.cmp-d-lpdf { background: color-mix(in oklab, var(--brand) 7%, var(--bg-sunken)); }
 .cmp-yes     { color: var(--success); }
 .cmp-no      { color: var(--text-subtle); }
 /* Moved off hue 70, which sat 15 degrees from --brand and so read as a failed brand
@@ -672,7 +690,7 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 }
 .docs-sdk-tile:hover {
     border-color: var(--brand);
-    background: color-mix(in oklch, var(--brand) 5%, var(--bg-elev));
+    background: color-mix(in oklab, var(--brand) 5%, var(--bg-elev));
     transform: translateY(-2px);
 }
 .sdk-tile-name {

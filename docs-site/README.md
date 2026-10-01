@@ -57,10 +57,11 @@ install page shows everywhere, and Starlight remembers it across pages. There is
 ## Other files
 
 - `astro.config.mjs`: the site and the sidebar (the same order as the current docs).
-- `src/components/page-frame.astro`: the content scrolls in Starlight's own `.main-frame`, below the header,
-  not in the window (see "Scrolling" in `src/styles/lpdf.css`), so the header never shifts between pages that
-  scroll and pages that don't. This component gives the frame keyboard focus on load and keeps a clicked tab
-  in place, both of which assumed a window scroll.
+- `src/components/page-frame.astro`: with a mouse, the content scrolls in Starlight's own `.main-frame`, below
+  the header, not in the window (see "Scrolling" in `src/styles/lpdf.css`), so the header never shifts between
+  pages that scroll and pages that don't. This component gives the frame keyboard focus on load and keeps a
+  clicked tab in place, both of which assumed a window scroll. A touch screen scrolls the window, because iOS
+  Safari clips a fixed element (the mobile "On this page" bar) that is inside a scroller but above it.
 - `src/components/header.astro`: Starlight's header with the pre-release notice as a second, full-width row
   under it. The two rows' heights are `--lpdf-header-height` and `--lpdf-notice-height` in `src/styles/lpdf.css`,
   and `--sl-nav-height`, which Starlight derives the page offsets from, is their sum. Remove the component, its

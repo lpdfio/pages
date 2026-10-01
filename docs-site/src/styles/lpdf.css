@@ -54,28 +54,36 @@ site-search button[data-open-modal] {
    the scroll container, from under the header (and, on narrower screens, under the "On this
    page" bar — --sl-mobile-toc-height is 0 when there is none) to the bottom of the window.
    The scrollbar gutter stays reserved, as in the sidebar, so the column does not shift
-   either. src/components/page-frame.astro handles what assumed a window scroll. */
-html {
-    overflow: hidden;
-}
+   either. src/components/page-frame.astro handles what assumed a window scroll.
 
-.main-frame {
-    position: fixed;
-    inset: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height)) 0 0;
-    padding-top: 0;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-    scroll-padding-top: 1.5rem;
+   Only where the pointer is a mouse, which is where a scrollbar is drawn beside the header.
+   A touch screen scrolls the window, as Starlight does. iOS Safari clips a position:fixed
+   element that is inside a scrolling element but outside its box, and the "On this page" bar
+   is both: it is in .main-frame and above it. It disappeared there, and a touch screen has
+   no scrollbar to keep out from beside the header anyway. */
+@media (hover: hover) and (pointer: fine) {
+    html {
+        overflow: hidden;
+    }
+
+    .main-frame {
+        position: fixed;
+        inset: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height)) 0 0;
+        padding-top: 0;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        scroll-padding-top: 1.5rem;
+    }
+
+    /* Behind the search dialog the page stays put, as Starlight does for the window. */
+    [data-search-modal-open] .main-frame {
+        overflow: hidden;
+    }
 }
 
 /* The frame takes focus on load so the keyboard scrolls it; it is not a control. */
 .main-frame:focus {
     outline: none;
-}
-
-/* Behind the search dialog the page stays put, as Starlight does for the window. */
-[data-search-modal-open] .main-frame {
-    overflow: hidden;
 }
 
 @media print {

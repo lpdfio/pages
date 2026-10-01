@@ -304,15 +304,17 @@ code { font-family: var(--rl-font-mono); font-size: 0.875em; background: var(--b
    from orange to it, through pink: the same 50% came out brown in Chrome and magenta in
    Safari. oklab has no hue to take the wrong way round. */
 .btn-brand { background: transparent; color: var(--brand-text); border: 1px solid color-mix(in oklab, var(--brand) 50%, var(--border)); transition: background .15s, color .15s, transform .08s; }
-/* The fill is for a pointer that hovers. A touch screen keeps :hover on after a tap, so the
-   button stayed filled, under iOS's own tap highlight, with its dark label lost in it. There
-   a press is a light tint, and the label stays the brand colour. */
+/* On hover for a pointer that hovers. A touch screen keeps :hover on after a tap, so the button
+   stayed filled, under iOS's own tap highlight, with its dark label lost in it. There the same
+   fill is the pressed state, and it comes and goes with no transition: label and fill swap
+   colours, so a fade passes through the point where they are the same, and a tap that follows
+   a link can leave the page frozen there. */
 @media (hover: hover) {
     .btn-brand:hover { background: var(--brand); border-color: var(--brand); color: var(--brand-on); opacity: 1; }
 }
 @media (hover: none) {
-    .btn-brand { -webkit-tap-highlight-color: transparent; }
-    .btn-brand:active { background: color-mix(in oklab, var(--brand) 12%, transparent); }
+    .btn-brand { -webkit-tap-highlight-color: transparent; transition: transform .08s; }
+    .btn-brand:active { background: var(--brand); border-color: var(--brand); color: var(--brand-on); }
 }
 .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); transition: background .15s, color .15s, transform .08s; }
 .btn-ghost:hover { background: var(--text); color: var(--bg); opacity: 1; }

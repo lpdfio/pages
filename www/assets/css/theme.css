@@ -159,8 +159,8 @@
     color: var(--brand-text);
     border-color: color-mix(in oklab, var(--brand) 50%, var(--border));
 }
-/* Fill only for a pointer that hovers; a touch screen keeps :hover on after a tap (see .btn-brand
-   in styles.css), so a press there is a light tint and the label stays the brand colour. */
+/* Fill on hover for a pointer that hovers. A touch screen keeps :hover on after a tap, so there
+   the fill is the pressed state, with no transition (see .btn-brand in styles.css). */
 @media (hover: hover) {
     .tier-card__cta:hover {
         background: var(--brand);
@@ -169,6 +169,6 @@
     }
 }
 @media (hover: none) {
-    .tier-card__cta { -webkit-tap-highlight-color: transparent; }
-    .tier-card__cta:active { background: color-mix(in oklab, var(--brand) 12%, transparent); }
+    .tier-card__cta { -webkit-tap-highlight-color: transparent; transition: transform .08s; }
+    .tier-card__cta:active { background: var(--brand); border-color: var(--brand); color: var(--brand-on); }
 }

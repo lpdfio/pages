@@ -2,6 +2,8 @@
 
 lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, and to a WASI binary for PHP, Python, and .NET.
 
+The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code with the Node.js builder. The PHP, Python and .NET builders take the same elements and attributes, but their examples are not shown yet.
+
 ::: sdk js
 
 ## Requirements
@@ -23,9 +25,11 @@ const { readFileSync, writeFileSync } = require('node:fs')
 
 const engine = L.engine()
 const xml = readFileSync('document.xml', 'utf8')
-const pdf = await engine.render(xml)
-writeFileSync('document.pdf', pdf)
+
+engine.render(xml).then((pdf) => writeFileSync('document.pdf', pdf))
 ```
+
+`render` returns a promise. The package is CommonJS, so load it with `require`: an `import` of `@lpdfio/lpdf` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`.
 
 ## Versioning
 

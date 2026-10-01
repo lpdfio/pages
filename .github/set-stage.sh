@@ -38,6 +38,14 @@ if [ "$stage" = pre ]; then
     echo "pre.lpdf.io" > "$site/CNAME"
 fi
 
+# Pre must stay out of search results. Prod allows everything, as it did with no robots file, and
+# points crawlers at the docs sitemap, the only one there is.
+if [ "$stage" = pre ]; then
+    printf 'User-agent: *\nDisallow: /\n' > "$site/robots.txt"
+else
+    printf 'User-agent: *\nAllow: /\n\nSitemap: %s/docs/sitemap-index.xml\n' "$pages" > "$site/robots.txt"
+fi
+
 # Check what was written, so a stage never ships with a placeholder left in or another stage's host.
 if grep -qE '__PORTAL_URL__|__PAGES_URL__' "$bundle"; then
     echo "::error file=$bundle::a placeholder is still in the bundle after setting the $stage URLs"

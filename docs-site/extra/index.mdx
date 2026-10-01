@@ -4,6 +4,18 @@ title: Lpdf Docs
 head:
     - tag: title
       content: Lpdf Docs
+    # The old docs app chose the page with ?p=install or ?p=doc.layout.flank. Those links are still in the
+    # README that npm and PyPI show for every published SDK, so this sends them to the page they meant,
+    # keeping ?sdk=.
+    - tag: script
+      content: |
+        const params = new URLSearchParams(location.search);
+        const path = (params.get('p') ?? '').replace(/\./g, '/').replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+        if (/^[a-z0-9/-]+$/i.test(path)) {
+            params.delete('p');
+            const query = params.toString();
+            location.replace('/docs/' + path + '/' + (query ? '?' + query : ''));
+        }
 description: Reference and guides for Lpdf, the PDF engine that turns XML or code into the same PDF on Node.js, the browser, .NET, PHP and Python.
 ---
 

@@ -90,7 +90,7 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 | `orientation` | string  | inherit  | Override orientation |
 | `margin`      | spacing | inherit  | Override margin |
 | `background`  | color   | inherit  | Section background |
-| `title`       | string  | —        | Section title, shown as a bookmark in the PDF outline |
+| `title`       | string  | —        | Section title. Accepted, but not used yet: the PDF has no bookmarks |
 | `debug`       | boolean | false    | Render layout boxes |
 
 ---

@@ -1,5 +1,5 @@
-// Trial of the Lpdf docs as a Starlight site. Content comes from ../www/docs/content through
-// scripts/sync-content.mjs; see README.md.
+// The Lpdf docs as a Starlight site, served at lpdf.io/docs. Content comes from ../www/docs/content
+// through scripts/sync-content.mjs; see README.md.
 
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';

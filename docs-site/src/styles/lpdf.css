@@ -151,6 +151,47 @@ mobile-starlight-toc nav {
     --ec-frm-edActTabBg: var(--sl-color-bg-nav);
 }
 
+/* ── Tables ──
+   The same kind of panel as a block of code: the header's colour, and the hairline Expressive
+   Code draws round a block (gray-5 at 75%), also used between the rows. The text is 14px, two
+   under the body and the size of the code beside it, with the inline code in it at 12px. A
+   table is as wide as its content up to the column and scrolls inside the column beyond that,
+   so a short one is a short panel and not a full-width one with empty space on the right. */
+:root {
+    --lpdf-hairline: color-mix(in srgb, var(--sl-color-gray-5) 75%, transparent);
+}
+
+.sl-markdown-content table:not(:where(.not-content *)) {
+    width: max-content;
+    max-width: 100%;
+    border: 1px solid var(--lpdf-hairline);
+    border-radius: 1px;
+    background-color: var(--sl-color-bg-nav);
+    font-size: var(--sl-text-sm);
+}
+
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+    border-bottom-color: var(--lpdf-hairline);
+}
+
+/* Starlight sets a table's edges flush with the text; in a panel they need room. */
+.sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
+    padding-inline-start: 1rem;
+}
+
+.sl-markdown-content :is(th:last-child, td:last-child):not(:where(.not-content *)) {
+    padding-inline-end: 1rem;
+}
+
+/* The panel's own border closes the last row. */
+.sl-markdown-content tbody tr:last-child :is(th, td):not(:where(.not-content *)) {
+    border-bottom: 0;
+}
+
+.sl-markdown-content table code:not(:where(.not-content *)) {
+    font-size: var(--sl-text-2xs);
+}
+
 /* ── Accent ──
    Starlight uses the accent for search highlights, the active tab's underline and fills with
    text on them, which need 4.5:1, so each theme gets a tone stepped along the brand hue.

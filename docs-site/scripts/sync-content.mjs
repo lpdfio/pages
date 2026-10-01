@@ -34,14 +34,16 @@ const BASE = '/docs';
 const SYNC_KEY = 'lang';
 const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET' };
 
-// The languages the generated code is shown in. Only Node.js: the generator's PHP, Python and .NET
-// output was run against the published 0.22.0 SDKs on 2026-10-01 and mostly does not build. It names
-// canvas attribute classes the SDKs do not have, passes arguments in another order (.NET `L.Text`
-// takes its content first), and passes plain strings where .NET wants `L.Raw`. A language comes back
-// by adding its { target, lang } here, once its output builds. The generator's targets are js, php,
-// python and dotnet (lang csharp).
+// The languages the generated code is shown in, in tab order. The SDKs share one API: the attribute
+// classes and constants of each follow lpdf.xsd, so the code reads alike in every language. The generator
+// is checked against the SDKs by building the code it makes for every XML example in these docs and
+// rendering it to the same PDF as the XML. The generator's targets are js, php, python and dotnet; the
+// .NET code is highlighted as csharp.
 const CODE_TABS = [
     { target: 'js', lang: 'js' },
+    { target: 'python', lang: 'python' },
+    { target: 'php', lang: 'php' },
+    { target: 'dotnet', lang: 'csharp' },
 ];
 
 let codegenLoad;
@@ -149,17 +151,13 @@ function rootCount(xml)
 
 /**
  * The same XML snippet in each language in CODE_TABS, or the reason it stays XML only. The generator falls back
- * to L.element for elements it does not know (full documents, assets) and leaves TODO comments
- * for features it cannot express (data binding); text that runs over several lines comes out
- * as a broken string, which the JavaScript parse catches.
+ * to L.element for an element it does not know and leaves TODO comments for features it cannot express
+ * (data binding), which the SDKs do not have; the JavaScript parse catches a snippet that is not code.
  */
 function generateCode(xml, codegen)
 {
     // Several root elements come out as several statements with nothing between them.
     if (rootCount(xml) > 1) return { reason: 'several root elements' };
-    // The generator writes link's href as an attribute, where the SDKs call it url, and field's type and
-    // name as attributes, where the SDKs take them as the first two arguments. The SDKs reject both.
-    if (/<(link|field)[\s>/]/.test(xml)) return { reason: 'link or field: the SDKs name the arguments differently' };
 
     const variants = [];
     for (const { target, lang } of CODE_TABS)

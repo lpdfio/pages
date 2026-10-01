@@ -77,7 +77,11 @@ Instead of x/y coordinates, use `anchor` to reference one of nine points on the 
 
 ```xml
 <!-- Footer text anchored to bottom-left, offset 10pt from edge -->
-<text anchor="bottom-left" x="10pt" y="-10pt" font-size="9pt">Footer</text>
+<canvas>
+  <layer page="each">
+    <text anchor="bottom-left" x="10pt" y="-10pt" font-size="9pt">Footer</text>
+  </layer>
+</canvas>
 ```
 
 ## Primitives

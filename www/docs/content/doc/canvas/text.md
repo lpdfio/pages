@@ -49,7 +49,11 @@ Canvas text is not data-bound, and the page number placeholders work only in the
 `span` children work like those in flow `text`, but only `font` and `color` are read:
 
 ```xml
-<text x="40pt" y="60pt" font-size="11pt">
-  Invoice <span color="#1a73e8">#1042</span>
-</text>
+<canvas>
+  <layer>
+    <text x="40pt" y="60pt" font-size="11pt">
+      Invoice <span color="#1a73e8">#1042</span>
+    </text>
+  </layer>
+</canvas>
 ```

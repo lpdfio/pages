@@ -2,7 +2,7 @@
 
 lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, and to a WASI binary for PHP, Python, and .NET.
 
-The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code with the Node.js builder. The PHP, Python and .NET builders take the same elements and attributes, but their examples are not shown yet.
+The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code, in a tab for each language. The builders are the same in every language: the same elements, the same attributes under the schema's names, and the same constants, written in each language's own case (`fontSize` in Node.js and PHP, `font_size` in Python, `FontSize` in .NET).
 
 ::: sdk js
 

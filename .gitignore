@@ -7,6 +7,10 @@ node_modules/
 # Build outputs
 dist/
 build/
+# ...except the vendored PDF.js build the demo viewer loads (pdf.mjs, pdf.worker.mjs). It is
+# served as-is, so it must be committed or the deployed demo 404s.
+!ui/demo/viewer/build/
+!www/assets/js/lpdf-demo/viewer/build/
 
 # Env files
 .env

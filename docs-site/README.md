@@ -60,6 +60,15 @@ those links.
 
 `scripts/check-examples.mjs` renders each XML block in `../www/docs/content` with the demo engine (`../www/assets/js/lpdf-demo`) and exits 1 if the engine rejects one. A partial snippet is wrapped in the elements it needs, chosen from its first element, and the images `logo`, `photo`, `avatar` and `watermark` are declared with a one-pixel placeholder. It proves the engine accepts the example and nothing more: an attribute the engine ignores still passes, so it does not replace reading a change against the schema.
 
+## The example pages
+
+The seven pages under Examples (`../www/docs/content/examples/`, `public/examples/` for the files they link to, and the
+sidebar entries, which `astro.config.mjs` reads from `examples/index.json` there) are **generated**: do not edit them here.
+The source is `examples/` in the lpdf repository, and `make sync-examples` there writes the pages, the downloads, the
+demo's examples and the extension's templates from it. A page shows the document whole when it is short, and links it when
+it is not. Its viewer is the one of the demo (`../www/assets/js/lpdf-demo/viewer`), given a PDF that `scripts/render-examples.mjs` renders
+from the example with the engine in `../www/assets/js/lpdf-demo`, on every `npm run sync`, `build` and `dev`. That PDF is not in git.
+
 ## Other files
 
 - `astro.config.mjs`: the site and the sidebar.

@@ -1,0 +1,32 @@
+{
+  "examples": [
+    {
+      "id": "admission-letter",
+      "label": "Admission letter"
+    },
+    {
+      "id": "resume",
+      "label": "Résumé"
+    },
+    {
+      "id": "invoice",
+      "label": "Invoice"
+    },
+    {
+      "id": "report",
+      "label": "Report"
+    },
+    {
+      "id": "installment-contract",
+      "label": "Installment contract"
+    },
+    {
+      "id": "brochure",
+      "label": "Brochure"
+    },
+    {
+      "id": "book",
+      "label": "Book"
+    }
+  ]
+}

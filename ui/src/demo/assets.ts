@@ -11,9 +11,9 @@
 
 const _base = import.meta.url.replace(/\/[^/]*$/, '/');
 
-export const PDFJS_URL     = _base + 'pdf.min.mjs';
-export const PDFJS_WORKER  = _base + 'pdf.worker.min.mjs';
 export const LPDF_URL      = _base + 'browser.js';
 export const LPDFWEB_URL   = _base + 'lpdf-web.js';
-export const ASSETS_BASE   = _base + 'assets/';
+/** The PDF viewer page: the viewer of the VS Code extension, in an iframe. */
+export const VIEWER_URL    = _base + 'viewer/index.html';
+/** The examples: index.json, and a folder for each example with its document.xml, document.json and assets. */
 export const EXAMPLES_BASE = _base + 'examples/';

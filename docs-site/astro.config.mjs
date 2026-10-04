@@ -1,8 +1,14 @@
 // The Lpdf docs as a Starlight site, served at lpdf.io/docs. Content comes from ../www/docs/content
 // through scripts/sync-content.mjs; see README.md.
 
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+
+// The examples in the sidebar are the ones scripts/sync-examples.mjs of the lpdf repo wrote, in their order, so adding
+// an example needs no change here.
+const exampleItems = JSON.parse(readFileSync(new URL('../www/docs/content/examples/index.json', import.meta.url), 'utf8'))
+    .examples.map(({ id, label }) => ({ slug: `examples/${id}`, label }));
 
 export default defineConfig({
     site: 'https://lpdf.io',
@@ -31,11 +37,7 @@ export default defineConfig({
                 },
                 {
                     label: 'Examples',
-                    items: [
-                        { slug: 'examples/invoice', label: 'Invoice' },
-                        { slug: 'examples/report', label: 'Report' },
-                        { slug: 'examples/certificate', label: 'Certificate' },
-                    ],
+                    items: exampleItems,
                 },
                 {
                     label: 'Document',

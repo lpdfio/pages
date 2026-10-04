@@ -4,11 +4,15 @@
  * Live interactive demo component for lpdf.io home page.
  * - Lit 3 LitElement with light DOM (no shadow DOM)
  * - Redux Toolkit for state management
- * - pdfjs-dist for PDF rendering
+ * - the PDF viewer of the VS Code extension, in an iframe (viewer/index.html), for PDF display
  *
  * Lit, Redux Toolkit, and CodeMirror are bundled by Vite.
- * pdfjs and lpdf WASM are loaded at runtime as external assets
+ * The lpdf WASM and the viewer are loaded at runtime as external assets
  * co-located with this script in the lpdf-demo/ folder.
+ *
+ * The examples are the seven in examples/ of the lpdf repository, copied here by its
+ * scripts/sync-examples.mjs: examples/index.json lists them, and each has a folder with its
+ * document.xml, its document.json if it has data, and the fonts and images it names.
  */
 
 import { LitElement, html, nothing } from 'lit';
@@ -24,24 +28,9 @@ import { php as phpLang } from '@codemirror/lang-php';
 import { csharp } from '@codemirror/legacy-modes/mode/clike';
 
 import {
-    PDFJS_URL, PDFJS_WORKER,
     LPDF_URL, LPDFWEB_URL,
-    ASSETS_BASE, EXAMPLES_BASE,
+    VIEWER_URL, EXAMPLES_BASE,
 } from './demo/assets';
-
-// ── Zoom presets ─────────────────────────────────────────────────────────────
-const ZOOM_PRESETS = [
-    { value: 'fit',  label: 'Fill'  },
-    { value: '0.25', label: '25%'  },
-    { value: '0.5',  label: '50%'  },
-    { value: '0.75', label: '75%'  },
-    { value: '1.25', label: '125%' },
-    { value: '1.5',  label: '150%' },
-    { value: '2',    label: '200%' },
-    { value: '3',    label: '300%' },
-    { value: '4',    label: '400%' },
-];
-const ZOOM_PRESET_VALS = new Set(ZOOM_PRESETS.filter(p => p.value !== 'fit').map(p => p.value));
 
 // ── Mode list ────────────────────────────────────────────────────────────────
 const MODES = [
@@ -51,18 +40,21 @@ const MODES = [
     { id: 'python', label: 'Python',   icon: 'fa-brands fa-python' },
     { id: 'xml',    label: 'XML',      icon: 'fa-solid fa-code' },
 ];
+/** The tab that shows document.json, offered only for an example that has data. */
+const DATA_MODE = { id: 'json', label: 'JSON data', icon: 'fa-solid fa-database' };
 
-// ── Curated example list ─────────────────────────────────────────────────────
-const EXAMPLES = [
-    { label: 'Invoice',          file: 'example3.xml' },
-    { label: 'Résumé / CV',      file: 'example2.xml' },
-    { label: 'Certificate',      file: 'example4.xml' },
-    { label: 'Contract',         file: 'example-contract.xml' },
-    { label: 'Shipping label',   file: 'example7.xml' },
-    { label: 'Table showcase',   file: 'showcase-table.xml' },
-    { label: 'Barcode showcase', file: 'showcase-barcode.xml' },
-    { label: 'Grid showcase',    file: 'showcase-grid.xml' },
-];
+// ── Example list ─────────────────────────────────────────────────────────────
+// Read from examples/index.json at boot, so a new example needs no change here.
+interface ExampleEntry {
+    id: string;
+    label: string;
+    description: string;
+    /** document.xml, relative to examples/. */
+    xml: string;
+    /** document.json, relative to examples/, or null for a document with no data. */
+    data: string | null;
+}
+let EXAMPLES: ExampleEntry[] = [];
 
 // ── CodeMirror themes & highlight styles ─────────────────────────────────────
 
@@ -142,6 +134,7 @@ function langExtForMode(mode: string) {
     switch (mode) {
         case 'xml':    return xmlLang();
         case 'js':     return jsLang();
+        case 'json':   return jsLang();
         case 'python': return pythonLang();
         case 'php':    return phpLang({ plain: true });
         case 'dotnet': return StreamLanguage.define(csharp);
@@ -150,11 +143,11 @@ function langExtForMode(mode: string) {
 }
 
 // ── Module-level non-serializable state ──────────────────────────────────────
-// Kept outside Redux because Uint8Array / pdfjs objects are not serialisable.
+// Kept outside Redux because Uint8Array objects are not serialisable.
 let lpdfEngine: any      = null;
-let currentPdfDoc: any   = null;
 let currentPdfBytes: any = null;
-const loadedAssets       = new Set<string>();
+/** Each font and image registered with the engine, by kind and name, with the address it was loaded from. */
+const loadedAssets       = new Map<string, string>();
 
 // ── Redux slices ─────────────────────────────────────────────────────────────
 
@@ -169,35 +162,23 @@ const engineSlice = createSlice({
 
 const editorSlice = createSlice({
     name: 'editor',
-    initialState: { selectedFile: EXAMPLES[0].file },
+    initialState: { selectedId: '' },
     reducers: {
-        fileSelected: (state, { payload }: { payload: string }) => { state.selectedFile = payload; },
+        exampleSelected: (state, { payload }: { payload: string }) => { state.selectedId = payload; },
     },
 });
 
 const renderSlice = createSlice({
     name: 'render',
-    initialState: { status: 'idle', error: '', pageCount: 0, byteSize: 0 },
+    initialState: { status: 'idle', error: '', byteSize: 0 },
     reducers: {
         renderStarted: state => { state.status = 'rendering'; state.error = ''; },
-        renderDone: (state, { payload }: { payload: { pageCount: number; byteSize: number } }) => {
-            state.status    = 'done';
-            state.pageCount = payload.pageCount;
-            state.byteSize  = payload.byteSize;
+        renderDone: (state, { payload }: { payload: { byteSize: number } }) => {
+            state.status   = 'done';
+            state.byteSize = payload.byteSize;
         },
         renderFailed: (state, { payload }: { payload: string }) => { state.status = 'error'; state.error = payload; },
-        renderReset:  state => { state.status = 'idle'; state.error = ''; state.pageCount = 0; state.byteSize = 0; },
-    },
-});
-
-const viewerSlice = createSlice({
-    name: 'viewer',
-    initialState: { zoomFactor: 1.0 },
-    reducers: {
-        zoomIn:    state => { state.zoomFactor = Math.min(4.0,  +(state.zoomFactor * 1.25).toFixed(4)); },
-        zoomOut:   state => { state.zoomFactor = Math.max(0.25, +(state.zoomFactor / 1.25).toFixed(4)); },
-        zoomReset: state => { state.zoomFactor = 1.0; },
-        zoomSet:   (state, { payload }: { payload: number }) => { state.zoomFactor = Math.min(4.0, Math.max(0.25, payload)); },
+        renderReset:  state => { state.status = 'idle'; state.error = ''; state.byteSize = 0; },
     },
 });
 
@@ -214,7 +195,6 @@ const store = configureStore({
         engine: engineSlice.reducer,
         editor: editorSlice.reducer,
         render: renderSlice.reducer,
-        viewer: viewerSlice.reducer,
         mode:   modeSlice.reducer,
     },
     middleware: gDM => gDM({ serializableCheck: false }),
@@ -223,9 +203,8 @@ const store = configureStore({
 type RootState = ReturnType<typeof store.getState>;
 
 const { engineLoaded, engineFailed }                           = engineSlice.actions;
-const { fileSelected }                                         = editorSlice.actions;
+const { exampleSelected }                                      = editorSlice.actions;
 const { renderStarted, renderDone, renderFailed, renderReset } = renderSlice.actions;
-const { zoomIn, zoomOut, zoomReset, zoomSet }                  = viewerSlice.actions;
 const { modeSelected }                                         = modeSlice.actions;
 
 // ── Asset helpers ─────────────────────────────────────────────────────────────
@@ -233,7 +212,8 @@ const { modeSelected }                                         = modeSlice.actio
 function extractAssetSrcs(xml: string, tag: string) {
     const result = new Map<string, string>();
     const re     = tag === 'font' ? /<font\b[\s\S]*?>/g : /<image\b[\s\S]*?>/g;
-    for (const match of xml.matchAll(re)) {
+    // An <image> or <font> inside a comment is text about the format, not an asset the document uses.
+    for (const match of xml.replace(/<!--[\s\S]*?-->/g, '').matchAll(re)) {
         const t    = match[0];
         const name = /\bname=["']([^"']*)["']/.exec(t)?.[1];
         const ref  = /\bref=["']([^"']*)["']/.exec(t)?.[1];
@@ -244,28 +224,47 @@ function extractAssetSrcs(xml: string, tag: string) {
     return result;
 }
 
-async function loadAssetsFromXml(xml: string) {
+/**
+ * Registers the fonts and images a document names with the engine. An asset's `src` is relative to
+ * the document, as it is on disk, so it is fetched from the folder of the example. Examples reuse
+ * names (two of them have a font called `body`), so an asset is loaded again when the address
+ * behind its name changes.
+ * @param xml The document.
+ * @param base The address of the document, which its `src` values are relative to.
+ */
+async function loadAssetsFromXml(xml: string, base: string) {
     if (!lpdfEngine) return;
-    for (const [key, src] of extractAssetSrcs(xml, 'font')) {
-        if (loadedAssets.has(`font:${key}`)) continue;
-        try {
-            const res = await fetch(new URL(src, ASSETS_BASE));
-            if (res.ok) {
-                lpdfEngine.loadFont(key, new Uint8Array(await res.arrayBuffer()));
-                loadedAssets.add(`font:${key}`);
-            }
-        } catch { /* ignore unfetchable assets */ }
+    const kinds = [
+        { tag: 'font',  register: (key: string, bytes: Uint8Array) => lpdfEngine.loadFont(key, bytes) },
+        { tag: 'image', register: (key: string, bytes: Uint8Array) => lpdfEngine.loadImage(key, bytes) },
+    ];
+    for (const { tag, register } of kinds) {
+        for (const [key, src] of extractAssetSrcs(xml, tag)) {
+            const url = new URL(src, base).href;
+            if (loadedAssets.get(`${tag}:${key}`) === url) continue;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`${src}: ${res.status} ${res.statusText}`);
+            register(key, new Uint8Array(await res.arrayBuffer()));
+            loadedAssets.set(`${tag}:${key}`, url);
+        }
     }
-    for (const [key, src] of extractAssetSrcs(xml, 'image')) {
-        if (loadedAssets.has(`image:${key}`)) continue;
-        try {
-            const res = await fetch(new URL(src, ASSETS_BASE));
-            if (res.ok) {
-                lpdfEngine.loadImage(key, new Uint8Array(await res.arrayBuffer()));
-                loadedAssets.add(`image:${key}`);
-            }
-        } catch { /* ignore unfetchable assets */ }
+}
+
+/** A string of bytes as base64, which is how the viewer is sent a PDF. */
+function bytesToBase64(bytes: Uint8Array): string {
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
     }
+    return btoa(binary);
+}
+
+/** The bytes of a base64 string. */
+function base64ToBytes(text: string): Uint8Array {
+    const binary = atob(text);
+    const bytes  = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
 }
 
 // ── Lit component ─────────────────────────────────────────────────────────────
@@ -283,6 +282,13 @@ class LpdfDemo extends LitElement {
     _unsub: (() => void) | null        = null;
     _debounce: ReturnType<typeof setTimeout> | null = null;
     _currentXml: string                = '';
+    /** The address of the document being shown: its fonts and images are relative to it. */
+    _currentBase: string               = '';
+    /** The document's data, parsed, and as the file has it for the data tab. */
+    _currentData: unknown              = null;
+    _currentDataText: string           = '';
+    _viewerReady: boolean              = false;
+    _pendingViewerMessage: { type: string; [key: string]: unknown } | null = null;
     _pendingText: string | null        = null;
     _pendingLang: string | null        = null;
     _cmView: EditorView | null         = null;
@@ -300,12 +306,14 @@ class LpdfDemo extends LitElement {
         this._unsub = store.subscribe(() => {
             this._s = { ...store.getState() };
         });
+        window.addEventListener('message', this._onViewerMessage);
         this._boot();
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         this._unsub?.();
+        window.removeEventListener('message', this._onViewerMessage);
         if (this._debounce) clearTimeout(this._debounce);
         this._themeObs?.disconnect();
         this._cmView?.destroy();
@@ -372,8 +380,6 @@ class LpdfDemo extends LitElement {
         try {
             const { initLpdf }                          = await import(/* @vite-ignore */ LPDF_URL);
             const { default: initLpdfWeb, codegen_wasm } = await import(/* @vite-ignore */ LPDFWEB_URL);
-            const pdfjsLib                               = await import(/* @vite-ignore */ PDFJS_URL);
-            pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
 
             lpdfEngine = await initLpdf();
             await initLpdfWeb();
@@ -381,8 +387,15 @@ class LpdfDemo extends LitElement {
             // Store codegen on the instance so _generateCode can use it.
             (this as any)._codegen = codegen_wasm;
 
+            const index = await fetch(new URL('index.json', EXAMPLES_BASE));
+            if (!index.ok) throw new Error(`examples/index.json: ${index.status} ${index.statusText}`);
+            EXAMPLES = (await index.json()).examples as ExampleEntry[];
+            if (EXAMPLES.length === 0) throw new Error('examples/index.json lists no examples');
+
             store.dispatch(engineLoaded());
-            await this._loadExample(EXAMPLES[0].file);
+            // ?example=invoice opens that example, which is how the docs link to one.
+            const asked = new URLSearchParams(location.search).get('example');
+            await this._loadExample(EXAMPLES.find(example => example.id === asked)?.id ?? EXAMPLES[0].id);
             this._scheduleRender();
         } catch (err: any) {
             store.dispatch(engineFailed(err.message));
@@ -391,19 +404,44 @@ class LpdfDemo extends LitElement {
 
     // ── Example loading ───────────────────────────────────────────────────────
 
-    async _loadExample(file: string) {
-        store.dispatch(fileSelected(file));
-        const url = new URL(file, EXAMPLES_BASE).href;
-        const res = await fetch(url);
+    async _loadExample(id: string) {
+        const example = EXAMPLES.find(candidate => candidate.id === id);
+        if (!example) throw new Error(`There is no example ${id}`);
+        store.dispatch(exampleSelected(id));
+
+        const xmlUrl = new URL(example.xml, EXAMPLES_BASE).href;
+        const res    = await fetch(xmlUrl);
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-        const xml         = await res.text();
-        this._currentXml  = xml;
-        const { mode }    = store.getState();
-        const text        = mode.selected === 'xml'
-            ? xml
-            : this._generateCode(xml, mode.selected);
-        this._pendingText = text;
+        const xml    = await res.text();
+
+        // The data is parsed here, so a bad file fails now and not in the engine.
+        let data: unknown = null;
+        let dataText      = '';
+        if (example.data) {
+            const dataRes = await fetch(new URL(example.data, EXAMPLES_BASE));
+            if (!dataRes.ok) throw new Error(`${example.data}: ${dataRes.status} ${dataRes.statusText}`);
+            dataText = await dataRes.text();
+            data     = JSON.parse(dataText);
+        }
+
+        this._currentXml     = xml;
+        this._currentBase    = xmlUrl;
+        this._currentData    = data;
+        this._currentDataText = dataText;
+
+        // A tab for the data is offered only when the example has some; without it, show the XML.
+        let { mode } = store.getState();
+        if (mode.selected === DATA_MODE.id && !example.data) {
+            store.dispatch(modeSelected('xml'));
+            mode = store.getState().mode;
+        }
+        this._pendingText = this._textForMode(mode.selected);
         this._pendingLang = mode.selected;
+
+        // Keep the address shareable: the page opens on this example when it is loaded again.
+        const url = new URL(location.href);
+        url.searchParams.set('example', id);
+        history.replaceState(null, '', url);
         return xml;
     }
 
@@ -417,54 +455,53 @@ class LpdfDemo extends LitElement {
     async _doRender() {
         if (!lpdfEngine || !this._currentXml.trim()) return;
         store.dispatch(renderStarted());
-        const pdfjsLib = await import(/* @vite-ignore */ PDFJS_URL);
+        this._postToViewer({ type: 'showLoading' });
         try {
-            await loadAssetsFromXml(this._currentXml);
-            const bytes      = await lpdfEngine.render(this._currentXml);
-            currentPdfBytes  = bytes.slice();
-            currentPdfDoc    = await pdfjsLib.getDocument({ data: bytes }).promise;
-            store.dispatch(renderDone({
-                pageCount: currentPdfDoc.numPages,
-                byteSize:  currentPdfBytes.length,
-            }));
-            store.dispatch(zoomReset());
-            await this._drawPages();
+            await loadAssetsFromXml(this._currentXml, this._currentBase);
+            const bytes = await lpdfEngine.render(this._currentXml, this._currentData != null ? { data: this._currentData } : {});
+            currentPdfBytes = bytes.slice();
+            store.dispatch(renderDone({ byteSize: currentPdfBytes.length }));
+            // A document that has not been shown before starts at the top, fitted to the width.
+            this._postToViewer({ type: 'updatePdf', pdfBase64: bytesToBase64(currentPdfBytes), filename: 'document.pdf', zoom: 'fit' });
         } catch (err: any) {
             store.dispatch(renderFailed(err.message));
+            this._postToViewer({ type: 'showError', message: err.message });
         }
     }
 
-    // ── Page rendering ────────────────────────────────────────────────────────
+    // ── The viewer ────────────────────────────────────────────────────────────
+    // The viewer is the page the VS Code extension shows PDFs in (viewer/index.html). It takes the
+    // same messages: it says `ready` when it can receive, and is sent `updatePdf` with the PDF.
 
-    _getFitScale(page: any) {
-        const el = this.querySelector('.lpdf-preview-pages');
-        if (!el) return 1;
-        const vp = page.getViewport({ scale: 1 });
-        const W  = (el as HTMLElement).clientWidth - 48;
-        return W / vp.width;
+    _viewerFrame(): HTMLIFrameElement | null {
+        return this.querySelector('.lpdf-viewer-frame');
     }
 
-    async _drawPages() {
-        if (!currentPdfDoc) return;
-        const container = this.querySelector('.lpdf-preview-pages');
-        if (!container) return;
-        (container as HTMLElement).innerHTML = '';
-
-        const { zoomFactor } = store.getState().viewer;
-        const firstPage = await currentPdfDoc.getPage(1);
-        const fitScale  = this._getFitScale(firstPage);
-        const scale     = fitScale * zoomFactor;
-
-        for (let p = 1; p <= currentPdfDoc.numPages; p++) {
-            const page     = p === 1 ? firstPage : await currentPdfDoc.getPage(p);
-            const viewport = page.getViewport({ scale });
-            const canvas   = document.createElement('canvas');
-            canvas.width   = viewport.width;
-            canvas.height  = viewport.height;
-            container.appendChild(canvas);
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    /** Sends a message to the viewer, now if it is ready, else when it says it is. Only the last PDF waits. */
+    _postToViewer(message: { type: string; [key: string]: unknown }) {
+        if (this._viewerReady) {
+            this._viewerFrame()?.contentWindow?.postMessage(message, location.origin);
+        } else if (message.type === 'updatePdf' || message.type === 'showError') {
+            this._pendingViewerMessage = message;
         }
     }
+
+    _onViewerMessage = (event: MessageEvent) => {
+        const frame = this._viewerFrame();
+        if (!frame || event.source !== frame.contentWindow || event.origin !== location.origin) return;
+        const message = event.data;
+        if (message?.type === 'ready') {
+            this._viewerReady = true;
+            if (this._pendingViewerMessage) {
+                const pending = this._pendingViewerMessage;
+                this._pendingViewerMessage = null;
+                this._postToViewer(pending);
+            }
+        } else if (message?.type === 'download' && typeof message.pdfBase64 === 'string') {
+            // The viewer's own Save button: the PDF as shown, with anything typed into its form fields.
+            this._saveBytes(base64ToBytes(message.pdfBase64), message.filename || 'document.pdf');
+        }
+    };
 
     // ── Codegen ───────────────────────────────────────────────────────────────
 
@@ -476,25 +513,26 @@ class LpdfDemo extends LitElement {
         }
     }
 
+    /** What the editor shows for a tab: the XML, the data, or the code that builds the document. */
+    _textForMode(mode: string) {
+        if (mode === 'xml')            return this._currentXml;
+        if (mode === DATA_MODE.id)     return this._currentDataText;
+        return this._generateCode(this._currentXml, mode);
+    }
+
     // ── Event handlers ────────────────────────────────────────────────────────
 
     _onModeChange(mode: string) {
         store.dispatch(modeSelected(mode));
-        const text = mode === 'xml'
-            ? this._currentXml
-            : this._generateCode(this._currentXml, mode);
-        this._setCmContent(text, mode);
+        this._setCmContent(this._textForMode(mode), mode);
     }
 
     async _onExampleChange(e: Event) {
-        const file = (e.target as HTMLSelectElement).value;
+        const id = (e.target as HTMLSelectElement).value;
         store.dispatch(renderReset());
-        currentPdfDoc   = null;
         currentPdfBytes = null;
-        const pages = this.querySelector('.lpdf-preview-pages');
-        if (pages) (pages as HTMLElement).innerHTML = '';
         try {
-            await this._loadExample(file);
+            await this._loadExample(id);
         } catch (err: any) {
             store.dispatch(renderFailed(`Failed to load: ${err.message}`));
             return;
@@ -502,27 +540,12 @@ class LpdfDemo extends LitElement {
         this._scheduleRender();
     }
 
-    _onZoomIn()    { store.dispatch(zoomIn());    this._drawPages(); }
-    _onZoomOut()   { store.dispatch(zoomOut());   this._drawPages(); }
-    _onZoomReset() { store.dispatch(zoomReset()); this._drawPages(); }
-
-    _onZoomSelect(e: Event) {
-        const v = (e.target as HTMLSelectElement).value;
-        if (v === 'fit') {
-            store.dispatch(zoomReset());
-        } else {
-            store.dispatch(zoomSet(parseFloat(v)));
-        }
-        this._drawPages();
-    }
-
-    _onDownload() {
-        if (!currentPdfBytes) return;
-        const blob = new Blob([currentPdfBytes], { type: 'application/pdf' });
+    _saveBytes(bytes: Uint8Array, filename: string) {
+        const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
         a.href     = url;
-        a.download = 'document.pdf';
+        a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
     }
@@ -543,13 +566,11 @@ class LpdfDemo extends LitElement {
     // ── Render ────────────────────────────────────────────────────────────────
 
     render() {
-        const { engine, editor, render, viewer, mode } = this._s;
+        const { engine, editor, mode } = this._s;
         const engineReady   = engine.status === 'ready';
-        const hasPdf        = render.status === 'done';
-        const zoomPct       = Math.round(viewer.zoomFactor * 100);
-        const isFit         = viewer.zoomFactor === 1.0;
-        const zoomSelectVal = isFit ? 'fit' : String(viewer.zoomFactor);
-        const isPreset      = isFit || ZOOM_PRESET_VALS.has(zoomSelectVal);
+        const example       = EXAMPLES.find(candidate => candidate.id === editor.selectedId);
+        // The data tab is there only for an example that has data.
+        const modes         = example?.data ? [...MODES, DATA_MODE] : MODES;
 
         return html`
             <div class="lpdf-shell">
@@ -566,8 +587,8 @@ class LpdfDemo extends LitElement {
                                 ?disabled=${!engineReady}
                                 @change=${this._onExampleChange}>
                             ${EXAMPLES.map(ex => html`
-                                <option value=${ex.file}
-                                        ?selected=${editor.selectedFile === ex.file}>
+                                <option value=${ex.id}
+                                        ?selected=${editor.selectedId === ex.id}>
                                     Example - ${ex.label}
                                 </option>
                             `)}
@@ -584,7 +605,7 @@ class LpdfDemo extends LitElement {
                     <div class="lpdf-editor-pane">
                         <div class="lpdf-editor-header">
                             <div class="lpdf-mode-cluster">
-                                ${MODES.map(m => html`
+                                ${modes.map(m => html`
                                     <button class="lpdf-mode-btn"
                                             aria-pressed=${mode.selected === m.id}
                                             ?disabled=${!engineReady}
@@ -597,42 +618,18 @@ class LpdfDemo extends LitElement {
                         <div class="lpdf-cm-wrap" aria-label="lpdf source"></div>
                     </div>
 
-                    <!-- Right: PDF preview -->
+                    <!-- Right: PDF preview, in the viewer of the VS Code extension -->
                     <div class="lpdf-preview-pane">
-                        <div class="lpdf-preview-toolbar">
-                            <div class="lpdf-preview-wing"></div>
-                            <div class="lpdf-zoom-cluster">
-                                <button class="lpdf-zoom-btn"
-                                        title="Zoom out"
-                                        ?disabled=${!hasPdf || viewer.zoomFactor <= 0.25}
-                                        @click=${this._onZoomOut}>−</button>
-                                <select class="lpdf-zoom-select"
-                                        .value=${isPreset ? zoomSelectVal : ''}
-                                        ?disabled=${!hasPdf}
-                                        @change=${this._onZoomSelect}>
-                                    ${!isPreset ? html`<option value="" disabled hidden>${zoomPct}%</option>` : nothing}
-                                    ${ZOOM_PRESETS.map(p => html`<option value=${p.value}>${p.label}</option>`)}
-                                </select>
-                                <button class="lpdf-zoom-btn"
-                                        title="Zoom in"
-                                        ?disabled=${!hasPdf || viewer.zoomFactor >= 4.0}
-                                        @click=${this._onZoomIn}>+</button>
-                            </div>
-                            <div class="lpdf-preview-wing lpdf-preview-wing--end">
-                                ${hasPdf ? html`<span class="lpdf-page-count">${render.pageCount} page${render.pageCount !== 1 ? 's' : ''}</span>` : nothing}
-                                ${hasPdf ? html`<span class="lpdf-pdf-size">${(render.byteSize / 1024).toFixed(1)} KB</span>` : nothing}
-                                ${hasPdf ? html`<span class="lpdf-preview-sep" aria-hidden="true"></span>` : nothing}
-                                ${hasPdf ? html`<button class="lpdf-download-link" @click=${this._onDownload}>↓ Download</button>` : nothing}
-                            </div>
-                        </div>
                         <div class="lpdf-preview-inner">
-                            ${!hasPdf && render.status !== 'rendering' ? html`
-                                <div class="lpdf-placeholder">
-                                    <span class="lpdf-placeholder-icon">⬚</span>
-                                    <span>PDF preview will appear here</span>
+                            <iframe class="lpdf-viewer-frame"
+                                    title="PDF preview"
+                                    src=${VIEWER_URL}
+                                    loading="lazy"></iframe>
+                            ${engine.status === 'error' ? html`
+                                <div class="lpdf-placeholder lpdf-placeholder--error">
+                                    <span>${engine.error}</span>
                                 </div>
                             ` : nothing}
-                            <div class="lpdf-preview-pages"></div>
                         </div>
                     </div>
 

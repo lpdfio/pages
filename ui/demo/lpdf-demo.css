@@ -75,7 +75,7 @@ lpdf-demo {
     padding: 3px 7px;
     cursor: pointer;
     outline: none;
-    width: 180px;
+    width: 220px;
 }
 
 .lpdf-select:focus {
@@ -150,14 +150,27 @@ lpdf-demo {
     border-right: 1px solid var(--border);
 }
 
-/* ── Editor header (mode buttons, left-aligned) ────────────────── */
+/* ── Editor header (mode buttons, left-aligned) ────────────────────────────
+   It sits beside the toolbar of the PDF viewer, so it is as high and the same colour: those are the
+   viewer's own, --toolbar-height 36px and --lpdf-header-bg, in viewer/lpdf-theme.css (the viewer follows
+   the page's data-theme too). A change to either there is a change here. */
 .lpdf-editor-header {
     display: flex;
     align-items: center;
-    padding: 4px 8px;
-    background: var(--bg-sunken);
-    border-bottom: 1px solid var(--border);
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 8px;
+    background: rgb(249 249 250);
+    /* The viewer draws its bottom edge as a shadow, outside its 36px (--toolbar-box-shadow), not a border inside them. */
+    box-shadow: 0 1px 0 rgb(184 184 184);
+    position: relative;
+    z-index: 1;
     flex-shrink: 0;
+}
+
+[data-theme="dark"] .lpdf-editor-header {
+    background: rgb(56 56 61);
+    box-shadow: 0 1px 0 rgb(12 12 13);
 }
 
 .lpdf-mode-btn {
@@ -234,98 +247,13 @@ lpdf-demo {
     border-bottom: 1px solid var(--border);
 }
 
-/* ── Preview toolbar ─────────────────────────────────────────────────────── */
-.lpdf-preview-toolbar {
-    display: flex;
-    align-items: center;
-    padding: 4px 10px;
-    background: var(--bg-sunken);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-}
 
-.lpdf-preview-wing {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
 
-.lpdf-preview-wing--end {
-    justify-content: flex-end;
-}
 
-/* ── Zoom cluster (centred) ───────────────────────────────────────── */
-.lpdf-zoom-cluster {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-}
 
-.lpdf-zoom-btn {
-    width: 24px;
-    height: 22px;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: background .1s;
-}
 
-.lpdf-zoom-btn:hover:not(:disabled) {
-    background: color-mix(in oklab, var(--brand) 12%, var(--bg-elev));
-    color: var(--text);
-}
 
-.lpdf-zoom-btn:disabled { opacity: .4; cursor: default; }
 
-/* ── Zoom select (replaces zoom label + Fit button) ───────────────────── */
-.lpdf-zoom-select {
-    background: var(--bg-elev);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    padding: 2px 5px;
-    cursor: pointer;
-    outline: none;
-    width: 68px;
-    text-align: center;
-}
-
-.lpdf-zoom-select:focus {
-    border-color: var(--brand);
-}
-
-.lpdf-zoom-select:disabled {
-    opacity: .4;
-    cursor: default;
-}
-
-.lpdf-pdf-size {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.lpdf-page-count {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
 
 /* ── Engine status indicator ───────────────────────────────────────────── */
 .lpdf-engine-dot {
@@ -345,33 +273,7 @@ lpdf-demo {
     white-space: nowrap;
 }
 
-.lpdf-download-link {
-    padding: 0;
-    font-size: 11px;
-    font-weight: 500;
-    background: transparent;
-    color: var(--text-muted);
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    transition: color .15s;
-    white-space: nowrap;
-}
-
-.lpdf-download-link:hover {
-    color: var(--brand);
-}
-
-.lpdf-preview-sep {
-    display: inline-block;
-    width: 1px;
-    height: 10px;
-    background: var(--border);
-    margin: 0 4px;
-    flex-shrink: 0;
-}
-
-/* ── Preview inner (scrollable canvas area) ──────────────────────────────── */
+/* ── Preview inner: the PDF viewer, in an iframe ─────────────────────────── */
 .lpdf-preview-inner {
     flex: 1;
     position: relative;
@@ -379,22 +281,16 @@ lpdf-demo {
     overflow: hidden;
 }
 
-.lpdf-preview-pages {
+.lpdf-viewer-frame {
     position: absolute;
     inset: 0;
-    overflow: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
 }
 
-.lpdf-preview-pages canvas {
-    display: block;
-    margin: 0 auto;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .28);
-    flex-shrink: 0;
-}
+
 
 /* ── Empty state placeholder ─────────────────────────────────────────────── */
 .lpdf-placeholder {
@@ -410,6 +306,8 @@ lpdf-demo {
     pointer-events: none;
     user-select: none;
 }
+
+.lpdf-placeholder--error { color: #f44747; padding: 16px; text-align: center; background: var(--bg-sunken); }
 
 .lpdf-placeholder-icon {
     font-size: 38px;

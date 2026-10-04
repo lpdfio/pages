@@ -1,0 +1,53 @@
+{
+  "examples": [
+    {
+      "id": "admission-letter",
+      "label": "Admission letter",
+      "description": "A one-page letter on a university letterhead, with a crest drawn on the canvas.",
+      "xml": "admission-letter/document.xml",
+      "data": null
+    },
+    {
+      "id": "resume",
+      "label": "Résumé",
+      "description": "A one-page résumé: colours and sizes named once as tokens, two columns, wrapping tags.",
+      "xml": "resume/document.xml",
+      "data": null
+    },
+    {
+      "id": "invoice",
+      "label": "Invoice",
+      "description": "A two-page invoice filled from JSON: a repeating table, totals, a QR code, and page numbers.",
+      "xml": "invoice/document.xml",
+      "data": "invoice/document.json"
+    },
+    {
+      "id": "report",
+      "label": "Report",
+      "description": "A data-driven report on data centers: tables across pages, charts, and a tabloid world map.",
+      "xml": "report/document.xml",
+      "data": "report/document.json"
+    },
+    {
+      "id": "installment-contract",
+      "label": "Installment contract",
+      "description": "A four-page retail installment contract: boxed forms, leader lines and a rotated SAMPLE watermark.",
+      "xml": "installment-contract/document.xml",
+      "data": null
+    },
+    {
+      "id": "brochure",
+      "label": "Brochure",
+      "description": "A two-page A4 landscape brochure where the canvas is the design, with embedded fonts and a QR code.",
+      "xml": "brochure/document.xml",
+      "data": null
+    },
+    {
+      "id": "book",
+      "label": "Book",
+      "description": "A pocket book of all twelve chapters of Alice's Adventures in Wonderland, with plates and running heads.",
+      "xml": "book/document.xml",
+      "data": null
+    }
+  ]
+}

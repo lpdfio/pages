@@ -1,104 +1,48 @@
 # Report
 
-A multi-page report: cover page with a background colour, then a content section with a running header and footer on every page using `region`.
+A data-driven report on data centers: tables across pages, charts, and a tabloid world map.
 
-Demonstrates: multiple `section`, canvas underlay for cover, `<region pin="top/bottom">` for running chrome with page numbers, automatic pagination.
+[Open it in the demo](/home?example=report) · [document.xml](/docs/examples/report/document.xml) · [document.json](/docs/examples/report/document.json)
 
-```xml
-<lpdf version="1">
-  <assets>
-    <font name="body"    core="Helvetica"/>
-    <font name="bold"    core="Helvetica-Bold"/>
-    <font name="italic"  core="Helvetica-Oblique"/>
-  </assets>
-  <document size="a4" margin="48pt" font="body">
+<iframe class="lpdf-example-viewer"
+        src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/report/document.pdf"
+        title="The report, in the PDF viewer"
+        loading="lazy"></iframe>
 
-    <!-- ── Cover page ── -->
-    <section>
-      <canvas>
-        <!-- dark background underlay -->
-        <layer page="each">
-          <rect x="0pt" y="0pt" w="595pt" h="842pt" fill="#0f172a"/>
-          <rect x="0pt" y="560pt" w="595pt" h="282pt" fill="#1e3a5f"/>
-        </layer>
-      </canvas>
-      <layout>
-        <stack gap="xl" justify="between" height="full">
-          <stack gap="m">
-            <text font-size="xxl" font="bold" color="#ffffff">Annual Report</text>
-            <text font-size="l" color="#94a3b8" data-value="year">2026</text>
-          </stack>
-          <stack gap="xs">
-            <divider color="#334155" thickness="xs"/>
-            <text font-size="s" color="#64748b" data-value="company">Acme Inc</text>
-          </stack>
-        </stack>
-      </layout>
-    </section>
+## What it shows
 
-    <!-- ── Content section ── -->
-    <section>
-      <layout>
+```text
+A report on where the world's data centers are, in two kinds: the cloud regions of Amazon,
+Microsoft and Google, and the AI campuses built since 2024. The figures, the tables and the
+sentences about them come from document.json, as in the invoice. What this adds:
 
-        <!-- running header on every page -->
-        <region pin="top" page="each">
-          <flank align="center">
-            <text font-size="xs" color="#64748b" data-value="company">Acme Inc</text>
-            <text font-size="xs" color="#64748b" align="right">Annual Report 2026</text>
-          </flank>
-          <divider color="#e2e8f0" thickness="xs"/>
-        </region>
+  pagination   nothing here says where a page ends. Content flows, a row or an image moves to
+               the next page whole, and the table header repeats at the top of each page
+  images       declare them in <assets>, place them with <img>. Their size is yours to set
+  region       text pinned to the top or bottom of every page, outside the flow. The one
+               written first is the header, the one written last is the footer
+  page scope   page="each", "first" or "2-last" says which pages a region or a canvas layer
+               is on. {page} and {pages} become the page number and the page count, counted
+               within a section: a report that numbers its pages is one section
+  sections     each section sets its own page. The last one here is tabloid, landscape, and
+               holds only a canvas: a world map drawn as paths, with a marker for each site
+  paginate     paginate="no" on a box keeps it whole: a heading stack moves to the next page
+               with its paragraph instead of stranding the heading. It is set on each section
+               of text here, and the tables are left to split, their header repeating
 
-        <!-- running footer on every page -->
-        <region pin="bottom" page="each">
-          <divider color="#e2e8f0" thickness="xs"/>
-          <flank align="center">
-            <text font-size="xs" color="#94a3b8">Confidential</text>
-            <text font-size="xs" color="#94a3b8" align="right">Page {page} of {pages}</text>
-          </flank>
-        </region>
-
-        <!-- page content — flows across pages automatically -->
-        <stack gap="l">
-          <text font-size="xl" font="bold">Executive Summary</text>
-          <text font-size="m" align="justify" data-value="summary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </text>
-
-          <text font-size="xl" font="bold">Financial Highlights</text>
-          <table cols="2fr 1fr 1fr" border="xs #e2e8f0" stripe="#f8fafc">
-            <thead background="#f1f5f9">
-              <td padding="xs"><text font="bold" font-size="xs">Metric</text></td>
-              <td padding="xs" align="end"><text font="bold" font-size="xs">2025</text></td>
-              <td padding="xs" align="end"><text font="bold" font-size="xs">2026</text></td>
-            </thead>
-            <tr data-source="financials">
-              <td padding="xs"><text data-value="metric">Revenue</text></td>
-              <td padding="xs" align="end"><text data-value="y2025">$0</text></td>
-              <td padding="xs" align="end"><text data-value="y2026">$0</text></td>
-            </tr>
-          </table>
-        </stack>
-
-      </layout>
-    </section>
-
-  </document>
-</lpdf>
+The prose is written for this data. Change the data and the sentences stay as they are, but
+check where the pages break when the content changes. The map is generated from the same
+data: its land outlines are Natural Earth and its markers sit at town or metro level, so do
+not edit it by hand.
 ```
 
-## Sample data
+## Fonts and images
 
-```json
-{
-  "company": "Acme Inc",
-  "year": "2026",
-  "summary": "Revenue grew 24% year-over-year driven by new enterprise contracts and expansion into three new markets. Operating margin improved by 4 percentage points.",
-  "financials": [
-    { "metric": "Revenue",         "y2025": "$4.2M",  "y2026": "$5.2M"  },
-    { "metric": "Gross Profit",    "y2025": "$2.1M",  "y2026": "$2.8M"  },
-    { "metric": "Operating Income","y2025": "$620K",  "y2026": "$940K"  }
-  ]
-}
-```
+The document names 2 files, which go in an `assets` folder next to it. In Visual Studio Code, **Lpdf: New Document** puts them there.
+
+- [assets/ai-campuses-by-power.png](/docs/examples/report/assets/ai-campuses-by-power.png)
+- [assets/cloud-regions-by-area.png](/docs/examples/report/assets/cloud-regions-by-area.png)
+
+## The document
+
+The document is 842 lines, so it is not repeated here. Open it in the demo to read it beside the PDF it makes, or download it above.

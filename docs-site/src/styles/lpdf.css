@@ -283,3 +283,15 @@ site-search button[data-close-modal] {
 site-search button[data-close-modal]:hover {
     color: var(--lpdf-brand);
 }
+
+/* The PDF viewer on an example page: the viewer of the demo and the extension, in an iframe (see render-examples.mjs). It
+   is as tall as a screen of a page's worth, with the page's own hairline round it. */
+.sl-markdown-content iframe.lpdf-example-viewer:not(:where(.not-content *)) {
+    display: block;
+    width: 100%;
+    height: min(720px, 80vh);
+    margin-block: 1.5rem;
+    border: 1px solid var(--lpdf-hairline);
+    border-radius: 8px;
+    background: transparent;
+}

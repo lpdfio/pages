@@ -18,6 +18,17 @@ export default defineConfig({
             title: 'Lpdf Docs',
             description: 'Reference and guides for Lpdf: PDF as code on every platform.',
             favicon: '/favicon.ico',
+            // The same Umami tracker the static pages of lpdf.io carry.
+            head: [
+                {
+                    tag: 'script',
+                    attrs: {
+                        defer: true,
+                        src: 'https://cloud.umami.is/script.js',
+                        'data-website-id': '59a27b01-7833-45ca-89a0-9c16906e45f1',
+                    },
+                },
+            ],
             components: {
                 Header: './src/components/header.astro',
                 PageFrame: './src/components/page-frame.astro',

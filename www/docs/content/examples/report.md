@@ -2,6 +2,8 @@
 
 A data-driven report on data centers: tables across pages, charts, and a tabloid world map.
 
+[document.xml](/docs/examples/report/document.xml) · [document.json](/docs/examples/report/document.json)
+
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/report/document.pdf"
         title="The report, in the PDF viewer"
@@ -43,4 +45,4 @@ The document names 2 files, which go in an `assets` folder next to it. In Visual
 
 ## The document
 
-The document is 842 lines, so it is not repeated here. Open it in the demo to read it beside the PDF it makes, or download it above.
+The document is 842 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

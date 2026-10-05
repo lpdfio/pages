@@ -2,6 +2,8 @@
 
 A pocket book of all twelve chapters of Alice's Adventures in Wonderland, with plates and running heads.
 
+[document.xml](/docs/examples/book/document.xml)
+
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/book/document.pdf"
         title="The book, in the PDF viewer"
@@ -71,4 +73,4 @@ The document names 15 files, which go in an `assets` folder next to it. In Visua
 
 ## The document
 
-The document is 1,291 lines, so it is not repeated here. Open it in the demo to read it beside the PDF it makes, or download it above.
+The document is 1,291 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

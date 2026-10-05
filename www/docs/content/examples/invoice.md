@@ -2,6 +2,8 @@
 
 A two-page invoice filled from JSON: a repeating table, totals, a QR code, and page numbers.
 
+[document.xml](/docs/examples/invoice/document.xml) · [document.json](/docs/examples/invoice/document.json)
+
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/invoice/document.pdf"
         title="The invoice, in the PDF viewer"

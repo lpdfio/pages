@@ -2,8 +2,6 @@
 
 A four-page retail installment contract: boxed forms, leader lines and a rotated SAMPLE watermark.
 
-[Open it in the demo](/home?example=installment-contract) · [document.xml](/docs/examples/installment-contract/document.xml)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/installment-contract/document.pdf"
         title="The installment contract, in the PDF viewer"

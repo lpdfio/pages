@@ -2,8 +2,6 @@
 
 A one-page letter on a university letterhead, with a crest drawn on the canvas.
 
-[Open it in the demo](/home?example=admission-letter) · [document.xml](/docs/examples/admission-letter/document.xml)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/admission-letter/document.pdf"
         title="The admission letter, in the PDF viewer"

@@ -112,7 +112,6 @@ async function startViewer() {
     followEditorTheme();
     arrangeToolbar();
     const workerSrc = await createWorkerUrl(config.workerUri, message => log('error', message));
-    log('info', `worker source: ${workerSrc.startsWith('blob:') ? 'blob' : 'plain URI (page-thread fallback)'}`);
 
     configureOnViewerLoad(options => options.setAll({
         // Nothing opens by itself: the extension host sends the PDF.
@@ -164,14 +163,8 @@ async function showPdf(app, message) {
     current = { pdfBase64: message.pdfBase64, filename: message.filename };
     // The viewer opens a document at this bookmark, in the form it writes into its own links.
     app.initialBookmark = isNewFile || !lastLocation ? null : lastLocation.pdfOpenParams.substring(1);
-    const started = performance.now();
-    const since = () => `+${Math.round(performance.now() - started)}ms`;
-    const onFirstPage = () => log('info', `first page rendered ${since()}`);
-    app.eventBus.on('pagerendered', onFirstPage, { once: true });
-    log('info', `open ${message.filename} (${message.pdfBase64.length} base64 chars)`);
     // The open arguments go to PDF.js's getDocument as they are; see documentOptions for why the page fetches its data files.
     await app.open({ data: base64ToBytes(message.pdfBase64), filename: message.filename, useWorkerFetch: false });
-    log('info', `document opened ${since()}, ${app.pagesCount} pages`);
     hideStatus();
 }
 

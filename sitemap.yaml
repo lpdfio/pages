@@ -12,10 +12,10 @@
 #   index       — false: <meta name="robots" content="noindex">, and no canonical or og tags
 #
 # Title format: "Lpdf — Page Name" (em dash, brand prefix)
-# Home exception: tagline replaces brand suffix
+# Home exception (path /): tagline replaces brand suffix
 # Product name is "Lpdf"; lowercase "lpdf" only for package names and the XML root element.
 #
-# Pages not listed here keep hand-written meta: the root splash (index.html), 404.html,
+# Pages not listed here keep hand-written meta: 404.html,
 # and the brand previews (pricing-authstack, pricing-conseal).
 
 base_url: https://lpdf.io
@@ -23,8 +23,8 @@ og_image: https://lpdf.io/assets/images/og-default.png
 
 pages:
 
-  - path: /home
-    canonical: https://lpdf.io/home
+  - path: /
+    canonical: https://lpdf.io/
     title: "Lpdf — PDF as Code"
     description: "Generate pixel-perfect PDFs in Node.js, .NET, PHP, and Python using a declarative XML or code-based document model. No cloud dependency, no seat limits."
     index: true

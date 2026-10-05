@@ -2,8 +2,6 @@
 
 A one-page résumé: colours and sizes named once as tokens, two columns, wrapping tags.
 
-[Open it in the demo](/home?example=resume) · [document.xml](/docs/examples/resume/document.xml)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/resume/document.pdf"
         title="The résumé, in the PDF viewer"

@@ -2,8 +2,6 @@
 
 A data-driven report on data centers: tables across pages, charts, and a tabloid world map.
 
-[Open it in the demo](/home?example=report) · [document.xml](/docs/examples/report/document.xml) · [document.json](/docs/examples/report/document.json)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/report/document.pdf"
         title="The report, in the PDF viewer"

@@ -56,6 +56,28 @@ interface ExampleEntry {
 }
 let EXAMPLES: ExampleEntry[] = [];
 
+/** Where the chosen example is kept, so a reload opens the same one without the address saying so. */
+const EXAMPLE_STORAGE_KEY = 'lpdf-demo-example';
+
+/** Session storage can be blocked (private windows, site data off), and the demo works without it. */
+function storedExample(): string | undefined
+{
+    try {
+        return sessionStorage.getItem(EXAMPLE_STORAGE_KEY) ?? undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+function storeExample(id: string): void
+{
+    try {
+        sessionStorage.setItem(EXAMPLE_STORAGE_KEY, id);
+    } catch {
+        // Not kept; the next load opens the first example.
+    }
+}
+
 // ── CodeMirror themes & highlight styles ─────────────────────────────────────
 
 const CM_BASE_THEME = EditorView.theme({
@@ -393,8 +415,14 @@ class LpdfDemo extends LitElement {
             if (EXAMPLES.length === 0) throw new Error('examples/index.json lists no examples');
 
             store.dispatch(engineLoaded());
-            // ?example=invoice opens that example, which is how the docs link to one.
-            const asked = new URLSearchParams(location.search).get('example');
+            // ?example=invoice opens that example, which is how the docs link to one. It is read once and
+            // taken out of the address; after that the choice lives in session storage.
+            const url   = new URL(location.href);
+            const asked = url.searchParams.get('example') ?? storedExample();
+            if (url.searchParams.has('example')) {
+                url.searchParams.delete('example');
+                history.replaceState(null, '', url);
+            }
             await this._loadExample(EXAMPLES.find(example => example.id === asked)?.id ?? EXAMPLES[0].id);
             this._scheduleRender();
         } catch (err: any) {
@@ -438,10 +466,7 @@ class LpdfDemo extends LitElement {
         this._pendingText = this._textForMode(mode.selected);
         this._pendingLang = mode.selected;
 
-        // Keep the address shareable: the page opens on this example when it is loaded again.
-        const url = new URL(location.href);
-        url.searchParams.set('example', id);
-        history.replaceState(null, '', url);
+        storeExample(id);
         return xml;
     }
 

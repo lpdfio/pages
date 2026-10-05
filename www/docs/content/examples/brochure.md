@@ -2,8 +2,6 @@
 
 A two-page A4 landscape brochure where the canvas is the design, with embedded fonts and a QR code.
 
-[Open it in the demo](/home?example=brochure) · [document.xml](/docs/examples/brochure/document.xml)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/brochure/document.pdf"
         title="The brochure, in the PDF viewer"

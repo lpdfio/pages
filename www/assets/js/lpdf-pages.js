@@ -27,7 +27,7 @@
             <nav class="nav">
                 <div class="nav-inner rl-split rl-align-center">
                     <div class="rl-cluster rl-gap-2xl rl-align-center">
-                        ${this._logo("/home")}
+                        ${this._logo("/")}
                     </div>
                     <div class="rl-cluster rl-gap-l rl-align-center">
                         ${this._themeBtn()}
@@ -38,7 +38,7 @@
             <nav class="nav">
                 <div class="nav-inner rl-split rl-align-center">
                     <div class="rl-cluster rl-gap-2xl rl-align-center">
-                        ${this._logo("/home")}
+                        ${this._logo("/")}
                     </div>
                     <div class="rl-cluster rl-gap-l rl-align-center">
                         ${this._themeBtn()}
@@ -49,7 +49,7 @@
             <nav class="nav">
                 <div class="nav-inner rl-split rl-align-center">
                     <div class="rl-cluster rl-gap-l rl-align-center">
-                        ${this._logo("/home")}
+                        ${this._logo("/")}
                         <span class="nav-section-label">Pricing</span>
                     </div>
                     <div class="rl-cluster rl-gap-l rl-align-center">
@@ -61,7 +61,7 @@
             <nav class="nav">
                 <div class="nav-inner rl-split rl-align-center">
                     <div class="rl-cluster rl-gap-l rl-align-center">
-                        ${this._logo("/home")}
+                        ${this._logo("/")}
                         <div class="rl-cluster rl-gap-xl">
                             <span class="nav-section-label">Docs</span>
                             ${this.hasPage?this._sdkDropdown():ne}
@@ -77,7 +77,7 @@
             <nav class="nav">
                 <div class="nav-inner rl-split rl-align-center">
                     <div class="rl-cluster rl-gap-l rl-align-center">
-                        ${this._logo("/home")}
+                        ${this._logo("/")}
                         <span class="nav-section-label">Legal</span>
                     </div>
                     <div class="rl-cluster rl-gap-xl rl-align-center nav-links">
@@ -117,7 +117,7 @@ on every platform`}render(){return G`
             </footer>
         `}_brandColumn(){return G`
             <div class="rl-stack rl-gap-s">
-                <a href="/home" class="footer-logo">
+                <a href="/" class="footer-logo">
                     <img src="${this.logoMark}" alt="" class="footer-logo-mark" />
                     <span class="footer-logo-word">${this.logoWord}</span>
                 </a>

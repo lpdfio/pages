@@ -2,8 +2,6 @@
 
 A pocket book of all twelve chapters of Alice's Adventures in Wonderland, with plates and running heads.
 
-[Open it in the demo](/home?example=book) · [document.xml](/docs/examples/book/document.xml)
-
 <iframe class="lpdf-example-viewer"
         src="/assets/js/lpdf-demo/viewer/index.html?pdf=/docs/examples/book/document.pdf"
         title="The book, in the PDF viewer"

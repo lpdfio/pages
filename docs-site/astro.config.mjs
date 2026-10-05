@@ -32,7 +32,6 @@ export default defineConfig({
                     label: 'Getting Started',
                     items: [
                         { slug: 'install', label: 'Installation' },
-                        { slug: 'example', label: 'Your First Document' },
                     ],
                 },
                 {

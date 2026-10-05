@@ -106,7 +106,7 @@ on every platform`}render(){return G`
                         ${this._sdkColumn()}
                         <!-- No language on these links: the docs remember the reader's own, and
                              these pages show every language's code in tabs. -->
-                        ${this._column("Documentation",[["Example document","/docs/example/"],["Layout model","/docs/doc/layout/"],["Canvas","/docs/doc/canvas/"],["Data binding","/docs/data/binding/"],["XML schema","/docs/xml/schema/"],["VS Code extension","https://marketplace.visualstudio.com/items?itemName=lpdfio.lpdf"]])}
+                        ${this._column("Documentation",[["Installation","/docs/install/"],["Layout model","/docs/doc/layout/"],["Canvas","/docs/doc/canvas/"],["Data binding","/docs/data/binding/"],["XML schema","/docs/xml/schema/"],["VS Code extension","https://marketplace.visualstudio.com/items?itemName=lpdfio.lpdf"]])}
                         ${this._column("Licensing",[["Pricing","/pricing"],["License","/license"],["Support","/support"]])}
                         ${this._column("Company",[["Customer portal",`${os}`],["Contact us","mailto:license@lpdf.io"],["Terms of Service",`${os}/terms`],["Privacy Policy",`${os}/privacy`],["Refund Policy",`${os}/refunds`]])}
                     </div>

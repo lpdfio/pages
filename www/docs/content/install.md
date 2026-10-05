@@ -1,8 +1,8 @@
 # Installation
 
-lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, and to a WASI binary for PHP, Python, and .NET.
+Lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, and to a WASI binary for PHP, Python, and .NET.
 
-The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code, in a tab for each language. The builders are the same in every language: the same elements, the same attributes under the schema's names, and the same constants, written in each language's own case (`fontSize` in Node.js and PHP, `font_size` in Python, `FontSize` in .NET).
+The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code, in a tab for each language, as under *Create PDF with code*. The builders are the same in every language: the same elements, the same attributes under the schema's names, and the same constants, written in each language's own case (`fontSize` in Node.js and PHP, `font_size` in Python, `FontSize` in .NET).
 
 ::: sdk js
 
@@ -21,15 +21,51 @@ npm install @lpdfio/lpdf
 
 ```javascript
 const { L } = require('@lpdfio/lpdf')
-const { readFileSync, writeFileSync } = require('node:fs')
+const { writeFileSync } = require('node:fs')
+
+const xml = `<lpdf version="1">
+  <document size="a4" margin="48pt">
+    <section>
+      <layout>
+        <stack gap="m">
+          <text font-size="xl">Hello, world</text>
+          <text>This PDF was made with Lpdf.</text>
+        </stack>
+      </layout>
+    </section>
+  </document>
+</lpdf>`
 
 const engine = L.engine()
-const xml = readFileSync('document.xml', 'utf8')
 
-engine.render(xml).then((pdf) => writeFileSync('document.pdf', pdf))
+engine.render(xml).then((pdf) => writeFileSync('hello.pdf', pdf))
 ```
 
-`render` returns a promise. The package is CommonJS, so load it with `require`: an `import` of `@lpdfio/lpdf` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`.
+`render` returns a promise. The package is CommonJS, so load it with `require`: an `import` of `@lpdfio/lpdf` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`. To render a file, read it into a string and pass that to `render`.
+
+## Create PDF with code
+
+The same document, built with `L` instead of written as XML. `render` takes either one and makes the same PDF.
+
+```javascript
+const { L, NoAttr } = require('@lpdfio/lpdf')
+const { writeFileSync } = require('node:fs')
+
+const doc = L.document({ size: 'a4', margin: '48pt' }, [
+    L.section(NoAttr, [
+        L.layout(NoAttr, [
+            L.stack({ gap: 'm' }, [
+                L.text({ fontSize: 'xl' }, ['Hello, world']),
+                L.text(NoAttr, ['This PDF was made with Lpdf.']),
+            ]),
+        ]),
+    ]),
+])
+
+const engine = L.engine()
+
+engine.render(doc).then((pdf) => writeFileSync('hello.pdf', pdf))
+```
 
 ## Versioning
 
@@ -63,10 +99,56 @@ require_once 'vendor/autoload.php';
 
 use Lpdf\L;
 
+$xml = <<<'XML'
+<lpdf version="1">
+  <document size="a4" margin="48pt">
+    <section>
+      <layout>
+        <stack gap="m">
+          <text font-size="xl">Hello, world</text>
+          <text>This PDF was made with Lpdf.</text>
+        </stack>
+      </layout>
+    </section>
+  </document>
+</lpdf>
+XML;
+
 $engine = L::engine();
-$xml = file_get_contents('document.xml');
 $pdf = $engine->render($xml);
-file_put_contents('document.pdf', $pdf);
+file_put_contents('hello.pdf', $pdf);
+```
+
+To render a file, read it into a string with `file_get_contents` and pass that to `render`.
+
+## Create PDF with code
+
+The same document, built with `L` instead of written as XML. `render` takes either one and makes the same PDF.
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Kit\DocumentAttr;
+use Lpdf\L;
+use Lpdf\Layout\StackAttr;
+use Lpdf\Layout\TextAttr;
+use const Lpdf\NoAttr;
+
+$doc = L::document(new DocumentAttr(size: 'a4', margin: '48pt'), [
+    L::section(NoAttr, [
+        L::layout(NoAttr, [
+            L::stack(new StackAttr(gap: 'm'), [
+                L::text(new TextAttr(fontSize: 'xl'), ['Hello, world']),
+                L::text(NoAttr, ['This PDF was made with Lpdf.']),
+            ]),
+        ]),
+    ]),
+]);
+
+$engine = L::engine();
+$pdf = $engine->render($doc);
+file_put_contents('hello.pdf', $pdf);
 ```
 
 ## Versioning
@@ -98,10 +180,48 @@ pip install lpdfio-lpdf
 from pathlib import Path
 from lpdf import L
 
+xml = """<lpdf version="1">
+  <document size="a4" margin="48pt">
+    <section>
+      <layout>
+        <stack gap="m">
+          <text font-size="xl">Hello, world</text>
+          <text>This PDF was made with Lpdf.</text>
+        </stack>
+      </layout>
+    </section>
+  </document>
+</lpdf>"""
+
 engine = L.engine()
-xml = Path('document.xml').read_text()
 pdf = engine.render(xml)
-Path('document.pdf').write_bytes(pdf)
+Path('hello.pdf').write_bytes(pdf)
+```
+
+To render a file, read it into a string with `Path('document.xml').read_text()` and pass that to `render`.
+
+## Create PDF with code
+
+The same document, built with `L` instead of written as XML. `render` takes either one and makes the same PDF.
+
+```python
+from pathlib import Path
+from lpdf import L, NoAttr, DocumentAttr, StackAttr, TextAttr
+
+doc = L.document(DocumentAttr(size='a4', margin='48pt'), [
+    L.section(NoAttr, [
+        L.layout(NoAttr, [
+            L.stack(StackAttr(gap='m'), [
+                L.text(TextAttr(font_size='xl'), ['Hello, world']),
+                L.text(NoAttr, ['This PDF was made with Lpdf.']),
+            ]),
+        ]),
+    ]),
+])
+
+engine = L.engine()
+pdf = engine.render(doc)
+Path('hello.pdf').write_bytes(pdf)
 ```
 
 ## Versioning
@@ -132,10 +252,50 @@ dotnet add package Lpdfio.Lpdf
 ```csharp
 using Lpdf;
 
+var xml = """
+    <lpdf version="1">
+      <document size="a4" margin="48pt">
+        <section>
+          <layout>
+            <stack gap="m">
+              <text font-size="xl">Hello, world</text>
+              <text>This PDF was made with Lpdf.</text>
+            </stack>
+          </layout>
+        </section>
+      </document>
+    </lpdf>
+    """;
+
 var engine = L.Engine();
-var xml = await File.ReadAllTextAsync("document.xml");
 var pdf = await engine.Render(xml);
-await File.WriteAllBytesAsync("document.pdf", pdf);
+await File.WriteAllBytesAsync("hello.pdf", pdf);
+```
+
+To render a file, read it into a string with `File.ReadAllTextAsync` and pass that to `Render`.
+
+## Create PDF with code
+
+The same document, built with `L` instead of written as XML. `Render` takes either one and makes the same PDF.
+
+```csharp
+using Lpdf;
+using static Lpdf.L;
+
+var doc = L.Document(new() { Size = "a4", Margin = "48pt" }, [
+    L.Section(NoAttr, [
+        L.Layout(NoAttr, [
+            L.Stack(new() { Gap = "m" }, [
+                L.Text(new() { FontSize = "xl" }, ["Hello, world"]),
+                L.Text(NoAttr, ["This PDF was made with Lpdf."]),
+            ]),
+        ]),
+    ]),
+]);
+
+var engine = L.Engine();
+var pdf = await engine.Render(doc);
+await File.WriteAllBytesAsync("hello.pdf", pdf);
 ```
 
 ## Versioning

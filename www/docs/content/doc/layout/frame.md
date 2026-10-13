@@ -13,6 +13,7 @@ An atomic box around a single child, which it centres. A frame will never split 
 | `border`     | string  | —       | Border: `"s #cccccc"` or `"1pt #cccccc"` |
 | `radius`     | token/pt | —      | Corner radius |
 | `height`     | pt/`fill`/`full` | — | Fixed height |
+| `paginate`   | string           | — | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `width`      | token/pt | —      | Constrain width |
 | `font`       | string  | inherit | Font name |
 | `font-size`  | token/pt | inherit | Font size |

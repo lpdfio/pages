@@ -28,6 +28,7 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `padding`    | spacing | —       | Space between the table's edge and its content. This is not cell padding: set `padding` on each `td` |
 | `background` | color   | —       | Background behind the whole table |
 | `width`      | token/pt | —      | Constrain table width |
+| `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 
 ## `thead` attributes
 

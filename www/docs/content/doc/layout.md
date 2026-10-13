@@ -46,6 +46,41 @@
 - `bookmark` — stays with the element after it
 - `flank`, `split`, `frame` — atomic; move whole to the next page if they don't fit
 - Setting `height` on a box (a length, `fill` or `full`) also stops it splitting
+- So does `paginate="no"`, and the other values of `paginate` start new pages: see [Page breaks](#page-breaks)
+
+### Page breaks
+
+`paginate` sets where an element falls in the page flow. The boxes (`stack`, `flank`, `split`, `cluster`, `grid`, `frame`), `text`, `img`, `barcode` and `table` take it.
+
+| Value | Effect |
+|-------|--------|
+| `no` | Never split the element. When it doesn't fit, it moves whole to the next page |
+| `break-before` | Start the element on a new page |
+| `break-after` | Start the element that follows it on a new page |
+| `keep-next` | Keep the element on one page with the element that follows it: when that one doesn't fit, both move to the next page |
+
+`break-before`, `break-after` and `keep-next` only take effect on elements directly inside `layout`. Inside a `stack` or any other box they are accepted and ignored. `no` works at any depth: a `stack` with `paginate="no"` inside another stack stays whole.
+
+```xml
+<layout>
+  <text font-size="xl">Chapter 1</text>
+  <text>The first chapter starts on the first page.</text>
+  <text font-size="xl" paginate="break-before">Chapter 2</text>
+  <text>Each later chapter starts on a new page.</text>
+  <text font-size="l" paginate="keep-next">Summary</text>
+  <stack gap="s" padding="m" background="#f5f5f5" paginate="no">
+    <text>The heading stays on the same page as this box,</text>
+    <text>and the box is never split.</text>
+  </stack>
+</layout>
+```
+
+- A break never adds an empty page: `break-before` on the first element of a page and `break-after` on the last element of the layout do nothing.
+- An element with `break-after` that splits across pages breaks after its last part.
+- On an element repeated with `data-source`, the break applies to each copy, so `break-before` puts every item on a page of its own.
+- `keep-next` holds only when the two elements fit on one page together. When they don't, both stay where they would be without it. With `debug="true"` on the element, a red note in the PDF says the rule was ignored.
+- An element with `no` that is taller than a page starts on a new page and runs past the bottom of it. Use `no` on elements shorter than a page.
+- On a `td`, `paginate` has no effect: a table row never splits.
 
 ## Pinned regions
 

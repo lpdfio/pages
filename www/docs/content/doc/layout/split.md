@@ -18,6 +18,7 @@ For three or more columns, use [`grid`](?p=doc/layout/grid). For explicit column
 | `radius`     | token/pt | —      | Corner radius |
 | `font`       | string  | inherit | Font name |
 | `font-size`  | token/pt | inherit | Font size |
+| `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 
 ## Two equal columns
 

@@ -15,6 +15,7 @@ Stacks children vertically with a configurable gap. By default each child fills 
 | `border`     | string  | —        | Border: `"s #cccccc"` or `"1pt #cccccc"` |
 | `radius`     | token/pt | —       | Corner radius |
 | `height`     | pt/`fill`/`full` | — | Fixed height, fill remaining space, or full page height |
+| `paginate`   | string           | — | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `font`       | string  | inherit  | Font name (declared in `assets`) |
 | `font-size`  | token/pt | inherit | Font size for all children |
 | `data-source` | string | —       | Dot-path to array — repeats this element per item |

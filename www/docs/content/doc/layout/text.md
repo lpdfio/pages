@@ -13,6 +13,7 @@ A flow text block. Supports multi-line wrapping, font styling, and inline `span`
 | `width`     | token/pt | —      | Constrain text block width |
 | `widows`    | integer | `2`     | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. See [Widows and orphans](#widows-and-orphans) |
 | `orphans`   | integer | `2`     | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page |
+| `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `data-value` | string | —       | Dot-path — replaces text content with bound value |
 | `data-if`   | string  | —       | Render only when value is truthy |
 | `data-if-not` | string | —     | Render only when value is falsy |

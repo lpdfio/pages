@@ -32,6 +32,7 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | `background` | color   | —       | Background behind image |
 | `border`     | string  | —       | Border |
 | `radius`     | token/pt | —      | Corner radius (clips image) |
+| `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 
 ## Fixed width
 

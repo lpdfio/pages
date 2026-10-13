@@ -16,6 +16,7 @@ Lays out children in a wrapping inline row — like CSS `flex-wrap`. When items 
 | `radius`     | token/pt | —      | Corner radius |
 | `font`       | string  | inherit | Font name |
 | `font-size`  | token/pt | inherit | Font size |
+| `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `data-source` | string | —       | Dot-path to array — repeats this element per item |
 
 ## Tag / badge row

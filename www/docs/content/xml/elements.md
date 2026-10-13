@@ -113,6 +113,7 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 | `padding`   | spacing | `0`     | Space inside the edge: `8pt`, a token, or one to four values like `"8pt 16pt"` |
 | `width`     | token/pt| —       | Fixed width. Not on `td`: the table's `cols` sets cell widths |
 | `height`    | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
+| `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `background`| color   | —       | Background fill |
 | `border`    | BorderValue | —   | Border, written `"thickness color"` |
 | `radius`    | token/pt| `0`     | Corner radius |
@@ -182,6 +183,7 @@ Paragraph or inline text.
 | `width`      | token/pt| —         | Constrain text block width |
 | `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
 | `orphans`    | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page. `1` turns it off |
+| `paginate`   | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
 
@@ -223,6 +225,7 @@ Inline image.
 | `background` | color   | —       | Background behind the image |
 | `border`     | BorderValue | —   | Border |
 | `radius`     | token/pt| `0`     | Corner radius |
+| `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false   | Draw the box outline |
 
 ### `table`
@@ -237,6 +240,7 @@ Inline image.
 | `background`| color   | —       | Background behind the whole table |
 | `width`     | token/pt| —       | Fixed width |
 | `height`    | pt/`fill`/`full` | — | A length fixes the height |
+| `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false   | Draw the box outline |
 
 A table holds an optional `thead` and any number of `tr`.
@@ -251,7 +255,7 @@ A table holds an optional `thead` and any number of `tr`.
 
 ### `td`
 
-Takes the shared box attributes, except `width`, and:
+Takes the shared box attributes, except `width`. It accepts `paginate`, which has no effect on a cell, since a row never splits. Its own attributes:
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
@@ -271,6 +275,7 @@ Takes the shared box attributes, except `width`, and:
 | `hrt`       | boolean | false     | Human-readable text below Code128/EAN-13 |
 | `color`     | color   | `#000000` | Bar color |
 | `background`| color   | —         | Background color |
+| `paginate`  | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false     | Draw the box outline |
 
 ### `link`

@@ -97,6 +97,13 @@ export default defineConfig({
                     items: [
                         { slug: 'xml/schema', label: 'XML Schema' },
                         { slug: 'xml/elements', label: 'All Elements' },
+                        // What each version changed is in the GitHub release notes, so the docs link there
+                        // rather than keep a copy.
+                        {
+                            label: 'Releases',
+                            link: 'https://github.com/lpdfio/lpdf/releases',
+                            attrs: { target: '_blank', rel: 'noopener noreferrer' },
+                        },
                     ],
                 },
             ],

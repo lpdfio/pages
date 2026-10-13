@@ -34,6 +34,7 @@
 | [`table`](?p=doc/layout/table) | Table with rows, cells, and repeating header |
 | [`barcode`](?p=doc/layout/barcode) | QR, Code128, or EAN-13 barcode |
 | [`link`](?p=doc/layout/link) | Clickable hyperlink wrapper |
+| [`bookmark`](?p=doc/layout/bookmark) | Entry in the PDF's outline and target for links. Draws nothing |
 | [`field`](?p=doc/layout/field) | Interactive PDF form element |
 
 ## Pagination rules
@@ -41,7 +42,8 @@
 - `stack` — splits between children
 - `table` — splits between rows, and repeats the `thead` row on each page
 - `cluster`, `grid` — split between lines and rows: a row is never cut in two
-- `text` — splits between lines
+- `text` — splits between lines, keeping at least two lines on each page: see [widows and orphans](?p=doc/layout/text#widows-and-orphans)
+- `bookmark` — stays with the element after it
 - `flank`, `split`, `frame` — atomic; move whole to the next page if they don't fit
 - Setting `height` on a box (a length, `fill` or `full`) also stops it splitting
 

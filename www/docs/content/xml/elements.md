@@ -90,14 +90,18 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 | `orientation` | string  | inherit  | Override orientation |
 | `margin`      | spacing | inherit  | Override margin |
 | `background`  | color   | inherit  | Section background |
-| `title`       | string  | —        | Section title. Accepted, but not used yet: the PDF has no bookmarks |
+| `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
+| `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
+| `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
 | `debug`       | boolean | false    | Render layout boxes |
+
+A section can start with one `bookmark`, which marks its first page, followed by a `layout`, a `canvas`, or both.
 
 ---
 
 ## Layout elements
 
-Layout elements live inside `layout`. Every one except `region` and `span` takes `data-source`, `data-if` and `data-if-not`, and `text` takes `data-value`. See [Data Binding](?p=data/binding).
+Layout elements live inside `layout`. Every one except `region`, `span` and `bookmark` takes `data-source`, `data-if` and `data-if-not`, and `text` takes `data-value`. See [Data Binding](?p=data/binding).
 
 ### Shared box attributes
 
@@ -176,6 +180,8 @@ Paragraph or inline text.
 | `color`      | color   | `#1a1a1a` | Text color. Not inherited |
 | `align`      | string  | `left`    | `left` `center` `right` `justify` |
 | `width`      | token/pt| —         | Constrain text block width |
+| `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
+| `orphans`    | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page. `1` turns it off |
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
 
@@ -189,7 +195,7 @@ Inline text with overridden style.
 |-------------|---------|-------------|
 | `font`      | string  | Font override |
 | `color`     | color   | Color override |
-| `href`      | URL     | Makes the span a hyperlink |
+| `href`      | URL     | Makes the span a link: a URL, or `#id` to jump to the bookmark with that id |
 | `underline` | boolean | Underline text |
 | `strike`    | boolean | Strikethrough text |
 
@@ -273,9 +279,21 @@ Clickable hyperlink wrapper.
 
 | Attribute | Type    | Description |
 |-----------|---------|-------------|
-| `href`    | URL     | **Required.** Link target. Fixed: `data-value` does not change it |
+| `href`    | URL     | **Required.** Link target: a URL, or `#id` to jump to the bookmark with that id. Fixed: `data-value` does not change it |
 | `gap`     | spacing | Gap between child elements |
 | `debug`   | boolean | Draw the box outline |
+
+In an entry of a table of contents, `href="#"` on a `link` or a `span` jumps to that entry's bookmark.
+
+### `bookmark`
+
+An entry of the PDF's outline and a target for `href="#id"` links. It draws nothing, and marks the element that follows it, which must be in the same container. Directly inside a `section`, as its first child, it marks the section's first page. Not allowed in a canvas. See [Bookmark](?p=doc/layout/bookmark).
+
+| Attribute | Type    | Default | Description |
+|-----------|---------|---------|-------------|
+| `label`   | string  | —       | **Required.** The text of the entry, in the outline and in a table of contents |
+| `level`   | integer | `1`     | Depth in the outline, 1 to 6. An entry nests under the closest entry before it with a lower level |
+| `id`      | string  | from `label` | The name links jump to. Without it, the label lowercased with other characters than letters and digits turned into hyphens, and `-2`, `-3` added when the id is taken. Two bookmarks may not have the same id |
 
 ### `field`
 

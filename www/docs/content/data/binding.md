@@ -174,3 +174,16 @@ To skip some items, put the condition on an element inside the loop. There it re
   </flank>
 </stack>
 ```
+
+## `$toc` — the table of contents
+
+In a section with `type="toc"`, the data also holds `$toc`: one item per bookmark, with its `label`, `level` and `page`. The engine adds it, so it is there even when you pass no data. See [Table of Contents](?p=doc/toc).
+
+```xml
+<stack data-source="$toc">
+  <flank>
+    <text data-value="label">Entry</text>
+    <text data-value="page" align="right">0</text>
+  </flank>
+</stack>
+```

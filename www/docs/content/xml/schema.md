@@ -11,6 +11,7 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
   <document>         ← required
     <meta>           ← optional: title, author, subject, keywords, creator
     <section>+       ← one or more, each with its own pages
+      <bookmark>     ← optional: marks the section's first page
       <layout>       ← flow content
         …elements
       <canvas>       ← absolute positioned content
@@ -50,7 +51,7 @@ Lengths are in points (`pt`, 1/72 in). Where other units work depends on the att
 
 | Where | Accepts |
 |-------|---------|
-| Layout lengths: `gap`, `padding`, `margin`, `width`, `height`, `font-size`, `radius`, `thickness` | `pt` or a [token](#tokens) name |
+| Layout lengths: `gap`, `padding`, `margin`, `width`, `height`, `font-size`, `radius`, `thickness`, `toc-indent-step` | `pt` or a [token](#tokens) name |
 | Canvas positions and sizes: `x` `y` `w` `h` `cx` `cy` `r` `rx` `ry` `x1`…`y2`, and canvas `radius`, `stroke-width`, `font-size` | `pt`, `mm` or `in` |
 | Table `cols` | `fr`, `pt` or `%` |
 
@@ -60,7 +61,7 @@ Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "in
 
 A token is a name for a length. Each attribute reads its own scale, so `m` is 8pt as a `gap` and 11pt as a `font-size`.
 
-| Token | space: `gap` `padding` `margin` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | grid: `col-width` |
+| Token | space: `gap` `padding` `margin` `toc-indent-step` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | grid: `col-width` |
 |-------|------|------|------|------|------|------|
 | `xs`  | 2pt  | 7pt  | 0.5pt | 2pt  | 120pt | 60pt  |
 | `s`   | 4pt  | 9pt  | 1pt   | 4pt  | 200pt | 100pt |

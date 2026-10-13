@@ -53,6 +53,7 @@ export default defineConfig({
                     label: 'Document',
                     items: [
                         { slug: 'doc/section', label: 'Section' },
+                        { slug: 'doc/toc', label: 'Table of Contents' },
                         {
                             label: 'Layout',
                             items: [
@@ -69,6 +70,7 @@ export default defineConfig({
                                 { slug: 'doc/layout/table', label: 'Table' },
                                 { slug: 'doc/layout/barcode', label: 'Barcode' },
                                 { slug: 'doc/layout/link', label: 'Link' },
+                                { slug: 'doc/layout/bookmark', label: 'Bookmark' },
                                 { slug: 'doc/layout/field', label: 'Field' },
                             ],
                         },

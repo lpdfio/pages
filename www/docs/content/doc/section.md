@@ -10,12 +10,16 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `orientation` | string  | inherit | `portrait` or `landscape` |
 | `margin`      | spacing | inherit | Page margin: `48pt`, a token such as `l`, or one to four values like `"48pt 24pt"` |
 | `background`  | color   | inherit | Page background color |
-| `title`       | string  | —       | Section title. Accepted, but not used yet: the PDF has no bookmarks |
+| `title`       | string  | —       | Section title. Accepted, but not used: the PDF's outline takes its entries from [bookmarks](?p=doc/layout/bookmark) |
+| `type`        | string  | —       | `toc` makes the section the document's [table of contents](?p=doc/toc) |
+| `toc-indent-step` | token/pt | `12pt` | In a table of contents, the indent for each level below the first |
 | `debug`       | boolean | false   | Render layout boxes for debugging |
 
-All attributes are optional and inherit from `document` when not set.
+All attributes are optional. The page settings inherit from `document` when not set.
 
-A section holds a [`layout`](?p=doc/layout), a [`canvas`](?p=doc/canvas), or both. The one listed first is painted first.
+A section holds a [`layout`](?p=doc/layout), a [`canvas`](?p=doc/canvas), or both. The one listed first is painted first. Before them it can hold one [`bookmark`](?p=doc/layout/bookmark), which marks the section's first page.
+
+Content always goes in a `section`. A `layout` placed directly inside `document` is an error.
 
 ## Multiple sections
 
@@ -61,18 +65,20 @@ A section holds a [`layout`](?p=doc/layout), a [`canvas`](?p=doc/canvas), or bot
 </section>
 ```
 
-## Section titles
+## Bookmarking a section
 
-A section can carry a `title`. It is accepted and changes nothing in the PDF yet: Lpdf does not write a bookmarks outline, so a long document opens with an empty bookmarks panel.
+A bookmark as the section's first child adds its first page to the PDF's outline, the bookmarks panel of a viewer. A section's `title` adds no entry.
 
 ```xml
 <document size="a4" margin="48pt">
-  <section title="Introduction">
+  <section>
+    <bookmark label="Introduction"/>
     <layout>
       <text font-size="20pt">Introduction</text>
     </layout>
   </section>
-  <section title="Results">
+  <section>
+    <bookmark label="Results"/>
     <layout>
       <text font-size="20pt">Results</text>
     </layout>
@@ -80,4 +86,6 @@ A section can carry a `title`. It is accepted and changes nothing in the PDF yet
 </document>
 ```
 
-Content always goes in a `section`. A `layout` placed directly inside `document` is an error.
+## Table of contents
+
+A section with `type="toc"` lists the document's bookmarks with their page numbers. It is laid out after the other sections, and a document can have one. See [Table of Contents](?p=doc/toc).

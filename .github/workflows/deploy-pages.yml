@@ -17,7 +17,7 @@ jobs:
   # between the two stages.
   build:
     name: Build the site
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       revision: ${{ steps.revision.outputs.revision }}
     steps:
@@ -80,7 +80,7 @@ jobs:
   deploy-pre:
     name: Deploy to pre (pages-pre) ${{ needs.build.outputs.revision }}
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     concurrency:
       group: pages-pre
       cancel-in-progress: true
@@ -107,7 +107,7 @@ jobs:
   deploy-prod:
     name: Deploy to prod (GitHub Pages) ${{ needs.build.outputs.revision }}
     needs: [build, deploy-pre]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     concurrency:
       group: pages
       cancel-in-progress: false

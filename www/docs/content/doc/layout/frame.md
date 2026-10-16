@@ -1,8 +1,8 @@
 # Frame
 
-An atomic box around a single child, which it centres. A frame will never split across pages — if it doesn't fit on the current page it moves in full to the next. Use it for callout boxes, cards, and labelled regions. To put several elements in a frame, wrap them in a [`stack`](?p=doc/layout/stack). A frame takes no `gap`, `align` or `justify`, and a second child is an error.
+An atomic box around a single child, which it centres. A frame will never split across pages — if it doesn't fit on the current page it moves in full to the next. Use it for callout boxes, cards, and labelled regions. To put several elements in a frame, wrap them in a [`column`](?p=doc/layout/column). A frame takes no `gap`, `align` or `justify`, and a second child is an error.
 
-> To allow contents to flow across pages, use [`stack`](?p=doc/layout/stack) with `padding` and `background` instead.
+> To allow contents to flow across pages, use [`column`](?p=doc/layout/column) with `padding` and `background` instead.
 
 ## Attributes
 
@@ -24,10 +24,10 @@ An atomic box around a single child, which it centres. A frame will never split 
 
 ```xml
 <frame padding="m" background="#fff8e1" border="s #f9a825" radius="s">
-  <stack gap="4pt">
+  <column gap="4pt">
     <text font-size="s">Note</text>
     <text font-size="xs">This is an important callout.</text>
-  </stack>
+  </column>
 </frame>
 ```
 

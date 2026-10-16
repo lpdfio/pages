@@ -1,6 +1,6 @@
-# Stack
+# Column
 
-Stacks children vertically with a configurable gap. By default each child fills the available width.
+Places children top to bottom with a configurable gap. By default each child fills the available width. A column can split across pages between its children.
 
 ## Attributes
 
@@ -9,7 +9,7 @@ Stacks children vertically with a configurable gap. By default each child fills 
 | `gap`        | token/pt | —       | Space between children: `xs` `s` `m` `l` `xl` `xxl` or `12pt` |
 | `align`      | string  | `stretch` | Cross-axis alignment: `start` `center` `end` `stretch` |
 | `justify`    | string  | `start`  | Main-axis distribution: `start` `center` `end` `between` |
-| `width`      | token/pt | —       | Constrain width |
+| `width`      | token/pt/`fill` | — | Fixed width, or `fill`: the full width, and in a [`row`](?p=doc/layout/row#children-that-fill-the-rest) the width the other children leave |
 | `padding`    | spacing | —        | Inner padding: `16pt` or shorthand `"16pt 12pt"` |
 | `background` | color   | —        | Background color |
 | `border`     | string  | —        | Border: `"s #cccccc"` or `"1pt #cccccc"` |
@@ -25,36 +25,36 @@ Stacks children vertically with a configurable gap. By default each child fills 
 ## Basic example
 
 ```xml
-<stack gap="16pt">
+<column gap="16pt">
   <text font-size="18pt">Title</text>
   <divider/>
   <text>Body text.</text>
-</stack>
+</column>
 ```
 
 ## Centered content
 
 ```xml
-<stack gap="12pt" align="center">
+<column gap="12pt" align="center">
   <text>Centered item</text>
   <text>Also centered</text>
-</stack>
+</column>
 ```
 
 ## Space between (like flex justify-content: space-between)
 
 ```xml
-<stack justify="between" height="full">
+<column justify="between" height="full">
   <text>Top</text>
   <text>Bottom</text>
-</stack>
+</column>
 ```
 
 ## Card with background and border
 
 ```xml
-<stack gap="8pt" padding="m" background="#f8f9fa" border="xs #e0e0e0" radius="s">
+<column gap="8pt" padding="m" background="#f8f9fa" border="xs #e0e0e0" radius="s">
   <text font-size="s">Card title</text>
   <text font-size="xs" color="#666666">Supporting text.</text>
-</stack>
+</column>
 ```

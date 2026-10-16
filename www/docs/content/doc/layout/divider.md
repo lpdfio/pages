@@ -13,11 +13,11 @@ A horizontal or vertical rule.
 ## Horizontal rule
 
 ```xml
-<stack gap="16pt">
+<column gap="16pt">
   <text font-size="18pt">Section heading</text>
   <divider/>
   <text>Body text below the rule.</text>
-</stack>
+</column>
 ```
 
 ## Styled divider
@@ -26,12 +26,12 @@ A horizontal or vertical rule.
 <divider color="#1a73e8" thickness="s"/>
 ```
 
-## Vertical divider inside a flank
+## Vertical divider inside a row
 
 ```xml
-<flank align="center" gap="16pt">
+<row align="center" gap="16pt">
   <text>Left</text>
   <divider direction="vertical"/>
-  <text>Right</text>
-</flank>
+  <text width="fill">Right</text>
+</row>
 ```

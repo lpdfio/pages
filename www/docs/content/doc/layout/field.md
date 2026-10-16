@@ -23,26 +23,26 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 ## Text form
 
 ```xml
-<stack gap="m">
-  <stack gap="xs">
+<column gap="m">
+  <column gap="xs">
     <text font-size="xs" color="#666666">Full name</text>
     <field type="text" name="full_name" width="xl" height="24pt"/>
-  </stack>
-  <stack gap="xs">
+  </column>
+  <column gap="xs">
     <text font-size="xs" color="#666666">Email</text>
     <field type="text" name="email" width="xl" height="24pt"/>
-  </stack>
+  </column>
   <field type="button" name="submit" label="Submit" action-url="https://example.com/submit"/>
-</stack>
+</column>
 ```
 
 ## Checkbox
 
 ```xml
-<flank align="center" gap="s">
+<row align="center" gap="s">
   <field type="checkbox" name="agree" value="yes"/>
-  <text font-size="s">I agree to the terms and conditions</text>
-</flank>
+  <text font-size="s" width="fill">I agree to the terms and conditions</text>
+</row>
 ```
 
 ## Dropdown
@@ -56,14 +56,14 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 ## Radio group
 
 ```xml
-<stack gap="xs">
-  <flank align="center" gap="s">
+<column gap="xs">
+  <row align="center" gap="s">
     <field type="radio" name="plan" group="plan" value="basic" checked="true"/>
-    <text font-size="s">Basic</text>
-  </flank>
-  <flank align="center" gap="s">
+    <text font-size="s" width="fill">Basic</text>
+  </row>
+  <row align="center" gap="s">
     <field type="radio" name="plan" group="plan" value="pro"/>
-    <text font-size="s">Pro</text>
-  </flank>
-</stack>
+    <text font-size="s" width="fill">Pro</text>
+  </row>
+</column>
 ```

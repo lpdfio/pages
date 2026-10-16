@@ -86,9 +86,9 @@ To change a scale, or to name colors, add `tokens` before `document`. A scale ro
   <document size="letter" margin="48pt">
     <section>
       <layout>
-        <stack gap="m" padding="l" background="brand">
+        <column gap="m" padding="l" background="brand">
           <text>Uses the new scale and the named color</text>
-        </stack>
+        </column>
       </layout>
     </section>
   </document>

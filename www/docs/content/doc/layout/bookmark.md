@@ -15,11 +15,11 @@ A `bookmark` adds an entry to the PDF's outline, the bookmarks panel of a PDF vi
 A bookmark marks the element that follows it. Put it just before a heading: when the heading moves to the next page, the bookmark moves with it, so the entry never points at the bottom of the page before.
 
 ```xml
-<stack gap="m">
+<column gap="m">
   <bookmark label="Introduction"/>
   <text font-size="xl">Introduction</text>
   <text>The text of the introduction.</text>
-</stack>
+</column>
 ```
 
 A bookmark needs an element after it in the same container. One that comes last, with nothing to mark, is an error.
@@ -29,14 +29,14 @@ A bookmark needs an element after it in the same container. One that comes last,
 `level` nests the entries in the outline. An entry goes under the closest entry before it with a lower level, so a level 2 bookmark sits under the level 1 bookmark before it.
 
 ```xml
-<stack gap="m">
+<column gap="m">
   <bookmark label="Methods"/>
   <text font-size="xl">Methods</text>
   <bookmark label="Data collection" level="2"/>
   <text font-size="l">Data collection</text>
   <bookmark label="Sampling" level="3"/>
   <text font-size="m">Sampling</text>
-</stack>
+</column>
 ```
 
 ## Bookmarking a section
@@ -63,11 +63,11 @@ A section takes one bookmark there, as its first child. Elsewhere, bookmarks go 
 `href="#id"` on a [`link`](?p=doc/layout/link) or a [`span`](?p=doc/layout/text#inline-spans-for-mixed-styling) jumps to the bookmark with that id.
 
 ```xml
-<stack gap="m">
+<column gap="m">
   <text>See <span href="#results" color="#1a73e8" underline="true">Results</span> for the numbers.</text>
   <bookmark label="Results"/>
   <text font-size="xl">Results</text>
-</stack>
+</column>
 ```
 
 A link to an id that no bookmark has is left out of the PDF: its text is drawn, but it is not clickable.

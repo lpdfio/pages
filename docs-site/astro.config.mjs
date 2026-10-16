@@ -58,10 +58,8 @@ export default defineConfig({
                             label: 'Layout',
                             items: [
                                 { slug: 'doc/layout', label: 'Overview' },
-                                { slug: 'doc/layout/stack', label: 'Stack' },
-                                { slug: 'doc/layout/flank', label: 'Flank' },
-                                { slug: 'doc/layout/split', label: 'Split' },
-                                { slug: 'doc/layout/cluster', label: 'Cluster' },
+                                { slug: 'doc/layout/column', label: 'Column' },
+                                { slug: 'doc/layout/row', label: 'Row' },
                                 { slug: 'doc/layout/text', label: 'Text' },
                                 { slug: 'doc/layout/divider', label: 'Divider' },
                                 { slug: 'doc/layout/frame', label: 'Frame' },

@@ -4,7 +4,7 @@
 // Conversions:
 //   - the first "# Heading" becomes the page title in frontmatter
 //   - the first paragraph becomes the page description (meta description)
-//   - "?p=doc/layout/flank" links become "/docs/doc/layout/flank/"
+//   - "?p=doc/layout/row" links become "/docs/doc/layout/row/"
 //   - "::: sdk js ... :::" sections become Starlight <Tabs>, which makes the page .mdx;
 //     headings inside them move two levels down to stay out of the page contents
 //   - each XML block becomes tabs with the same snippet in the languages in CODE_TABS, generated

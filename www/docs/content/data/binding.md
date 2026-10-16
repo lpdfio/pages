@@ -117,22 +117,22 @@ Nested paths use dot notation, and `[n]` picks an array item:
 Repeats the element once per item. Inside the loop, paths are relative to the current item.
 
 ```xml
-<stack data-source="items" gap="xs">
-  <flank>
+<column data-source="items" gap="xs">
+  <row>
     <text data-value="description">Item</text>
-    <text data-value="price" align="right">$0.00</text>
-  </flank>
-</stack>
+    <text data-value="price" width="fill" align="right">$0.00</text>
+  </row>
+</column>
 ```
 
-Works on any layout element — `stack`, `tr`, `frame`, etc. If the path is missing or is not an array, the element is left out.
+Works on any layout element — `column`, `tr`, `frame`, etc. If the path is missing or is not an array, the element is left out.
 
 Two prefixes reach outside the current item: a path that starts with `/` is read from the root of the data, and each `../` goes up one loop level.
 
 ```xml
-<stack data-source="items">
+<column data-source="items">
   <text data-value="/invoice_number">INV-2026-001</text>
-</stack>
+</column>
 ```
 
 ## `data-if` / `data-if-not` — conditional rendering
@@ -167,12 +167,12 @@ To skip some items, put the condition on an element inside the loop. There it re
 
 ```xml
 <!-- loop over items, skip those with zero quantity -->
-<stack data-source="items" gap="xs">
-  <flank data-if="qty">
+<column data-source="items" gap="xs">
+  <row data-if="qty">
     <text data-value="description">Item</text>
-    <text data-value="qty" align="right">0</text>
-  </flank>
-</stack>
+    <text data-value="qty" width="fill" align="right">0</text>
+  </row>
+</column>
 ```
 
 ## `$toc` — the table of contents
@@ -180,10 +180,10 @@ To skip some items, put the condition on an element inside the loop. There it re
 In a section with `type="toc"`, the data also holds `$toc`: one item per bookmark, with its `label`, `level` and `page`. The engine adds it, so it is there even when you pass no data. See [Table of Contents](?p=doc/toc).
 
 ```xml
-<stack data-source="$toc">
-  <flank>
+<column data-source="$toc">
+  <row>
     <text data-value="label">Entry</text>
-    <text data-value="page" align="right">0</text>
-  </flank>
-</stack>
+    <text data-value="page" width="fill" align="right">0</text>
+  </row>
+</column>
 ```

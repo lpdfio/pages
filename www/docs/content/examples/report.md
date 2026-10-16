@@ -26,7 +26,7 @@ sentences about them come from document.json, as in the invoice. What this adds:
                within a section: a report that numbers its pages is one section
   sections     each section sets its own page. The last one here is tabloid, landscape, and
                holds only a canvas: a world map drawn as paths, with a marker for each site
-  paginate     paginate="no" on a box keeps it whole: a heading stack moves to the next page
+  paginate     paginate="no" on a box keeps it whole: a heading column moves to the next page
                with its paragraph instead of stranding the heading. It is set on each section
                of text here, and the tables are left to split, their header repeating
 

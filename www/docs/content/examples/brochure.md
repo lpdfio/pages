@@ -28,7 +28,7 @@ the contract:
   path           the curve over the bars: M and C, in points from the top left of the page
   sections       a section can change the page settings: the cover has no margin so its panels reach
                  the edge, and the inside page has 36pt
-  justify        justify="between" on a stack spreads its parts from top to bottom of its height
+  justify        justify="between" on a column spreads its parts from top to bottom of its height
   barcode        a QR code, dark on light so that it scans on the dark band
 
 All the text is in the layout. Text on the canvas is one line only. A layer can also be turned with

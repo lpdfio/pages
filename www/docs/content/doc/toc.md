@@ -13,19 +13,19 @@ The page numbers count the table of contents' own pages. When it runs onto a sec
   <document size="a4" margin="56pt">
     <section type="toc">
       <layout>
-        <stack gap="m">
+        <column gap="m">
           <text font-size="xl">Contents</text>
-          <stack gap="xs">
-            <stack data-source="$toc">
+          <column gap="xs">
+            <column data-source="$toc">
               <link href="#">
-                <split>
+                <row justify="between">
                   <text data-value="label">Entry</text>
                   <text data-value="page">0</text>
-                </split>
+                </row>
               </link>
-            </stack>
-          </stack>
-        </stack>
+            </column>
+          </column>
+        </column>
       </layout>
     </section>
     <section>
@@ -84,9 +84,9 @@ Each element repeated over `$toc` gets left padding for its entry's level: `toc-
 ```xml
 <section type="toc" toc-indent-step="20pt">
   <layout>
-    <stack data-source="$toc">
+    <column data-source="$toc">
       <text data-value="label">Entry</text>
-    </stack>
+    </column>
   </layout>
 </section>
 ```

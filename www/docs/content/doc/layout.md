@@ -1,17 +1,17 @@
 # Layout
 
-`layout` is the flow container inside a `section`. Elements stack vertically and paginate automatically — when content overflows a page, it continues on the next.
+`layout` is the flow container inside a `section`. Elements flow top to bottom and paginate automatically — when content overflows a page, it continues on the next.
 
 ```xml
 <lpdf version="1">
   <document size="letter" margin="48pt">
     <section>
       <layout>
-        <stack gap="16pt">
+        <column gap="16pt">
           <text font-size="18pt">Title</text>
           <divider/>
           <text>Body text goes here.</text>
-        </stack>
+        </column>
       </layout>
     </section>
   </document>
@@ -22,10 +22,8 @@
 
 | Element | Purpose |
 |---------|---------|
-| [`stack`](?p=doc/layout/stack) | Children top to bottom, with a gap between them |
-| [`flank`](?p=doc/layout/flank) | One row: every child keeps its own width except one, which fills the rest |
-| [`split`](?p=doc/layout/split) | Two children side by side, at opposite edges or in equal halves |
-| [`cluster`](?p=doc/layout/cluster) | Wrapping inline row |
+| [`column`](?p=doc/layout/column) | Children top to bottom, with a gap between them |
+| [`row`](?p=doc/layout/row) | Children side by side, wrapping onto new lines. A child with `width="fill"` takes what the others leave, and `justify="between"` pushes them apart |
 | [`text`](?p=doc/layout/text) | Text block with optional `span` children |
 | [`divider`](?p=doc/layout/divider) | Horizontal or vertical rule |
 | [`frame`](?p=doc/layout/frame) | Atomic box around one child — will not split across pages |
@@ -39,18 +37,19 @@
 
 ## Pagination rules
 
-- `stack` — splits between children
+- `column` — splits between children
 - `table` — splits between rows, and repeats the `thead` row on each page
-- `cluster`, `grid` — split between lines and rows: a row is never cut in two
+- `row` — splits between lines: a line of children is never cut in two
+- `grid` — splits between its rows: a grid row is never cut in two
 - `text` — splits between lines, keeping at least two lines on each page: see [widows and orphans](?p=doc/layout/text#widows-and-orphans)
 - `bookmark` — stays with the element after it
-- `flank`, `split`, `frame` — atomic; move whole to the next page if they don't fit
+- `frame` — atomic; moves whole to the next page if it doesn't fit
 - Setting `height` on a box (a length, `fill` or `full`) also stops it splitting
 - So does `paginate="no"`, and the other values of `paginate` start new pages: see [Page breaks](#page-breaks)
 
 ### Page breaks
 
-`paginate` sets where an element falls in the page flow. The boxes (`stack`, `flank`, `split`, `cluster`, `grid`, `frame`), `text`, `img`, `barcode` and `table` take it.
+`paginate` sets where an element falls in the page flow. The boxes (`column`, `row`, `grid`, `frame`), `text`, `img`, `barcode` and `table` take it.
 
 | Value | Effect |
 |-------|--------|
@@ -59,7 +58,7 @@
 | `break-after` | Start the element that follows it on a new page |
 | `keep-next` | Keep the element on one page with the element that follows it: when that one doesn't fit, both move to the next page |
 
-`break-before`, `break-after` and `keep-next` only take effect on elements directly inside `layout`. Inside a `stack` or any other box they are accepted and ignored. `no` works at any depth: a `stack` with `paginate="no"` inside another stack stays whole.
+`break-before`, `break-after` and `keep-next` only take effect on elements directly inside `layout`. Inside a `column` or any other box they are accepted and ignored. `no` works at any depth: a `column` with `paginate="no"` inside another column stays whole.
 
 ```xml
 <layout>
@@ -68,10 +67,10 @@
   <text font-size="xl" paginate="break-before">Chapter 2</text>
   <text>Each later chapter starts on a new page.</text>
   <text font-size="l" paginate="keep-next">Summary</text>
-  <stack gap="s" padding="m" background="#f5f5f5" paginate="no">
+  <column gap="s" padding="m" background="#f5f5f5" paginate="no">
     <text>The heading stays on the same page as this box,</text>
     <text>and the box is never split.</text>
-  </stack>
+  </column>
 </layout>
 ```
 
@@ -89,18 +88,18 @@
 ```xml
 <layout>
   <region pin="top">
-    <flank>
+    <row>
       <text font-size="9pt">My Company</text>
-      <text font-size="9pt" align="right">Confidential</text>
-    </flank>
+      <text font-size="9pt" width="fill" align="right">Confidential</text>
+    </row>
   </region>
   <region pin="bottom">
     <text font-size="9pt" align="center" color="#aaaaaa">Page {page} of {pages}</text>
   </region>
-  <stack gap="16pt">
+  <column gap="16pt">
     <text font-size="18pt">Main content</text>
     <text>Body text flows here, between the two regions.</text>
-  </stack>
+  </column>
 </layout>
 ```
 

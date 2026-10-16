@@ -37,7 +37,7 @@ portal URL and CNAME. Every push to `main` deploys, so a docs-only change ships 
 ignored by git:
 
 - The first `# Heading` becomes the page title, and the first paragraph becomes the meta description.
-- `?p=doc/layout/flank` links become `/docs/doc/layout/flank/`.
+- `?p=doc/layout/row` links become `/docs/doc/layout/row/`.
 - `::: sdk js ... :::` sections become Starlight tabs. Those pages become `.mdx`. Headings inside tabs move
   two levels down, so they stay out of "On this page".
 - Each XML block becomes tabs: XML and Node.js. The code is generated at build time by the engine's own
@@ -52,7 +52,7 @@ ignored by git:
 All tabs share one sync key, so the language picked in the header picker, in any code block or on the
 install page shows everywhere, and Starlight remembers it across pages. There is no PDF preview.
 
-An old-style link, `/docs/?p=install` or `/docs/?p=doc.layout.flank`, goes to the page it names: the landing
+An old-style link, `/docs/?p=install` or `/docs/?p=doc.layout.row`, goes to the page it names: the landing
 page (`extra/index.mdx`) redirects it. The README that npm and PyPI show for each published SDK still carries
 those links.
 

@@ -27,10 +27,10 @@ const xml = `<lpdf version="1">
   <document size="a4" margin="48pt">
     <section>
       <layout>
-        <stack gap="m">
+        <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
-        </stack>
+        </column>
       </layout>
     </section>
   </document>
@@ -54,7 +54,7 @@ const { writeFileSync } = require('node:fs')
 const doc = L.document({ size: 'a4', margin: '48pt' }, [
     L.section(NoAttr, [
         L.layout(NoAttr, [
-            L.stack({ gap: 'm' }, [
+            L.column({ gap: 'm' }, [
                 L.text({ fontSize: 'xl' }, ['Hello, world']),
                 L.text(NoAttr, ['This PDF was made with Lpdf.']),
             ]),
@@ -104,10 +104,10 @@ $xml = <<<'XML'
   <document size="a4" margin="48pt">
     <section>
       <layout>
-        <stack gap="m">
+        <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
-        </stack>
+        </column>
       </layout>
     </section>
   </document>
@@ -131,14 +131,14 @@ require_once 'vendor/autoload.php';
 
 use Lpdf\Kit\DocumentAttr;
 use Lpdf\L;
-use Lpdf\Layout\StackAttr;
+use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\TextAttr;
 use const Lpdf\NoAttr;
 
 $doc = L::document(new DocumentAttr(size: 'a4', margin: '48pt'), [
     L::section(NoAttr, [
         L::layout(NoAttr, [
-            L::stack(new StackAttr(gap: 'm'), [
+            L::column(new ColumnAttr(gap: 'm'), [
                 L::text(new TextAttr(fontSize: 'xl'), ['Hello, world']),
                 L::text(NoAttr, ['This PDF was made with Lpdf.']),
             ]),
@@ -184,10 +184,10 @@ xml = """<lpdf version="1">
   <document size="a4" margin="48pt">
     <section>
       <layout>
-        <stack gap="m">
+        <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
-        </stack>
+        </column>
       </layout>
     </section>
   </document>
@@ -206,12 +206,12 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 
 ```python
 from pathlib import Path
-from lpdf import L, NoAttr, DocumentAttr, StackAttr, TextAttr
+from lpdf import L, NoAttr, DocumentAttr, ColumnAttr, TextAttr
 
 doc = L.document(DocumentAttr(size='a4', margin='48pt'), [
     L.section(NoAttr, [
         L.layout(NoAttr, [
-            L.stack(StackAttr(gap='m'), [
+            L.column(ColumnAttr(gap='m'), [
                 L.text(TextAttr(font_size='xl'), ['Hello, world']),
                 L.text(NoAttr, ['This PDF was made with Lpdf.']),
             ]),
@@ -257,10 +257,10 @@ var xml = """
       <document size="a4" margin="48pt">
         <section>
           <layout>
-            <stack gap="m">
+            <column gap="m">
               <text font-size="xl">Hello, world</text>
               <text>This PDF was made with Lpdf.</text>
-            </stack>
+            </column>
           </layout>
         </section>
       </document>
@@ -285,7 +285,7 @@ using static Lpdf.L;
 var doc = L.Document(new() { Size = "a4", Margin = "48pt" }, [
     L.Section(NoAttr, [
         L.Layout(NoAttr, [
-            L.Stack(new() { Gap = "m" }, [
+            L.Column(new() { Gap = "m" }, [
                 L.Text(new() { FontSize = "xl" }, ["Hello, world"]),
                 L.Text(NoAttr, ["This PDF was made with Lpdf."]),
             ]),

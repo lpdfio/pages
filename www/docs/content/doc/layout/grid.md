@@ -26,22 +26,22 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 ```xml
 <grid cols="3" gap="m">
   <frame padding="m" border="xs #e0e0e0" radius="s">
-    <stack gap="4pt">
+    <column gap="4pt">
       <text font-size="s">Feature A</text>
       <text font-size="xs" color="#666666">Short description.</text>
-    </stack>
+    </column>
   </frame>
   <frame padding="m" border="xs #e0e0e0" radius="s">
-    <stack gap="4pt">
+    <column gap="4pt">
       <text font-size="s">Feature B</text>
       <text font-size="xs" color="#666666">Short description.</text>
-    </stack>
+    </column>
   </frame>
   <frame padding="m" border="xs #e0e0e0" radius="s">
-    <stack gap="4pt">
+    <column gap="4pt">
       <text font-size="s">Feature C</text>
       <text font-size="xs" color="#666666">Short description.</text>
-    </stack>
+    </column>
   </frame>
 </grid>
 ```
@@ -51,10 +51,10 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 ```xml
 <grid cols="2" gap="m" data-source="products">
   <frame padding="m" border="xs #e0e0e0" radius="s">
-    <stack gap="4pt">
+    <column gap="4pt">
       <text font-size="s" data-value="name">Product name</text>
       <text font-size="xs" color="#666666" data-value="price">$0.00</text>
-    </stack>
+    </column>
   </frame>
 </grid>
 ```

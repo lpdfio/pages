@@ -19,16 +19,16 @@ under them in the disclosure statement, and the notice about holders, are the on
 adds to the brochure:
 
   tokens           the size scale is small (xs is 7.5pt, s is 8.5pt, m is 10pt) so a page can hold a form. The size
-                   is set once, on the stack that holds a page, and every text inside inherits it
+                   is set once, on the column that holds a page, and every text inside inherits it
   table            the parties are a table of boxed cells; the five boxes of the disclosure are cells of one row,
                    the first two with a heavier border; the itemization is a table whose rows hold a label, a
                    dollar sign and a box for the amount
-  leaders          a label followed by a divider in a flank fills the line, as a row of dots does on paper. The
-                   same flank with a label in front of the divider is how a blank to sign is drawn
+  leaders          a label followed by a divider with width="fill" in a row fills the line, as a row of dots does
+                   on paper. The same row with a label in front of the divider is how a blank to sign is drawn
   typed entries    what is filled in is in a Courier font and a blue, as on a completed form, so the form and
                    what is written on it are told apart
-  check boxes      a stack 7pt square with a border, and a background when it is ticked
-  paginate         paginate="break-before" on a page's stack starts the page at the top of a new one
+  check boxes      a column 7pt square with a border, and a background when it is ticked
+  paginate         paginate="break-before" on a page's column starts the page at the top of a new one
   canvas           the watermark, the initials boxes and the page number are on the canvas, with a page range:
                    a region would reserve its space on every page, and these sit in the margins
   transform        transform="rotate(-35 306 396)" on the watermark layer turns it about the middle of the page.

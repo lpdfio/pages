@@ -105,13 +105,13 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 
 ### Shared box attributes
 
-`stack`, `flank`, `split`, `cluster`, `grid`, `frame` and `td` take these, beside their own:
+`column`, `row`, `grid`, `frame` and `td` take these, beside their own:
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
 | `gap`       | token/pt| `0`     | Space between children. Not on `frame`, which has one child |
 | `padding`   | spacing | `0`     | Space inside the edge: `8pt`, a token, or one to four values like `"8pt 16pt"` |
-| `width`     | token/pt| —       | Fixed width. Not on `td`: the table's `cols` sets cell widths |
+| `width`     | token/pt/`fill` | — | Fixed width, or `fill`: the full width, and in a `row` the width the other children leave. Not on `td`: the table's `cols` sets cell widths |
 | `height`    | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `background`| color   | —       | Background fill |
@@ -121,7 +121,7 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 | `font-size` | token/pt| inherit | Font size for the text inside |
 | `debug`     | boolean | false   | Draw the box outlines |
 
-### `stack`
+### `column`
 
 Vertical column of children.
 
@@ -130,32 +130,14 @@ Vertical column of children.
 | `align`    | string  | `stretch` | Horizontal alignment: `start` `center` `end` `stretch` |
 | `justify`  | string  | `start`   | Vertical distribution: `start` `center` `end` `between` |
 
-### `flank`
+### `row`
 
-Row where every child keeps its own width except one, which fills the rest: the last child by default, the first with `end="true"`.
-
-| Attribute  | Type    | Default | Description |
-|------------|---------|---------|-------------|
-| `end`      | boolean | `false` | `false`: the last child fills. `true`: the first child fills, the others sit at the right |
-| `align`    | string  | `start` | Vertical alignment: `start` `center` `end` |
-
-### `split`
-
-Two children side by side: by default each keeps its own width, the first at the left edge and the second at the right; with `equal="true"` they take half the width each. Further children are ignored. For more columns use `grid`; for explicit column widths use `table`.
+Children side by side, continuing on the next line when they run out of width. A child with `width="fill"` takes the width its line leaves, shared equally when several on the line use it, and never moves to the next line.
 
 | Attribute  | Type    | Default | Description |
 |------------|---------|---------|-------------|
-| `equal`    | boolean | `false` | `true`: the two children take half the width each |
-| `align`    | string  | `start` | Vertical alignment: `start` `center` `end` |
-
-### `cluster`
-
-Wrapping row of inline items.
-
-| Attribute  | Type    | Default | Description |
-|------------|---------|---------|-------------|
-| `align`    | string  | `start` | Alignment across the row: `start` `center` `end` `stretch` |
-| `justify`  | string  | `start` | Distribution along the row: `start` `center` `end`. `between` is an error |
+| `align`    | string  | `start` | Vertical alignment on each line: `start` `center` `end`. `stretch` acts as `start` |
+| `justify`  | string  | `start` | Distribution along each line: `start` `center` `end` `between`. `between` puts the first child at the left edge, the last at the right, and the others evenly between |
 
 ### `grid`
 

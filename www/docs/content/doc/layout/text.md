@@ -2,12 +2,14 @@
 
 A flow text block. Supports multi-line wrapping, font styling, and inline `span` children for mixed runs.
 
+Text has one set of defaults wherever it is, in the flow and in a [layer](?p=doc/layer/text-at): the document's `font` or Helvetica, 11pt (`m`) and the `text` color.
+
 ## Attributes
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `font-size` | token/pt | inherit | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
-| `font`      | string  | inherit | Font name declared in `assets` |
+| `font-size` | token/pt | inherit, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
+| `font`      | string  | inherit, else the document's `font`, or `Helvetica` | Font name declared in `assets` |
 | `color`     | color   | `#1a1a1a` | Text color: `#333333` or a named token. Not inherited: a color named `text` in `tokens` changes the default |
 | `align`     | string  | `left`  | `left` `center` `right` `justify` |
 | `width`     | token/pt | —      | Constrain text block width |

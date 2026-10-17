@@ -24,9 +24,9 @@ const { L } = require('@lpdfio/lpdf')
 const { writeFileSync } = require('node:fs')
 
 const xml = `<lpdf version="1">
-  <document size="a4" margin="48pt">
+  <document size="a4">
     <section>
-      <layout>
+      <layout margin="48pt">
         <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
@@ -51,9 +51,9 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 const { L, NoAttr } = require('@lpdfio/lpdf')
 const { writeFileSync } = require('node:fs')
 
-const doc = L.document({ size: 'a4', margin: '48pt' }, [
+const doc = L.document({ size: 'a4' }, [
     L.section(NoAttr, [
-        L.layout(NoAttr, [
+        L.layout({ margin: '48pt' }, [
             L.column({ gap: 'm' }, [
                 L.text({ fontSize: 'xl' }, ['Hello, world']),
                 L.text(NoAttr, ['This PDF was made with Lpdf.']),
@@ -101,9 +101,9 @@ use Lpdf\L;
 
 $xml = <<<'XML'
 <lpdf version="1">
-  <document size="a4" margin="48pt">
+  <document size="a4">
     <section>
-      <layout>
+      <layout margin="48pt">
         <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
@@ -130,14 +130,15 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 require_once 'vendor/autoload.php';
 
 use Lpdf\Kit\DocumentAttr;
+use Lpdf\Kit\LayoutAttr;
 use Lpdf\L;
 use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\TextAttr;
 use const Lpdf\NoAttr;
 
-$doc = L::document(new DocumentAttr(size: 'a4', margin: '48pt'), [
+$doc = L::document(new DocumentAttr(size: 'a4'), [
     L::section(NoAttr, [
-        L::layout(NoAttr, [
+        L::layout(new LayoutAttr(margin: '48pt'), [
             L::column(new ColumnAttr(gap: 'm'), [
                 L::text(new TextAttr(fontSize: 'xl'), ['Hello, world']),
                 L::text(NoAttr, ['This PDF was made with Lpdf.']),
@@ -181,9 +182,9 @@ from pathlib import Path
 from lpdf import L
 
 xml = """<lpdf version="1">
-  <document size="a4" margin="48pt">
+  <document size="a4">
     <section>
-      <layout>
+      <layout margin="48pt">
         <column gap="m">
           <text font-size="xl">Hello, world</text>
           <text>This PDF was made with Lpdf.</text>
@@ -206,11 +207,11 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 
 ```python
 from pathlib import Path
-from lpdf import L, NoAttr, DocumentAttr, ColumnAttr, TextAttr
+from lpdf import L, NoAttr, DocumentAttr, LayoutAttr, ColumnAttr, TextAttr
 
-doc = L.document(DocumentAttr(size='a4', margin='48pt'), [
+doc = L.document(DocumentAttr(size='a4'), [
     L.section(NoAttr, [
-        L.layout(NoAttr, [
+        L.layout(LayoutAttr(margin='48pt'), [
             L.column(ColumnAttr(gap='m'), [
                 L.text(TextAttr(font_size='xl'), ['Hello, world']),
                 L.text(NoAttr, ['This PDF was made with Lpdf.']),
@@ -254,9 +255,9 @@ using Lpdf;
 
 var xml = """
     <lpdf version="1">
-      <document size="a4" margin="48pt">
+      <document size="a4">
         <section>
-          <layout>
+          <layout margin="48pt">
             <column gap="m">
               <text font-size="xl">Hello, world</text>
               <text>This PDF was made with Lpdf.</text>
@@ -282,9 +283,9 @@ The same document, built with `L` instead of written as XML. `Render` takes eith
 using Lpdf;
 using static Lpdf.L;
 
-var doc = L.Document(new() { Size = "a4", Margin = "48pt" }, [
+var doc = L.Document(new() { Size = "a4" }, [
     L.Section(NoAttr, [
-        L.Layout(NoAttr, [
+        L.Layout(new() { Margin = "48pt" }, [
             L.Column(new() { Gap = "m" }, [
                 L.Text(new() { FontSize = "xl" }, ["Hello, world"]),
                 L.Text(NoAttr, ["This PDF was made with Lpdf."]),

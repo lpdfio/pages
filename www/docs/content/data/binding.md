@@ -6,12 +6,14 @@ Data binding lets you separate document structure from content. Pass a data obje
 
 | Attribute     | Where valid | Effect |
 |---------------|-------------|--------|
-| `data-value`  | `text` in the layout, including inside a `region` | Replaces the text content with the value at the given dot-path |
+| `data-value`  | `text` and `barcode` in the layout, including inside a `region`; `text-at` and `barcode-at` in a layer | Replaces the text content, or the data a barcode encodes, with the value at the given dot-path |
 | `data-source` | Any layout element | Dot-path to an array — repeats this element once per item; inside the loop, paths are relative to the current item |
-| `data-if`     | Any layout element | Renders the element only when the value at the path is truthy |
-| `data-if-not` | Any layout element | Renders the element only when the value at the path is falsy |
+| `data-if`     | Any layout element; a `layer`, `text-at`, `img-at` and `barcode-at` | Renders the element only when the value at the path is truthy |
+| `data-if-not` | Any layout element; a `layer`, `text-at`, `img-at` and `barcode-at` | Renders the element only when the value at the path is falsy |
 
-Data binding applies to the layout and to regions. Canvas elements are not bound: a `data-value` on a canvas `text` or `img`, and on a `link`, `img` or `barcode` in the layout, has no effect.
+Data binding applies to the layout, to regions and to [layers](?p=doc/layer#data-in-a-layer). A `data-value` on a `link` or an `img` has no effect, and the shapes of a layer take no data attributes.
+
+A layer reads single values, so `data-source` is not allowed on its elements: every copy would sit in the same place, and a list from data belongs in the layout. An array item can be read by its index, such as `signers[0].name`. A layer drawn on several pages shows the same values on each. Text that comes from data, and so can be any length, belongs in the layout: in a layer, a longer text loses its end without a warning.
 
 ## Passing data
 

@@ -1,6 +1,6 @@
 # Path
 
-Draws an arbitrary shape using SVG path data. Supports filled shapes, stroked outlines, and complex curves.
+Draws an arbitrary shape in a [layer](?p=doc/layer) using SVG path data. Supports filled shapes, stroked outlines, and complex curves.
 
 ## Attributes
 
@@ -13,15 +13,15 @@ Draws an arbitrary shape using SVG path data. Supports filled shapes, stroked ou
 | `stroke-width` | pt      | —          | Stroke width |
 | `stroke-dash`  | string  | —          | Dash pattern |
 | `line-cap`     | string  | `butt`     | `butt` `round` `square` |
-| `opacity`      | 0–1     | 1          | Opacity |
 
-`path` does not support `anchor`. Use absolute coordinates in the `d` attribute.
+A `path` has no box, so it does not support `anchor`. Use absolute coordinates in the `d` attribute. To fade a path, put it in a layer with `opacity`.
 
 ## Triangle
 
 ```xml
-<path d="M 200pt 100pt L 350pt 300pt L 50pt 300pt Z"
-      fill="#1a73e8" opacity="0.8"/>
+<layer opacity="0.8">
+  <path d="M 200pt 100pt L 350pt 300pt L 50pt 300pt Z" fill="#1a73e8"/>
+</layer>
 ```
 
 ## Arrow shape (stroked)
@@ -34,9 +34,11 @@ Draws an arbitrary shape using SVG path data. Supports filled shapes, stroked ou
 ## Complex shape with a hole (evenodd fill rule)
 
 ```xml
-<path d="M 100pt 100pt L 300pt 100pt L 300pt 300pt L 100pt 300pt Z
-         M 150pt 150pt L 250pt 150pt L 250pt 250pt L 150pt 250pt Z"
-      fill="#1a73e8" fill-rule="evenodd" opacity="0.6"/>
+<layer opacity="0.6">
+  <path d="M 100pt 100pt L 300pt 100pt L 300pt 300pt L 100pt 300pt Z
+           M 150pt 150pt L 250pt 150pt L 250pt 250pt L 150pt 250pt Z"
+        fill="#1a73e8" fill-rule="evenodd"/>
+</layer>
 ```
 
 ## SVG path command reference

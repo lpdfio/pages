@@ -41,22 +41,20 @@ A bookmark needs an element after it in the same container. One that comes last,
 
 ## Bookmarking a section
 
-A bookmark placed directly in a [`section`](?p=doc/section), before its `layout` or `canvas`, marks the section's first page. Use it for a page that has no layout to put a bookmark in, such as a cover drawn on a canvas.
+A bookmark placed directly in a [`section`](?p=doc/section), before its layers and its `layout`, marks the section's first page. Use it for a page that has no layout to put a bookmark in, such as a cover drawn in a layer.
 
 ```xml
 <document size="a4">
   <section>
     <bookmark label="Cover"/>
-    <canvas>
-      <layer>
-        <text x="56pt" y="380pt" font-size="32pt">Annual Report</text>
-      </layer>
-    </canvas>
+    <layer>
+      <text-at x="56pt" y="380pt" font-size="32pt">Annual Report</text-at>
+    </layer>
   </section>
 </document>
 ```
 
-A section takes one bookmark there, as its first child. Elsewhere, bookmarks go in a layout. A canvas cannot hold one.
+A section takes one bookmark there, as its first child. Elsewhere, bookmarks go in a layout. A layer cannot hold one.
 
 ## Linking to a bookmark
 

@@ -1,6 +1,6 @@
 # Line
 
-A straight line between two points. All four coordinate attributes are required — `line` does not support `anchor`.
+A straight line between two points in a [layer](?p=doc/layer). All four coordinate attributes are required. A `line` has no box, so it does not support `anchor`.
 
 ## Attributes
 
@@ -18,13 +18,11 @@ A straight line between two points. All four coordinate attributes are required 
 ## Horizontal rule on each page
 
 ```xml
-<canvas>
-  <layer page="each">
-    <!-- rule 48pt from the bottom, spanning the full letter width -->
-    <line x1="0pt" y1="744pt" x2="612pt" y2="744pt"
-          stroke="#e0e0e0" stroke-width="0.5pt"/>
-  </layer>
-</canvas>
+<layer page="each">
+  <!-- rule 48pt from the bottom, spanning the full letter width -->
+  <line x1="0pt" y1="744pt" x2="612pt" y2="744pt"
+        stroke="#e0e0e0" stroke-width="0.5pt"/>
+</layer>
 ```
 
 ## Dashed separator

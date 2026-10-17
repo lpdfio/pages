@@ -1,12 +1,12 @@
 # Layout
 
-`layout` is the flow container inside a `section`. Elements flow top to bottom and paginate automatically — when content overflows a page, it continues on the next.
+`layout` is the flow container inside a `section`. Elements flow top to bottom and paginate automatically — when content overflows a page, it continues on the next. A section has at most one layout. For content at a fixed place on the page, use a [layer](?p=doc/layer).
 
 ```xml
 <lpdf version="1">
-  <document size="letter" margin="48pt">
+  <document size="letter">
     <section>
-      <layout>
+      <layout margin="48pt">
         <column gap="16pt">
           <text font-size="18pt">Title</text>
           <divider/>
@@ -16,6 +16,18 @@
     </section>
   </document>
 </lpdf>
+```
+
+## Margin
+
+`margin` is the space between the edges of the page and the flowing content and its regions. It takes one value for all four sides, or two to four in the order top, right, bottom, left, written like CSS: `48pt`, a space token such as `l`, `"48pt 24pt"`. Without it the layout has a margin of 36pt on every side: half an inch.
+
+The margin belongs to the layout because only the flow uses it. The document and the section have none, and a [layer](?p=doc/layer) ignores it and measures from the page edges.
+
+```xml
+<layout margin="48pt 36pt">
+  <text>Flows inside a 48pt margin at the top and bottom, and 36pt at the sides.</text>
+</layout>
 ```
 
 ## Elements
@@ -109,7 +121,7 @@
 | `page`    | string | `each`  | Which pages show the region: `each`, `first`, `last`, `odd`, `even`, or a range like `2-last` |
 | `debug`   | boolean | false  | Render the region's box for debugging |
 
-In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are only replaced inside a region.
+In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are replaced in a region and in a layer's [`text-at`](?p=doc/layer/text-at#page-numbers), and they count within the section. A region takes its space out of the flow, inside the margin. For a page number that takes no space, or sits in the margin, use a layer.
 
 ```xml
 <region pin="top" page="first">

@@ -8,7 +8,6 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 |---------------|---------|---------|-------------|
 | `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | inherit | `portrait` or `landscape` |
-| `margin`      | spacing | inherit | Page margin: `48pt`, a token such as `l`, or one to four values like `"48pt 24pt"` |
 | `background`  | color   | inherit | Page background color |
 | `title`       | string  | —       | Section title. Accepted, but not used: the PDF's outline takes its entries from [bookmarks](?p=doc/layout/bookmark) |
 | `type`        | string  | —       | `toc` makes the section the document's [table of contents](?p=doc/toc) |
@@ -17,21 +16,51 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 
 All attributes are optional. The page settings inherit from `document` when not set.
 
-A section holds a [`layout`](?p=doc/layout), a [`canvas`](?p=doc/canvas), or both. The one listed first is painted first. Before them it can hold one [`bookmark`](?p=doc/layout/bookmark), which marks the section's first page.
+A section holds [layers](?p=doc/layer) and at most one [`layout`](?p=doc/layout), painted in the order they are written: a layer before the layout is painted under it, and a layer after it is painted over it. A section with no layout is one page. Before them it can hold one [`bookmark`](?p=doc/layout/bookmark), which marks the section's first page.
+
+The margin is not a page setting: it belongs to the layout, which is the content that keeps to it. See [`layout`](?p=doc/layout#margin).
 
 Content always goes in a `section`. A `layout` placed directly inside `document` is an error.
+
+## Layers and a layout
+
+A section holds any number of [layers](?p=doc/layer) and at most one layout. They are painted in the order they are written, so each one is drawn over the ones before it. The layout creates as many pages as its content needs, and a layer is drawn on the pages its `page` selects.
+
+```xml
+<section>
+  <bookmark label="Invoice"/>
+  <layer>
+    <!-- under the layout: the letterhead -->
+    <rect x="0pt" y="0pt" width="612pt" height="12pt" fill="#1763cf"/>
+  </layer>
+  <layout margin="48pt">
+    <text font-size="xl">Invoice</text>
+  </layout>
+  <layer page="each">
+    <!-- over the layout, on every page -->
+    <text-at anchor="bottom-right" x="-48pt" y="-24pt" font-size="9pt">Page {page} of {pages}</text-at>
+  </layer>
+  <layer page="last">
+    <!-- over the layout and the layer before it, on the last page -->
+    <line x1="48pt" y1="700pt" x2="248pt" y2="700pt" stroke="#333333"/>
+    <text-at x="48pt" y="704pt" font-size="8pt">Signature</text-at>
+  </layer>
+</section>
+```
+
+A section with only layers is one page, such as a cover. A second `layout` in a section is an error, and a layer cannot go inside the layout.
 
 ## Multiple sections
 
 ```xml
-<document size="letter" margin="48pt">
+<document size="letter">
   <section>
-    <layout>
+    <layout margin="48pt">
       <text font-size="14pt">First page</text>
     </layout>
   </section>
   <section>
-    <layout>
+    <layout margin="48pt">
       <text font-size="14pt">Second page</text>
     </layout>
   </section>
@@ -42,13 +71,13 @@ Content always goes in a `section`. A `layout` placed directly inside `document`
 
 ```xml
 <document>
-  <section size="letter" margin="48pt">
-    <layout>
+  <section size="letter">
+    <layout margin="48pt">
       <text>Letter page content</text>
     </layout>
   </section>
-  <section size="a4" margin="40pt">
-    <layout>
+  <section size="a4">
+    <layout margin="40pt">
       <text>A4 page content</text>
     </layout>
   </section>
@@ -58,8 +87,8 @@ Content always goes in a `section`. A `layout` placed directly inside `document`
 ## Landscape section
 
 ```xml
-<section size="letter" orientation="landscape" margin="72pt">
-  <layout>
+<section size="letter" orientation="landscape">
+  <layout margin="72pt">
     <text font-size="18pt">Wide page content</text>
   </layout>
 </section>
@@ -70,16 +99,16 @@ Content always goes in a `section`. A `layout` placed directly inside `document`
 A bookmark as the section's first child adds its first page to the PDF's outline, the bookmarks panel of a viewer. A section's `title` adds no entry.
 
 ```xml
-<document size="a4" margin="48pt">
+<document size="a4">
   <section>
     <bookmark label="Introduction"/>
-    <layout>
+    <layout margin="48pt">
       <text font-size="20pt">Introduction</text>
     </layout>
   </section>
   <section>
     <bookmark label="Results"/>
-    <layout>
+    <layout margin="48pt">
       <text font-size="20pt">Results</text>
     </layout>
   </section>

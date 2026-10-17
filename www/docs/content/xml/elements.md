@@ -75,12 +75,11 @@ Document properties written to the PDF. Child of `document`, before the sections
 |---------------|---------|------------|-------------|
 | `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
-| `margin`      | spacing | `0`        | Page margin: `48pt`, a token, or one to four values like `"48pt 24pt"` |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
 | `background`  | color   | —          | Page background color |
 | `debug`       | boolean | false      | Render layout boxes |
 
-A document holds an optional `meta` and one or more `section` elements. Other attributes are not read: `width`, `height`, `margin-top`, `color` and `title` are ignored, and `font-size` is an error. Set a page size with `size="200pt 300pt"`, and the title on `meta`.
+A document holds an optional `meta` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
 
 ### `section`
 
@@ -88,20 +87,27 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 |---------------|---------|----------|-------------|
 | `size`        | string  | inherit  | Override page size for this section |
 | `orientation` | string  | inherit  | Override orientation |
-| `margin`      | spacing | inherit  | Override margin |
 | `background`  | color   | inherit  | Section background |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
 | `debug`       | boolean | false    | Render layout boxes |
 
-A section can start with one `bookmark`, which marks its first page, followed by a `layout`, a `canvas`, or both.
+A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout`, painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with no layout is one page.
+
+### `layout`
+
+The flowing content of a section. Its elements are [layout elements](#layout-elements).
+
+| Attribute | Type    | Default | Description |
+|-----------|---------|---------|-------------|
+| `margin`  | spacing | `36pt`  | The space between the page edges and the flowing content and its regions: `48pt`, a token, or one to four values like `"48pt 24pt"`. A layer ignores it |
 
 ---
 
 ## Layout elements
 
-Layout elements live inside `layout`. Every one except `region`, `span` and `bookmark` takes `data-source`, `data-if` and `data-if-not`, and `text` takes `data-value`. See [Data Binding](?p=data/binding).
+Layout elements live inside `layout`. Every one except `region`, `span` and `bookmark` takes `data-source`, `data-if` and `data-if-not`, and `text` and `barcode` take `data-value`. See [Data Binding](?p=data/binding).
 
 ### Shared box attributes
 
@@ -158,9 +164,9 @@ Paragraph or inline text.
 
 | Attribute    | Type    | Default   | Description |
 |--------------|---------|-----------|-------------|
-| `font`       | string  | inherit   | Font name |
-| `font-size`  | token/pt| inherit   | Font size |
-| `color`      | color   | `#1a1a1a` | Text color. Not inherited |
+| `font`       | string  | inherit, else the document's `font`, or `Helvetica` | Font name |
+| `font-size`  | token/pt| inherit, else `m` (11pt) | Font size |
+| `color`      | color   | `#1a1a1a` | Text color. Not inherited. A color named `text` in `tokens` changes the default |
 | `align`      | string  | `left`    | `left` `center` `right` `justify` |
 | `width`      | token/pt| —         | Constrain text block width |
 | `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
@@ -201,8 +207,8 @@ Inline image.
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
-| `width`      | token/pt| —       | Display width |
-| `height`     | pt      | —       | Display height |
+| `width`      | token/pt| —       | Width. Without `height`, the height follows the image's proportions |
+| `height`     | pt      | —       | Height. With both, they are a maximum: the image is never stretched |
 | `padding`    | spacing | `0`     | Space around the image |
 | `background` | color   | —       | Background behind the image |
 | `border`     | BorderValue | —   | Border |
@@ -250,11 +256,11 @@ Takes the shared box attributes, except `width`. It accepts `paginate`, which ha
 |-------------|---------|-----------|-------------|
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
-| `size`      | token/pt| —         | Uniform size (QR only) |
-| `width`     | token/pt| —         | Width |
-| `height`    | pt      | —         | Height (non-QR) |
+| `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
+| `height`    | pt      | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
 | `hrt`       | boolean | false     | Human-readable text below Code128/EAN-13 |
+| `data-value`| string  | —         | Dot-path to a scalar value that replaces the data the barcode encodes |
 | `color`     | color   | `#000000` | Bar color |
 | `background`| color   | —         | Background color |
 | `paginate`  | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
@@ -274,7 +280,7 @@ In an entry of a table of contents, `href="#"` on a `link` or a `span` jumps to 
 
 ### `bookmark`
 
-An entry of the PDF's outline and a target for `href="#id"` links. It draws nothing, and marks the element that follows it, which must be in the same container. Directly inside a `section`, as its first child, it marks the section's first page. Not allowed in a canvas. See [Bookmark](?p=doc/layout/bookmark).
+An entry of the PDF's outline and a target for `href="#id"` links. It draws nothing, and marks the element that follows it, which must be in the same container. Directly inside a `section`, as its first child, it marks the section's first page. Not allowed in a layer. See [Bookmark](?p=doc/layout/bookmark).
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
@@ -315,22 +321,22 @@ Pinned header or footer that repeats across pages. Only allowed directly inside 
 
 ---
 
-## Canvas elements
+## Layer elements
 
-Canvas elements live inside `layer` inside `canvas`. Positions and sizes take `pt`, `mm` or `in`, and canvas elements are not data-bound.
-
-### `canvas`
-
-Container for absolute-positioned layers. Sibling of `layout` inside a `section`; the one listed first is painted first. It holds only `layer` elements.
+Layer elements live inside a `layer`, which is a child of `section`. Positions and sizes take `pt`, `mm` or `in`. A layer reads single values: `text-at`, `img-at`, `barcode-at` and the `layer` itself take `data-if` and `data-if-not`, and `text-at` and `barcode-at` take `data-value`. `data-source` is not allowed. See [Layer](?p=doc/layer#data-in-a-layer).
 
 ### `layer`
+
+Fixed content, in the order it is written among the section's layers and layout.
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
 | `page`      | string  | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last` |
-| `opacity`   | 0–1     | 1       | Layer opacity |
+| `opacity`   | 0–1     | 1       | Opacity of everything in the layer as one. `0` draws nothing |
 | `transform` | string  | —       | `translate(x, y)`, `scale(s)`, `rotate(deg, cx, cy)` or `matrix(a, b, c, d, e, f)`, with plain numbers |
-| `clip`      | string  | —       | Reserved. Accepted, no effect yet |
+| `clip`      | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page: what the layer draws outside it is cut off |
+| `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
+| `data-if-not` | string | —      | Draw the layer only when the value at the path is falsy |
 
 A layer cannot contain another layer.
 
@@ -338,35 +344,33 @@ A layer cannot contain another layer.
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X (or offset from anchor) |
-| `y`            | signed pt | —       | Y (or offset from anchor) |
-| `w`            | pt        | —       | **Required.** Width |
-| `h`            | pt        | —       | **Required.** Height |
+| `x`            | signed pt | —       | X of the left edge (or offset from anchor) |
+| `y`            | signed pt | —       | Y of the top edge (or offset from anchor) |
+| `width`        | pt        | —       | **Required.** Width |
+| `height`       | pt        | —       | **Required.** Height |
 | `anchor`       | string    | —       | Reference point |
 | `fill`         | color     | —       | Fill color |
 | `stroke`       | color     | —       | Border color |
 | `stroke-width` | pt        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
 | `radius`       | pt        | —       | Corner radius |
-| `opacity`      | 0–1       | 1       | Opacity |
 
 ### `circle`
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `cx`           | signed pt | —       | Centre X (or offset from anchor) |
-| `cy`           | signed pt | —       | Centre Y (or offset from anchor) |
+| `x`            | signed pt | —       | X of the left edge of the circle's box, the square of side 2`r` around it (or offset from anchor) |
+| `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
 | `r`            | pt        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point |
 | `fill`         | color     | —       | Fill color |
 | `stroke`       | color     | —       | Border color |
 | `stroke-width` | pt        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern |
-| `opacity`      | 0–1       | 1       | Opacity |
 
 ### `ellipse`
 
-Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`.
+Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its box is 2`rx` wide and 2`ry` high.
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -397,41 +401,64 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`.
 | `stroke-width` | pt      | `1pt`     | Stroke width |
 | `stroke-dash`  | string  | —         | Dash pattern |
 | `line-cap`     | string  | `butt`    | `butt` `round` `square` |
-| `opacity`      | 0–1     | 1         | Opacity |
 
-### `text` (canvas)
+### `text-at`
+
+Text at a fixed place. It is the layout's `text` with the same defaults. Children: `span`, as in `text`.
 
 | Attribute     | Type      | Default     | Description |
 |---------------|-----------|-------------|-------------|
-| `x`           | signed pt | —           | X (or offset from anchor) |
-| `y`           | signed pt | —           | Y (or offset from anchor) |
+| `x`           | signed pt | —           | X of the left edge of the box (or offset from anchor) |
+| `y`           | signed pt | —           | Y of the top edge of the box (or offset from anchor) |
 | `anchor`      | string    | —           | Reference point |
-| `font`        | string    | `Helvetica` | Font name |
-| `font-size`   | pt        | `12pt`      | Font size. Tokens are not accepted |
-| `color`       | color     | `#000000`   | Text color |
-| `align`       | string    | `left`      | `left` `center` `right` `justify` |
-| `w`           | pt        | —           | Wrap width. Without it, text wraps at the right edge of the page |
-| `line-height` | number    | `1.2`       | Line height multiplier |
-| `opacity`     | 0–1       | 1           | Opacity |
+| `width`       | pt        | —           | Width of the box. Without it the text is one line at its natural width |
+| `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
+| `ellipsis`    | boolean   | `false`     | End the last line drawn in an ellipsis when the text does not fit |
+| `line-height` | number    | `1.2`       | The distance between lines, as a factor of the font size |
+| `font`        | string    | the document's `font`, or `Helvetica` | Font name |
+| `font-size`   | token/pt  | `m` (11pt)  | Font size |
+| `bold`        | boolean   | `false`     | The bold face of a built-in font |
+| `color`       | color     | `#1a1a1a`   | Text color. A color named `text` in `tokens` changes the default |
+| `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
+| `data-value`  | string    | —           | Dot-path to a value that replaces the text |
 
-Children: `span`, with `font` and `color` only.
+### `img-at`
 
-### `img` (canvas)
+An image at a fixed place. It needs `width` or `height`.
 
 | Attribute    | Type      | Default | Description |
 |--------------|-----------|---------|-------------|
 | `name`       | string    | —       | **Required.** Asset name |
-| `x`          | signed pt | —       | X (or offset from anchor) |
-| `y`          | signed pt | —       | Y (or offset from anchor) |
-| `w`          | pt        | —       | **Required.** Width |
-| `h`          | pt        | —       | **Required.** Height |
+| `x`          | signed pt | —       | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed pt | —       | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —       | Reference point |
+| `width`      | pt        | —       | Width. Without `height`, the height follows the image's proportions |
+| `height`     | pt        | —       | Height. With both, they are a maximum: the image is never stretched |
+
+### `barcode-at`
+
+A barcode at a fixed place. It needs `width` or `height`.
+
+| Attribute    | Type      | Default   | Description |
+|--------------|-----------|-----------|-------------|
+| `type`       | string    | —         | **Required.** `qr` `code128` `ean13` |
+| `data`       | string    | —         | **Required.** Barcode data payload |
+| `x`          | signed pt | —         | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed pt | —         | Y of the top edge of the box (or offset from anchor) |
+| `anchor`     | string    | —         | Reference point |
+| `width`      | pt        | —         | Width. Without `height`, the height follows the barcode's proportions |
+| `height`     | pt        | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
+| `ec`         | string    | `M`       | QR error correction: `L` `M` `Q` `H` |
+| `hrt`        | boolean   | `false`   | Human-readable text below Code128/EAN-13 |
+| `color`      | color     | `#000000` | Bar color |
+| `background` | color     | —         | Background color |
+| `data-value` | string    | —         | Dot-path to a value that replaces the data the barcode encodes |
 
 ---
 
 ## Anchor values
 
-Used by canvas elements (`x`/`y` are offsets from the anchor point). The points are on the whole page, not inside the margin:
+Used by layer elements (`x`/`y` are offsets from the anchor point, and the element's matching point is placed there). The points are on the whole page, not inside the margin:
 
 | Value          | Description |
 |----------------|-------------|

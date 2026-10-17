@@ -4,11 +4,10 @@
 //   lpdf                                      as it is
 //   document                                  in lpdf
 //   section                                   in document and lpdf
-//   layout, canvas                            in section and the rest
-//   layer                                     in canvas and the rest
+//   layout, layer                             in section and the rest
 //   rect circle ellipse line path             in layer and the rest
-//   text, img with x, y, w or anchor          in layer and the rest (canvas text and images)
-//   anything else, such as stack or region    in layout and the rest
+//   text-at img-at barcode-at                 in layer and the rest
+//   anything else, such as column or region   in layout and the rest
 //
 // Images named in a snippet are declared with a one-pixel placeholder, so an example that uses
 // `logo` renders. A snippet that is not meant to run is skipped: one that starts with assets or
@@ -32,7 +31,7 @@ const verbose = process.argv.includes('--verbose');
 
 const PLACEHOLDER_IMAGES = ['logo', 'photo', 'avatar', 'watermark'];
 const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
-const CANVAS_SHAPES = new Set(['rect', 'circle', 'ellipse', 'line', 'path']);
+const LAYER_CONTENT = new Set(['rect', 'circle', 'ellipse', 'line', 'path', 'text-at', 'img-at', 'barcode-at']);
 
 async function loadEngine()
 {
@@ -90,15 +89,12 @@ function wrap(xml)
     let body = xml;
     let level = first.tag;
 
-    if (level === 'text' || level === 'img') level = /\s(x|y|w|anchor)=/.test(first.attrs) ? 'shape' : 'content';
-    else if (CANVAS_SHAPES.has(level)) level = 'shape';
-    else if (!['lpdf', 'document', 'section', 'layout', 'canvas', 'layer'].includes(level)) level = 'content';
+    if (LAYER_CONTENT.has(level)) { body = `<layer>${body}</layer>`; level = 'layer'; }
+    else if (!['lpdf', 'document', 'section', 'layout', 'layer'].includes(level)) level = 'content';
 
-    if (level === 'shape') { body = `<layer>${body}</layer>`; level = 'layer'; }
-    if (level === 'layer') { body = `<canvas>${body}</canvas>`; level = 'canvas'; }
-    if (level === 'content') { body = `<layout>${body}</layout>`; level = 'layout'; }
-    if (level === 'layout' || level === 'canvas') { body = `<section>${body}</section>`; level = 'section'; }
-    if (level === 'section') { body = `<document size="letter" margin="48pt">${body}</document>`; level = 'document'; }
+    if (level === 'content') { body = `<layout margin="48pt">${body}</layout>`; level = 'layout'; }
+    if (level === 'layout' || level === 'layer') { body = `<section>${body}</section>`; level = 'section'; }
+    if (level === 'section') { body = `<document size="letter">${body}</document>`; level = 'document'; }
     if (level === 'document') { body = `<lpdf version="1">${assets}${body}</lpdf>`; level = 'lpdf'; }
     return { xml: body };
 }

@@ -12,19 +12,19 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
     <meta>           ← optional: title, author, subject, keywords, creator
     <section>+       ← one or more, each with its own pages
       <bookmark>     ← optional: marks the section's first page
-      <layout>       ← flow content
+      <layer>*       ← fixed content, painted under the layout
+        …shapes, text-at, img-at, barcode-at
+      <layout>       ← optional: flow content, at most one
         …elements
-      <canvas>       ← absolute positioned content
-        <layer>+
-          …shapes
+      <layer>*       ← fixed content, painted over the layout
 ```
 
-A document holds sections, and a section holds a `layout`, a `canvas`, or both. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
+A document holds sections, and a section holds any number of layers and at most one `layout`, painted in the order they are written. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
 
 ```xml
-<document size="letter" margin="48pt">
+<document size="letter">
   <section>
-    <layout>
+    <layout margin="48pt">
       <text>Hello world</text>
     </layout>
   </section>
@@ -52,10 +52,10 @@ Lengths are in points (`pt`, 1/72 in). Where other units work depends on the att
 | Where | Accepts |
 |-------|---------|
 | Layout lengths: `gap`, `padding`, `margin`, `width`, `height`, `font-size`, `radius`, `thickness`, `toc-indent-step` | `pt` or a [token](#tokens) name |
-| Canvas positions and sizes: `x` `y` `w` `h` `cx` `cy` `r` `rx` `ry` `x1`…`y2`, and canvas `radius`, `stroke-width`, `font-size` | `pt`, `mm` or `in` |
+| Layer positions and sizes: `x` `y` `width` `height` `r` `rx` `ry` `x1`…`y2`, and a layer's `radius` and `stroke-width` | `pt`, `mm` or `in` |
 | Table `cols` | `fr`, `pt` or `%` |
 
-Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "invalid space value" or "invalid width value" error. Canvas `x`, `y`, `cx`, `cy` and the line ends are signed, so they accept negative numbers: `-18pt`.
+Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "invalid space value" or "invalid width value" error. A layer's `x`, `y` and the line ends are signed, so they accept negative numbers: `-18pt`.
 
 ## Tokens
 
@@ -83,9 +83,9 @@ To change a scale, or to name colors, add `tokens` before `document`. A scale ro
       <color name="text" value="#222222"/>
     </colors>
   </tokens>
-  <document size="letter" margin="48pt">
+  <document size="letter">
     <section>
-      <layout>
+      <layout margin="48pt">
         <column gap="m" padding="l" background="brand">
           <text>Uses the new scale and the named color</text>
         </column>
@@ -99,7 +99,7 @@ The scale elements are `space`, `text-size`, `border`, `radius`, `width` and `gr
 
 ## Colors
 
-A color is `#rgb` or `#rrggbb`, or the name of a color in `tokens`. There is no alpha channel: use `opacity` on canvas shapes. A name that is not defined is an error.
+A color is `#rgb` or `#rrggbb`, or the name of a color in `tokens`. There is no alpha channel: use `opacity` on a [layer](?p=doc/layer#opacity). A name that is not defined is an error.
 
 ## BorderValue format
 

@@ -10,9 +10,9 @@ The page numbers count the table of contents' own pages. When it runs onto a sec
 
 ```xml
 <lpdf version="1">
-  <document size="a4" margin="56pt">
+  <document size="a4">
     <section type="toc">
-      <layout>
+      <layout margin="56pt">
         <column gap="m">
           <text font-size="xl">Contents</text>
           <column gap="xs">
@@ -29,7 +29,7 @@ The page numbers count the table of contents' own pages. When it runs onto a sec
       </layout>
     </section>
     <section>
-      <layout>
+      <layout margin="56pt">
         <bookmark label="Introduction"/>
         <text font-size="l">Introduction</text>
         <text>The text of the introduction.</text>
@@ -39,7 +39,7 @@ The page numbers count the table of contents' own pages. When it runs onto a sec
       </layout>
     </section>
     <section>
-      <layout>
+      <layout margin="56pt">
         <bookmark label="Results"/>
         <text font-size="l">Results</text>
         <text>The results.</text>

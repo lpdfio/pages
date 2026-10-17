@@ -1,6 +1,6 @@
 # Image
 
-Embeds an image asset declared in `assets`. Width and height are constraints — the image scales proportionally unless both are set.
+Embeds an image asset declared in `assets`. The image is never stretched: with one size set, the other follows its proportions, and with both set they are a maximum.
 
 ## Asset declaration
 
@@ -11,9 +11,9 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
   <assets>
     <image name="logo" src="logo.png"/>
   </assets>
-  <document size="letter" margin="48pt">
+  <document size="letter">
     <section>
-      <layout>
+      <layout margin="48pt">
         <img name="logo" width="120pt"/>
       </layout>
     </section>
@@ -26,8 +26,8 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name declared in `assets` |
-| `width`      | token/pt | —      | Constrain width (aspect ratio preserved unless height also set) |
-| `height`     | pt      | —       | Constrain height |
+| `width`      | token/pt | —      | Width. Without `height`, the height follows the image's proportions |
+| `height`     | pt      | —       | Height. Without `width`, the width follows the image's proportions |
 | `padding`    | spacing | —       | Inner padding |
 | `background` | color   | —       | Background behind image |
 | `border`     | string  | —       | Border |
@@ -44,6 +44,23 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 
 ```xml
 <img name="photo" height="200pt"/>
+```
+
+## Both sizes: a maximum
+
+With both `width` and `height`, they are a maximum. The image takes the largest size that fits in them with its own proportions, and its box becomes that size. The parent's `align` places it, as for any child.
+
+```xml
+<img name="logo" width="200pt" height="80pt"/>
+```
+
+To give images slots of one size, such as a row of logos each in an 80 × 40pt cell, wrap each in a `frame` of that size, which centres its child:
+
+```xml
+<row gap="m">
+  <frame width="80pt" height="40pt"><img name="logo" width="80pt" height="40pt"/></frame>
+  <frame width="80pt" height="40pt"><img name="photo" width="80pt" height="40pt"/></frame>
+</row>
 ```
 
 ## Rounded image

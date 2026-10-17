@@ -18,8 +18,8 @@ export default defineConfig({
             title: 'Lpdf Docs',
             description: 'Reference and guides for Lpdf: PDF as code on every platform.',
             favicon: '/favicon.ico',
-            // The same Umami tracker the static pages of lpdf.io carry.
             head: [
+                // The same Umami tracker the static pages of lpdf.io carry.
                 {
                     tag: 'script',
                     attrs: {
@@ -28,6 +28,11 @@ export default defineConfig({
                         'data-website-id': '59a27b01-7833-45ca-89a0-9c16906e45f1',
                     },
                 },
+                // Starlight gives a page no image, though its twitter:card asks for a large one, so a shared
+                // link would show none. The pages of lpdf.io share this one (sitemap.yaml's og_image).
+                { tag: 'meta', attrs: { property: 'og:image', content: 'https://lpdf.io/assets/images/og-default.png' } },
+                { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+                { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
             ],
             components: {
                 Header: './src/components/header.astro',

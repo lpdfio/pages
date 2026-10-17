@@ -298,6 +298,7 @@ class LpdfDemo extends LitElement {
 
     static properties = {
         _s: { state: true },
+        _started: { state: true },
     };
 
     _s: RootState;
@@ -317,6 +318,9 @@ class LpdfDemo extends LitElement {
     _langComp: Compartment             = new Compartment();
     _themeComp: Compartment            = new Compartment();
     _themeObs: MutationObserver | null = null;
+    /** Whether the demo has reached the viewport and started: until then there is no viewer and no engine. */
+    _started: boolean                  = false;
+    _viewObs: IntersectionObserver | null = null;
 
     constructor() {
         super();
@@ -329,7 +333,7 @@ class LpdfDemo extends LitElement {
             this._s = { ...store.getState() };
         });
         window.addEventListener('message', this._onViewerMessage);
-        this._boot();
+        this._startWhenInView();
     }
 
     disconnectedCallback() {
@@ -337,6 +341,8 @@ class LpdfDemo extends LitElement {
         this._unsub?.();
         window.removeEventListener('message', this._onViewerMessage);
         if (this._debounce) clearTimeout(this._debounce);
+        this._viewObs?.disconnect();
+        this._viewObs = null;
         this._themeObs?.disconnect();
         this._cmView?.destroy();
         this._cmView = null;
@@ -397,6 +403,31 @@ class LpdfDemo extends LitElement {
     }
 
     // ── Boot ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Starts the demo when it reaches the viewport. The engine, the viewer and the example are most of
+     * what the home page downloads, about 2 MB, so a visitor who never scrolls to the demo doesn't fetch
+     * them. On a phone it sits just below the fold; on a desktop it is in view, and starts, at once.
+     */
+    _startWhenInView() {
+        if (!('IntersectionObserver' in window)) {
+            this._start();
+            return;
+        }
+        this._viewObs = new IntersectionObserver(entries => {
+            if (!entries.some(entry => entry.isIntersecting)) return;
+            this._viewObs?.disconnect();
+            this._viewObs = null;
+            this._start();
+        });
+        this._viewObs.observe(this);
+    }
+
+    /** Renders the viewer's iframe, which loads PDF.js, and boots the engine beside it. */
+    _start() {
+        this._started = true;
+        this._boot();
+    }
 
     async _boot() {
         try {
@@ -646,10 +677,12 @@ class LpdfDemo extends LitElement {
                     <!-- Right: PDF preview, in the viewer of the VS Code extension -->
                     <div class="lpdf-preview-pane">
                         <div class="lpdf-preview-inner">
-                            <iframe class="lpdf-viewer-frame"
-                                    title="PDF preview"
-                                    src=${VIEWER_URL}
-                                    loading="lazy"></iframe>
+                            ${this._started ? html`
+                                <iframe class="lpdf-viewer-frame"
+                                        title="PDF preview"
+                                        src=${VIEWER_URL}
+                                        loading="lazy"></iframe>
+                            ` : nothing}
                             ${engine.status === 'error' ? html`
                                 <div class="lpdf-placeholder lpdf-placeholder--error">
                                     <span>${engine.error}</span>

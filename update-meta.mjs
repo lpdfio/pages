@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Reads sitemap.yaml and syncs SEO meta tags in each page's HTML file.
+// Reads sitemap.yaml, syncs SEO meta tags in each page's HTML file, and writes www/sitemap.xml.
 // Run: node update-meta.mjs (or `make meta-pages` from the lpdf repo)
 //
-// index: true  → injects title, description, canonical, og:*, twitter:card
-// index: false → injects title, description, robots noindex (no og/twitter)
+// index: true  → injects title, description, canonical, og:*, twitter:card; listed in sitemap.xml
+// index: false → injects title, description, robots noindex (no og/twitter); left out of sitemap.xml
 //
 // Uses <!-- seo:start / seo:end --> sentinels. First run strips existing
 // scattered tags and inserts the block; subsequent runs replace between sentinels.
@@ -78,6 +78,23 @@ function buildSeoBlock(page, defaultImage) {
     return lines.join('\n');
 }
 
+// ── Sitemap builder ────────────────────────────────────────────────────────────
+
+// Lists the canonical URL of each page search engines may index. No <lastmod>: nothing here knows
+// when a page last changed, and a wrong date is worse than none.
+function buildSitemap(pages) {
+    const urls = pages
+        .filter(page => page.index !== false)
+        .map(page => `    <url><loc>${page.canonical}</loc></url>`);
+    return [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ...urls,
+        '</urlset>',
+        '',
+    ].join('\n');
+}
+
 // ── HTML updater ───────────────────────────────────────────────────────────────
 
 function updateHtml(html, seoBlock) {
@@ -127,6 +144,18 @@ for (const page of sitemap.pages) {
         writeFileSync(htmlPath, updated, 'utf8');
         console.log(`  updated    ${page.path}`);
     }
+}
+
+// The docs are not in it: Starlight writes their sitemap at /docs/sitemap-index.xml, and robots.txt
+// names both (.github/set-stage.sh).
+const sitemapPath = resolve(pagesDir, 'sitemap.xml');
+const sitemapXml  = buildSitemap(sitemap.pages);
+
+if (existsSync(sitemapPath) && readFileSync(sitemapPath, 'utf8') === sitemapXml) {
+    console.log('  unchanged  /sitemap.xml');
+} else {
+    writeFileSync(sitemapPath, sitemapXml, 'utf8');
+    console.log('  updated    /sitemap.xml');
 }
 
 console.log('\ndone.');

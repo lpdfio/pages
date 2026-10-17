@@ -39,11 +39,11 @@ if [ "$stage" = pre ]; then
 fi
 
 # Pre must stay out of search results. Prod allows everything, as it did with no robots file, and
-# points crawlers at the docs sitemap, the only one there is.
+# points crawlers at both sitemaps: the pages' (www/sitemap.xml, from sitemap.yaml) and the docs'.
 if [ "$stage" = pre ]; then
     printf 'User-agent: *\nDisallow: /\n' > "$site/robots.txt"
 else
-    printf 'User-agent: *\nAllow: /\n\nSitemap: %s/docs/sitemap-index.xml\n' "$pages" > "$site/robots.txt"
+    printf 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\nSitemap: %s/docs/sitemap-index.xml\n' "$pages" "$pages" > "$site/robots.txt"
 fi
 
 # Check what was written, so a stage never ships with a placeholder left in or another stage's host.

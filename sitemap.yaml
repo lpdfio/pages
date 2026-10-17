@@ -1,15 +1,16 @@
 # SEO source of truth for lpdf.io pages.
 #
-# update-meta.mjs writes these into each page's <!-- seo:start --> block. Nothing runs it
-# automatically: after editing this file, run `make meta-pages` from the lpdf repo and
-# commit the pages it changes.
+# update-meta.mjs writes these into each page's <!-- seo:start --> block, and writes www/sitemap.xml
+# from the pages with index: true. Nothing runs it automatically: after editing this file, run
+# `make meta-pages` from the lpdf repo and commit the pages and the sitemap it changes.
 #
 # Fields:
-#   canonical   — prod canonical URL, for <link rel="canonical"> and og:url
+#   canonical   — prod canonical URL, for <link rel="canonical">, og:url and the sitemap. A page is a
+#                 folder, so its URL ends with a slash: GitHub Pages redirects the address without it
 #   title       — <title> and og:title
 #   description — <meta name="description"> and og:description (150-160 chars)
 #   og_image    — absolute prod URL; defaults to the top-level og_image if omitted
-#   index       — false: <meta name="robots" content="noindex">, and no canonical or og tags
+#   index       — false: <meta name="robots" content="noindex">, no canonical or og tags, and not in the sitemap
 #
 # Title format: "Lpdf — Page Name" (em dash, brand prefix)
 # Home exception (path /): tagline replaces brand suffix
@@ -17,6 +18,7 @@
 #
 # Pages not listed here keep hand-written meta: 404.html,
 # and the brand previews (pricing-authstack, pricing-conseal).
+# The docs at /docs are the Starlight site in docs-site, which writes their meta and their own sitemap.
 
 base_url: https://lpdf.io
 og_image: https://lpdf.io/assets/images/og-default.png
@@ -30,37 +32,31 @@ pages:
     index: true
 
   - path: /pricing
-    canonical: https://lpdf.io/pricing
+    canonical: https://lpdf.io/pricing/
     title: "Lpdf — Pricing"
     description: "Free outside production at any company size, and in production under $1M revenue. Professional and Enterprise are licensed per production system, not per seat."
     index: true
 
-  - path: /docs
-    canonical: https://lpdf.io/docs
-    title: "Lpdf — Docs"
-    description: "Full reference for the Lpdf XML schema, data binding, design tokens, and SDK integration across Node.js, .NET, PHP, and Python."
-    index: true
-
   - path: /support
-    canonical: https://lpdf.io/support
+    canonical: https://lpdf.io/support/
     title: "Lpdf — Support"
     description: "Support and response times for each Lpdf license tier. Severity levels, what support covers, and what to include in a report."
     index: true
 
   - path: /license
-    canonical: https://lpdf.io/license
+    canonical: https://lpdf.io/license/
     title: "Lpdf — License"
     description: "Lpdf License — Community (free), Professional, and Enterprise terms. No seat limits, per-production-system pricing."
     index: false
 
   - path: /privacy
-    canonical: https://lpdf.io/privacy
+    canonical: https://lpdf.io/privacy/
     title: "Lpdf — Privacy Policy"
     description: "The Codesense Privacy Policy, which covers the account portal and product websites. The Lpdf library itself collects no data."
     index: false
 
   - path: /terms
-    canonical: https://lpdf.io/terms
+    canonical: https://lpdf.io/terms/
     title: "Lpdf — Terms of Service"
     description: "The Codesense Terms of Service, which govern the account portal and license purchases for every Codesense product."
     index: false

@@ -57,10 +57,10 @@ A one-page résumé. What this adds to the letter:
     <text-size xs="7.5pt" s="9pt" m="10.5pt" l="14pt" xl="24pt" xxl="30pt" />
   </tokens>
 
-  <document size="letter" margin="0pt" font="body">
+  <document size="letter" font="body">
     <meta title="Résumé: Jordan Ellis" author="Jordan Ellis" />
     <section background="surface">
-      <layout>
+      <layout margin="0pt">
         <row gap="0pt" height="full">
 
           <!-- sidebar: its own background, as tall as the page -->

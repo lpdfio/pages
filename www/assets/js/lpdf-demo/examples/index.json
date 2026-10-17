@@ -3,7 +3,7 @@
     {
       "id": "admission-letter",
       "label": "Admission letter",
-      "description": "A one-page letter on a university letterhead, with a crest drawn on the canvas.",
+      "description": "A one-page letter on a university letterhead, with a crest drawn in a layer.",
       "xml": "admission-letter/document.xml",
       "data": null
     },
@@ -38,7 +38,7 @@
     {
       "id": "brochure",
       "label": "Brochure",
-      "description": "A two-page A4 landscape brochure where the canvas is the design, with embedded fonts and a QR code.",
+      "description": "A two-page A4 landscape brochure where the layers are the design, with embedded fonts and a QR code.",
       "xml": "brochure/document.xml",
       "data": null
     },

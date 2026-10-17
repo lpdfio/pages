@@ -29,8 +29,10 @@ adds to the brochure:
                    what is written on it are told apart
   check boxes      a column 7pt square with a border, and a background when it is ticked
   paginate         paginate="break-before" on a page's column starts the page at the top of a new one
-  canvas           the watermark, the initials boxes and the page number are on the canvas, with a page range:
-                   a region would reserve its space on every page, and these sit in the margins
+  layers           the watermark, the initials boxes and the page number are in layers, with a page range:
+                   a region would reserve its space on every page, and these sit in the margins. The page
+                   number is one layer on each page: {page} and {pages} in a text-at stand for the page it is
+                   drawn on and the number of pages
   transform        transform="rotate(-35 306 396)" on the watermark layer turns it about the middle of the page.
                    The angle is in degrees, anticlockwise when negative; the two numbers after it are the pivot
 
@@ -43,4 +45,4 @@ payment.
 
 ## The document
 
-The document is 1,124 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.
+The document is 1,123 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

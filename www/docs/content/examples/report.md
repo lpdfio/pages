@@ -21,11 +21,11 @@ sentences about them come from document.json, as in the invoice. What this adds:
   images       declare them in <assets>, place them with <img>. Their size is yours to set
   region       text pinned to the top or bottom of every page, outside the flow. The one
                written first is the header, the one written last is the footer
-  page scope   page="each", "first" or "2-last" says which pages a region or a canvas layer
+  page scope   page="each", "first" or "2-last" says which pages a region or a layer
                is on. {page} and {pages} become the page number and the page count, counted
                within a section: a report that numbers its pages is one section
   sections     each section sets its own page. The last one here is tabloid, landscape, and
-               holds only a canvas: a world map drawn as paths, with a marker for each site
+               holds only layers: a world map drawn as paths, with a marker for each site
   paginate     paginate="no" on a box keeps it whole: a heading column moves to the next page
                with its paragraph instead of stranding the heading. It is set on each section
                of text here, and the tables are left to split, their header repeating
@@ -45,4 +45,4 @@ The document names 2 files, which go in an `assets` folder next to it. In Visual
 
 ## The document
 
-The document is 842 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.
+The document is 838 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

@@ -1,6 +1,6 @@
 # Brochure
 
-A two-page A4 landscape brochure where the canvas is the design, with embedded fonts and a QR code.
+A two-page A4 landscape brochure where the layers are the design, with embedded fonts and a QR code.
 
 [document.xml](/docs/examples/brochure/document.xml)
 
@@ -14,24 +14,24 @@ A two-page A4 landscape brochure where the canvas is the design, with embedded f
 ```text
 A brochure for a private investment firm, two A4 landscape pages: a cover and an inside page. The
 firm, its companies and its figures are invented, and it is a sample, not an offer of anything. This
-is the example where the canvas is the design and the layout sits on top of it. What this adds to
+is the example where the layers are the design and the layout sits on top of it. What this adds to
 the contract:
 
   fonts          two files, a display serif and a text sans, embedded: <font src> in <assets>, then
                  font="display" or font="text". They are in assets/fonts, with notes on their licences
                  (SIL Open Font License). Each has one weight, so the hierarchy is size and colour
-  canvas         the cover is a green panel, soft circles and rising bars drawn behind the text, and
+  layers         the cover is a green panel, soft circles and rising bars drawn behind the text, and
                  the text is placed over them. The layout does not know the shapes are there: the
                  coordinates and the widths are agreed by hand
   layers         one layer for each opacity: the panel is solid, the circles are at 0.14 and the bars
                  at 0.6. A shape's own opacity is ignored, and a layer's is not
   path           the curve over the bars: M and C, in points from the top left of the page
-  sections       a section can change the page settings: the cover has no margin so its panels reach
-                 the edge, and the inside page has 36pt
+  sections       each section has a layout of its own, and the margin is the layout's: the cover's is
+                 0pt so its panels reach the edge, and the inside page's is 36pt
   justify        justify="between" on a column spreads its parts from top to bottom of its height
   barcode        a QR code, dark on light so that it scans on the dark band
 
-All the text is in the layout. Text on the canvas is one line only. A layer can also be turned with
+All the text is in the layout. Text in a layer is one line only. A layer can also be turned with
 transform, as the contract's watermark is; nothing is rotated here.
 ```
 
@@ -44,4 +44,4 @@ The document names 2 files, which go in an `assets` folder next to it. In Visual
 
 ## The document
 
-The document is 354 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.
+The document is 350 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

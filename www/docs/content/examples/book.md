@@ -21,16 +21,16 @@ and not the XML. The text is public domain (Lewis Carroll, 1865). What this adds
   paginate       paginate="break-before" on a direct child of the layout starts a new page. Each
                  chapter, and the contents, is such a child, so each begins at the top of a page. On
                  a box inside another box it is ignored, and paginate="no" keeps a stanza whole
-  headers        the running head, the chapter's number and name, is a canvas layer with a page range:
+  headers        the running head, the chapter's number and name, is a layer with a page range:
                  page="4-9" shows it on those pages and no others. There is one for each chapter, and
-                 none on a chapter's first page, where the plate is. They are on the canvas and not
+                 none on a chapter's first page, where the plate is. They are layers and not
                  regions because Lpdf reserves room for every region whose pages it cannot count, on
                  every page: twelve regions left no room for text. A layer reserves nothing, so the
                  page's top margin, 56pt, holds the head, with 18pt between its rule and the text
   footer         a region, the last child of the layout: {page} on every page after the cover
   type           Crimson Text, a book face, in regular, italic and semibold, embedded from assets/fonts
                  (SIL Open Font License). The italic is used on the cover only: see the last paragraph
-  canvas         the cover is drawn: a panel, a frame and a pocket watch, from rects, circles and lines
+  layers         the cover is drawn in a layer: a panel, a frame and a pocket watch, from rects, circles and lines
   plates         each chapter opens with a picture in the top two-thirds of the page: an img inside a
                  frame 258pt tall, which centres it across and down, and the chapter's title begins
                  below it, at 66% of the page height, with its text after it. The plates are by Arthur Rackham (1907, public
@@ -73,4 +73,4 @@ The document names 15 files, which go in an `assets` folder next to it. In Visua
 
 ## The document
 
-The document is 1,291 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.
+The document is 1,289 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

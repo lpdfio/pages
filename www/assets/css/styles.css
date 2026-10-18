@@ -119,7 +119,7 @@
     --border: #2f3339;
     --text: #eceff3;
     --text-muted: #989da4;
-    --text-subtle: #797d83;
+    --text-subtle: #898d93;
 }
 
 /* ── Base ── */
@@ -380,7 +380,15 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 /* Language name leads its row; the repo and package links sit under it, a step quieter. */
 .footer-sdk { font-size: 0.875rem; color: var(--text-muted); transition: color .15s; }
 .footer-sdk:hover { color: var(--brand); }
-.footer-columns .footer-sdk-links a { font-size: 0.8125rem; color: var(--text-subtle); }
+/* These are a step smaller than the rows around them, which would leave them 19.5px high and a few pixels from the
+   package name above, so each is given 24px to tap. */
+.footer-columns .footer-sdk-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+}
 /* No rule above the copyright. The footer already has one — its own border-top — and a second
    inside a block that has no other dividers reads as two stacked footers rather than one. Space
    separates it instead, balanced against the 2rem the columns end on. */

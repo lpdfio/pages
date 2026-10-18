@@ -89,19 +89,19 @@ const CM_BASE_THEME = EditorView.theme({
     '.cm-cursor':           { display: 'none' },
     '.cm-activeLine':       { background: 'transparent' },
     '.cm-gutters':          { border: 'none', paddingRight: '4px', minWidth: '2.8em', userSelect: 'none' },
-    '.cm-lineNumbers .cm-gutterElement': { padding: '0 8px 0 4px', minWidth: '2.4em', textAlign: 'right', fontSize: '11px', opacity: '0.5' },
+    '.cm-lineNumbers .cm-gutterElement': { padding: '0 8px 0 4px', minWidth: '2.4em', textAlign: 'right', fontSize: '11px' },
 });
 
 const CM_DARK_THEME = EditorView.theme({
     '&':                                                        { background: '#1e1e1e', color: '#d4d4d4' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: '#264f78' },
-    '.cm-gutters':                                              { background: '#1e1e1e', color: '#858585' },
+    '.cm-gutters':                                              { background: '#1e1e1e', color: '#8a8a8a' },
 }, { dark: true });
 
 const CM_LIGHT_THEME = EditorView.theme({
     '&':                                                        { background: 'var(--bg-elev)', color: 'var(--text)' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: '#add6ff' },
-    '.cm-gutters':                                              { background: 'var(--bg-elev)', color: '#aaaaaa' },
+    '.cm-gutters':                                              { background: 'var(--bg-elev)', color: 'var(--text-subtle)' },
 });
 
 const DARK_HIGHLIGHT = syntaxHighlighting(HighlightStyle.define([
@@ -373,6 +373,8 @@ class LpdfDemo extends LitElement {
                 doc: '',
                 extensions: [
                     EditorView.editable.of(false),
+                    // The editor is a textbox to assistive technology, and a textbox needs a name.
+                    EditorView.contentAttributes.of({ 'aria-label': 'Example source' }),
                     lineNumbers(),
                     this._langComp.of(xmlLang()),
                     this._themeComp.of([dark ? CM_DARK_THEME : CM_LIGHT_THEME, dark ? DARK_HIGHLIGHT : LIGHT_HIGHLIGHT]),
@@ -640,6 +642,7 @@ class LpdfDemo extends LitElement {
                         <span class="lpdf-demo-label"></span>
                         <select id="lpdf-select"
                                 class="lpdf-select"
+                                aria-label="Example"
                                 ?disabled=${!engineReady}
                                 @change=${this._onExampleChange}>
                             ${EXAMPLES.map(ex => html`
@@ -671,7 +674,7 @@ class LpdfDemo extends LitElement {
                                 `)}
                             </div>
                         </div>
-                        <div class="lpdf-cm-wrap" aria-label="lpdf source"></div>
+                        <div class="lpdf-cm-wrap"></div>
                     </div>
 
                     <!-- Right: PDF preview, in the viewer of the VS Code extension -->

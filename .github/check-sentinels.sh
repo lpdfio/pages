@@ -9,17 +9,29 @@
 # Refresh the bundles with:  npm run build:pages   (in codesense/portal/ui)
 set -euo pipefail
 
-pages=www/assets/js/lpdf-pages.js
+# Each kind of page loads its own bundle (lpdf-pages.js, lpdf-pages-pricing.js, ...). They all start from the
+# same base, which carries the footer's portal links, so every one has the sentinel.
+bundles=(www/assets/js/lpdf-pages*.js)
 docs=www/assets/js/lpdf-docs.js
 failed=0
 
-if ! grep -q '__PORTAL_URL__' "$pages"; then
-    echo "::error file=$pages::no __PORTAL_URL__ sentinel — rebuild with 'npm run build:pages' in codesense/portal/ui"
-    failed=1
-fi
+for bundle in "${bundles[@]}"; do
+    if ! grep -q '__PORTAL_URL__' "$bundle"; then
+        echo "::error file=$bundle::no __PORTAL_URL__ sentinel — rebuild with 'npm run build:pages' in codesense/portal/ui"
+        failed=1
+    fi
+done
+
+# A page that names a bundle which is not there loads nothing, and the deploy still succeeds.
+for name in $(grep -rhoE 'assets/js/lpdf-pages[a-z-]*\.js' www --include='*.html' --exclude-dir=docs | sort -u); do
+    if [ ! -f "www/$name" ]; then
+        echo "::error::a page loads $name, which is not in www/assets/js — rebuild with 'npm run build:pages' in codesense/portal/ui"
+        failed=1
+    fi
+done
 
 # Any of these in a deployed bundle means a developer build was committed.
-for file in "$pages" "$docs"; do
+for file in "${bundles[@]}" "$docs"; do
     for host in 'my-local.codesense.dev' 'lpdf.local' 'localhost'; do
         if grep -qF "$host" "$file"; then
             echo "::error file=$file::development host '$host' is baked into the bundle — rebuild with 'npm run build:pages' in codesense/portal/ui"

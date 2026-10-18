@@ -31,13 +31,22 @@ static pages (`.github/assemble-site.sh`: `www/` with this build at `/docs` in p
 the same files to pre (`pre.lpdf.io`) and then to prod (`lpdf.io`). `.github/set-stage.sh` sets each stage's
 portal URL and CNAME. Every push to `main` deploys, so a docs-only change ships without a core release.
 
+Each static page loads one script from `www/assets/js`, the one with what the page renders: `lpdf-pages.js` has the
+theme, the nav and the footer, which every page needs, and the pages that render more load a bundle that starts
+from it, `lpdf-pages-pricing.js`, `lpdf-pages-md.js` or `lpdf-pages-redirect.js`. They are built from
+`codesense/portal/ui` (`npm run build:pages`), and `set-stage.sh` and `check-sentinels.sh` go over all of them, so a
+new one is named `lpdf-pages-<kind>.js`.
+
 Assembling also gives the static pages the content their script draws, for readers that don't run it
 (`scripts/prerender-pages.mjs`). The support and license pages are empty until `<md-html>` fetches and renders their
 markdown, and the nav and the footer are components too, so without script a page has no text and no links.
 The script loads each assembled page in jsdom with the bundle it names, as a browser would, and writes what
 `<site-nav>`, `<lpdf-footer>` and `<md-html>` drew into the page's HTML. Nothing is committed, and the copy comes from
 the bundle that draws it, so it cannot drift from it. The nav and the footer are marked `data-prerendered` and replace
-the copy with their own, and `<md-html>` loses its `src`, so it fetches nothing. The footer's portal links carry
+the copy with their own, and `<md-html>` loses its `src`, so it fetches nothing. The markdown renderer and the code
+editor it brings are most of the weight of the pages' script, so a page with `<md-html>` names the bundle to load
+once its markdown is drawn, in `data-prerendered-src` on its script tag, and the script puts that in the `src`
+(support and license then load the 10 KB base bundle, not the 240 KB one). The footer's portal links carry
 `__PORTAL_URL__` until `.github/set-stage.sh` sets them, as the bundle's do. `lpdf.local` serves the pages as they are
 in git, so it never shows the copy; run `assemble-site.sh` and serve its output to look at it.
 

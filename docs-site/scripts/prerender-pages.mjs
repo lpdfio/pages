@@ -12,6 +12,10 @@
 //   <md-html src="...">        gets the rendered markdown and loses its src. The content is there, so it fetches
 //                              nothing, and the page does not move when the file would have arrived
 //
+// A page with <md-html> loads the bundle that renders markdown, which is most of the weight of the pages' script, to
+// draw what is now in the HTML. Its script tag names the bundle to load once that is done, in data-prerendered-src
+// (<script defer src="lpdf-pages-md.js" data-prerendered-src="lpdf-pages.js">), and this puts it in the src.
+//
 // The links carry the deploy placeholders the bundle does (__PORTAL_URL__). set-stage.sh replaces them in the
 // pages as it does in the bundle.
 //
@@ -25,6 +29,7 @@ import { JSDOM, VirtualConsole, requestInterceptor } from 'jsdom';
 
 const ORIGIN = 'https://lpdf.io';
 const ELEMENTS = /<(site-nav|lpdf-footer|md-html)\b([^>]*)>\s*<\/\1>/g;
+const DRAWN_SCRIPT = /<script defer src="[^"]*" data-prerendered-src="([^"]*)"><\/script>/;
 // Not pages of lpdf.io: the docs are Starlight's own HTML, and the rest are what the pages load.
 const SKIP_FOLDERS = new Set(['docs', 'assets', 'content', 'schema']);
 const SETTLE_TIMEOUT_MS = 20000;
@@ -169,7 +174,9 @@ for (const rel of await pageFiles(site))
 
     const elements = await drawElements(rel, source, matches.length);
     let index = 0;
-    await fs.writeFile(file, source.replace(ELEMENTS, (_, tag, attributes) => place(tag, attributes, elements[index++].html)));
+    let page = source.replace(ELEMENTS, (_, tag, attributes) => place(tag, attributes, elements[index++].html));
+    if (matches.some(([, tag]) => tag === 'md-html')) page = page.replace(DRAWN_SCRIPT, '<script defer src="$1"></script>');
+    await fs.writeFile(file, page);
 
     drawn++;
     console.log(`prerendered ${rel}: ${matches.map(([, tag], i) => `${tag} (${elements[i].links} links)`).join(', ')}`);

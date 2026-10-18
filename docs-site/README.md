@@ -16,7 +16,7 @@ Run from this folder, in PowerShell or any shell. The first time, install the de
 | `npm run build` | Builds the static site into `dist/`, with the search index and a sitemap |
 | `npm run preview` | Serves `dist/` at http://localhost:4321/docs/, as it would be deployed |
 | `npm run sync` | Only converts the content into `src/content/docs/` |
-| `npm run check` | Renders every XML example in the docs with the engine and lists the ones it rejects, then checks that the code made for each renders the same PDF |
+| `npm run check` | Renders every XML example in the docs with the engine and lists the ones it rejects, then checks that the code made for each renders the same PDF, and that every page's title and description fit search results |
 
 **On lpdf.local.** The Caddyfile in `_local` serves `dist/` at http://lpdf.local/docs in place of `www/docs`,
 beside the rest of the site. Run `npm run build`, then reload; there is no server to restart.
@@ -37,6 +37,12 @@ portal URL and CNAME. Every push to `main` deploys, so a docs-only change ships 
 ignored by git:
 
 - The first `# Heading` becomes the page title, and the first paragraph becomes the meta description.
+- `page-meta.json` gives a page what search results and shared links show instead: a `description`, and a `title`
+  that becomes the page's `<title>` and `og:title` through `head` frontmatter, so the heading and the sidebar stay
+  short. The key is the page's path in the content folder without its extension. A page under `doc/`, `xml/` or
+  `data/` is the XML reference, and its title is its heading and "— Lpdf XML reference" unless the entry sets one.
+  The example pages and Installation set their own. A new page needs an entry, since a first paragraph is rarely
+  120 to 160 characters; `npm run check` says which.
 - `?p=doc/layout/row` links become `/docs/doc/layout/row/`.
 - `::: sdk js ... :::` sections become Starlight tabs. Those pages become `.mdx`. Headings inside tabs move
   two levels down, so they stay out of "On this page".
@@ -74,6 +80,8 @@ from the example with the engine in `../www/assets/js/lpdf-demo`, on every `npm 
 ## Other files
 
 - `astro.config.mjs`: the site and the sidebar.
+- `page-meta.json` and `scripts/check-page-meta.mjs`: the titles and descriptions search results show, and the
+  check that they are at most 60 characters and 120 to 160 (see "How the content is converted").
 - `src/components/page-frame.astro`: with a mouse, the content scrolls in Starlight's own `.main-frame`, below
   the header, not in the window (see "Scrolling" in `src/styles/lpdf.css`), so the header never shifts between
   pages that scroll and pages that don't. This component gives the frame keyboard focus on load and keeps a

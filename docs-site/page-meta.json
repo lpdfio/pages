@@ -1,0 +1,112 @@
+{
+    "install": {
+        "title": "Install Lpdf for Node.js, .NET, PHP and Python",
+        "description": "Install the Lpdf engine from npm, NuGet, Packagist or PyPI, then create a PDF from XML or code in Node.js, .NET, PHP or Python. One engine, identical output."
+    },
+    "examples/admission-letter": {
+        "title": "Admission letter PDF in XML, Node.js, .NET, PHP, Python",
+        "description": "A one-page admission letter PDF on a university letterhead, with a crest drawn in a layer. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/resume": {
+        "title": "Résumé PDF template in XML, Node.js, .NET, PHP and Python",
+        "description": "A one-page résumé PDF with colours and sizes named once as tokens, two columns and wrapping tags. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/invoice": {
+        "title": "Invoice PDF template in XML, Node.js, .NET, PHP and Python",
+        "description": "A two-page invoice PDF filled from JSON: a repeating table, totals, a QR code and page numbers. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/report": {
+        "title": "Report PDF template in XML, Node.js, .NET, PHP and Python",
+        "description": "A data-driven report PDF on data centers: tables across pages, charts and a tabloid world map. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/installment-contract": {
+        "title": "Installment contract PDF in XML, Node.js, .NET, PHP, Python",
+        "description": "A four-page installment contract PDF: boxed forms, leader lines and a rotated SAMPLE watermark. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/brochure": {
+        "title": "Brochure PDF template in XML, Node.js, .NET, PHP and Python",
+        "description": "A two-page landscape brochure PDF where layers are the design, with embedded fonts and a QR code. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "examples/book": {
+        "title": "Book PDF template in XML, Node.js, .NET, PHP and Python",
+        "description": "A pocket book PDF of Alice's Adventures in Wonderland, all twelve chapters with plates. Get the XML and render it from Node.js, .NET, PHP or Python."
+    },
+    "doc/section": {
+        "description": "The section element in Lpdf XML: a run of pages with its own size, orientation and background that holds layers and one layout and paginates on its own."
+    },
+    "doc/toc": {
+        "description": "Build a table of contents in Lpdf XML with a section of type toc: it lists the document's bookmarks and page numbers, and each entry can link to its bookmark."
+    },
+    "doc/layout": {
+        "description": "The layout element in Lpdf XML: the flow container inside a section. Content flows top to bottom and paginates, with a margin, page breaks and pinned regions."
+    },
+    "doc/layer": {
+        "description": "The layer element in Lpdf XML: shapes, text, images and barcodes at fixed positions on the page, for watermarks, stamps, page numbers and letterhead."
+    },
+    "doc/layout/barcode": {
+        "description": "The barcode element in Lpdf XML: put a QR code, Code 128 or EAN-13 barcode in the flow layout, with its size, error correction and human-readable text."
+    },
+    "doc/layout/bookmark": {
+        "description": "The bookmark element in Lpdf XML: add an entry to the PDF outline and a target for internal links. It draws nothing and can nest up to six levels deep."
+    },
+    "doc/layout/column": {
+        "description": "The column element in Lpdf XML: place children top to bottom with a gap, alignment, padding, background and border. A column can split across pages."
+    },
+    "doc/layout/divider": {
+        "description": "The divider element in Lpdf XML: draw a horizontal or vertical rule with a set color and thickness, between blocks of a page or inside a row."
+    },
+    "doc/layout/field": {
+        "description": "The field element in Lpdf XML: add an interactive PDF form field, a text box, checkbox, dropdown, radio group or button that works in AcroForm viewers."
+    },
+    "doc/layout/frame": {
+        "description": "The frame element in Lpdf XML: an atomic box around one child, with padding, background, border and radius. It never splits across pages; use it for callouts."
+    },
+    "doc/layout/grid": {
+        "description": "The grid element in Lpdf XML: lay out children in a multi-column grid that wraps to new rows, by column count or minimum width, with items from data too."
+    },
+    "doc/layout/img": {
+        "description": "The img element in Lpdf XML: place an image declared in assets (PNG or JPEG) in the flow, by width, height or both, with rounded corners. It is never stretched."
+    },
+    "doc/layout/link": {
+        "description": "The link element in Lpdf XML: wrap text, images or any layout content in a clickable link to a URL, or to a bookmark elsewhere in the PDF document."
+    },
+    "doc/layout/row": {
+        "description": "The row element in Lpdf XML: place children side by side that wrap to the next line, with children that fill the rest, pushed apart, and tag or badge rows."
+    },
+    "doc/layout/table": {
+        "description": "The table element in Lpdf XML: tabular data with column widths in fr, pt or percent, a header row that repeats on each page, and automatic pagination."
+    },
+    "doc/layout/text": {
+        "description": "The text element in Lpdf XML: a flowing text block with wrapping, font size and color, alignment, justified copy, inline spans and widows and orphans control."
+    },
+    "doc/layer/barcode-at": {
+        "description": "The barcode-at element in Lpdf XML: put a QR code, Code 128 or EAN-13 barcode at a fixed place on the page in a layer, optionally filled from data."
+    },
+    "doc/layer/circle": {
+        "description": "The circle and ellipse elements in Lpdf XML: draw a filled or hollow circle or ellipse at a fixed place in a layer, set by x and y or anchored to the page."
+    },
+    "doc/layer/img-at": {
+        "description": "The img-at element in Lpdf XML: place an image at a fixed position in a layer, such as a logo on every page or a centered watermark, sized by width or height."
+    },
+    "doc/layer/line": {
+        "description": "The line element in Lpdf XML: draw a straight line between two points in a layer, solid or dashed, as a rule on each page, a separator or an accent."
+    },
+    "doc/layer/path": {
+        "description": "The path element in Lpdf XML: draw any shape in a layer from SVG path data, filled or stroked, with nonzero or evenodd fill rules for shapes with holes."
+    },
+    "doc/layer/rect": {
+        "description": "The rect element in Lpdf XML: draw a filled or stroked rectangle in a layer, with rounded corners, for backgrounds, borders, bars and highlight boxes."
+    },
+    "doc/layer/text-at": {
+        "description": "The text-at element in Lpdf XML: place text at a fixed position in a layer, for page numbers and watermarks, with anchoring, width, lines and inline spans."
+    },
+    "data/binding": {
+        "description": "Data binding in Lpdf XML: fill a document from JSON with data-value, data-source, data-if and data-if-not. Inject values, loop over lists, show or hide parts."
+    },
+    "xml/elements": {
+        "description": "Every Lpdf XML element with its attributes, types, defaults and required flags, from the lpdf root and document structure to layout elements and layers."
+    },
+    "xml/schema": {
+        "description": "The Lpdf XML schema: document structure, page sizes, units, tokens, colors and the border value format, with a download link for lpdf.xsd."
+    }
+}

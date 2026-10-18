@@ -55,6 +55,21 @@ Use `span` children to apply different styles within a single text block.
 </text>
 ```
 
+### Spaces around a span
+
+A span is joined to the text around it as the XML is written: a space falls between them only where the text has whitespace there. `Total: <span>5</span>` reads "Total: 5", and `$<span>5</span>` reads "$5".
+
+```xml
+<column gap="xs">
+  <text>Total: <span bold="true">5</span> units</text>
+  <text>$<span bold="true">5</span>.00</text>
+</column>
+```
+
+The strings and spans you give `text` in code are joined the same way, so the space belongs inside the string, as the tabs above show: `'Total: '` reads "Total: 5", and `'Total:'` before the same span reads "Total:5".
+
+A line break and the indentation after it count as one space. A space at the start or end of the text is dropped, and so is one at the start of a span. One at the end of a span separates it from what follows.
+
 ## Widows and orphans
 
 When a paragraph splits across pages, Lpdf keeps at least two of its lines on each page. A line left alone at the bottom of a page is an orphan, and one carried alone to the top of the next page is a widow.

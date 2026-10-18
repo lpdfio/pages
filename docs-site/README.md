@@ -16,7 +16,7 @@ Run from this folder, in PowerShell or any shell. The first time, install the de
 | `npm run build` | Builds the static site into `dist/`, with the search index and a sitemap |
 | `npm run preview` | Serves `dist/` at http://localhost:4321/docs/, as it would be deployed |
 | `npm run sync` | Only converts the content into `src/content/docs/` |
-| `npm run check` | Renders every XML example in the docs with the engine and lists the ones it rejects |
+| `npm run check` | Renders every XML example in the docs with the engine and lists the ones it rejects, then checks that the code made for each renders the same PDF |
 
 **On lpdf.local.** The Caddyfile in `_local` serves `dist/` at http://lpdf.local/docs in place of `www/docs`,
 beside the rest of the site. Run `npm run build`, then reload; there is no server to restart.
@@ -59,6 +59,8 @@ those links.
 ## Checking the examples
 
 `scripts/check-examples.mjs` renders each XML block in `../www/docs/content` with the demo engine (`../www/assets/js/lpdf-demo`) and exits 1 if the engine rejects one. A partial snippet is wrapped in the elements it needs, chosen from its first element, and the images `logo`, `photo`, `avatar` and `watermark` are declared with a one-pixel placeholder. It proves the engine accepts the example and nothing more: an attribute the engine ignores still passes, so it does not replace reading a change against the schema.
+
+`scripts/check-codegen.mjs` takes the same examples and has the engine write their JavaScript, as the code tabs do. It runs that code with the JS SDK (`@lpdfio/lpdf`, a dev dependency, pinned to a release) and exits 1 if it renders another PDF than the XML, which is a tab that teaches the wrong thing. The SDK's own engine renders both, so the code generator is the only difference. An example the generator leaves as XML only is skipped. `LPDF_ENGINE_DIR=<folder with lpdf-web.js and lpdf_bg.wasm>` checks an engine that is not in the tree yet, such as `dist/web` of a core checkout (copy `lpdf.js` as `lpdf-web.js`).
 
 ## The example pages
 

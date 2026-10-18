@@ -11,7 +11,8 @@ permissions:
   id-token: write
 
 jobs:
-  # The marketing pages are static, so the only thing built here is the docs. It is built once and
+  # The marketing pages are static, so the only thing built here is the docs, and what the pages
+  # fill in with script is drawn into their HTML when the site is assembled. It is built once and
   # the same files go to pre and then prod: what was looked at on pre.lpdf.io is what ships. The
   # docs carry the prod canonical address, like every other page, so nothing in them differs
   # between the two stages.

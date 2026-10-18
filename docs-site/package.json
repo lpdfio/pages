@@ -16,6 +16,7 @@
         "sharp": "^0.35.5"
     },
     "devDependencies": {
-        "@lpdfio/lpdf": "0.27.0"
+        "@lpdfio/lpdf": "0.27.0",
+        "jsdom": "^30.1.3"
     }
 }

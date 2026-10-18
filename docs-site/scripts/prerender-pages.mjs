@@ -1,13 +1,15 @@
 // Gives the pages of lpdf.io that a browser fills in with script their content as HTML too: the text of the
-// support and license pages, and the links of the nav and the footer. A reader that doesn't run script (Bing, a
-// link preview, an AI crawler, a browser with script off) then gets the page instead of an empty one.
+// support and license pages, the tiers of the pricing page, and the links of the nav and the footer. A reader that
+// doesn't run script (Bing, a link preview, an AI crawler, a browser with script off) then gets the page instead of
+// an empty one.
 //
 // Each page is loaded in jsdom with the bundle it names, as a browser would load it, and what its <site-nav>,
-// <lpdf-footer> and <md-html> drew is written into the page's own HTML. It runs on the assembled site
+// <lpdf-footer>, <tier-card> and <md-html> drew is written into the page's own HTML. It runs on the assembled site
 // (assemble-site.sh) and nothing is committed, so the copy comes from the bundle that draws it and cannot drift
 // from it:
 //
-//   <site-nav>, <lpdf-footer>  get what they drew and `data-prerendered`, which tells the element to replace it
+//   <site-nav>, <lpdf-footer>, <tier-card>
+//                              get what they drew and `data-prerendered`, which tells the element to replace it
 //                              with its own, in the task that connects it (LightElement, in the portal's ui)
 //   <md-html src="...">        gets the rendered markdown and loses its src. The content is there, so it fetches
 //                              nothing, and the page does not move when the file would have arrived
@@ -28,7 +30,8 @@ import path from 'node:path';
 import { JSDOM, VirtualConsole, requestInterceptor } from 'jsdom';
 
 const ORIGIN = 'https://lpdf.io';
-const ELEMENTS = /<(site-nav|lpdf-footer|md-html)\b([^>]*)>\s*<\/\1>/g;
+const TAGS = ['site-nav', 'lpdf-footer', 'tier-card', 'md-html'];
+const ELEMENTS = new RegExp(`<(${TAGS.join('|')})\\b([^>]*)>\\s*</\\1>`, 'g');
 const DRAWN_SCRIPT = /<script defer src="[^"]*" data-prerendered-src="([^"]*)"><\/script>/;
 // Not pages of lpdf.io: the docs are Starlight's own HTML, and the rest are what the pages load.
 const SKIP_FOLDERS = new Set(['docs', 'assets', 'content', 'schema']);
@@ -133,7 +136,7 @@ async function drawElements(rel, source, count)
     try
     {
         await new Promise(resolve => dom.window.addEventListener('load', resolve));
-        const elements = [...dom.window.document.querySelectorAll('site-nav, lpdf-footer, md-html')];
+        const elements = [...dom.window.document.querySelectorAll(TAGS.join(', '))];
         if (elements.length !== count) throw new Error(`${rel} has ${elements.length} elements to draw and ${count} the script can place`);
         for (const element of elements) await waitFor(() => element.childElementCount > 0, `<${element.localName}> of ${rel}`);
 
@@ -142,7 +145,10 @@ async function drawElements(rel, source, count)
             const html = element.innerHTML.replace(/<!--[\s\S]*?-->/g, '');
             if (/Failed to load/.test(html)) throw new Error(`<${element.localName}> of ${rel} could not load: ${element.textContent.trim()}`);
             if (element.localName === 'md-html' && !element.querySelector('h1')) throw new Error(`<md-html> of ${rel} drew no <h1>`);
-            if (element.localName !== 'md-html' && !element.querySelector('a[href]')) throw new Error(`<${element.localName}> of ${rel} drew no links`);
+            // A tier's button is a link only while the tier can be bought; its name and price are always there.
+            if (element.localName === 'tier-card' && !(element.querySelector('.tier-label')?.textContent.trim() && element.querySelector('.tier-price')?.textContent.trim()))
+                throw new Error(`<tier-card tier="${element.getAttribute('tier')}"> of ${rel} drew no name or price`);
+            if (['site-nav', 'lpdf-footer'].includes(element.localName) && !element.querySelector('a[href]')) throw new Error(`<${element.localName}> of ${rel} drew no links`);
             return { html, links: element.querySelectorAll('a[href]').length };
         });
     }

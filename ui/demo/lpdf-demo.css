@@ -173,6 +173,18 @@ lpdf-demo {
     box-shadow: 0 1px 0 rgb(12 12 13);
 }
 
+/* The header is the viewer's grey, not one of the page's surfaces, so the page's muted and brand tones fall under 4.5:1
+   on it in the dark theme. The dark pair is set against #38383d; the light one is the page's own, which clears it. */
+.lpdf-editor-header {
+    --lpdf-mode-text: var(--text-muted);
+    --lpdf-mode-active: var(--brand-text, var(--brand));
+}
+
+[data-theme="dark"] .lpdf-editor-header {
+    --lpdf-mode-text: #a4a8af;
+    --lpdf-mode-active: #f68c36;
+}
+
 .lpdf-mode-btn {
     padding: 3px 10px;
     font-size: 11px;
@@ -181,7 +193,7 @@ lpdf-demo {
     border-radius: 3px;
     cursor: pointer;
     background: transparent;
-    color: var(--text-muted);
+    color: var(--lpdf-mode-text);
     font-family: inherit;
     transition: background .1s, color .1s;
     white-space: nowrap;
@@ -189,12 +201,12 @@ lpdf-demo {
 
 .lpdf-mode-btn:hover:not(:disabled) {
     background: transparent;
-    color: var(--brand);
+    color: var(--lpdf-mode-active);
 }
 
 .lpdf-mode-btn[aria-pressed="true"] {
     background: transparent;
-    color: var(--brand);
+    color: var(--lpdf-mode-active);
     font-weight: 600;
 }
 

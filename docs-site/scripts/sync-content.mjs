@@ -4,6 +4,8 @@
 // Conversions:
 //   - the first "# Heading" becomes the page title in frontmatter
 //   - the first paragraph becomes the page description (meta description)
+//   - page-meta.json gives a page the title and description search results show, in place of its heading and first
+//     paragraph; see README.md
 //   - "?p=doc/layout/row" links become "/docs/doc/layout/row/"
 //   - "::: sdk js ... :::" sections become Starlight <Tabs>, which makes the page .mdx;
 //     headings inside them move two levels down to stay out of the page contents
@@ -29,6 +31,11 @@ const EXTRA = path.resolve(root, 'extra');
 const DEST = path.resolve(root, 'src/content/docs');
 const CODEGEN = path.resolve(root, '../www/assets/js/lpdf-demo');
 const BASE = '/docs';
+const PAGE_META = path.resolve(root, 'page-meta.json');
+
+// The pages in these folders are the XML reference, and their title in search results says so.
+const REFERENCE_FOLDERS = ['doc/', 'xml/', 'data/'];
+const REFERENCE_SUFFIX = ' — Lpdf XML reference';
 
 // The sync key and labels are shared with src/components/code-lang-select.astro.
 const SYNC_KEY = 'lang';
@@ -218,7 +225,20 @@ function xmlToCodeTabs(body, rel, codegen, xmlOnly)
     return out.join('\n');
 }
 
-function transform(rel, text, codegen, xmlOnly)
+/**
+ * What search results and shared links show for a page: the `<title>` and og:title, and the description. The page's
+ * own heading and the sidebar stay short, so the title is only set as `head` frontmatter, and only where the page has
+ * something better to say than its heading.
+ */
+function searchMeta(rel, heading, body, meta)
+{
+    const key = rel.replace(/\.mdx?$/, '');
+    const title = meta[key]?.title
+        ?? (REFERENCE_FOLDERS.some(folder => key.startsWith(folder)) ? heading + REFERENCE_SUFFIX : undefined);
+    return { title, description: meta[key]?.description ?? firstParagraph(body) };
+}
+
+function transform(rel, text, codegen, xmlOnly, meta)
 {
     const lines = text.replace(/\r\n/g, '\n').split('\n');
 
@@ -243,7 +263,7 @@ function transform(rel, text, codegen, xmlOnly)
     body = body.replace(/\]\(\/?\?p=([^)#\s]+)(#[^)\s]*)?\)/g,
         (_, p, hash = '') => `](${BASE}/${p.replace(/\./g, '/')}/${hash})`);
 
-    const description = firstParagraph(body);
+    const { title: searchTitle, description } = searchMeta(rel, title, body, meta);
 
     body = sdkToTabs(xmlToCodeTabs(body, rel, codegen, xmlOnly));
 
@@ -256,20 +276,43 @@ function transform(rel, text, codegen, xmlOnly)
 
     const fm = ['---', `title: ${JSON.stringify(title)}`];
     if (description) fm.push(`description: ${JSON.stringify(description)}`);
+    if (searchTitle)
+    {
+        // Starlight takes a page's own `<title>` and og:title in place of the ones it builds from the heading.
+        fm.push(
+            'head:',
+            '  - tag: title',
+            `    content: ${JSON.stringify(searchTitle)}`,
+            '  - tag: meta',
+            '    attrs:',
+            '      property: og:title',
+            `      content: ${JSON.stringify(searchTitle)}`);
+    }
     fm.push('---', '', '');
-    return { out: rel.replace(/\.mdx?$/, ext), content: fm.join('\n') + body };
+    return {
+        out: rel.replace(/\.mdx?$/, ext),
+        content: fm.join('\n') + body,
+        page: { title: searchTitle ?? title, description },
+    };
 }
 
+/**
+ * Syncs the content once. Returns the title and description each page gets in search results, by the page's path
+ * in the content folder.
+ */
 export async function syncOnce()
 {
     const outputs = new Map();
+    const pages = new Map();
     const codegen = await loadCodegen();
+    const meta = JSON.parse(await fs.readFile(PAGE_META, 'utf8'));
     const xmlOnly = [];
 
     for (const rel of await walk(SRC))
     {
-        const { out, content } = transform(rel, await fs.readFile(path.join(SRC, rel), 'utf8'), codegen, xmlOnly);
+        const { out, content, page } = transform(rel, await fs.readFile(path.join(SRC, rel), 'utf8'), codegen, xmlOnly, meta);
         outputs.set(out, content);
+        pages.set(rel.replace(/\.mdx?$/, ''), page);
     }
     // Pages written for the site rather than taken from the markdown, such as the landing page.
     for (const rel of await walk(EXTRA))
@@ -299,6 +342,7 @@ export async function syncOnce()
 
     console.log(`[sync] ${outputs.size} pages, ${written} written, ${removed} removed`);
     if (xmlOnly.length) console.log(`[sync] ${xmlOnly.length} XML blocks without code tabs:\n  ${xmlOnly.join('\n  ')}`);
+    return pages;
 }
 
 export function watchContent()
@@ -310,7 +354,8 @@ export function watchContent()
         timer = setTimeout(() => syncOnce().catch(err => console.error('[sync]', err)), 150);
     };
     for (const dir of [SRC, EXTRA]) watch(dir, { recursive: true }, resync);
-    console.log(`[sync] watching ${path.relative(root, SRC)} and ${path.relative(root, EXTRA)}`);
+    watch(PAGE_META, resync);
+    console.log(`[sync] watching ${path.relative(root, SRC)}, ${path.relative(root, EXTRA)} and ${path.relative(root, PAGE_META)}`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)

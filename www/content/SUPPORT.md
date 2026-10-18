@@ -5,7 +5,7 @@ Copyright © 2026 Codesense LLC
 Effective date: September 8, 2026
 
 This page describes the support that comes with each Lpdf license tier. It forms part of the
-[Lpdf License](/license) where that license refers to support terms.
+[Lpdf License](/license/) where that license refers to support terms.
 
 ---
 
@@ -105,7 +105,7 @@ responding within the times above, to telling you honestly whether and when we e
 something, and to giving you a workaround where one exists.
 
 **Response times apply while your license is current.** Support ends when a subscription lapses, in
-line with the [Lpdf License](/license).
+line with the [Lpdf License](/license/).
 
 ---
 
@@ -132,4 +132,4 @@ license term already paid for.
 Plano, Texas, United States
 [support@lpdf.io](mailto:support@lpdf.io)
 
-See also: [Software License](/license) · [Terms of Service](/terms) · [Privacy Policy](/privacy)
+See also: [Software License](/license/) · [Terms of Service](/terms/) · [Privacy Policy](/privacy/)

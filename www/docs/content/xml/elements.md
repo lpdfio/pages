@@ -189,6 +189,8 @@ Inline text with overridden style.
 | `underline` | boolean | Underline text |
 | `strike`    | boolean | Strikethrough text |
 
+A space falls between a span and the text around it only where the text has whitespace there. See [Spaces around a span](?p=doc/layout/text#spaces-around-a-span).
+
 ### `divider`
 
 Horizontal (or vertical) rule.

@@ -5,20 +5,8 @@
    outlined in it with a brand label, Enterprise is filled with it. The edge is what
    says "this is a tier"; the label and the fill are what say which one.
 
-   --brand-text exists because --brand is chosen against the 3:1 bar a mark is held
-   to, while a pill label is text at 4.5:1. It clears that on the dark card at 5.12
-   but only reaches 3.41 on the light one, so the light theme carries the same hue
-   down in lightness until it passes.
-
-   --brand-on is dark, not white. It is the colour of anything sitting *on* the brand
-   fill — the filled Enterprise pill, the CTA hover — and white there measured 3.21
-   against that fill, below the 4.5 a label this size needs, which made the filled
-   pill the one element on the page under the text bar. This tone clears it at 4.76
-   without touching the fill, so the ladder keeps its weight where it belongs, in the
-   fill rather than the label. It stays on the brand hue rather than going to a
-   neutral black, which at 5.32 reads as hazard tape rather than as a brand.
-
-   Mirrored in the portal's `portal.css` — keep the two in step.
+   --brand-text and --brand-on, which the ladder is set in, are defined with the other tokens in
+   styles.css, which every page loads.
 
    --color-community-border and --color-community-badge used to live here, at hues
    45 and 43. They were the last of the three-hue tier scheme, and once the ladder
@@ -26,14 +14,6 @@
    which meant the one page a visitor lands on first showed an orange two hues off
    the brand. Removed rather than re-hued, so there is no second orange left to
    reach for. */
-:root {
-    --brand-text: oklch(0.565 0.15 55);
-    --brand-on:   oklch(0.25 0.06 55);
-}
-
-[data-theme="dark"] {
-    --brand-text: var(--brand);
-}
 
 /* ── tier-card-wrap — reserves space above card for floating top badge ── */
 .tier-card-wrap {

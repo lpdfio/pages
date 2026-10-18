@@ -28,9 +28,10 @@ cp -a "$docs/." "$out/docs/"
 # whose name starts with an underscore, which is where Starlight puts its CSS and JS (_astro).
 touch "$out/.nojekyll"
 
-# Draws what the pages fill in with script into their HTML: the text of the support and license pages, and the
-# links of the nav and the footer. A reader that doesn't run script gets the page, not an empty one. It loads the
-# bundle each page names, so it runs on the assembled copy; the links carry the placeholders set-stage.sh replaces.
+# Draws what the pages fill in with script into their HTML: the text of the support and license pages, the tiers of
+# the pricing page, and the links of the nav and the footer. A reader that doesn't run script gets the page, not an
+# empty one. It loads the bundle each page names, so it runs on the assembled copy; the links carry the placeholders
+# set-stage.sh replaces.
 node docs-site/scripts/prerender-pages.mjs "$out"
 for page in support license; do
     if ! grep -q '<h1' "$out/$page/index.html"; then
@@ -38,6 +39,10 @@ for page in support license; do
         exit 1
     fi
 done
+if [ "$(grep -o 'class="tier-card tier-card--' "$out/pricing/index.html" | wc -l)" -ne 3 ]; then
+    echo "::error::$out/pricing/index.html does not have its three tiers in its HTML — the prerender did not draw them"
+    exit 1
+fi
 
 # Fail here rather than deploy the wrong thing.
 if [ -e "$out/docs/content" ] || grep -q 'docs-landing' "$out/docs/index.html"; then

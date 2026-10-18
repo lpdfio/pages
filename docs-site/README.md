@@ -39,11 +39,14 @@ new one is named `lpdf-pages-<kind>.js`.
 
 Assembling also gives the static pages the content their script draws, for readers that don't run it
 (`scripts/prerender-pages.mjs`). The support and license pages are empty until `<md-html>` fetches and renders their
-markdown, and the nav and the footer are components too, so without script a page has no text and no links.
+markdown, the pricing page's tiers are `<tier-card>`s, and the nav and the footer are components too, so without script
+a page has no text and no links.
 The script loads each assembled page in jsdom with the bundle it names, as a browser would, and writes what
-`<site-nav>`, `<lpdf-footer>` and `<md-html>` drew into the page's HTML. Nothing is committed, and the copy comes from
-the bundle that draws it, so it cannot drift from it. The nav and the footer are marked `data-prerendered` and replace
-the copy with their own, and `<md-html>` loses its `src`, so it fetches nothing. The markdown renderer and the code
+`<site-nav>`, `<lpdf-footer>`, `<tier-card>` and `<md-html>` drew into the page's HTML. Nothing is committed, and the
+copy comes from the bundle that draws it, so it cannot drift from it: the tiers say what the bundle's `tiers.ts` says,
+and a tier that cannot be bought yet (`earlyAccess`) shows its disabled button, not a link. The nav, the footer and the
+tier cards are marked `data-prerendered` and replace the copy with their own, and `<md-html>` loses its `src`, so it
+fetches nothing. The markdown renderer and the code
 editor it brings are most of the weight of the pages' script, so a page with `<md-html>` names the bundle to load
 once its markdown is drawn, in `data-prerendered-src` on its script tag, and the script puts that in the `src`
 (support and license then load the 10 KB base bundle, not the 240 KB one). The footer's portal links carry

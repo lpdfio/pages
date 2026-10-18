@@ -3,8 +3,9 @@
 # Points an assembled site at one stage.
 #
 # The committed lpdf-pages.js carries two deploy-time placeholders, __PORTAL_URL__ and __PAGES_URL__
-# (check-sentinels.sh guards that). The portal is a Codesense-wide product, not an lpdf one, so it
-# lives on codesense.dev for every product; only the marketing site is on lpdf.io.
+# (check-sentinels.sh guards that), and so do the pages once assemble-site.sh has drawn the footer's links
+# into them. The portal is a Codesense-wide product, not an lpdf one, so it lives on codesense.dev for
+# every product; only the marketing site is on lpdf.io.
 #
 # Prod carries no 'pre' anywhere: my.codesense.dev, lpdf.io. Pre gets its own CNAME; prod keeps the
 # committed one.
@@ -34,6 +35,12 @@ esac
 sed -i "s|__PORTAL_URL__|$portal|g" "$bundle"
 sed -i "s|__PAGES_URL__|$pages|g" "$bundle"
 
+# The pages carry them too, in the links the footer drew into them (assemble-site.sh runs the prerender).
+grep -rl --null -E '__PORTAL_URL__|__PAGES_URL__' "$site" --include='*.html' | while IFS= read -r -d '' page; do
+    sed -i "s|__PORTAL_URL__|$portal|g" "$page"
+    sed -i "s|__PAGES_URL__|$pages|g" "$page"
+done || true
+
 if [ "$stage" = pre ]; then
     echo "pre.lpdf.io" > "$site/CNAME"
 fi
@@ -47,11 +54,12 @@ else
 fi
 
 # Check what was written, so a stage never ships with a placeholder left in or another stage's host.
-if grep -qE '__PORTAL_URL__|__PAGES_URL__' "$bundle"; then
-    echo "::error file=$bundle::a placeholder is still in the bundle after setting the $stage URLs"
+if grep -qE '__PORTAL_URL__|__PAGES_URL__' "$bundle" || grep -rqE '__PORTAL_URL__|__PAGES_URL__' "$site" --include='*.html'; then
+    echo "::error file=$bundle::a placeholder is still in the bundle or a page after setting the $stage URLs"
     exit 1
 fi
-if [ "$stage" = prod ] && grep -qE 'my-pre\.codesense\.dev|pre\.lpdf\.io' "$bundle" "$site/CNAME"; then
+if [ "$stage" = prod ] && { grep -qE 'my-pre\.codesense\.dev|pre\.lpdf\.io' "$bundle" "$site/CNAME" \
+        || grep -rqE 'my-pre\.codesense\.dev|pre\.lpdf\.io' "$site" --include='*.html'; }; then
     echo "::error::the prod site refers to a pre host"
     exit 1
 fi

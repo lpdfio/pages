@@ -31,6 +31,16 @@ static pages (`.github/assemble-site.sh`: `www/` with this build at `/docs` in p
 the same files to pre (`pre.lpdf.io`) and then to prod (`lpdf.io`). `.github/set-stage.sh` sets each stage's
 portal URL and CNAME. Every push to `main` deploys, so a docs-only change ships without a core release.
 
+Assembling also gives the static pages the content their script draws, for readers that don't run it
+(`scripts/prerender-pages.mjs`). The support and license pages are empty until `<md-html>` fetches and renders their
+markdown, and the nav and the footer are components too, so without script a page has no text and no links.
+The script loads each assembled page in jsdom with the bundle it names, as a browser would, and writes what
+`<site-nav>`, `<lpdf-footer>` and `<md-html>` drew into the page's HTML. Nothing is committed, and the copy comes from
+the bundle that draws it, so it cannot drift from it. The nav and the footer are marked `data-prerendered` and replace
+the copy with their own, and `<md-html>` loses its `src`, so it fetches nothing. The footer's portal links carry
+`__PORTAL_URL__` until `.github/set-stage.sh` sets them, as the bundle's do. `lpdf.local` serves the pages as they are
+in git, so it never shows the copy; run `assemble-site.sh` and serve its output to look at it.
+
 ## How the content is converted
 
 `scripts/sync-content.mjs` copies each markdown file into `src/content/docs/`, which is generated and
@@ -80,6 +90,7 @@ from the example with the engine in `../www/assets/js/lpdf-demo`, on every `npm 
 ## Other files
 
 - `astro.config.mjs`: the site and the sidebar.
+- `scripts/prerender-pages.mjs`: draws what the pages fill in with script into their HTML (see "Deploy").
 - `page-meta.json` and `scripts/check-page-meta.mjs`: the titles and descriptions search results show, and the
   check that they are at most 60 characters and 120 to 160 (see "How the content is converted").
 - `src/components/page-frame.astro`: with a mouse, the content scrolls in Starlight's own `.main-frame`, below

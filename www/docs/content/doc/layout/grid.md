@@ -13,9 +13,12 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 | `gap`        | token/pt | —      | Gap between cells |
 | `width`      | token/pt | —      | Constrain total width |
 | `padding`    | spacing | —       | Inner padding |
-| `background` | color   | —       | Background color |
+| `background` | color or `gradient:name` | — | Background: a color, or a [gradient](?p=xml/schema#gradients) that spans the box |
 | `border`     | string  | —       | Border |
 | `radius`     | token/pt | —      | Corner radius |
+| `color`      | color   | inherit | Color of the text inside. A text that sets none takes the nearest box's. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
+| `opacity`    | 0–1     | `1`     | How opaque the box and everything in it is, as one. See [Opacity](?p=doc/layout#opacity) |
+| `shadow`     | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity. See [Shadow](?p=doc/layout#shadow) |
 | `font`       | string  | inherit | Font name |
 | `font-size`  | token/pt | inherit | Font size |
 | `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |

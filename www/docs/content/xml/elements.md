@@ -48,7 +48,9 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 | Child | Description |
 |-------|-------------|
 | `space`, `text-size`, `border`, `radius`, `width`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as `pt` values |
+| `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not `pt` values: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
 | `colors` | Holds `color` elements |
+| `gradients` | Holds `gradient` elements |
 
 ### `color`
 
@@ -56,6 +58,27 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 |-----------|--------|-------------|
 | `name`    | string | **Required.** Name to use in any color attribute. A color named `text` becomes the default text color |
 | `value`   | color  | **Required.** `#rgb` or `#rrggbb` |
+
+### `gradient`
+
+A named blend of colors, in `gradients` inside `tokens`. A `background` or a `fill` uses it as `gradient:name`, and the blend spans the box it fills. Give `from` and `to` for two colors, or `stop` children for more. See [Gradients](?p=xml/schema#gradients).
+
+| Attribute | Type   | Default  | Description |
+|-----------|--------|----------|-------------|
+| `name`    | string | —        | **Required.** The name that follows `gradient:`. Lowercase letters, digits and `-`, starting with a letter |
+| `type`    | string | —        | **Required.** `linear` or `radial` |
+| `from`    | color  | —        | The first color: `#rgb`, `#rrggbb` or a color name. Used with `to`, when there are no `stop` children. For a radial gradient it is the center |
+| `to`      | color  | —        | The last color. Used with `from`. For a radial gradient it is the edge |
+| `angle`   | number | `0`      | The direction of a linear gradient, in degrees: `0` runs from the top to the bottom, `90` from the left to the right, `180` from the bottom to the top. A radial gradient has no direction |
+
+### `stop`
+
+A color at a place along a `gradient`. A gradient takes two or more, in increasing order, in place of `from` and `to`.
+
+| Attribute | Type    | Description |
+|-----------|---------|-------------|
+| `offset`  | percent | **Required.** Where the color is reached, from `0%` (the start) to `100%` (the end). Offsets must increase |
+| `color`   | color   | **Required.** `#rgb`, `#rrggbb` or a color name. A gradient's colors are never another gradient |
 
 ### `meta`
 
@@ -76,7 +99,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
-| `background`  | color   | —          | Page background color |
+| `background`  | color or `gradient:name` | — | Page background: a color, or a [gradient](?p=xml/schema#gradients) that spans the page |
 | `debug`       | boolean | false      | Render layout boxes |
 
 A document holds an optional `meta` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
@@ -87,7 +110,7 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 |---------------|---------|----------|-------------|
 | `size`        | string  | inherit  | Override page size for this section |
 | `orientation` | string  | inherit  | Override orientation |
-| `background`  | color   | inherit  | Section background |
+| `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
@@ -120,9 +143,12 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 | `width`     | token/pt/`fill` | — | Fixed width, or `fill`: the full width, and in a `row` the width the other children leave. Not on `td`: the table's `cols` sets cell widths |
 | `height`    | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
-| `background`| color   | —       | Background fill |
+| `background`| color or `gradient:name` | — | Background fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the box |
 | `border`    | BorderValue | —   | Border, written `"thickness color"` |
 | `radius`    | token/pt| `0`     | Corner radius |
+| `color`     | color   | inherit | Color of the text inside. A text that sets none takes the nearest box's, else the `text` color. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
+| `opacity`   | 0–1     | `1`     | How opaque the box and everything in it is, as one. See [Opacity](?p=doc/layout#opacity) |
+| `shadow`    | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 | `font`      | string  | inherit | Font for the text inside |
 | `font-size` | token/pt| inherit | Font size for the text inside |
 | `debug`     | boolean | false   | Draw the box outlines |
@@ -166,16 +192,23 @@ Paragraph or inline text.
 |--------------|---------|-----------|-------------|
 | `font`       | string  | inherit, else the document's `font`, or `Helvetica` | Font name |
 | `font-size`  | token/pt| inherit, else `m` (11pt) | Font size |
-| `color`      | color   | `#1a1a1a` | Text color. Not inherited. A color named `text` in `tokens` changes the default |
-| `align`      | string  | `left`    | `left` `center` `right` `justify` |
+| `color`      | color   | the nearest box's, else `#1a1a1a` | Text color. A text that sets none takes the color of the nearest box that sets one, else the `text` color: a color named `text` in `tokens` changes the default |
+| `align`      | string  | `left`    | `left` `center` `right` `justify`. Not inherited: on a box, `align` places the children |
 | `width`      | token/pt| —         | Constrain text block width |
+| `line-height`| number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
+| `max-lines`  | integer | —         | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](?p=doc/layout/text#capping-a-text) |
+| `ellipsis`   | boolean | `false`   | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |
 | `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
 | `orphans`    | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page. `1` turns it off |
+| `capture`    | string  | —         | Records the words of this text under a name, for a header or a footer to show. See [Running headers](?p=doc/layout#running-headers) |
+| `capture-ref`| string  | —         | In a `region`: shows what was recorded under the name, as of the page the text is on, in place of words of its own |
+| `capture-mode` | string | `last`   | With `capture-ref`: `first` or `last`, which of the texts captured on the page it shows |
+| `capture-fallback` | string | —     | With `capture-ref`: what it shows until something has been captured in the section |
 | `paginate`   | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
 
-Children: `span` for inline style overrides. Line height is fixed at 1.2 times the font size.
+Children: `span` for inline style overrides.
 
 ### `span`
 
@@ -211,12 +244,14 @@ Inline image.
 | `name`       | string  | —       | **Required.** Asset name |
 | `width`      | token/pt| —       | Width. Without `height`, the height follows the image's proportions |
 | `height`     | pt      | —       | Height. With both, they are a maximum: the image is never stretched |
-| `padding`    | spacing | `0`     | Space around the image |
-| `background` | color   | —       | Background behind the image |
-| `border`     | BorderValue | —   | Border |
-| `radius`     | token/pt| `0`     | Corner radius |
+| `padding`    | spacing | `0`     | Space around the picture, inside the box |
+| `background` | color   | —       | Background of the box around the picture |
+| `border`     | BorderValue | —   | Border, drawn on the edge of the box |
+| `radius`     | token/pt| `0`     | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false   | Draw the box outline |
+
+An image that sets `padding`, `background` or `border` is a box around its picture: `width` and `height` size the picture, and the box is larger by the padding. A `radius` alone clips the picture to rounded corners. See [Image](?p=doc/layout/img#box-around-the-picture).
 
 ### `table`
 
@@ -227,7 +262,7 @@ Inline image.
 | `stripe`    | color   | —       | Alternating row background |
 | `gap`       | token/pt| `0`     | Space between columns and between rows |
 | `padding`   | spacing | `0`     | Space between the table's edge and its content. Not cell padding: set it on each `td` |
-| `background`| color   | —       | Background behind the whole table |
+| `background`| color or `gradient:name` | — | Background behind the whole table. A gradient spans the table |
 | `width`     | token/pt| —       | Fixed width |
 | `height`    | pt/`fill`/`full` | — | A length fixes the height |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
@@ -239,13 +274,13 @@ A table holds an optional `thead` and any number of `tr`.
 
 | Attribute   | Type  | Description |
 |-------------|-------|-------------|
-| `background`| color | Row background |
+| `background`| color or `gradient:name` | Row background. A gradient spans the row |
 
 `thead` repeats at the top of every page. Both hold `td` cells.
 
 ### `td`
 
-Takes the shared box attributes, except `width`. It accepts `paginate`, which has no effect on a cell, since a row never splits. Its own attributes:
+Takes the shared box attributes, except `width`, which includes `color`, `opacity` and `shadow`. It accepts `paginate`, which has no effect on a cell, since a row never splits. Its own attributes:
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
@@ -313,7 +348,7 @@ PDF form field.
 
 ### `region`
 
-Pinned header or footer that repeats across pages. Only allowed directly inside `layout`, with one per pin on a page. In its text, `{page}` is the page number and `{pages}` the total.
+Pinned header or footer that repeats across pages. Only allowed directly inside `layout`. `pin` chooses the edge wherever the region is written among the flow, and regions on one edge stack in the order written. In its text, `{page}` is the page number and `{pages}` the total, and a `text` with `capture-ref` shows what the flow captured on its page (see [Running headers](?p=doc/layout#running-headers)).
 
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
@@ -337,6 +372,9 @@ Fixed content, in the order it is written among the section's layers and layout.
 | `opacity`   | 0–1     | 1       | Opacity of everything in the layer as one. `0` draws nothing |
 | `transform` | string  | —       | `translate(x, y)`, `scale(s)`, `rotate(deg, cx, cy)` or `matrix(a, b, c, d, e, f)`, with plain numbers |
 | `clip`      | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page: what the layer draws outside it is cut off |
+| `font`      | string  | the document's `font`, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own |
+| `font-size` | token/pt| `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
+| `color`     | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
 | `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
 | `data-if-not` | string | —      | Draw the layer only when the value at the path is falsy |
 
@@ -351,11 +389,12 @@ A layer cannot contain another layer.
 | `width`        | pt        | —       | **Required.** Width |
 | `height`       | pt        | —       | **Required.** Height |
 | `anchor`       | string    | —       | Reference point |
-| `fill`         | color     | —       | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the rectangle |
 | `stroke`       | color     | —       | Border color |
 | `stroke-width` | pt        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
 | `radius`       | pt        | —       | Corner radius |
+| `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 
 ### `circle`
 
@@ -365,10 +404,11 @@ A layer cannot contain another layer.
 | `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
 | `r`            | pt        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point |
-| `fill`         | color     | —       | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the circle's box |
 | `stroke`       | color     | —       | Border color |
 | `stroke-width` | pt        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern |
+| `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color |
 
 ### `ellipse`
 
@@ -397,7 +437,7 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 | Attribute      | Type    | Default   | Description |
 |----------------|---------|-----------|-------------|
 | `d`            | string  | —         | **Required.** SVG path data |
-| `fill`         | color   | —         | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the path's bounding box |
 | `stroke`       | color   | —         | Stroke color |
 | `fill-rule`    | string  | `nonzero` | `nonzero` `evenodd` |
 | `stroke-width` | pt      | `1pt`     | Stroke width |
@@ -406,7 +446,7 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 
 ### `text-at`
 
-Text at a fixed place. It is the layout's `text` with the same defaults. Children: `span`, as in `text`.
+Text at a fixed place. It is the layout's `text`: `max-lines`, `ellipsis` and `line-height` are the layout text's attributes, with `text-at`'s own defaults (one line, and a `width` above 1). Its font, size and color default to its layer's. Children: `span`, as in `text`.
 
 | Attribute     | Type      | Default     | Description |
 |---------------|-----------|-------------|-------------|
@@ -416,11 +456,11 @@ Text at a fixed place. It is the layout's `text` with the same defaults. Childre
 | `width`       | pt        | —           | Width of the box. Without it the text is one line at its natural width |
 | `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
 | `ellipsis`    | boolean   | `false`     | End the last line drawn in an ellipsis when the text does not fit |
-| `line-height` | number    | `1.2`       | The distance between lines, as a factor of the font size |
-| `font`        | string    | the document's `font`, or `Helvetica` | Font name |
-| `font-size`   | token/pt  | `m` (11pt)  | Font size |
+| `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
+| `font`        | string    | the layer's `font`, else the document's, or `Helvetica` | Font name |
+| `font-size`   | token/pt  | the layer's, else `m` (11pt) | Font size |
 | `bold`        | boolean   | `false`     | The bold face of a built-in font |
-| `color`       | color     | `#1a1a1a`   | Text color. A color named `text` in `tokens` changes the default |
+| `color`       | color     | the layer's, else `#1a1a1a` | Text color. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
 | `data-value`  | string    | —           | Dot-path to a value that replaces the text |
 

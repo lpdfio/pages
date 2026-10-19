@@ -93,9 +93,60 @@ The margin belongs to the layout because only the flow uses it. The document and
 - An element with `no` that is taller than a page starts on a new page and runs past the bottom of it. Use `no` on elements shorter than a page.
 - On a `td`, `paginate` has no effect: a table row never splits.
 
+## Text color in a box
+
+A box can set the color of the text inside it. `color` on a `column`, `row`, `grid`, `frame` or `td` is taken by every `text` inside that sets none of its own, however deep. A text takes the color of the nearest box that sets one, else the `text` color of [`tokens`](?p=xml/schema#tokens), which is `#1a1a1a` unless the document redefines it. A divider or a barcode in the box keeps its own color.
+
+`font` and `font-size` on a box are inherited the same way. `align` is not: on a box it places the children, so a `text` does not take its alignment from the box around it.
+
+```xml
+<column gap="xs" padding="m" background="#1763cf" color="#ffffff" radius="s">
+  <text font-size="l" font="Helvetica-Bold">White on blue</text>
+  <text>Every text in the card takes the white.</text>
+  <text color="#ffd54f">Except one that sets its own.</text>
+</column>
+```
+
+## Opacity
+
+`opacity` fades a box and everything in it as one, from `1` (the default) to `0`. Where the children overlap they do not show through each other, and a box inside a faded box is faded further: `0.5` inside `0.5` is drawn at `0.25`. A link in the box stays clickable, and a form field in it is not faded. A box at `0` draws nothing.
+
+```xml
+<column gap="s">
+  <column padding="m" background="#1763cf" opacity="0.4">
+    <text color="#ffffff">A box at 40%, text and all.</text>
+  </column>
+  <column padding="m" background="#1763cf" opacity="0.5">
+    <column padding="m" background="#cc0000" opacity="0.5">
+      <text color="#ffffff">0.5 inside 0.5, drawn at 0.25.</text>
+    </column>
+  </column>
+</column>
+```
+
+A [layer](?p=doc/layer#opacity) has `opacity` too. A shape or a `-at` element in a layer has none: put it in a layer of its own.
+
+## Shadow
+
+`shadow` draws a hard-edged copy of a box under it: `"x y color"`, with an optional opacity from 0 to 1 after the color that fades the shadow alone. `x` and `y` are signed lengths: positive is right and down, and negative is left and up. `shadow="3pt 3pt #000000 0.2"` is a black shadow 3pt right and down, at 20%.
+
+- There is no blur. The copy has the box's `radius`.
+- A shadow takes no room in the layout. It can run into a margin or a neighbor, and the siblings after the box are drawn over it, so leave the space yourself.
+- A box with no background shows its shadow only outside it.
+- The box's own `opacity` fades the box and its shadow together.
+
+The shapes of a [layer](?p=doc/layer/rect) (`rect`, `circle` and `ellipse`) take `shadow` too.
+
+```xml
+<column gap="xs" padding="m" background="#ffffff" border="xs #e0e0e0" radius="m" shadow="3pt 3pt #000000 0.15">
+  <text font-size="m" font="Helvetica-Bold">Card title</text>
+  <text font-size="s" color="#666666">A card with a border, rounded corners and a shadow.</text>
+</column>
+```
+
 ## Pinned regions
 
-`region` pins content to the top or bottom of the content area, reserving space from the flow. Useful for per-page headers and footers. It is only allowed directly inside `layout`, and a page can have one per pin.
+`region` pins content to the top or bottom of the content area, reserving space from the flow. Useful for per-page headers and footers. It is only allowed directly inside `layout`. `pin` chooses the edge wherever the region is written among the flow, and regions on one edge stack in the order they are written: a header and a first-page banner can both be `pin="top"`.
 
 ```xml
 <layout>
@@ -128,3 +179,66 @@ In the text of a region, `{page}` becomes the page number and `{pages}` the tota
   <text font-size="22pt">Cover page title</text>
 </region>
 ```
+
+## Running headers
+
+A header or a footer can show text from its own page, such as the title of the chapter it is on, or the first and last entry of a dictionary page. Mark the source in the flow with `capture`, and show it in a region with `capture-ref`.
+
+| Attribute | On | Meaning |
+|-----------|----|---------|
+| `capture="name"` | a `text` in the flow | Records the words of the text under that name, as the pages are filled |
+| `capture-ref="name"` | a `text` in a `region` | Shows what was recorded under the name, as of the page it is drawn on. It has no words of its own |
+| `capture-mode` | the `capture-ref` text | `first` or `last` (default): which of the texts captured under the name on that page it shows |
+| `capture-fallback` | the `capture-ref` text | What it shows until something has been captured in the section. Nothing by default |
+
+The chapter title in the header of every page:
+
+```xml
+<layout>
+  <region pin="top">
+    <row gap="m">
+      <text width="fill" font-size="s" color="#737373" capture-ref="chapter" capture-fallback="Front matter"/>
+      <text font-size="s" color="#737373">Page {page}</text>
+    </row>
+  </region>
+  <column gap="m">
+    <text font-size="xl" capture="chapter">Chapter 1: The Lamp Room</text>
+    <text>The text of the first chapter runs here, and onto as many pages as it needs. Every page of it shows its chapter in the header.</text>
+  </column>
+  <column gap="m" paginate="break-before">
+    <text font-size="xl" capture="chapter">Chapter 2: The Record</text>
+    <text>The second chapter starts a page, and from there the header reads its title.</text>
+  </column>
+</layout>
+```
+
+A dictionary page shows its first and last entry. Every entry carries the same name, and the header asks for each end: `first` and `last` are two texts on one name.
+
+```xml
+<layout>
+  <region pin="top">
+    <row gap="s">
+      <text width="fill" align="right" font-size="s" capture-ref="entry" capture-mode="first"/>
+      <text font-size="s">–</text>
+      <text width="fill" font-size="s" capture-ref="entry" capture-mode="last"/>
+    </row>
+  </region>
+  <column gap="xs" paginate="no">
+    <text font="Helvetica-Bold" capture="entry">Abacus</text>
+    <text>A frame of rods and sliding beads used for counting.</text>
+  </column>
+  <column gap="xs" paginate="no">
+    <text font="Helvetica-Bold" capture="entry">Abbey</text>
+    <text>A building where monks or nuns live, work and pray.</text>
+  </column>
+</layout>
+```
+
+How a header chooses what to show:
+
+- The page that holds a capture counts it, the words above it on that page included.
+- A page where nothing is captured under the name shows the latest value of an earlier page, whichever `capture-mode` it has. Before any capture it shows `capture-fallback`.
+- A text that splits across pages is recorded on the page where it starts.
+- Each section starts with nothing captured, so a header's value does not carry from one section into the next.
+- `capture`, `capture-ref`, `capture-mode` and `capture-fallback` are attributes of the layout's `text`, not of a layer's `text-at`.
+- A text with `capture-ref` always takes its line, whatever it shows, so the header is the same height on every page: one line, or `max-lines` of them. A longer value is cut at that, and ends in dots with `ellipsis="true"`. A text cannot have both `capture` and `capture-ref`.

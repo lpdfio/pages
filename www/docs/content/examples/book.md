@@ -47,7 +47,7 @@ span too early or too late, and in a book nearly every line has one. Straight qu
 book with straight quotes is worse.
 
 The lines are not justified: in this version of Lpdf justification is not applied to an embedded font
-(a core font is justified, but spans inside it are drawn wrongly). Line height is fixed at 1.2
+(a core font is justified, but spans inside it are drawn wrongly). Line height is the default, 1.2
 times the size, so the paragraphs are separated by a gap and not by a first-line indent.
 ```
 

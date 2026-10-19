@@ -7,7 +7,7 @@ Draws an arbitrary shape in a [layer](?p=doc/layer) using SVG path data. Support
 | Attribute      | Type    | Default    | Description |
 |----------------|---------|------------|-------------|
 | `d`            | string  | —          | **Required.** SVG path data (`M`, `L`, `H`, `V`, `C`, `Q`, `Z`) |
-| `fill`         | color   | —          | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the path's bounding box |
 | `stroke`       | color   | —          | Stroke color |
 | `fill-rule`    | string  | `nonzero`  | `nonzero` or `evenodd` |
 | `stroke-width` | pt      | —          | Stroke width |

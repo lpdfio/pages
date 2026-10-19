@@ -7,7 +7,7 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
 ```
 <lpdf version="1">
   <assets>           ← optional: fonts, images
-  <tokens>           ← optional: custom scales and colors
+  <tokens>           ← optional: custom scales, colors and gradients
   <document>         ← required
     <meta>           ← optional: title, author, subject, keywords, creator
     <section>+       ← one or more, each with its own pages
@@ -59,20 +59,20 @@ Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "in
 
 ## Tokens
 
-A token is a name for a length. Each attribute reads its own scale, so `m` is 8pt as a `gap` and 11pt as a `font-size`.
+A token is a name for a length. Each attribute reads its own scale, so `m` is 8pt as a `gap` and 11pt as a `font-size`. The exception is `line-height`, whose tokens are factors of the font size, not lengths.
 
-| Token | space: `gap` `padding` `margin` `toc-indent-step` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | grid: `col-width` |
-|-------|------|------|------|------|------|------|
-| `xs`  | 2pt  | 7pt  | 0.5pt | 2pt  | 120pt | 60pt  |
-| `s`   | 4pt  | 9pt  | 1pt   | 4pt  | 200pt | 100pt |
-| `m`   | 8pt  | 11pt | 1.5pt | 6pt  | 280pt | 140pt |
-| `l`   | 14pt | 14pt | 2pt   | 10pt | 360pt | 180pt |
-| `xl`  | 20pt | 20pt | 3pt   | 16pt | 440pt | 220pt |
-| `xxl` | 32pt | 28pt | 4pt   | 24pt | 515pt | 280pt |
+| Token | space: `gap` `padding` `margin` `toc-indent-step` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | grid: `col-width` | line height: `line-height` |
+|-------|------|------|------|------|------|------|-----|
+| `xs`  | 2pt  | 7pt  | 0.5pt | 2pt  | 120pt | 60pt  | 1.0 |
+| `s`   | 4pt  | 9pt  | 1pt   | 4pt  | 200pt | 100pt | 1.1 |
+| `m`   | 8pt  | 11pt | 1.5pt | 6pt  | 280pt | 140pt | 1.2 |
+| `l`   | 14pt | 14pt | 2pt   | 10pt | 360pt | 180pt | 1.4 |
+| `xl`  | 20pt | 20pt | 3pt   | 16pt | 440pt | 220pt | 1.6 |
+| `xxl` | 32pt | 28pt | 4pt   | 24pt | 515pt | 280pt | 2.0 |
 
 `padding` and `margin` take one to four values, written like CSS, and each can be a token: `padding="m 24pt"` is 8pt top and bottom and 24pt left and right.
 
-To change a scale, or to name colors, add `tokens` before `document`. A scale row needs all six values:
+To change a scale, or to name colors or gradients, add `tokens` before `document`. A scale row needs all six values:
 
 ```xml
 <lpdf version="1">
@@ -95,11 +95,69 @@ To change a scale, or to name colors, add `tokens` before `document`. A scale ro
 </lpdf>
 ```
 
-The scale elements are `space`, `text-size`, `border`, `radius`, `width` and `grid`. A color named `text` becomes the default text color.
+The scale elements are `space`, `text-size`, `border`, `radius`, `width`, `grid` and `line-height`. A `line-height` row takes factors, not `pt` values: `<line-height xs="1.0" s="1.1" m="1.2" l="1.4" xl="1.6" xxl="2.0"/>`. A color named `text` becomes the default text color.
 
 ## Colors
 
-A color is `#rgb` or `#rrggbb`, or the name of a color in `tokens`. There is no alpha channel: use `opacity` on a [layer](?p=doc/layer#opacity). A name that is not defined is an error.
+A color is `#rgb` or `#rrggbb`, or the name of a color in `tokens`. There is no alpha channel: use `opacity` on a [layer](?p=doc/layer#opacity) or on a [box](?p=doc/layout#opacity). A name that is not defined is an error.
+
+## Gradients
+
+A gradient is a named blend of colors. Define it once in `gradients` inside `tokens`, and use it as `gradient:name` where a background or a fill goes. It spans the box it fills.
+
+| `gradient` attribute | Description |
+|----------------------|-------------|
+| `name`               | **Required.** The name that follows `gradient:`: lowercase letters, digits and `-`, starting with a letter |
+| `type`               | **Required.** `linear` or `radial` |
+| `from`, `to`         | The first and the last color, for two colors: `#rrggbb`, `#rgb` or a color name |
+| `angle`              | The direction of a linear gradient, in degrees. Default `0` |
+
+For more than two colors, give `stop` children in place of `from` and `to`. Each has an `offset`, a percentage from `0%` to `100%`, and a `color`. The offsets must increase. The first color holds up to the first stop, and the last color after the last stop.
+
+- **Where it goes.** The `background` of `column`, `row`, `grid`, `frame`, `td`, `table`, `thead`, `tr`, `section` and `document`, and the `fill` of `rect`, `circle`, `ellipse` and `path`. A stroke, a text's `color` and the backgrounds of `barcode`, `img` and `field` take colors only, and `gradient:` there is an error.
+- **Angle.** `0` runs from the top to the bottom, `90` from the left to the right, and `180` from the bottom to the top. `45` runs from the top-left corner to the bottom-right. The line is as long as the box needs, so the first and last colors reach the corners.
+- **Radial.** A circle at the center of the box, out to its farthest corner: `from` is the center and `to` the edge.
+- **Colors.** Hex or a color name, never another gradient. A color name in a gradient is looked up after the `colors` are read, so the order in `tokens` does not matter.
+- **Pages.** A box that splits across pages gets its own gradient on each page. The `background` of a page or a section spans the page.
+- **Border, shadow and opacity.** A border is drawn flat over the gradient, and a shadow under it. A box's `opacity` fades the gradient with the rest.
+
+One document with each kind: two colors, three stops, and a radial gradient on a layer shape.
+
+```xml
+<lpdf version="1">
+  <tokens>
+    <gradients>
+      <!-- two colors, from the left to the right -->
+      <gradient name="sky" type="linear" from="#1763cf" to="#0f3e8a" angle="90"/>
+      <!-- several colors: stops -->
+      <gradient name="sunset" type="linear" angle="90">
+        <stop offset="0%"   color="#f97316"/>
+        <stop offset="55%"  color="#ec4899"/>
+        <stop offset="100%" color="#8b5cf6"/>
+      </gradient>
+      <!-- from the center out to the farthest corner -->
+      <gradient name="spotlight" type="radial" from="#ffffff" to="#1763cf"/>
+    </gradients>
+  </tokens>
+  <document size="letter">
+    <section>
+      <layout margin="48pt">
+        <column gap="m">
+          <column padding="l" background="gradient:sky" color="#ffffff" radius="m">
+            <text font-size="l">Two colors</text>
+          </column>
+          <column padding="l" background="gradient:sunset" color="#ffffff" radius="m">
+            <text font-size="l">Three stops</text>
+          </column>
+        </column>
+      </layout>
+      <layer>
+        <circle x="400pt" y="520pt" r="60pt" fill="gradient:spotlight"/>
+      </layer>
+    </section>
+  </document>
+</lpdf>
+```
 
 ## BorderValue format
 

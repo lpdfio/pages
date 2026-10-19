@@ -12,10 +12,11 @@ A filled or stroked rectangle in a [layer](?p=doc/layer).
 | `height`       | pt        | —       | **Required.** Height |
 | `anchor`       | string    | —       | Reference point: when set, `x` and `y` are offsets, and the rectangle's matching point is placed there |
 | `radius`       | pt        | —       | Corner radius |
-| `fill`         | color     | —       | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the rectangle |
 | `stroke`       | color     | —       | Stroke color |
 | `stroke-width` | pt        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
+| `shadow`       | string    | —       | A hard-edged shadow under the rectangle: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 
 Either `anchor` or both `x` and `y` must be provided. To fade a rectangle, put it in a layer with `opacity`.
 

@@ -28,10 +28,10 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | `name`       | string  | —       | **Required.** Asset name declared in `assets` |
 | `width`      | token/pt | —      | Width. Without `height`, the height follows the image's proportions |
 | `height`     | pt      | —       | Height. Without `width`, the width follows the image's proportions |
-| `padding`    | spacing | —       | Inner padding |
-| `background` | color   | —       | Background behind image |
-| `border`     | string  | —       | Border |
-| `radius`     | token/pt | —      | Corner radius (clips image) |
+| `padding`    | spacing | —       | Space around the picture, inside the box. See [Box around the picture](#box-around-the-picture) |
+| `background` | color   | —       | Background of the box around the picture |
+| `border`     | string  | —       | Border, drawn on the edge of the box |
+| `radius`     | token/pt | —      | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 
 ## Fixed width
@@ -63,8 +63,23 @@ To give images slots of one size, such as a row of logos each in an 80 × 40pt c
 </row>
 ```
 
+## Box around the picture
+
+An image that sets `padding`, `background` or `border` is drawn as a box around its picture. `width` and `height` size the picture, as they do for any image (one size, or both as a maximum), and the box is larger than the picture by the padding. The border is drawn on the edge of the box and takes no room, as on every box.
+
+`radius` rounds the box and clips the picture to rounded corners: the box's radius less the smallest padding, never below 0, so the picture follows the inside of the box. With no padding, background or border, `radius` clips the picture alone.
+
+```xml
+<row gap="m" align="center">
+  <img name="photo" width="96pt" padding="s" background="#f5f7fa" border="xs #dde3ed" radius="m"/>
+  <img name="avatar" width="64pt" height="64pt" padding="3pt" border="2pt #1763cf" radius="35pt"/>
+</row>
+```
+
 ## Rounded image
 
 ```xml
 <img name="avatar" width="48pt" height="48pt" radius="xxl"/>
 ```
+
+A picture that is not square is rounded at its own size: a `radius` larger than half its shorter side makes a pill, so give a square size for a circle.

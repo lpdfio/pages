@@ -12,11 +12,11 @@
 | `width`       | pt        | —           | Width of the box. See [Width and lines](#width-and-lines) |
 | `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
 | `ellipsis`    | boolean   | `false`     | End the last line drawn in an ellipsis when the text does not fit |
-| `line-height` | number    | `1.2`       | The distance between lines, as a factor of the font size |
-| `font`        | string    | document's font, or `Helvetica` | Font name: a built-in font or one declared in `assets` |
-| `font-size`   | token/pt  | `m` (11pt)  | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
+| `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
+| `font`        | string    | the layer's `font`, else the document's, or `Helvetica` | Font name: a built-in font or one declared in `assets` |
+| `font-size`   | token/pt  | the layer's, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
 | `bold`        | boolean   | `false`     | The bold face of a built-in font |
-| `color`       | color     | `#1a1a1a`   | Text color: `#333333` or a named token. A color named `text` in `tokens` changes the default |
+| `color`       | color     | the layer's, else `#1a1a1a` | Text color: `#333333` or a named token. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
 | `data-value`  | string    | —           | Dot-path: replaces the text with the bound value. See [Text from data](#text-from-data) |
 | `data-if`     | string    | —           | Draw only when the value is truthy |
@@ -24,9 +24,11 @@
 
 Either `anchor` or both `x` and `y` must be provided. To fade text, put it in a layer with `opacity`.
 
+`max-lines`, `ellipsis` and `line-height` are the attributes of the layout's [`text`](?p=doc/layout/text#capping-a-text), with the same names and meaning. What differs is the defaults: a `text-at` is one line, and `max-lines` above 1 needs a `width` to wrap within.
+
 ## Defaults
 
-Text has one set of defaults wherever it is. In a layer it takes the document's `font`, or Helvetica when it sets none, 11pt (the `m` text size) and the `text` color: `#1a1a1a`, unless the document defines a color named `text`.
+Text has one set of defaults wherever it is. In a layer it takes, for what it sets none of itself, the `font`, `font-size` and `color` of its [layer](?p=doc/layer#text-style), and when the layer sets none either, the document's `font` or Helvetica, 11pt (the `m` text size) and the `text` color: `#1a1a1a`, unless the document defines a color named `text`.
 
 ## Width and lines
 

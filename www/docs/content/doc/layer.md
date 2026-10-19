@@ -37,6 +37,9 @@ A [`bookmark`](?p=doc/layout/bookmark) as the section's first child comes before
 | `opacity`     | 0–1     | 1       | How opaque everything in the layer is. See [Opacity](#opacity) |
 | `transform`   | string  | —       | Transform applied to everything in the layer. See [Transforms](#transforms) |
 | `clip`        | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page. What the layer draws outside it is cut off |
+| `font`        | string  | document's font, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own. See [Text style](#text-style) |
+| `font-size`   | token/pt | `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
+| `color`       | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
 | `data-if`     | string  | —       | Draw the layer only when the value at the path is truthy. See [Data in a layer](#data-in-a-layer) |
 | `data-if-not` | string  | —       | Draw the layer only when the value at the path is falsy |
 
@@ -88,7 +91,7 @@ A stroke is centred on the outline of its shape, so half of `stroke-width` falls
 
 `opacity` fades everything in the layer as one: where its shapes overlap, they do not show through each other. A layer at `0` draws nothing.
 
-To fade one element, put it in a layer of its own. The shapes and the `-at` elements have no `opacity` of their own, and the engine stops with an error that says so.
+To fade one element, put it in a layer of its own. The shapes and the `-at` elements have no `opacity` of their own, and the engine stops with an error that says so. A box of the layout has one: see [Opacity](?p=doc/layout#opacity).
 
 ```xml
 <section>
@@ -102,7 +105,19 @@ To fade one element, put it in a layer of its own. The shapes and the `-at` elem
 </section>
 ```
 
-Colors have no alpha channel. Text that is only paler can use a lighter color, but text that must show through something needs a layer.
+Colors have no alpha channel. Text that is only paler can use a lighter color, but text that must show through something needs a layer, or a [box](?p=doc/layout#opacity) with `opacity`.
+
+## Text style
+
+`font`, `font-size` and `color` on a layer are the defaults of its `text-at`, so a layer of labels is styled once. A `text-at` that sets its own takes its own.
+
+```xml
+<layer page="each" font-size="9pt" color="#777777">
+  <text-at x="48pt" y="40pt">Quarterly report</text-at>
+  <text-at anchor="top-right" x="-48pt" y="40pt">Confidential</text-at>
+  <text-at anchor="bottom-center" y="-24pt" color="#cc0000">Draft: both labels above take the layer's color; this one its own</text-at>
+</layer>
+```
 
 ## Transforms
 

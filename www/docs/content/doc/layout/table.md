@@ -26,19 +26,19 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `stripe`     | color   | —       | Alternating row background |
 | `gap`        | token/pt | —      | Space between columns and between rows |
 | `padding`    | spacing | —       | Space between the table's edge and its content. This is not cell padding: set `padding` on each `td` |
-| `background` | color   | —       | Background behind the whole table |
+| `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
 | `width`      | token/pt | —      | Constrain table width |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 
 ## `thead` attributes
 
-A `thead` row is repeated at the top of each page. It takes the same `background` as `tr`.
+A `thead` row is repeated at the top of each page. It takes the same `background` as `tr`: a color, or a [gradient](?p=xml/schema#gradients) that spans the row.
 
 ## `tr` attributes
 
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
-| `background`  | color   | —       | Row background |
+| `background`  | color or `gradient:name` | — | Row background: a color, or a [gradient](?p=xml/schema#gradients) that spans the row |
 | `data-source` | string  | —       | Dot-path to array — repeats this row per item |
 | `data-if`     | string  | —       | Render only when value is truthy |
 | `data-if-not` | string  | —       | Render only when value is falsy |
@@ -49,9 +49,12 @@ A `thead` row is repeated at the top of each page. It takes the same `background
 |--------------|---------|---------|-------------|
 | `align`      | string  | fill    | Horizontal: `start` `center` `end`. By default children fill the cell width |
 | `valign`     | string  | `top`   | Vertical: `top` `middle` `bottom` |
-| `background` | color   | —       | Cell background |
+| `background` | color or `gradient:name` | — | Cell background: a color, or a [gradient](?p=xml/schema#gradients) that spans the cell |
 | `padding`    | spacing | —       | Cell inner padding |
 | `border`     | string  | —       | Cell border |
+| `color`      | color   | inherit | Color of the text in the cell. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
+| `opacity`    | 0–1     | `1`     | How opaque the cell and everything in it is. See [Opacity](?p=doc/layout#opacity) |
+| `shadow`     | string  | —       | A hard-edged shadow under the cell. See [Shadow](?p=doc/layout#shadow) |
 
 ## Invoice line items
 

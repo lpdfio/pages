@@ -10,10 +10,11 @@
 | `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
 | `r`            | pt        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point: when set, `x` and `y` are offsets, and the box's matching point is placed there |
-| `fill`         | color     | —       | Fill color |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the circle's box |
 | `stroke`       | color     | —       | Stroke color |
 | `stroke-width` | pt        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern |
+| `shadow`       | string    | —       | A hard-edged shadow under the circle: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 
 ## `ellipse` attributes
 

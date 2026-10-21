@@ -35,6 +35,26 @@
     <xs:union memberTypes="TokenScale PtValue"/>
   </xs:simpleType>
 
+  <!-- a factor above 0, e.g. "1.5" -->
+  <xs:simpleType name="FactorValue">
+    <xs:restriction base="xs:decimal">
+      <xs:minExclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- a fraction from 0 (invisible) to 1 (opaque), e.g. "0.5" -->
+  <xs:simpleType name="OpacityValue">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- token name or a factor, e.g. "m" or "1.5" -->
+  <xs:simpleType name="TokenScaleOrFactor">
+    <xs:union memberTypes="TokenScale FactorValue"/>
+  </xs:simpleType>
+
   <!-- e.g. "10pt" | "10pt 12pt" | "10pt 12pt 8pt" | "10pt 12pt 8pt 6pt". A bare 0 needs no unit. -->
   <xs:simpleType name="SpacingValue">
     <xs:restriction base="xs:string">
@@ -101,6 +121,34 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- a color, or a gradient of the tokens e.g. "gradient:brand-fade" -->
+  <xs:simpleType name="Fill">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|gradient:[a-z][a-z0-9-]*|[a-z][a-z0-9-]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- where a gradient stop sits, from 0% to 100% e.g. "60%" -->
+  <xs:simpleType name="GradientOffset">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(100(\.0+)?|[0-9]{1,2}(\.[0-9]+)?)%"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="GradientType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="linear"/>
+      <xs:enumeration value="radial"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- x offset, y offset, color and optionally an opacity, e.g. "2pt 3pt #000000" or "2pt 3pt text 0.2" -->
+  <xs:simpleType name="ShadowValue">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="-?\d+(\.\d+)?(pt|mm|in) -?\d+(\.\d+)?(pt|mm|in) (#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|[a-z][a-z0-9-]*)( (0(\.\d+)?|1(\.0+)?|\.\d+))?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <!-- e.g. "s #ccc", "m primary", or "1.5pt #ccc" -->
   <xs:simpleType name="BorderValue">
     <xs:restriction base="xs:string">
@@ -132,6 +180,13 @@
       <xs:enumeration value="center"/>
       <xs:enumeration value="end"/>
       <xs:enumeration value="between"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="CaptureMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="first"/>
+      <xs:enumeration value="last"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -272,6 +327,16 @@
     <xs:attribute name="xxl" type="PtValue" use="required"/>
   </xs:complexType>
 
+  <!-- All six scale slots with factors — the line-height row -->
+  <xs:complexType name="TokenFactorRow">
+    <xs:attribute name="xs"  type="FactorValue" use="required"/>
+    <xs:attribute name="s"   type="FactorValue" use="required"/>
+    <xs:attribute name="m"   type="FactorValue" use="required"/>
+    <xs:attribute name="l"   type="FactorValue" use="required"/>
+    <xs:attribute name="xl"  type="FactorValue" use="required"/>
+    <xs:attribute name="xxl" type="FactorValue" use="required"/>
+  </xs:complexType>
+
 
   <!-- ============================================================
        Shared attribute groups
@@ -304,6 +369,11 @@
   <xs:attributeGroup name="BoxAttrs">
     <xs:attribute name="font"       type="xs:string"/>
     <xs:attribute name="font-size"  type="TokenScaleOrPt"/>
+    <xs:attribute name="color"      type="Color">
+      <xs:annotation>
+        <xs:documentation>The color of the text inside the box. A text that sets no color of its own takes the nearest box's, and the text token when no box sets one. A divider or a barcode in the box keeps its own color.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="gap"        type="TokenScaleOrPt"/>
     <xs:attribute name="padding"    type="SpacingOrToken">
       <xs:annotation>
@@ -315,9 +385,19 @@
         <xs:documentation>Height of the box. Leave it out to size to the content. A length fixes it; fill takes what is left after its siblings (shared equally if several use fill); full takes all the height available. Any of these stops the box splitting across pages.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="background" type="Color"/>
+    <xs:attribute name="background" type="Fill"/>
     <xs:attribute name="border"     type="BorderValue"/>
     <xs:attribute name="radius"     type="TokenScaleOrPt"/>
+    <xs:attribute name="opacity"    type="OpacityValue">
+      <xs:annotation>
+        <xs:documentation>How opaque the box and everything in it is, from 0 to 1. The box is faded as one, so children that overlap do not show through each other, and a box inside a faded box is faded further: 0.5 inside 0.5 is drawn at 0.25. A form field in the box is not faded. Default 1.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="shadow"     type="ShadowValue">
+      <xs:annotation>
+        <xs:documentation>A hard-edged shadow: a copy of the box, moved right and down by the first two lengths (negative is left and up) and filled with the color, drawn under the box with the same radius. An opacity from 0 to 1 after the color fades the shadow alone: "2pt 3pt #000000 0.2". There is no blur. The shadow takes no room in the layout, so it can run into the margin or a neighbor, and the siblings after the box are drawn over it. A box with no background shows the shadow only outside it. The box's own opacity fades the box and its shadow together.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="paginate"   type="Paginate">
       <xs:annotation>
         <xs:documentation>Where the box falls in the page flow. no: never split the box, and move it whole to the next page when it does not fit. break-before: start it on a new page. break-after: start the next sibling on a new page. keep-next: keep it on one page with the sibling that follows, moving both to the next page if that sibling would not fit. break-before, break-after and keep-next take effect on the children of layout; on a box inside another box they are not applied. no applies at any depth.</xs:documentation>
@@ -340,6 +420,11 @@
   <xs:attributeGroup name="FrameBoxAttrs">
     <xs:attribute name="font"       type="xs:string"/>
     <xs:attribute name="font-size"  type="TokenScaleOrPt"/>
+    <xs:attribute name="color"      type="Color">
+      <xs:annotation>
+        <xs:documentation>The color of the text inside the box. A text that sets no color of its own takes the nearest box's, and the text token when no box sets one. A divider or a barcode in the box keeps its own color.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="padding"    type="SpacingOrToken">
       <xs:annotation>
         <xs:documentation>Space between the edge of the box and its content, written like CSS: one value for all sides, two for top-bottom and left-right, three for top, left-right and bottom, four for top, right, bottom and left.</xs:documentation>
@@ -350,9 +435,19 @@
         <xs:documentation>Height of the box. Leave it out to size to the content. A length fixes it; fill takes what is left after its siblings (shared equally if several use fill); full takes all the height available. Any of these stops the box splitting across pages.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="background" type="Color"/>
+    <xs:attribute name="background" type="Fill"/>
     <xs:attribute name="border"     type="BorderValue"/>
     <xs:attribute name="radius"     type="TokenScaleOrPt"/>
+    <xs:attribute name="opacity"    type="OpacityValue">
+      <xs:annotation>
+        <xs:documentation>How opaque the box and everything in it is, from 0 to 1. The box is faded as one, so children that overlap do not show through each other, and a box inside a faded box is faded further: 0.5 inside 0.5 is drawn at 0.25. A form field in the box is not faded. Default 1.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="shadow"     type="ShadowValue">
+      <xs:annotation>
+        <xs:documentation>A hard-edged shadow: a copy of the box, moved right and down by the first two lengths (negative is left and up) and filled with the color, drawn under the box with the same radius. An opacity from 0 to 1 after the color fades the shadow alone: "2pt 3pt #000000 0.2". There is no blur. The shadow takes no room in the layout, so it can run into the margin or a neighbor, and the siblings after the box are drawn over it. A box with no background shows the shadow only outside it. The box's own opacity fades the box and its shadow together.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="paginate"   type="Paginate">
       <xs:annotation>
         <xs:documentation>Where the box falls in the page flow. no: never split the box, and move it whole to the next page when it does not fit. break-before: start it on a new page. break-after: start the next sibling on a new page. keep-next: keep it on one page with the sibling that follows, moving both to the next page if that sibling would not fit. break-before, break-after and keep-next take effect on the children of layout; on a box inside another box they are not applied. no applies at any depth.</xs:documentation>
@@ -370,10 +465,19 @@
 
   <!-- Shared fill/stroke attributes for the shapes -->
   <xs:attributeGroup name="CanvasFillStrokeAttrs">
-    <xs:attribute name="fill"         type="Color"/>
+    <xs:attribute name="fill"         type="Fill"/>
     <xs:attribute name="stroke"       type="Color"/>
     <xs:attribute name="stroke-width" type="PtValue"/>
     <xs:attribute name="stroke-dash"  type="xs:string"/>
+  </xs:attributeGroup>
+
+  <!-- A shadow on a layer shape: the same attribute as on a box -->
+  <xs:attributeGroup name="CanvasShadowAttrs">
+    <xs:attribute name="shadow" type="ShadowValue">
+      <xs:annotation>
+        <xs:documentation>A hard-edged shadow: a copy of the shape, moved right and down by the first two lengths (negative is left and up) and filled with the color, drawn under the shape. An opacity from 0 to 1 after the color fades the shadow alone: "2pt 3pt #000000 0.2". There is no blur. A shape with no fill shows the shadow only outside it.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
 
   <!-- Positioning rule (enforced by parser, not XSD 1.0):
@@ -411,6 +515,26 @@
     </xs:attribute>
     <xs:attribute name="color"     type="Color"/>
     <xs:attribute name="align"     type="TextAlignH"/>
+    <xs:attribute name="line-height" type="TokenScaleOrFactor">
+      <xs:annotation>
+        <xs:documentation>The distance between lines, as a factor of the font size: a number above 0, such as 1.5, or a name from the line-height row of the tokens. Default 1.2, which is the token m.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="max-lines">
+      <xs:annotation>
+        <xs:documentation>The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. A text in the layout has no cap by default and wraps at the width it has; the lines it drops take no room, and a text that splits across pages keeps the cap across them. A text-at is one line by default, and above 1 needs a width to wrap within.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ellipsis" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>End the last line drawn in an ellipsis when max-lines drops text, shortened to fit the width. Off by default: the text stops at the end of a line. A text-at also ends a line in one when it is cut off at its width. A text in the layout without max-lines is never cut, so there it has no effect.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
 
   <!-- What an image means in the layout and in a layer -->
@@ -459,6 +583,7 @@
       <xs:attribute name="anchor" type="Anchor"/>
       <xs:attribute name="radius" type="PtValue"/>
       <xs:attributeGroup ref="CanvasFillStrokeAttrs"/>
+      <xs:attributeGroup ref="CanvasShadowAttrs"/>
     </xs:complexType>
   </xs:element>
 
@@ -477,6 +602,7 @@
       <xs:attribute name="r"      type="PtValue" use="required"/>
       <xs:attribute name="anchor" type="Anchor"/>
       <xs:attributeGroup ref="CanvasFillStrokeAttrs"/>
+      <xs:attributeGroup ref="CanvasShadowAttrs"/>
     </xs:complexType>
   </xs:element>
 
@@ -496,6 +622,7 @@
       <xs:attribute name="ry"     type="PtValue" use="required"/>
       <xs:attribute name="anchor" type="Anchor"/>
       <xs:attributeGroup ref="CanvasFillStrokeAttrs"/>
+      <xs:attributeGroup ref="CanvasShadowAttrs"/>
     </xs:complexType>
   </xs:element>
 
@@ -515,7 +642,7 @@
   <xs:element name="path">
     <xs:complexType>
       <xs:attribute name="d"            type="xs:string" use="required"/>
-      <xs:attribute name="fill"         type="Color"/>
+      <xs:attribute name="fill"         type="Fill"/>
       <xs:attribute name="stroke"       type="Color"/>
       <xs:attribute name="fill-rule"    type="FillRule"/>
       <xs:attribute name="stroke-width" type="PtValue"/>
@@ -538,31 +665,6 @@
         <xs:annotation>
           <xs:documentation>Width of the box. Without it the text is one line of the width its characters need, and align has no effect; a long text runs on past the edge of the page, which cuts it off, but stays in the PDF. With it, a line past the width is cut off at it, or ends in an ellipsis with ellipsis, and max-lines above 1 wraps the text within it.</xs:documentation>
         </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="max-lines">
-        <xs:annotation>
-          <xs:documentation>The most lines drawn, 1 by default. Above 1 it needs a width to wrap at, and wraps the text within it; only whole lines are drawn, and the rest of the text is dropped.</xs:documentation>
-        </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:positiveInteger">
-            <xs:minInclusive value="1"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="ellipsis" type="xs:boolean">
-        <xs:annotation>
-          <xs:documentation>End the last line drawn in an ellipsis when the text does not fit its width and max-lines. Off by default: the line is cut off at the width.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="line-height">
-        <xs:annotation>
-          <xs:documentation>The distance between lines, as a factor of the font size. Default 1.2.</xs:documentation>
-        </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:decimal">
-            <xs:minExclusive value="0"/>
-          </xs:restriction>
-        </xs:simpleType>
       </xs:attribute>
       <xs:attributeGroup ref="DataValueAttrs"/>
     </xs:complexType>
@@ -598,28 +700,37 @@
        Graphics state scope (page, opacity, transform, clip). Cannot nest. -->
   <xs:element name="layer">
     <xs:annotation>
-      <xs:documentation>Draws shapes, text, images and barcodes at exact positions on the page, independent of the flowing layout: watermarks, stamps, page furniture. Coordinates start at the top left corner of the whole page, not inside the layout's margin, and y grows downward. A layer before the section's layout paints under it, and one after paints over it. It sets what applies to all of its content: which pages it appears on, opacity, transform and clip. Layers cannot be nested.</xs:documentation>
+      <xs:documentation>Draws shapes, text, images and barcodes at exact positions on the page, independent of the flowing layout: watermarks, stamps, page furniture. Coordinates start at the top left corner of the whole page, not inside the layout's margin, and y grows downward. A layer before the section's layout paints under it, and one after paints over it. It sets what applies to all of its content: which pages it appears on, opacity, transform and clip, and the font, size and color of its text. Layers cannot be nested.</xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
         <xs:group ref="CanvasPrimitives" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="page"      type="PageScope"/>
-      <xs:attribute name="opacity">
+      <xs:attribute name="opacity"   type="OpacityValue">
         <xs:annotation>
           <xs:documentation>How opaque everything in the layer is, from 0 to 1. To fade one element, put it in a layer of its own.</xs:documentation>
         </xs:annotation>
-        <xs:simpleType>
-          <xs:restriction base="xs:decimal">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="1"/>
-          </xs:restriction>
-        </xs:simpleType>
       </xs:attribute>
       <xs:attribute name="transform" type="xs:string"/>
       <xs:attribute name="clip" type="xs:string">
         <xs:annotation>
           <xs:documentation>A rectangle that cuts off what the layer draws outside it: x y w h, in points from the top left corner of the page.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="font" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The font of the text-at in the layer that sets none of its own. Defaults to the font of the document.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="font-size" type="TokenScaleOrPt">
+        <xs:annotation>
+          <xs:documentation>The size of the text-at in the layer that sets none of its own. Defaults to 11pt.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="color" type="Color">
+        <xs:annotation>
+          <xs:documentation>The color of the text-at in the layer that sets none of its own. Defaults to the text token.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="DataConditionAttrs"/>
@@ -713,6 +824,57 @@
     </xs:complexType>
   </xs:element>
 
+  <xs:element name="stop">
+    <xs:complexType>
+      <xs:attribute name="offset" type="GradientOffset" use="required">
+        <xs:annotation>
+          <xs:documentation>Where the color is reached along the gradient, from 0% (the start) to 100% (the end). Stops go in increasing order.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="color" type="Color" use="required">
+        <xs:annotation>
+          <xs:documentation>The color at the stop: hex or a color token.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="gradient">
+    <xs:annotation>
+      <xs:documentation>A named blend of colors. A background or a fill uses it as gradient:name, and the blend spans the box it fills. Give from and to for two colors, or stop children for more.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="stop" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required">
+        <xs:annotation>
+          <xs:documentation>The name a background or a fill gives after gradient:. Lowercase letters, digits and hyphens, starting with a letter.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" type="GradientType" use="required">
+        <xs:annotation>
+          <xs:documentation>linear runs along a line across the box. radial runs from the center out to the farthest corner.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="from" type="Color">
+        <xs:annotation>
+          <xs:documentation>The first color: hex or a color token. Used with to, when there are no stop children. For a radial gradient it is the center.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="to" type="Color">
+        <xs:annotation>
+          <xs:documentation>The last color: hex or a color token. Used with from, when there are no stop children. For a radial gradient it is the edge.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="angle" type="xs:decimal">
+        <xs:annotation>
+          <xs:documentation>The direction of a linear gradient, in degrees: 0 runs from the top to the bottom, 90 from the left to the right, 180 from the bottom to the top. Default 0. A radial gradient has no direction.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
   <xs:element name="tokens">
     <xs:complexType>
       <xs:all>
@@ -721,12 +883,20 @@
         <xs:element name="radius" type="TokenScaleRow" minOccurs="0"/>
         <xs:element name="width"  type="TokenScaleRow" minOccurs="0"/>
         <xs:element name="text-size" type="TokenScaleRow" minOccurs="0"/>
+        <xs:element name="line-height" type="TokenFactorRow" minOccurs="0"/>
         <!-- "grid" and "space" share the same shape -->
         <xs:element name="grid"   type="TokenScaleRow" minOccurs="0"/>
         <xs:element name="colors" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
               <xs:element ref="color" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="gradients" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="gradient" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -769,11 +939,11 @@
         <!-- Pinned region: reserves a slot at the specified edge of the content area.
              pin="top|bottom" implemented in this phase.
              pin="left|right" schema-valid but deferred (requires w attribute).
-             Only valid as a direct child of <layout>, not inside containers.
-             At most one region per pin per physical page (parser-enforced). -->
+             Only valid as a direct child of <layout>, not inside containers. Several regions on one
+             edge stack in the order they are written. -->
         <xs:element name="region">
           <xs:annotation>
-            <xs:documentation>Pins content to the top or bottom edge of pages, outside the normal flow, for headers and footers. It reserves that space on every page it appears on. Only allowed directly inside layout, and one per pin on a page.</xs:documentation>
+            <xs:documentation>Pins content to the top or bottom edge of pages, outside the normal flow, for headers and footers. It reserves that space on every page it appears on. Only allowed directly inside layout. Where it is written among the flow does not matter: pin chooses the edge, and regions on one edge stack in the order written.</xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -789,7 +959,7 @@
                 <xs:documentation>Which pages show the region: each, first, last, odd, even, or a range such as 2-last. Defaults to each.</xs:documentation>
               </xs:annotation>
             </xs:attribute>
-            <!-- w required for pin="left|right"; ignored for pin="top|bottom" (parser-enforced) -->
+            <!-- w is for pin="left|right", which are not implemented; it is read and not used -->
             <xs:attribute name="w"     type="PtValue"/>
             <xs:attribute name="debug" type="xs:boolean"/>
           </xs:complexType>
@@ -818,7 +988,7 @@
       <xs:attribute name="font"        type="xs:string"/>
       <xs:attribute name="size"        type="PageSize"/>
       <xs:attribute name="orientation" type="Orientation"/>
-      <xs:attribute name="background"  type="Color"/>
+      <xs:attribute name="background"  type="Fill"/>
       <xs:attribute name="debug"       type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
@@ -844,7 +1014,7 @@
       </xs:sequence>
       <xs:attribute name="size"        type="PageSize"/>
       <xs:attribute name="orientation" type="Orientation"/>
-      <xs:attribute name="background"  type="Color"/>
+      <xs:attribute name="background"  type="Fill"/>
       <xs:attribute name="title"       type="xs:string"/>
       <xs:attribute name="debug"       type="xs:boolean"/>
       <xs:attribute name="type"        type="SectionType">
@@ -1083,6 +1253,26 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
+      <xs:attribute name="capture" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Records the words of this text under a name as the pages are filled, so a text with capture-ref in a header or a footer can show them. Put it on a heading in the flow. The page that holds the text counts it, the words above it on that page included, and a text that splits across pages is recorded on the page where it starts. A text cannot have both capture and capture-ref.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="capture-ref" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Shows what was captured under this name, as of the page the text is drawn on, in place of words of its own. Put it in a region. It takes the lines it may use, one unless max-lines says more, whatever it shows, so a header or a footer does not grow with its value; a longer value is cut, and ends in dots with ellipsis. On a page where nothing was captured it shows the latest value of an earlier page of the section, and capture-fallback before any.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="capture-mode" type="CaptureMode">
+        <xs:annotation>
+          <xs:documentation>Which of the texts captured under the name on this page the text shows: the first or the last. Default last. Only for a text with capture-ref.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="capture-fallback" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>What the text shows until something has been captured in the section. Default: nothing. Only for a text with capture-ref.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attribute name="paginate"  type="Paginate"/>
       <xs:attribute name="debug"     type="xs:boolean"/>
       <xs:attributeGroup ref="DataBindingAttrs"/>
@@ -1119,7 +1309,7 @@
       <xs:sequence>
         <xs:element ref="td" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
-      <xs:attribute name="background" type="Color"/>
+      <xs:attribute name="background" type="Fill"/>
       <xs:attributeGroup ref="DataBindingAttrs"/>
     </xs:complexType>
   </xs:element>
@@ -1130,7 +1320,7 @@
       <xs:sequence>
         <xs:element ref="td" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
-      <xs:attribute name="background" type="Color"/>
+      <xs:attribute name="background" type="Fill"/>
       <xs:attributeGroup ref="DataBindingAttrs"/>
     </xs:complexType>
   </xs:element>
@@ -1156,7 +1346,7 @@
       <xs:attribute name="stripe"     type="Color"/>
       <xs:attribute name="gap"        type="TokenScaleOrPt"/>
       <xs:attribute name="padding"    type="SpacingOrToken"/>
-      <xs:attribute name="background" type="Color"/>
+      <xs:attribute name="background" type="Fill"/>
       <xs:attributeGroup ref="WidthAttr"/>
       <xs:attribute name="height"     type="HeightValue"/>
       <xs:attribute name="paginate"   type="Paginate"/>

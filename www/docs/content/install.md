@@ -20,8 +20,8 @@ npm install @lpdfio/lpdf
 ## Create PDF
 
 ```javascript
-const { L } = require('@lpdfio/lpdf')
-const { writeFileSync } = require('node:fs')
+import { L } from '@lpdfio/lpdf'
+import { writeFileSync } from 'node:fs'
 
 const xml = `<lpdf version="1">
   <document size="a4">
@@ -41,15 +41,21 @@ const engine = L.engine()
 engine.render(xml).then((pdf) => writeFileSync('hello.pdf', pdf))
 ```
 
-`render` returns a promise. The package is CommonJS, so load it with `require`: an `import` of `@lpdfio/lpdf` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`. To render a file, read it into a string and pass that to `render`.
+`render` returns a promise. The example is an ES module: save it as `hello.mjs`, or set `"type": "module"` in `package.json`. CommonJS loads the package with `require` and gets the same classes:
+
+```javascript
+const { L } = require('@lpdfio/lpdf')
+```
+
+From 0.28.1 the package loads either way. Earlier versions load with `require` only: an `import` of `@lpdfio/lpdf` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`. To render a file, read it into a string and pass that to `render`.
 
 ## Create PDF with code
 
 The same document, built with `L` instead of written as XML. `render` takes either one and makes the same PDF.
 
 ```javascript
-const { L, NoAttr } = require('@lpdfio/lpdf')
-const { writeFileSync } = require('node:fs')
+import { L, NoAttr } from '@lpdfio/lpdf'
+import { writeFileSync } from 'node:fs'
 
 const doc = L.document({ size: 'a4' }, [
     L.section(NoAttr, [

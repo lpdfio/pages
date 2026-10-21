@@ -1,6 +1,6 @@
 # Image
 
-Embeds an image asset declared in `assets`. The image is never stretched: with one size set, the other follows its proportions, and with both set they are a maximum.
+Embeds an image asset declared in `assets`. The image is never stretched: with one size set, the other follows its proportions, and with both set they are a maximum. With `width="fill"` it is as wide as the room it has.
 
 ## Asset declaration
 
@@ -26,8 +26,8 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name declared in `assets` |
-| `width`      | token/pt | —      | Width. Without `height`, the height follows the image's proportions |
-| `height`     | pt      | —       | Height. Without `width`, the width follows the image's proportions |
+| `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. See [Fill the slot](#fill-the-slot). Without `height`, the height follows the image's proportions |
+| `height`     | pt      | —       | Height. Without `width`, the width follows the image's proportions. With `width="fill"`, a limit |
 | `padding`    | spacing | —       | Space around the picture, inside the box. See [Box around the picture](#box-around-the-picture) |
 | `background` | color   | —       | Background of the box around the picture |
 | `border`     | string  | —       | Border, drawn on the edge of the box |
@@ -63,9 +63,28 @@ To give images slots of one size, such as a row of logos each in an 80 × 40pt c
 </row>
 ```
 
+## Fill the slot
+
+`width="fill"` makes the picture as wide as the room it has, and its height follows its proportions. The room is the width of the column the image is in, what the line of a row leaves after the other children, or a table cell. A picture smaller than its room grows to fill it.
+
+```xml
+<row gap="m" align="center">
+  <img name="photo" width="fill"/>
+  <text width="90pt">The picture takes what is left of the line.</text>
+</row>
+```
+
+Several `fill` children on one line share it equally, as in any row, so two pictures with `width="fill"` are two halves of the line.
+
+A `height` limits the picture. It takes the largest size that fits the room and the height with its own proportions, and the parent's `align` places it, as with a width and a height:
+
+```xml
+<img name="photo" width="fill" height="50pt"/>
+```
+
 ## Box around the picture
 
-An image that sets `padding`, `background` or `border` is drawn as a box around its picture. `width` and `height` size the picture, as they do for any image (one size, or both as a maximum), and the box is larger than the picture by the padding. The border is drawn on the edge of the box and takes no room, as on every box.
+An image that sets `padding`, `background` or `border` is drawn as a box around its picture. `width` and `height` size the picture, as they do for any image (one size, or both as a maximum), and the box is larger than the picture by the padding. The border is drawn on the edge of the box and takes no room, as on every box. With `width="fill"` the box takes the room, and the picture fills what the padding leaves of it.
 
 `radius` rounds the box and clips the picture to rounded corners: the box's radius less the smallest padding, never below 0, so the picture follows the inside of the box. With no padding, background or border, `radius` clips the picture alone.
 

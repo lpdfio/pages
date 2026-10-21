@@ -239,6 +239,7 @@ How a header chooses what to show:
 - The page that holds a capture counts it, the words above it on that page included.
 - A page where nothing is captured under the name shows the latest value of an earlier page, whichever `capture-mode` it has. Before any capture it shows `capture-fallback`.
 - A text that splits across pages is recorded on the page where it starts.
+- A table's `thead` that repeats on each page the table continues on records its `capture` once, on the page where the table starts. The copies on the later pages are drawn but capture nothing, so they do not put the header's words back over what the rows captured since.
 - Each section starts with nothing captured, so a header's value does not carry from one section into the next.
 - `capture`, `capture-ref`, `capture-mode` and `capture-fallback` are attributes of the layout's `text`, not of a layer's `text-at`.
 - A text with `capture-ref` always takes its line, whatever it shows, so the header is the same height on every page: one line, or `max-lines` of them. A longer value is cut at that, and ends in dots with `ellipsis="true"`. A text cannot have both `capture` and `capture-ref`.

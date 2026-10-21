@@ -242,8 +242,8 @@ Inline image.
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
-| `width`      | token/pt| —       | Width. Without `height`, the height follows the image's proportions |
-| `height`     | pt      | —       | Height. With both, they are a maximum: the image is never stretched |
+| `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
+| `height`     | pt      | —       | Height. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
 | `background` | color   | —       | Background of the box around the picture |
 | `border`     | BorderValue | —   | Border, drawn on the edge of the box |
@@ -251,7 +251,9 @@ Inline image.
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false   | Draw the box outline |
 
-An image that sets `padding`, `background` or `border` is a box around its picture: `width` and `height` size the picture, and the box is larger by the padding. A `radius` alone clips the picture to rounded corners. See [Image](?p=doc/layout/img#box-around-the-picture).
+`width="fill"` makes the picture as wide as the room it has: the column it is in, what the line of a row leaves after the other children (shared with the other `fill` children), or a table cell. Its height follows its proportions, and a `height` limits it. See [Image](?p=doc/layout/img#fill-the-slot).
+
+An image that sets `padding`, `background` or `border` is a box around its picture: `width` and `height` size the picture, and the box is larger by the padding. With `width="fill"` the box takes the room, and the picture fills what the padding leaves. A `radius` alone clips the picture to rounded corners. See [Image](?p=doc/layout/img#box-around-the-picture).
 
 ### `table`
 

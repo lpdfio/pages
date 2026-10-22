@@ -289,6 +289,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 |-----------|---------|---------|-------------|
 | `align`   | string  | fill    | `start` `center` `end`. By default children fill the cell width |
 | `valign`  | string  | `top`   | `top` `middle` `bottom` |
+| `colspan` | integer | `1`     | How many of the table's columns the cell spans: as wide as them and the gaps between them. A row that spans more columns than `cols` names is an error. See [Table](?p=doc/layout/table#spanning-columns) |
 
 ### `barcode`
 

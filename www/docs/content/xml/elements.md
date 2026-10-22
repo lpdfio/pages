@@ -290,6 +290,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 | `align`   | string  | fill    | `start` `center` `end`. By default children fill the cell width |
 | `valign`  | string  | `top`   | `top` `middle` `bottom` |
 | `colspan` | integer | `1`     | How many of the table's columns the cell spans: as wide as them and the gaps between them. A row that spans more columns than `cols` names is an error. See [Table](?p=doc/layout/table#spanning-columns) |
+| `rowspan` | integer | `1`     | How many rows the cell spans: as tall as them and the gaps between them, with the rows under it leaving its columns out. The rows it spans stay on one page. A row with a cell too many for the free columns, and a span past the last row, are errors; a `thead` takes no `rowspan`. See [Table](?p=doc/layout/table#spanning-rows) |
 
 ### `barcode`
 

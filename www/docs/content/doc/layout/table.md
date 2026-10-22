@@ -51,6 +51,7 @@ A `thead` row is repeated at the top of each page. It takes the same `background
 | `align`      | string  | fill    | Horizontal: `start` `center` `end`. By default children fill the cell width |
 | `valign`     | string  | `top`   | Vertical: `top` `middle` `bottom` |
 | `colspan`    | integer | `1`     | How many columns the cell spans. See [Spanning columns](#spanning-columns) |
+| `rowspan`    | integer | `1`     | How many rows the cell spans. See [Spanning rows](#spanning-rows) |
 | `background` | color or `gradient:name` | — | Cell background: a color, or a [gradient](?p=xml/schema#gradients) that spans the cell |
 | `padding`    | spacing | —       | Cell inner padding |
 | `border`     | string  | —       | Cell border |
@@ -131,6 +132,42 @@ A run of rows that each say `with-next`, and the row that ends it, form a group.
 A cell without `colspan` takes one column, and a span can start anywhere in a row: the first cell, one in the middle or the last. A row whose cells span more columns than `cols` names is an error that says how many columns the row spans and how many the table has. A row with fewer leaves its last columns empty.
 
 `colspan` changes widths only. A row is as tall as its tallest cell at the width that cell has, and page breaks, `keep` and the repeated header work as they do without it. With a `border`, the grid has no line inside a spanning cell.
+
+## Spanning rows
+
+`rowspan="n"` on a `td` makes the cell span `n` rows: its own and the `n - 1` under it. It is as tall as those rows and the gaps between them. The rows under it leave its column out, and their cells start at the first free columns, so such a row has fewer cells than the table has columns. Use it for a label that belongs to a group of rows, and for a note that covers several of them:
+
+```xml
+<table cols="1fr 2fr 2fr 4fr" border="xs #e0e0e0">
+  <thead background="#f0f0f0">
+    <td padding="xs"><text font-size="xs">Quarter</text></td>
+    <td padding="xs"><text font-size="xs">Month</text></td>
+    <td padding="xs" align="end"><text font-size="xs">Revenue</text></td>
+    <td padding="xs"><text font-size="xs">Notes</text></td>
+  </thead>
+  <tr>
+    <td rowspan="3" padding="xs"><text font-size="xs" bold="true">Q1</text></td>
+    <td padding="xs"><text font-size="xs">January</text></td>
+    <td padding="xs" align="end"><text font-size="xs">$41,200.00</text></td>
+    <td rowspan="2" padding="xs"><text font-size="xs">Slow start after the holidays.</text></td>
+  </tr>
+  <tr>
+    <td padding="xs"><text font-size="xs">February</text></td>
+    <td padding="xs" align="end"><text font-size="xs">$38,900.00</text></td>
+  </tr>
+  <tr>
+    <td padding="xs"><text font-size="xs">March</text></td>
+    <td padding="xs" align="end"><text font-size="xs">$44,100.00</text></td>
+    <td padding="xs"><text font-size="xs">Spring catalogue sent.</text></td>
+  </tr>
+</table>
+```
+
+The second row has two cells, since the label holds the first column and the note the last. A cell can span columns and rows at once (`colspan="2" rowspan="2"`). These are errors, and the message says which: a row with more cells than the span leaves free columns for, a `colspan` that no free columns are wide enough for, a span that runs past the last row of the table, and a `rowspan` on a `thead`, which is a single row. Spans are checked in the document as it is written, before data binds, so a `data-source` that changes the number of rows can leave a row with a cell too many. The cell with no column is left out.
+
+If the content of a spanning cell is taller than the rows it spans together, the last of them grows by the difference. If it is shorter, the cell is stretched to the rows, and `valign` places its content among all of them.
+
+The rows a cell spans stay on one page. When they do not fit in what is left of a page, they move to the next page together, under the repeated header, and a row with `keep="with-next"` just above them goes with them. Rows that a cell spans and that are taller than a page are placed whole where they start a page, and the page clips what runs past its end. With a `border`, the grid has no line across a spanning cell: neither the rule under a row nor a rule between two columns inside it.
 
 ## Invoice line items
 

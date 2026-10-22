@@ -277,6 +277,7 @@ A table holds an optional `thead` and any number of `tr`.
 | Attribute   | Type  | Description |
 |-------------|-------|-------------|
 | `background`| color or `gradient:name` | Row background. A gradient spans the row |
+| `keep`      | string | `tr` only. `with-next` keeps the row on the same page as the row after it: a run of such rows and the row that ends it move to the next page together. See [Table](?p=doc/layout/table#keeping-rows-together) |
 
 `thead` repeats at the top of every page. Both hold `td` cells.
 

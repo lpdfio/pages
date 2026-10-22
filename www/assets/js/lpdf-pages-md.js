@@ -27,49 +27,49 @@ for every service`,contactEmail:"license@authstack.id",packages:{heading:"Packag
             <a target="_blank" rel="noopener noreferrer" href=${t.github} class="btn btn-secondary btn-sm">GitHub</a>
         `}render(){if(!this._site)return N;switch(this.variant){case"home":return this._renderHome();case"docs":return this._renderDocs();case"legal":return this._renderLegal();case"pricing":return this._renderPricing();case"checkout":return this._renderCheckout()}}_renderCheckout(){return ne`
             <nav class="nav">
-                <div class="nav-inner rl-split rl-align-center">
-                    <div class="rl-cluster rl-gap-2xl rl-align-center">
+                <div class="nav-inner rl-row rl-justify-between rl-align-center">
+                    <div class="rl-row rl-gap-2xl rl-align-center">
                         ${this._logo("/")}
                     </div>
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._themeBtn()}
                     </div>
                 </div>
             </nav>
         `}_renderHome(){return ne`
             <nav class="nav">
-                <div class="nav-inner rl-split rl-align-center">
-                    <div class="rl-cluster rl-gap-2xl rl-align-center">
+                <div class="nav-inner rl-row rl-justify-between rl-align-center">
+                    <div class="rl-row rl-gap-2xl rl-align-center">
                         ${this._logo("/")}
                     </div>
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._themeBtn()}
                     </div>
                 </div>
             </nav>
         `}_renderPricing(){return ne`
             <nav class="nav">
-                <div class="nav-inner rl-split rl-align-center">
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                <div class="nav-inner rl-row rl-justify-between rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._logo("/")}
                         <span class="nav-section-label">Pricing</span>
                     </div>
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._themeBtn()}
                     </div>
                 </div>
             </nav>
         `}_renderDocs(){return ne`
             <nav class="nav">
-                <div class="nav-inner rl-split rl-align-center">
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                <div class="nav-inner rl-row rl-justify-between rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._logo("/")}
-                        <div class="rl-cluster rl-gap-xl">
+                        <div class="rl-row rl-gap-xl">
                             <span class="nav-section-label">Docs</span>
                             ${this.hasPage?this._sdkDropdown():N}
                         </div>
                     </div>
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._renderDocsLinks()}
                         ${this._themeBtn()}
                     </div>
@@ -77,12 +77,12 @@ for every service`,contactEmail:"license@authstack.id",packages:{heading:"Packag
             </nav>
         `}_renderLegal(){return ne`
             <nav class="nav">
-                <div class="nav-inner rl-split rl-align-center">
-                    <div class="rl-cluster rl-gap-l rl-align-center">
+                <div class="nav-inner rl-row rl-justify-between rl-align-center">
+                    <div class="rl-row rl-gap-l rl-align-center">
                         ${this._logo("/")}
                         <span class="nav-section-label">Legal</span>
                     </div>
-                    <div class="rl-cluster rl-gap-xl rl-align-center nav-links">
+                    <div class="rl-row rl-gap-xl rl-align-center nav-links">
                         ${this._site?.legalLinks.map(t=>ne`
                             <a href="${t.href}">${t.label}</a>
                         `)}
@@ -114,7 +114,7 @@ for every service`,contactEmail:"license@authstack.id",packages:{heading:"Packag
                 </div>
             </footer>
         `:N}_brandColumn(t){return ne`
-            <div class="rl-stack rl-gap-s">
+            <div class="rl-column rl-gap-s">
                 <a href="/" class="footer-logo">
                     <img src="${t.mark}" alt="" class="footer-logo-mark" />
                     <span class="footer-logo-word">${t.name}</span>
@@ -125,14 +125,14 @@ for every service`,contactEmail:"license@authstack.id",packages:{heading:"Packag
                 </p>
             </div>
         `}_packageColumn(t){return ne`
-            <div class="rl-stack rl-gap-s">
+            <div class="rl-column rl-gap-s">
                 <span class="footer-heading">${t.packages.heading}</span>
-                <div class="rl-stack rl-gap-m">
+                <div class="rl-column rl-gap-m">
                     ${t.packages.rows.map(i=>ne`
-                        <div class="rl-stack rl-gap-xs">
+                        <div class="rl-column rl-gap-xs">
                             <a href="${i.href}" class="footer-sdk">${i.name}</a>
                             ${i.github||i.registry?ne`
-                                    <div class="rl-cluster rl-gap-m footer-links footer-sdk-links">
+                                    <div class="rl-row rl-gap-m footer-links footer-sdk-links">
                                         ${i.github?ne`<a href="${i.github}" target="_blank" rel="noopener noreferrer">GitHub</a>`:N}
                                         ${i.registry?ne`<a href="${i.registry.url}" target="_blank" rel="noopener noreferrer">${i.registry.label}</a>`:N}
                                     </div>
@@ -142,9 +142,9 @@ for every service`,contactEmail:"license@authstack.id",packages:{heading:"Packag
                 </div>
             </div>
         `}_column(t,i){return ne`
-            <div class="rl-stack rl-gap-s">
+            <div class="rl-column rl-gap-s">
                 <span class="footer-heading">${t}</span>
-                <div class="rl-stack rl-gap-m footer-links">
+                <div class="rl-column rl-gap-m footer-links">
                     ${i.map(r=>ph(r.href)?ne`<a href="${r.href}" target="_blank" rel="noopener noreferrer">${r.label}</a>`:ne`<a href="${r.href}">${r.label}</a>`)}
                 </div>
             </div>

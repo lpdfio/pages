@@ -40,11 +40,13 @@ The margin belongs to the layout because only the flow uses it. The document and
 | [`divider`](?p=doc/layout/divider) | Horizontal or vertical rule |
 | [`frame`](?p=doc/layout/frame) | Atomic box around one child — will not split across pages |
 | [`img`](?p=doc/layout/img) | Image asset |
+| [`shape`](?p=doc/layout/shape) | Rectangle, circle or ellipse that takes room in the flow: a status dot, a swatch, a progress bar |
 | [`grid`](?p=doc/layout/grid) | Equal columns, filled left to right |
 | [`table`](?p=doc/layout/table) | Table with rows, cells, and repeating header |
 | [`barcode`](?p=doc/layout/barcode) | QR, Code128, or EAN-13 barcode |
 | [`link`](?p=doc/layout/link) | Clickable hyperlink wrapper |
 | [`bookmark`](?p=doc/layout/bookmark) | Entry in the PDF's outline and target for links. Draws nothing |
+| [`fn`](?p=doc/layout/footnote) | Footnote inside a `text`: a raised number in the line, the note at the bottom of the page |
 | [`field`](?p=doc/layout/field) | Interactive PDF form element |
 
 ## Pagination rules

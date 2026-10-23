@@ -9,6 +9,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | inherit | `portrait` or `landscape` |
 | `background`  | color   | inherit | Page background color |
+| `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —       | Section title. Accepted, but not used: the PDF's outline takes its entries from [bookmarks](?p=doc/layout/bookmark) |
 | `type`        | string  | —       | `toc` makes the section the document's [table of contents](?p=doc/toc) |
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the indent for each level below the first |

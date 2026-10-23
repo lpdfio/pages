@@ -77,6 +77,10 @@ The strings and spans you give `text` in code are joined the same way, so the sp
 
 A line break and the indentation after it count as one space. A space at the start or end of the text is dropped, and so is one at the start of a span. One at the end of a span separates it from what follows.
 
+## Footnotes
+
+An `fn` inside a text puts a small raised number in the line and its note at the bottom of the page where the number lands. See [Footnote](?p=doc/layout/footnote).
+
 ## Widows and orphans
 
 When a paragraph splits across pages, Lpdf keeps at least two of its lines on each page. A line left alone at the bottom of a page is an orphan, and one carried alone to the top of the next page is a widow.

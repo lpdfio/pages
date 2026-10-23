@@ -47,10 +47,20 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 
 | Child | Description |
 |-------|-------------|
-| `space`, `text-size`, `border`, `radius`, `width`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as `pt` values |
+| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as `pt` values. `height` is the row for the heights of boxes, tables, images, shapes and barcodes: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
 | `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not `pt` values: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
+| `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
 | `gradients` | Holds `gradient` elements |
+
+### `alias`
+
+A name of your own for a slot of the scale. An attribute that takes a slot (`xs` to `xxl`) takes the name in its place, and reads the slot of its own row: with `caption` for `xs`, `font-size="caption"` is the text size `xs` and `gap="caption"` the space `xs`. See [Aliases](?p=xml/schema#aliases).
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `name`    | string | **Required.** Lowercase letters, digits and `-`, starting with a letter. Not `xs` `s` `m` `l` `xl` `xxl` `fill` or `full`, which mean something already |
+| `value`   | string | **Required.** The slot the name stands for: `xs` `s` `m` `l` `xl` or `xxl`. Not another alias |
 
 ### `color`
 
@@ -100,6 +110,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
 | `background`  | color or `gradient:name` | — | Page background: a color, or a [gradient](?p=xml/schema#gradients) that spans the page |
+| `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
 | `debug`       | boolean | false      | Render layout boxes |
 
 A document holds an optional `meta` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
@@ -111,6 +122,7 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 | `size`        | string  | inherit  | Override page size for this section |
 | `orientation` | string  | inherit  | Override orientation |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
+| `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
@@ -141,7 +153,7 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 | `gap`       | token/pt| `0`     | Space between children. Not on `frame`, which has one child |
 | `padding`   | spacing | `0`     | Space inside the edge: `8pt`, a token, or one to four values like `"8pt 16pt"` |
 | `width`     | token/pt/`fill` | — | Fixed width, or `fill`: the full width, and in a `row` the width the other children leave. Not on `td`: the table's `cols` sets cell widths |
-| `height`    | pt/`fill`/`full` | — | A length fixes the height; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
+| `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens`; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `background`| color or `gradient:name` | — | Background fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the box |
 | `border`    | BorderValue | —   | Border, written `"thickness color"` |
@@ -208,7 +220,7 @@ Paragraph or inline text.
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
 
-Children: `span` for inline style overrides.
+Children: `span` for inline style overrides, and `fn` for a footnote.
 
 ### `span`
 
@@ -223,6 +235,12 @@ Inline text with overridden style.
 | `strike`    | boolean | Strikethrough text |
 
 A space falls between a span and the text around it only where the text has whitespace there. See [Spaces around a span](?p=doc/layout/text#spaces-around-a-span).
+
+### `fn`
+
+A footnote, inside a `text` of the layout. Its place in the text shows a small raised number, and the words it holds go at the bottom of the page where that number lands, under a short rule, in the order of the numbers. It takes no attributes, and holds words and `span` elements. A page with notes has less room for its text, so a line whose note would not fit moves to the next page with it. The numbers start over where `footnote-counter` on the `document` or a `section` says.
+
+Only a `text` of the layout can hold one: an `fn` in a `text-at`, a table or a `region` is an error. See [Footnote](?p=doc/layout/footnote).
 
 ### `divider`
 
@@ -243,7 +261,7 @@ Inline image.
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
 | `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
-| `height`     | pt      | —       | Height. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
+| `height`     | token/pt | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
 | `background` | color   | —       | Background of the box around the picture |
 | `border`     | BorderValue | —   | Border, drawn on the edge of the box |
@@ -254,6 +272,24 @@ Inline image.
 `width="fill"` makes the picture as wide as the room it has: the column it is in, what the line of a row leaves after the other children (shared with the other `fill` children), or a table cell. Its height follows its proportions, and a `height` limits it. See [Image](?p=doc/layout/img#fill-the-slot).
 
 An image that sets `padding`, `background` or `border` is a box around its picture: `width` and `height` size the picture, and the box is larger by the padding. With `width="fill"` the box takes the room, and the picture fills what the padding leaves. A `radius` alone clips the picture to rounded corners. See [Image](?p=doc/layout/img#box-around-the-picture).
+
+### `shape`
+
+A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatch or a progress bar. It takes room as an image does, has no children, and is drawn centered in its box. For a shape at a place on the page, use a [layer](?p=doc/layer). See [Shape](?p=doc/layout/shape).
+
+| Attribute      | Type      | Default | Description |
+|----------------|-----------|---------|-------------|
+| `type`         | string    | —       | **Required.** `rect` `circle` `ellipse` |
+| `width`        | token/pt  | —       | Width of a `rect` or an `ellipse`, which need it |
+| `height`       | token/pt  | —       | Height of a `rect` or an `ellipse`, which need it: a length, or a name from the `height` row of `tokens` |
+| `r`            | pt        | —       | Radius of a `circle`, which needs it. Its box is the square of side `2r` |
+| `radius`       | token/pt  | —       | Corner radius of a `rect` |
+| `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the shape |
+| `stroke`       | color     | —       | Stroke color |
+| `stroke-width` | pt        | —       | Stroke width |
+| `stroke-dash`  | string    | —       | Dash pattern: `"4 3"` |
+| `opacity`      | 0–1       | `1`     | How opaque the shape is |
+| `debug`        | boolean   | false   | Draw the box outline |
 
 ### `table`
 
@@ -266,7 +302,7 @@ An image that sets `padding`, `background` or `border` is a box around its pictu
 | `padding`   | spacing | `0`     | Space between the table's edge and its content. Not cell padding: set it on each `td` |
 | `background`| color or `gradient:name` | — | Background behind the whole table. A gradient spans the table |
 | `width`     | token/pt| —       | Fixed width |
-| `height`    | pt/`fill`/`full` | — | A length fixes the height |
+| `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens` |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false   | Draw the box outline |
 
@@ -299,7 +335,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
 | `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
-| `height`    | pt      | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
+| `height`    | token/pt| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
 | `hrt`       | boolean | false     | Human-readable text below Code128/EAN-13 |
 | `data-value`| string  | —         | Dot-path to a scalar value that replaces the data the barcode encodes |
@@ -348,7 +384,7 @@ PDF form field.
 | `max-len`    | integer | —       | Maximum text length |
 | `action-url` | URL     | —       | Submit URL (button) |
 | `width`      | token/pt| —       | Field width |
-| `height`     | pt      | —       | Field height |
+| `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of `tokens` |
 | `debug`      | boolean | false   | Draw the box outline |
 
 ### `region`

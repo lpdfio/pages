@@ -67,6 +67,12 @@
     "doc/layout/img": {
         "description": "The img element in Lpdf XML: place an image declared in assets (PNG or JPEG) in the flow, by width, height or both, with rounded corners. It is never stretched."
     },
+    "doc/layout/shape": {
+        "description": "The shape element in Lpdf XML: draw a rectangle, circle or ellipse in the flow, for a status dot, a color swatch or a progress bar. It takes room like an image."
+    },
+    "doc/layout/footnote": {
+        "description": "The fn element in Lpdf XML: put a note at the bottom of the page where its number lands. The engine numbers the notes; footnote-counter sets where they restart."
+    },
     "doc/layout/link": {
         "description": "The link element in Lpdf XML: wrap text, images or any layout content in a clickable link to a URL, or to a bookmark elsewhere in the PDF document."
     },

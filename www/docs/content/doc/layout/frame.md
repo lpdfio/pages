@@ -15,7 +15,7 @@ An atomic box around a single child, which it centres. A frame will never split 
 | `color`      | color   | inherit | Color of the text inside. A text that sets none takes the nearest box's. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
 | `opacity`    | 0–1     | `1`     | How opaque the box and everything in it is, as one. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`     | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity. See [Shadow](?p=doc/layout#shadow) |
-| `height`     | pt/`fill`/`full` | — | Fixed height |
+| `height`     | token/pt/`fill`/`full` | — | Fixed height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
 | `paginate`   | string           | — | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `width`      | token/pt | —      | Constrain width |
 | `font`       | string  | inherit | Font name |

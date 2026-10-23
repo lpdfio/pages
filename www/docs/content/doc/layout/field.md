@@ -18,7 +18,7 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 | `max-len`    | integer | —       | Maximum text length |
 | `action-url` | URL     | —       | Submit URL (button) |
 | `width`      | token/pt | —      | Field width |
-| `height`     | pt      | —       | Field height |
+| `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
 
 ## Text form
 

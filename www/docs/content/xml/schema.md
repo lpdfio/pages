@@ -7,7 +7,7 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
 ```
 <lpdf version="1">
   <assets>           ← optional: fonts, images
-  <tokens>           ← optional: custom scales, colors and gradients
+  <tokens>           ← optional: custom scales, aliases, colors and gradients
   <document>         ← required
     <meta>           ← optional: title, author, subject, keywords, creator
     <section>+       ← one or more, each with its own pages
@@ -61,14 +61,16 @@ Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "in
 
 A token is a name for a length. Each attribute reads its own scale, so `m` is 8pt as a `gap` and 11pt as a `font-size`. The exception is `line-height`, whose tokens are factors of the font size, not lengths.
 
-| Token | space: `gap` `padding` `margin` `toc-indent-step` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | grid: `col-width` | line height: `line-height` |
-|-------|------|------|------|------|------|------|-----|
-| `xs`  | 2pt  | 7pt  | 0.5pt | 2pt  | 120pt | 60pt  | 1.0 |
-| `s`   | 4pt  | 9pt  | 1pt   | 4pt  | 200pt | 100pt | 1.1 |
-| `m`   | 8pt  | 11pt | 1.5pt | 6pt  | 280pt | 140pt | 1.2 |
-| `l`   | 14pt | 14pt | 2pt   | 10pt | 360pt | 180pt | 1.4 |
-| `xl`  | 20pt | 20pt | 3pt   | 16pt | 440pt | 220pt | 1.6 |
-| `xxl` | 32pt | 28pt | 4pt   | 24pt | 515pt | 280pt | 2.0 |
+| Token | space: `gap` `padding` `margin` `toc-indent-step` | text size: `font-size` | border: `border` `thickness` | `radius` | `width` | `height` | grid: `col-width` | line height: `line-height` |
+|-------|------|------|------|------|------|------|------|-----|
+| `xs`  | 2pt  | 7pt  | 0.5pt | 2pt  | 120pt | 16pt | 60pt  | 1.0 |
+| `s`   | 4pt  | 9pt  | 1pt   | 4pt  | 200pt | 24pt | 100pt | 1.1 |
+| `m`   | 8pt  | 11pt | 1.5pt | 6pt  | 280pt | 32pt | 140pt | 1.2 |
+| `l`   | 14pt | 14pt | 2pt   | 10pt | 360pt | 48pt | 180pt | 1.4 |
+| `xl`  | 20pt | 20pt | 3pt   | 16pt | 440pt | 64pt | 220pt | 1.6 |
+| `xxl` | 32pt | 28pt | 4pt   | 24pt | 515pt | 96pt | 280pt | 2.0 |
+
+`width` is a scale of page-wide measures, with no use for the height of a card or a row, so `height` has a row of its own: `height="m"` works on a box, a table, an `img`, a `shape` and a barcode. Before v0.29.0 a barcode or a form field read a token `height` from the `width` row.
 
 `padding` and `margin` take one to four values, written like CSS, and each can be a token: `padding="m 24pt"` is 8pt top and bottom and 24pt left and right.
 
@@ -95,7 +97,38 @@ To change a scale, or to name colors or gradients, add `tokens` before `document
 </lpdf>
 ```
 
-The scale elements are `space`, `text-size`, `border`, `radius`, `width`, `grid` and `line-height`. A `line-height` row takes factors, not `pt` values: `<line-height xs="1.0" s="1.1" m="1.2" l="1.4" xl="1.6" xxl="2.0"/>`. A color named `text` becomes the default text color.
+The scale elements are `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` and `line-height`. A `line-height` row takes factors, not `pt` values: `<line-height xs="1.0" s="1.1" m="1.2" l="1.4" xl="1.6" xxl="2.0"/>`. A color named `text` becomes the default text color.
+
+## Aliases
+
+An alias is a name of your own for a slot of the scale. Define it in `aliases` inside `tokens`, and use it wherever an attribute takes a slot (`xs` to `xxl`):
+
+```xml
+<lpdf version="1">
+  <tokens>
+    <aliases>
+      <alias name="caption" value="xs"/>
+      <alias name="body" value="m"/>
+    </aliases>
+  </tokens>
+  <document size="letter">
+    <section>
+      <layout margin="48pt">
+        <column gap="body">
+          <text font-size="caption">Set in the text size xs</text>
+          <text font-size="body">Set in the text size m</text>
+        </column>
+      </layout>
+    </section>
+  </document>
+</lpdf>
+```
+
+An alias names a slot, not a row, so every row shares it: `caption` is the text size `xs` as a `font-size`, the space `xs` as a `gap` and the height `xs` as a `height`. When a document changes a row, the alias follows it. The one-to-four values of `padding` and `margin`, and the thickness of a `border`, take aliases too: `padding="tight roomy"`, `border="hairline #cccccc"`.
+
+A name is lowercase letters, digits and `-`, and starts with a letter. It cannot be `xs`, `s`, `m`, `l`, `xl`, `xxl`, `fill` or `full`, which mean something already. Its `value` is a slot, not another alias, and a name defined twice is an error.
+
+**The engine catches a mistyped name, not the schema.** An attribute that takes a slot accepts any name, so checking a document against the schema no longer flags `gap="medum"`. The engine stops on it and says what it expects: `invalid space value: 'medum': expected a slot from xs to xxl, an alias (body, caption) or a pt value`.
 
 ## Colors
 

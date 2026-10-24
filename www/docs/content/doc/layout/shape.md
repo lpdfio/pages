@@ -19,6 +19,7 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | `r`            | pt        | —       | Radius of a `circle`, which needs it. Its box is the square of side `2r` |
 | `radius`       | token/pt  | —       | Corner radius of a `rect`. A circle and an ellipse are round already |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the shape |
+| `data-fill` | string | — | Dot-path: sets `fill` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `stroke`       | color     | —       | Stroke color |
 | `stroke-width` | pt        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 3"` |

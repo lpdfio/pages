@@ -2,7 +2,7 @@
 
 Data binding lets you separate document structure from content. Pass a data object alongside your document XML, then reference values with `data-*` attributes.
 
-## The four attributes
+## The attributes
 
 | Attribute     | Where valid | Effect |
 |---------------|-------------|--------|
@@ -10,8 +10,9 @@ Data binding lets you separate document structure from content. Pass a data obje
 | `data-source` | Any layout element | Dot-path to an array — repeats this element once per item; inside the loop, paths are relative to the current item |
 | `data-if`     | Any layout element; a `layer`, `text-at`, `img-at` and `barcode-at` | Renders the element only when the value at the path is truthy |
 | `data-if-not` | Any layout element; a `layer`, `text-at`, `img-at` and `barcode-at` | Renders the element only when the value at the path is falsy |
+| `data-href`, `data-name`, `data-color`, `data-background`, `data-fill` | Where the attribute without `data-` is valid; see [Attributes from data](#attributes-from-data) | Sets that attribute from the value at the path |
 
-Data binding applies to the layout, to regions and to [layers](?p=doc/layer#data-in-a-layer). A `data-value` on a `link` or an `img` has no effect, and the shapes of a layer take no data attributes.
+Data binding applies to the layout, to regions and to [layers](?p=doc/layer#data-in-a-layer). A `data-value` on a `link` or an `img` has no effect: they take their target and their image from `data-href` and `data-name`. The shapes of a layer take no data attributes, and neither does a `span`.
 
 A layer reads single values, so `data-source` is not allowed on its elements: every copy would sit in the same place, and a list from data belongs in the layout. An array item can be read by its index, such as `signers[0].name`. A layer drawn on several pages shows the same values on each. Text that comes from data, and so can be any length, belongs in the layout: in a layer, a longer text loses its end without a warning.
 
@@ -152,6 +153,46 @@ Two prefixes reach outside the current item: a path that starts with `/` is read
 ```
 
 A value is falsy when it is missing, `null`, `false`, `0`, an empty string, an empty array, or an empty object. Everything else is truthy. That includes the string `"false"`, so pass a real boolean, not a string.
+
+## Attributes from data
+
+`data-value` fills the words of a text. The other things a row of data should decide, such as where a link goes, which picture an item has or the color of a status, are attributes, and each one that can read the data has a `data-` form: the name of the attribute with `data-` in front. It takes a dot-path, with the same loop scopes, `/` and `../` as `data-value`.
+
+| Attribute         | On | Sets |
+|-------------------|----|------|
+| `data-href`       | `link` | `href`, the link's destination |
+| `data-name`       | `img`, `img-at` | `name`, which of the images declared in `assets` is drawn |
+| `data-color`      | `text`, `text-at`, the boxes (`column`, `row`, `grid`, `frame`, `td`), `divider`, `barcode`, `barcode-at` | `color` |
+| `data-background` | the boxes (`column`, `row`, `grid`, `frame`, `td`), `barcode`, `barcode-at` | `background` |
+| `data-fill`       | `shape` | `fill` |
+
+```xml
+<column data-source="products" gap="s">
+  <link href="https://example.com" data-href="url">
+    <row gap="s">
+      <img name="photo" data-name="image" width="48pt"/>
+      <text data-value="name" data-color="statusColor" color="#333333">Product</text>
+    </row>
+  </link>
+  <shape type="rect" width="60pt" height="6pt" fill="#999999" data-fill="statusColor"/>
+</column>
+```
+
+With this data, the first product links to its page, shows the `photo` image and is green. The second shows the `logo` image and keeps the grey and the dark text that the XML wrote, because it has no `statusColor`:
+
+```json
+{
+  "products": [
+    { "name": "Oak chair", "url": "https://example.com/oak-chair", "image": "photo", "statusColor": "#2e7d32" },
+    { "name": "Pine desk", "url": "https://example.com/pine-desk", "image": "logo" }
+  ]
+}
+```
+
+- **The attribute without `data-` stays.** It is the value used when no data is passed, and when the path has no value or the value is an empty string. `link` still needs an `href` and `img` still needs a `name`.
+- **A value is a string**, and it is checked as the attribute is: `data-color` takes a hex color or a name from the `colors` of the [tokens](?p=xml/schema#tokens), and `data-background` and `data-fill` also take `gradient:name`. A number, a boolean, an object or an array is an error, and so is a color that is not one. The error names the attribute and the path, such as `data-color="item.status": unknown color token: 'chartreuse'`.
+- **An image is picked, not loaded.** `data-name` chooses among the images the document declares in `assets` and your code loaded before the render. The data can't bring a new image: declare and load one for each image the data may name (a builder loop, or a few lines of XML). A name that is not declared is an error that names the path.
+- **Not everywhere.** An element without the attribute refuses the `data-` form when the document is read. A `span` has no data attributes, and a table of contents section refuses these five.
 
 ## Combining attributes
 

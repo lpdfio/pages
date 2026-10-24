@@ -23,6 +23,8 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 | `font-size`  | token/pt | inherit | Font size |
 | `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `data-source` | string | —       | Dot-path to array — repeats children per item |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 
 ## Three-column layout
 

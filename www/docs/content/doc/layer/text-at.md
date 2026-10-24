@@ -19,6 +19,7 @@
 | `color`       | color     | the layer's, else `#1a1a1a` | Text color: `#333333` or a named token. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
 | `data-value`  | string    | —           | Dot-path: replaces the text with the bound value. See [Text from data](#text-from-data) |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `data-if`     | string    | —           | Draw only when the value is truthy |
 | `data-if-not` | string    | —           | Draw only when the value is falsy |
 

@@ -22,6 +22,8 @@ An atomic box around a single child, which it centres. A frame will never split 
 | `font-size`  | token/pt | inherit | Font size |
 | `data-if`    | string  | —       | Render only when value is truthy |
 | `data-if-not` | string | —      | Render only when value is falsy |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 
 ## Callout box
 

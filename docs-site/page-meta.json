@@ -114,5 +114,9 @@
     },
     "xml/schema": {
         "description": "The Lpdf XML schema: document structure, page sizes, units, tokens, colors and the border value format, with a download link for lpdf.xsd."
+    },
+    "encryption": {
+        "title": "Encrypt a PDF with AES-256 and passwords in Lpdf",
+        "description": "Encrypt a PDF with AES-256 from Node.js, .NET, PHP or Python: an open password, an owner password and permission flags for printing, copying and editing."
     }
 }

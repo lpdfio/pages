@@ -26,6 +26,7 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name declared in `assets` |
+| `data-name` | string | — | Dot-path: picks the image from the data, among the assets declared in `assets`. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. See [Fill the slot](#fill-the-slot). Without `height`, the height follows the image's proportions |
 | `height`     | token/pt | —      | Height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the image's proportions. With `width="fill"`, a limit |
 | `padding`    | spacing | —       | Space around the picture, inside the box. See [Box around the picture](#box-around-the-picture) |

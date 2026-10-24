@@ -7,6 +7,7 @@ Wraps any layout content in a clickable hyperlink. The link is active in PDF vie
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
 | `href`    | URL    | —       | **Required.** Link destination: a URL, or `#id` to jump to the [bookmark](?p=doc/layout/bookmark) with that id |
+| `data-href` | string | — | Dot-path: sets `href` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `gap`     | spacing | —      | Gap between child elements |
 
 ## Text link
@@ -43,10 +44,12 @@ A link to an id that no bookmark has is left out of the PDF: its content is draw
 
 ## Data binding
 
-The destination is fixed in the XML: `data-value` does not change `href`. Text inside the link can still be bound.
+`data-href` sets the destination from the data, and `href` is what stays when no data is passed or the path has no value. Text inside the link can be bound too. See [Attributes from data](?p=data/binding#attributes-from-data).
 
 ```xml
-<link href="https://example.com">
+<link href="https://example.com" data-href="product.url">
   <text data-value="product.name" color="#1a73e8">Product</text>
 </link>
 ```
+
+`data-value` does not change `href`.

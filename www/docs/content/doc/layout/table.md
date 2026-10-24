@@ -56,6 +56,8 @@ A `thead` row is repeated at the top of each page. It takes the same `background
 | `padding`    | spacing | —       | Cell inner padding |
 | `border`     | string  | —       | Cell border |
 | `color`      | color   | inherit | Color of the text in the cell. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `opacity`    | 0–1     | `1`     | How opaque the cell and everything in it is. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`     | string  | —       | A hard-edged shadow under the cell. See [Shadow](?p=doc/layout#shadow) |
 

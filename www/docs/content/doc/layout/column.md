@@ -24,6 +24,8 @@ Places children top to bottom with a configurable gap. By default each child fil
 | `data-source` | string | —       | Dot-path to array — repeats this element per item |
 | `data-if`    | string  | —        | Render only when value is truthy |
 | `data-if-not` | string | —       | Render only when value is falsy |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 
 ## Basic example
 

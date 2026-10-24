@@ -13,6 +13,8 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 | `ec`         | string  | `M`     | QR error correction: `L` `M` `Q` `H` |
 | `hrt`        | boolean | false   | Show human-readable text below Code128/EAN-13. The digits take the bottom 12pt of the `height`, and the bars the rest |
 | `data-value` | string  | —       | Dot-path: the data the barcode encodes comes from the bound value |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `color`      | color   | `#000000` | Barcode foreground color |
 | `background` | color   | —       | Background color |
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |

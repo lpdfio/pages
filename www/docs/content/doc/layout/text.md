@@ -26,6 +26,7 @@ Text has one set of defaults wherever it is, in the flow and in a [layer](?p=doc
 | `data-value` | string | —       | Dot-path — replaces text content with bound value |
 | `data-if`   | string  | —       | Render only when value is truthy |
 | `data-if-not` | string | —     | Render only when value is falsy |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 
 ## Basic
 

@@ -21,6 +21,8 @@ Places children side by side, each at its own width, and continues on the next l
 | `font-size`  | token/pt | inherit | Font size |
 | `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `data-source` | string | —       | Dot-path to array — repeats this element per item |
+| `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 
 ## Children that fill the rest
 

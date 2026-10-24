@@ -99,6 +99,10 @@ export default defineConfig({
                     items: [{ slug: 'data/binding', label: 'Data Binding' }],
                 },
                 {
+                    label: 'PDF output',
+                    items: [{ slug: 'encryption', label: 'Encryption' }],
+                },
+                {
                     label: 'Reference',
                     items: [
                         { slug: 'xml/schema', label: 'XML Schema' },

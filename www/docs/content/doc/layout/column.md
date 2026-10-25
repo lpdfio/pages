@@ -1,6 +1,6 @@
 # Column
 
-Places children top to bottom with a configurable gap. By default each child fills the available width. A column can split across pages between its children.
+Places children top to bottom with a configurable gap. By default each child fills the available width. A column can split across pages between its children. A first child taller than a page that can't split is cut at the bottom of the page, and the children after it start the next.
 
 ## Attributes
 

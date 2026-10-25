@@ -1,6 +1,6 @@
 # Grid
 
-A multi-column grid. Children fill columns left-to-right and wrap to new rows. Grid rows are atomic — a row will not split across pages.
+A multi-column grid. Children fill columns left-to-right and wrap to new rows. Grid rows are atomic — a row will not split across pages. A row taller than a page is cut at the bottom of the page, and the rows after it start the next.
 
 Use grid for uniform card layouts. For tabular data with column headers, use [`table`](?p=doc/layout/table) instead.
 

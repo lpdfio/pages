@@ -1,6 +1,6 @@
 # Row
 
-Places children side by side, each at its own width, and continues on the next line when they run out of width, like words in a paragraph. A child with `width="fill"` takes the width its line leaves, and `justify="between"` pushes a line's children apart. A row can split across pages between lines.
+Places children side by side, each at its own width, and continues on the next line when they run out of width, like words in a paragraph. A child with `width="fill"` takes the width its line leaves, and `justify="between"` pushes a line's children apart. A row splits across pages between its lines, and through a line: see [Rows across pages](#rows-across-pages).
 
 ## Attributes
 
@@ -84,6 +84,16 @@ Two fill children take half the width each. For two or more equal columns a [`gr
 ```
 
 Each child keeps its own width, so a child too long for the space left moves to the next line. When a child can be long, such as a paragraph or text from data, give it `width="fill"` and `align="right"` instead: it stays on the line and wraps within the space.
+
+## Rows across pages
+
+When a page ends inside a line of a row, the line is cut there. Each child stops at its last line above the cut and goes on at the top of the row's part on the next page, at the width it had. A long bullet breaks in the middle of its text, with the marker on the first page and the text in the same place on the next.
+
+- The cut never goes through an image, a frame, a box with a `height`, or a child with `paginate="no"`. It moves up to the top of that child, and the space under it stays blank.
+- A text keeps its [widows and orphans](?p=doc/layout/text#widows-and-orphans). A marker is not left alone at the bottom of a page: when its text can't keep two lines there, the row moves to the next page whole.
+- `align` places each page's part of the line on its own.
+- The row's `padding`, `background` and `border` are on its part on each page.
+- When the page has no such cut, the row moves to the next page whole. On a page of its own, a child taller than the page is cut at the bottom of the page, and the texts beside it go on to the next.
 
 ## Tag / badge row
 

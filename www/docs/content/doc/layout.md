@@ -53,11 +53,12 @@ The margin belongs to the layout because only the flow uses it. The document and
 
 - `column` — splits between children
 - `table` — splits between rows, and repeats the `thead` row on each page
-- `row` — splits between lines: a line of children is never cut in two
+- `row` — splits between lines, and through a line: each child stops at its last line above the page edge and goes on at the top of the next page, at the same width. See [Rows across pages](?p=doc/layout/row#rows-across-pages)
 - `grid` — splits between its rows: a grid row is never cut in two
 - `text` — splits between lines, keeping at least two lines on each page: see [widows and orphans](?p=doc/layout/text#widows-and-orphans)
 - `bookmark` — stays with the element after it
 - `frame` — atomic; moves whole to the next page if it doesn't fit
+- An element taller than a page that can't split, such as an image, a frame or a box with `paginate="no"`, starts a page and is cut at the bottom of it, above the footer. What follows it starts the next page
 - Setting `height` on a box (a length, `fill` or `full`) also stops it splitting
 - So does `paginate="no"`, and the other values of `paginate` start new pages: see [Page breaks](#page-breaks)
 
@@ -92,7 +93,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 - An element with `break-after` that splits across pages breaks after its last part.
 - On an element repeated with `data-source`, the break applies to each copy, so `break-before` puts every item on a page of its own.
 - `keep-next` holds only when the two elements fit on one page together. When they don't, both stay where they would be without it. With `debug="true"` on the element, a red note in the PDF says the rule was ignored.
-- An element with `no` that is taller than a page starts on a new page and runs past the bottom of it. Use `no` on elements shorter than a page.
+- An element with `no` that is taller than a page starts on a new page and is cut at the bottom of it, above the footer. With `debug="true"` on the element, a red note at the top of the next page says so. Use `no` on elements shorter than a page.
 - On a `td`, `paginate` has no effect: a table row never splits.
 
 ## Text color in a box

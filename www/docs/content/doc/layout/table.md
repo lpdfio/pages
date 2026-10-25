@@ -169,7 +169,7 @@ The second row has two cells, since the label holds the first column and the not
 
 If the content of a spanning cell is taller than the rows it spans together, the last of them grows by the difference. If it is shorter, the cell is stretched to the rows, and `valign` places its content among all of them.
 
-The rows a cell spans stay on one page. When they do not fit in what is left of a page, they move to the next page together, under the repeated header, and a row with `keep="with-next"` just above them goes with them. Rows that a cell spans and that are taller than a page are placed whole where they start a page, and the page clips what runs past its end. With a `border`, the grid has no line across a spanning cell: neither the rule under a row nor a rule between two columns inside it.
+The rows a cell spans stay on one page. When they do not fit in what is left of a page, they move to the next page together, under the repeated header, and a row with `keep="with-next"` just above them goes with them. Rows that a cell spans and that are taller than a page are placed whole where they start a page, and cut at the bottom of the page, above the footer. With a `border`, the grid has no line across a spanning cell: neither the rule under a row nor a rule between two columns inside it.
 
 ## Invoice line items
 

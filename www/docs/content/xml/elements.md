@@ -196,6 +196,24 @@ Equal columns, filled left to right.
 
 Single-child container with padding, border, and background. Always centres its child, so it takes no `gap`, `align` or `justify`, and a second child is an error.
 
+### `code`
+
+Code, or any text whose spaces and lines matter, in a box. The text is kept as it is written: every space, and a new line wherever one is written, except the line break after the start tag and the indent of the line the end tag stands on. A line longer than the box wraps at a space, and a word with none breaks at the last character that fits. The box fills the width, in Courier on a light tint with padding `m`, and splits across pages between lines. Children: `span`, which colors parts of the code. See [Code](?p=doc/layout/code).
+
+| Attribute    | Type    | Default   | Description |
+|--------------|---------|-----------|-------------|
+| `font`       | string  | `Courier` | Font for the code |
+| `font-size`  | token/pt | inherit  | Font size for the code |
+| `color`      | color   | inherit   | Color of the code |
+| `padding`    | spacing | `m`       | Space between the edge of the box and the code |
+| `background` | color   | `#f3f4f6` | The tint of the box |
+| `border`, `radius`, `opacity`, `shadow`, `width`, `height` | | | As on a [box](?p=xml/elements#column) |
+| `tab-size`   | integer | `4`       | How many columns a tab fills to, 1 to 16 |
+| `line-height` | number or token | `1.2` | The distance between lines, as a factor of the font size |
+| `widows`, `orphans` | integer | `2` | The fewest lines of the code that may stand alone at the top or the bottom of a page when it splits |
+| `paginate`, `debug` | | | As on a box |
+| `data-value` | string  | —         | Dot-path to a string that replaces the code, as it is |
+
 ### `text`
 
 Paragraph or inline text.
@@ -220,7 +238,7 @@ Paragraph or inline text.
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
 
-Children: `span` for inline style overrides, and `fn` for a footnote.
+Children: `span` for inline style overrides, `code-span` for a run of code, and `fn` for a footnote.
 
 ### `span`
 
@@ -235,6 +253,16 @@ Inline text with overridden style.
 | `strike`    | boolean | Strikethrough text |
 
 A space falls between a span and the text around it only where the text has whitespace there. See [Spaces around a span](?p=doc/layout/text#spaces-around-a-span).
+
+### `code-span`
+
+A run of code inside a `text`: its words in Courier on a light tint, drawn behind them. White space in it collapses as in the text around it, and like a `span` it is not broken inside. See [Code](?p=doc/layout/code#code-in-a-line-of-text).
+
+| Attribute    | Type   | Default   | Description |
+|--------------|--------|-----------|-------------|
+| `font`       | string | `Courier` | Font override |
+| `color`      | color  | the text's | Color override |
+| `background` | color  | `#f3f4f6` | The tint behind the words |
 
 ### `fn`
 

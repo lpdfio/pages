@@ -15,7 +15,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { PIXEL, PLACEHOLDER_IMAGES, SRC, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
-const { L, NoAttr } = createRequire(import.meta.url)('@lpdfio/lpdf');
+const { L, LMarkdown, NoAttr } = createRequire(import.meta.url)('@lpdfio/lpdf');
 const verbose = process.argv.includes('--verbose');
 
 const web = await loadEngine();
@@ -40,7 +40,7 @@ for (const file of await walk())
             if (code.includes('TODO') || code.includes('L.element(')) { skipped.push(`${where}  (the generator cannot express it)`); continue; }
 
             const fromXml = await engine.render(wrapped.xml);
-            const fromCode = await engine.render(new Function('L', 'NoAttr', `return ${code};`)(L, NoAttr));
+            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr));
             if (Buffer.compare(Buffer.from(fromXml), Buffer.from(fromCode)) !== 0)
             {
                 failed.push(`${where}  the code renders another PDF than the XML`);

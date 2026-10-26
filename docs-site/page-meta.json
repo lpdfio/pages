@@ -73,6 +73,9 @@
     "doc/layout/footnote": {
         "description": "The fn element in Lpdf XML: put a note at the bottom of the page where its number lands. The engine numbers the notes; footnote-counter sets where they restart."
     },
+    "doc/markdown": {
+        "description": "The markdown element in Lpdf XML: set Markdown as a styled, paginated PDF in a section, with rules per part, headings as bookmarks, images and a .md file."
+    },
     "doc/layout/code": {
         "description": "The code element in Lpdf XML: set code in a box that keeps its spaces and lines, wraps long lines and splits across pages, with colored spans and a code-span."
     },

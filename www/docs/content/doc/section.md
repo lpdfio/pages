@@ -17,7 +17,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 
 All attributes are optional. The page settings inherit from `document` when not set.
 
-A section holds [layers](?p=doc/layer) and at most one [`layout`](?p=doc/layout), painted in the order they are written: a layer before the layout is painted under it, and a layer after it is painted over it. A section with no layout is one page. Before them it can hold one [`bookmark`](?p=doc/layout/bookmark), which marks the section's first page.
+A section holds [layers](?p=doc/layer) and at most one [`layout`](?p=doc/layout) or one [`markdown`](?p=doc/markdown), painted in the order they are written: a layer before the layout is painted under it, and a layer after it is painted over it. A section with neither is one page. Before them it can hold one [`bookmark`](?p=doc/layout/bookmark), which marks the section's first page.
 
 The margin is not a page setting: it belongs to the layout, which is the content that keeps to it. See [`layout`](?p=doc/layout#margin).
 
@@ -49,7 +49,7 @@ A section holds any number of [layers](?p=doc/layer) and at most one layout. The
 </section>
 ```
 
-A section with only layers is one page, such as a cover. A second `layout` in a section is an error, and a layer cannot go inside the layout.
+A section with only layers is one page, such as a cover. A second `layout` in a section is an error, and a layer cannot go inside the layout. A `markdown` takes the place of the layout, for a section whose content is Markdown: a section has one or the other.
 
 ## Multiple sections
 

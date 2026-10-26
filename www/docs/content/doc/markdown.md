@@ -170,7 +170,7 @@ The engine reads no files: the SDK, the command line or the extension reads the 
 
 ### The defaults
 
-The defaults are rules like any other, written with token names, so that a token file alone rebrands them. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and **Lpdf: Write Markdown Template and Styles** in VS Code writes a copy beside a `.md` file to start from.
+The defaults are rules like any other, written with token names, so that a token file alone rebrands them. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and **Lpdf: Write Markdown Styles** in VS Code writes a copy beside a `.md` file to start from.
 
 ## Images
 
@@ -224,7 +224,7 @@ lpdf convert --input notes.md --template markdown-template.xml --output notes.pd
 </lpdf>
 ```
 
-In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Write Markdown Template and Styles** writes the two files above beside it and links them, **Lpdf: Link Markdown Template...** links another template, and the preview follows an edit of the Markdown, the template, the styles file and an image.
+In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Link Markdown Styles...** links a file of styles to it, and **Lpdf: Write Markdown Styles** writes the default ones beside it to start from. **Lpdf: Create Lpdf Document** writes a document like the one above, named after the file, and links it: the file is then set in that document, where the page size, the margin, a header and a footer are yours. The other way round, **Lpdf: Link Markdown File...** on a document with a `markdown` makes a `.md` file its body. The preview follows an edit of the Markdown, the document, the styles file and an image.
 
 ## Errors
 

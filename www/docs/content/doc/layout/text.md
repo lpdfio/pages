@@ -78,6 +78,14 @@ The strings and spans you give `text` in code are joined the same way, so the sp
 
 A line break and the indentation after it count as one space. A space at the start or end of the text is dropped, and so is one at the start of a span. One at the end of a span separates it from what follows.
 
+### Code in a line
+
+A `code-span` is a span for code: its words in Courier on a light tint. A block of code, which keeps its spaces and lines, is a [`code`](?p=doc/layout/code).
+
+```xml
+<text>Run <code-span>cargo test</code-span> before you push.</text>
+```
+
 ## Footnotes
 
 An `fn` inside a text puts a small raised number in the line and its note at the bottom of the page where the number lands. See [Footnote](?p=doc/layout/footnote).

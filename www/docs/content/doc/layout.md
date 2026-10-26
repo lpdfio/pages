@@ -47,6 +47,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 | [`link`](?p=doc/layout/link) | Clickable hyperlink wrapper |
 | [`bookmark`](?p=doc/layout/bookmark) | Entry in the PDF's outline and target for links. Draws nothing |
 | [`fn`](?p=doc/layout/footnote) | Footnote inside a `text`: a raised number in the line, the note at the bottom of the page |
+| [`code`](?p=doc/layout/code) | Code in a box that keeps its spaces and lines, wraps what is long and splits across pages. `code-span` is the same look inside a `text` |
 | [`field`](?p=doc/layout/field) | Interactive PDF form element |
 
 ## Pagination rules

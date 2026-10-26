@@ -29,7 +29,7 @@ The words of an item go in a [`text`](?p=doc/layout/text). A long item wraps und
 | `paginate`, `debug` | | | As on a box |
 | `data-source`, `data-if`, `data-if-not`, `data-color`, `data-background` | string | — | As on a box |
 
-An `li` takes the attributes of a box too, other than `width`: `padding`, `background`, `border` and `radius` go around the marker and the words together, and `gap` goes between the children of the item. Its `data-source` repeats the item once for each entry of the data.
+An `li` takes the attributes of a box too, other than `width`: `padding`, `background`, `border` and `radius` go around the marker and the words together, and `gap` goes between the children of the item: the `gap` of the list, so a text and the list under it are spaced like two items, unless the item sets its own. Its `data-source` repeats the item once for each entry of the data.
 
 ## Bullets
 

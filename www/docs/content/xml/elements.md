@@ -208,7 +208,7 @@ A list of items, each marked with a bullet drawn as a shape or a number the engi
 
 ### `li`
 
-One item of a list: a box that holds what a layout holds, beside the item's marker. Its words go in a `text`. It takes the attributes of a [box](?p=xml/elements#column), which go around the marker and the content together, and its `gap` goes between its children. `data-source` repeats the item once for each entry of the data, and the numbers follow what is made. See [List](?p=doc/layout/list).
+One item of a list: a box that holds what a layout holds, beside the item's marker. Its words go in a `text`. It takes the attributes of a [box](?p=xml/elements#column), which go around the marker and the content together, and its `gap` goes between its children: the `gap` of the list unless the item sets one. `data-source` repeats the item once for each entry of the data, and the numbers follow what is made. See [List](?p=doc/layout/list).
 
 ### `frame`
 

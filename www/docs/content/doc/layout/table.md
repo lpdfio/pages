@@ -21,7 +21,7 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
-| `cols`       | string  | —       | **Required.** Space-separated column widths: `"2fr 1fr 80pt"` or `"40% 60%"` |
+| `cols`       | string  | —       | **Required.** Space-separated column widths: `"2fr 1fr 80pt"`, `"40% 60%"`, or `auto` for a column the width of its cells: `"auto 90pt 60pt"`. See [Column width units](#column-width-units) |
 | `border`     | string  | —       | Grid lines between and around the cells |
 | `stripe`     | color   | —       | Alternating row background |
 | `gap`        | token/pt | —      | Space between columns and between rows |
@@ -195,5 +195,36 @@ The rows a cell spans stay on one page. When they do not fit in what is left of 
 | `fr` | Fraction of remaining width (like CSS fr) |
 | `pt` | Fixed point width |
 | `%`  | Percentage of table width |
+| `auto` | The width the cells of the column need on one line |
 
-Mixing units is supported: `"2fr 80pt 20%"`.
+Mixing units is supported: `"2fr 80pt 20%"`. `auto` mixes with `pt` and `%`, and not with `fr`, which also shares what is left: `"auto 90pt"` is allowed and `"auto 1fr"` is an error that says so.
+
+### Columns the width of their cells
+
+An `auto` column takes the width its cells need to stay on one line, so a column of numbers is as narrow as its numbers and a column of names as wide as its longest name. The `auto` columns share what the `pt` and `%` columns leave:
+
+- when every `auto` column fits on one line, each takes that width, and the room that is left is shared in proportion to it;
+- when they do not fit, each keeps at least its longest word, and shares what is left in proportion to how much more it could use, so the columns of long text are the ones that wrap;
+- when not even the longest words fit, the longest are cut down and a shorter column keeps its width, so a long name goes over two lines and a number never does.
+
+```xml
+<table cols="auto auto auto" border="xs #e0e0e0" stripe="#f9f9f9">
+  <thead background="#f0f0f0">
+    <td padding="xs"><text font-size="s" bold="true">Benchmark</text></td>
+    <td padding="xs" align="end"><text font-size="s" bold="true">Time (ns/iter)</text></td>
+    <td padding="xs" align="end"><text font-size="s" bold="true">± (ns)</text></td>
+  </thead>
+  <tr>
+    <td padding="xs"><text font-size="s">parse_xml/small/example1</text></td>
+    <td padding="xs" align="end"><text font-size="s">12,571</text></td>
+    <td padding="xs" align="end"><text font-size="s">590</text></td>
+  </tr>
+  <tr>
+    <td padding="xs"><text font-size="s">parse_xml/medium/example8</text></td>
+    <td padding="xs" align="end"><text font-size="s">273,184</text></td>
+    <td padding="xs" align="end"><text font-size="s">74,779</text></td>
+  </tr>
+</table>
+```
+
+A table split across pages keeps the widths it has on the first. The tables of a [markdown](?p=doc/markdown) are always `auto`.

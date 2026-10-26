@@ -67,7 +67,7 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | `> quote` | a bar beside the blocks of the quote | The quote splits across pages between its blocks |
 | `- item`, `1. item` | a list of items, with a disc, a circle or a square for the level, or the numbers | A number list starts at the number its first item has. Lists nest |
 | a fenced or indented block | a [code](?p=doc/layout/code) | It keeps its spaces and lines and wraps what is long. The language of a fence is ignored: there is no highlighting by language |
-| a table | a [table](?p=doc/layout/table) with a header row | The columns share the width equally, a column takes its alignment from the `:---:` row, and the header row repeats on each page |
+| a table | a [table](?p=doc/layout/table) with a header row | The columns are `auto`: each takes the width its cells need, and a name that does not fit breaks. A column takes its alignment from the `:---:` row, and the header row repeats on each page |
 | `[^1]` | a [footnote](?p=doc/layout/footnote) | A note that holds more than a paragraph is cut down to its words, and a note in a table is an error |
 | a line break in a paragraph | a space | A hard break, two spaces or `\`, is a space too |
 | front matter | nothing | See [A `.md` file](#a-md-file) |

@@ -58,7 +58,7 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | Markdown | Becomes | Note |
 |---|---|---|
 | `# … ######` | a [text](?p=doc/layout/text) for each of `h1` to `h6`, kept on a page with the block after it | Also a bookmark: see [Headings](#headings) |
-| a paragraph | a `text` | `widows` and `orphans` apply as on any text |
+| a paragraph | a `text` | `widows` and `orphans` apply as on any text. A word or a run longer than a line breaks at the last character that fits, so nothing runs past the margin or out of a table cell |
 | `*em*`, `**strong**`, `~~del~~` | a [span](?p=doc/layout/text#inline-spans-for-mixed-styling) | A built-in font gets its italic and bold face by itself. An embedded font names them: see [Styling](#styling) |
 | `` `code` `` | a `code-span` | The code font on a tint |
 | `[text](url)`, `[text](#id)` | a span with `href` | `#id` jumps to the heading whose text is that id: see [Headings](#headings) |
@@ -72,7 +72,8 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | a line break in a paragraph | a space | A hard break, two spaces or `\`, is a space too |
 | front matter | nothing | See [A `.md` file](#a-md-file) |
 | `- [ ] task`, a definition list | plain text | They are not read as such |
-| raw HTML, math | an error | It names the line: see [Errors](#errors) |
+| raw HTML | an error | It names the line: see [Errors](#errors) |
+| a `$` | text | `$5` and `$1M—$10M` are drawn as written: there is no math |
 
 ## Headings
 
@@ -140,6 +141,8 @@ Values are the [tokens](?p=xml/elements#tokens) (`font-size="xxl"`, `color="prim
 | `th`, `td` | a cell of the header row, a cell of the others | `font` `font-size` `bold` `color` `align` `padding` `background` `border` |
 
 A rule that is not one of these, or an attribute it does not take, is an error that names it, and so is a value that does not read.
+
+**Characters a built-in font has not got.** A built-in font draws the Windows-1252 characters. For the lines and corners of a box it draws `-`, `|` and `+`, for the arrows `>`, `<`, `^` and `v`, and for the other characters it has not got, such as `✓` or `日本`, a `?`. A document that needs them as they are sets the `font` of the rule, `code` for a diagram, to an embedded font that has them.
 
 **Italic and bold in an embedded font are fonts.** A span has `bold` but no italic, and `bold` picks the bold face of a built-in font only. A document that sets the Markdown in an embedded font names the faces:
 

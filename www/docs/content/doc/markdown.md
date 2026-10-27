@@ -138,7 +138,7 @@ Values are the [tokens](?p=xml/elements#tokens) (`font-size="xxl"`, `color="prim
 | `li` | a list and its items | `indent`, `bullet` (a bullet list's only) and `gap` of the list, `padding` `background` `border` of an item, and `font` `font-size` `color` of its words |
 | `hr` | a thematic break, `---` | `color` and `thickness`, a length or a token of the border row. The default is the `line` color at `xs`, a thin grey line, as a divider is |
 | `a`, `strong`, `em`, `del` | a link, strong text, emphasis, struck-through text | `font` `color`, and `underline` and `bold` for a link, `bold` for strong text, `strike` for struck-through text |
-| `table` | a table | `border` `stripe` `gap` `padding` `background` |
+| `table` | a table | `border` `stripe` `head-border` `row-border` `gap` `padding` `background`. The default has a line under the header, in the `line` color, a fainter one under each row, in `line-muted`, and no stripe: `stripe="surface-alt"` turns the stripe on, and `head-border="none" row-border="none"` the lines off |
 | `th`, `td` | a cell of the header row, a cell of the others | `font` `font-size` `bold` `color` `align` `padding` `background` `border` |
 
 A rule that is not one of these, or an attribute it does not take, is an error that names it, and so is a value that does not read.

@@ -72,7 +72,8 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | a line break in a paragraph | a space | A hard break, two spaces or `\`, is a space too |
 | `<br>`, `<br/>`, `<br />` | a new line in the same paragraph, cell or item | The one HTML that is read, in any case. The lines stand close, with no paragraph gap, which is how a table cell holds more than a line. Breaks in a row make one break, and a heading takes one as a space. A `<br>` alone on a line is an error: write it at the end of the line it breaks |
 | front matter | nothing | See [A `.md` file](#a-md-file) |
-| `- [ ] task`, a definition list | plain text | They are not read as such |
+| `- [ ] task`, `- [x] task` | an `li` with `checked`: a box in place of the marker | The box is an outline in the `line` color, ticked in the color of the item's words when it is `[x]`. A plain item in the same list keeps its bullet, and a task in a number list takes its number. `[ ]` anywhere but at the start of an item is text |
+| a definition list | plain text | It is not read as such |
 | other raw HTML | an error | It names the line and the tag. A `<tag>` that is meant as text is written in backticks, `` `<tag>` ``, or as `\<tag>`: see [Errors](#errors) |
 | a `$` | text | `$5` and `$1M—$10M` are drawn as written: there is no math |
 

@@ -72,7 +72,7 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | a line break in a paragraph | a space | A hard break, two spaces or `\`, is a space too |
 | front matter | nothing | See [A `.md` file](#a-md-file) |
 | `- [ ] task`, a definition list | plain text | They are not read as such |
-| raw HTML | an error | It names the line: see [Errors](#errors) |
+| raw HTML | an error | It names the line and the tag. A `<tag>` that is meant as text is written in backticks, `` `<tag>` ``, or as `\<tag>`: see [Errors](#errors) |
 | a `$` | text | `$5` and `$1M—$10M` are drawn as written: there is no math |
 
 ## Headings
@@ -233,7 +233,7 @@ The Markdown is read strictly, because it is in the hands of whoever renders it,
 
 ```
 markdown line 12: an image's source must be the name or the src of an asset: 'missing.png' is neither
-markdown line 31: raw HTML is not supported: write the Markdown it stands for, or leave it out
+markdown line 31: raw HTML <Biller> is not supported: to show it as text, write it in backticks, `<Biller>`; otherwise write the Markdown it stands for, or leave it out
 markdown line 5: the footnote [^2] has no definition; define it with [^2]: and its words, or write \[ to show it as text
 ```
 

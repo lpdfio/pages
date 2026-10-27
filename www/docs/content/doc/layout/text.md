@@ -108,9 +108,9 @@ When a paragraph splits across pages, Lpdf keeps at least two of its lines on ea
 
 ## Capping a text
 
-A text wraps at the width it has and is never cut: a long name or address makes its line, and in a table its whole row, as tall as it needs. `max-lines` caps it. Only whole lines are drawn, and the rest of the text is dropped. The lines it drops take no room, so a capped text is only as tall as the lines it keeps.
+A text wraps at the width it has and is never cut: a long name or address makes its line, and in a table its whole row, as tall as it needs. A word, or a styled run, wider than a whole line breaks at the last character that fits, so nothing runs past the box. `max-lines` caps it. Only whole lines are drawn, and the rest of the text is dropped. The lines it drops take no room, so a capped text is only as tall as the lines it keeps.
 
-`ellipsis="true"` ends the last line in dots when text was dropped, shortened to fit the width. Without it the text stops at the end of the last line. On its own, with no `max-lines`, `ellipsis` changes nothing: a text with no cap is never cut, and a word wider than the box is not either.
+`ellipsis="true"` ends the last line in dots when text was dropped, shortened to fit the width. Without it the text stops at the end of the last line. On its own, with no `max-lines`, `ellipsis` changes nothing: a text with no cap is never cut, and a word wider than the box is broken at the last character that fits, not cut.
 
 A table with a long name in a cell, kept to two lines:
 

@@ -17,7 +17,7 @@ A `markdown` takes the place of a [layout](?p=doc/layout) in a [section](?p=doc/
 </markdown>
 ```
 
-A `markdown` holds an optional [`markdown-styles`](#styling), which says how each part looks, and one [`markdown-content`](#where-the-markdown-comes-from), which holds the text. With no styles it looks as rendered Markdown does on a project page: clear steps between the headings, comfortable line spacing, code on a light background, links in a color. The blocks flow down the page and across pages as the content of a layout does.
+A `markdown` holds an optional [`markdown-styles`](#styling), which says how each part looks, and one [`markdown-content`](#where-the-markdown-comes-from), which holds the text. With no styles it looks as rendered Markdown does on a project page: clear steps between the headings, comfortable line spacing, code in a thin outline, links in a color. The blocks flow down the page and across pages as the content of a layout does.
 
 ## Attributes
 

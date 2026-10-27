@@ -171,7 +171,7 @@ The engine reads no files: the SDK, the command line or the extension reads the 
 
 ### The defaults
 
-The defaults are rules like any other, written with token names, so that a token file alone rebrands them. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and **Lpdf: Write Markdown Styles** in VS Code writes a copy beside a `.md` file to start from.
+The defaults are rules like any other. Their colors are token names, so that a token file alone rebrands them, and the headings are one scale, 20, 15.5, 13, 12, 11 and 10pt for h1 to h6, against a paragraph of 11pt. The Serif and Typewriter looks of VS Code keep that scale with a paragraph of 12pt and 10pt. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and **Lpdf: Write Markdown Styles** in VS Code writes a copy beside a `.md` file to start from.
 
 ## Images
 
@@ -225,7 +225,7 @@ lpdf convert --input notes.md --template markdown-template.xml --output notes.pd
 </lpdf>
 ```
 
-In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Link Markdown Styles...** offers a look to start from, Business, Serif or Typewriter, which it writes beside the file as styles of its own and links, so that the preview shows it and the styles in the CodeLens open the file to edit, and links a file of styles you have. **Lpdf: Write Markdown Styles** writes the default ones beside it to start from. **Lpdf: Create Lpdf Document** writes a document like the one above, named after the file, and links it: the file is then set in that document, where the page size, the margin, a header and a footer are yours. The other way round, **Lpdf: Link Markdown File...** on a document with a `markdown` makes a `.md` file its body. The preview follows an edit of the Markdown, the document, the styles file and an image.
+In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Link Markdown Styles...** offers a look to start from, Sans, Serif or Typewriter, which it writes beside the file as styles of its own and links, so that the preview shows it and the styles in the CodeLens open the file to edit, and links a file of styles you have. **Lpdf: Write Markdown Styles** writes the default ones beside it to start from. **Lpdf: Create Lpdf Document** writes a document like the one above, named after the file, and links it: the file is then set in that document, where the page size, the margin, a header and a footer are yours. The other way round, **Lpdf: Link Markdown File...** on a document with a `markdown` makes a `.md` file its body. The preview follows an edit of the Markdown, the document, the styles file and an image.
 
 ## Errors
 

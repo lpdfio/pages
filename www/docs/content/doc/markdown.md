@@ -136,7 +136,7 @@ Values are the [tokens](?p=xml/elements#tokens) (`font-size="xxl"`, `color="prim
 | `code` | a block of code, and a run of code in a line | `font` `font-size` `color` `line-height` `tab-size`, and `padding` `background` `border` `radius` of the box. A run takes `font`, `color` and `background` |
 | `quote` | a block quote | The words: `font` `font-size` `bold` `color` `align` `line-height`. The box: `padding` `background` `border` `radius`. The bar: `bar-color` and `bar-width`, a length or a token of the space row |
 | `li` | a list and its items | `indent`, `bullet` (a bullet list's only) and `gap` of the list, `padding` `background` `border` of an item, and `font` `font-size` `color` of its words |
-| `hr` | a thematic break, `---` | `color` and `thickness`, a length or a token of the border row. The default is a thin light grey line |
+| `hr` | a thematic break, `---` | `color` and `thickness`, a length or a token of the border row. The default is the `line` color at `xs`, a thin light grey line, as a divider is |
 | `a`, `strong`, `em`, `del` | a link, strong text, emphasis, struck-through text | `font` `color`, and `underline` and `bold` for a link, `bold` for strong text, `strike` for struck-through text |
 | `table` | a table | `border` `stripe` `gap` `padding` `background` |
 | `th`, `td` | a cell of the header row, a cell of the others | `font` `font-size` `bold` `color` `align` `padding` `background` `border` |

@@ -7,6 +7,10 @@
 // which leaves the generator as the only difference. An example the generator cannot express, because it leaves a
 // TODO or falls back to L.element, is skipped, as it is in the docs.
 //
+// The SDK is the published @lpdfio/lpdf of node_modules. An element newer than that release fails the check, so
+// LPDF_SDK_DIR names the folder of another SDK build, such as repos/lpdf-js of a core checkout, to check the docs
+// of an element that is not released yet.
+//
 // Usage: node scripts/check-codegen.mjs            list the examples whose code differs, exit 1 if there are any
 //        node scripts/check-codegen.mjs --verbose  also list every example that passed or was skipped
 
@@ -15,8 +19,10 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { PIXEL, PLACEHOLDER_IMAGES, SRC, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
-const { L, NoAttr } = createRequire(import.meta.url)('@lpdfio/lpdf');
+const sdkDir = process.env.LPDF_SDK_DIR ? path.resolve(process.env.LPDF_SDK_DIR) : undefined;
+const { L, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
 const verbose = process.argv.includes('--verbose');
+console.log(`SDK: ${sdkDir ?? '@lpdfio/lpdf of node_modules'}`);
 
 const web = await loadEngine();
 const engine = L.engine();

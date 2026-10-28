@@ -46,6 +46,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 | [`barcode`](?p=doc/layout/barcode) | QR, Code128, or EAN-13 barcode |
 | [`link`](?p=doc/layout/link) | Clickable hyperlink wrapper |
 | [`bookmark`](?p=doc/layout/bookmark) | Entry in the PDF's outline and target for links. Draws nothing |
+| [`list`](?p=doc/layout/list) | Bulleted or numbered list. Its `li` items hold a layout, a list inside an item nests, and the engine writes the numbers |
 | [`fn`](?p=doc/layout/footnote) | Footnote inside a `text`: a raised number in the line, the note at the bottom of the page |
 | [`code`](?p=doc/layout/code) | Code in a box that keeps its spaces and lines, wraps what is long and splits across pages. `code-span` is the same look inside a `text` |
 | [`field`](?p=doc/layout/field) | Interactive PDF form element |
@@ -56,6 +57,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 - `table` — splits between rows, and repeats the `thead` row on each page
 - `row` — splits between lines, and through a line: each child stops at its last line above the page edge and goes on at the top of the next page, at the same width. See [Rows across pages](?p=doc/layout/row#rows-across-pages)
 - `grid` — splits between its rows: a grid row is never cut in two
+- `list` — splits between items, and through an item: the marker stays with its first part, and the lines after the break stand under the words. See [List](?p=doc/layout/list)
 - `text` — splits between lines, keeping at least two lines on each page: see [widows and orphans](?p=doc/layout/text#widows-and-orphans)
 - `bookmark` — stays with the element after it
 - `frame` — atomic; moves whole to the next page if it doesn't fit

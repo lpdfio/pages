@@ -222,6 +222,24 @@ Equal columns, filled left to right.
 | `cols`    | integer | `1`     | Number of columns (1–12) |
 | `col-width` | token/pt | —    | Minimum column width: fits as many columns as the width allows, at least one, stretched to fill the row (overrides `cols`). Tokens are grid sizes |
 
+### `list`
+
+A list of items, each marked with a bullet drawn as a shape or a number the engine writes. Its children are `li` items. The items go top to bottom with `gap` between them, and a list inside an item nests. It takes the attributes of a [box](?p=xml/elements#column), and `width`. See [List](?p=doc/layout/list).
+
+| Attribute  | Type     | Default   | Description |
+|------------|----------|-----------|-------------|
+| `type`     | string   | `bullet`  | `bullet` marks each item with a shape, `number` with a number |
+| `bullet`   | string   | by depth  | The shape of a bullet list: `disc` `circle` `square` `dash`. Without it a list uses a disc, one inside a bullet list a circle, and one inside that a square |
+| `format`   | string   | `decimal` | How a number list writes its numbers: `decimal` `lower-alpha` `upper-alpha` `lower-roman` `upper-roman` |
+| `start`    | integer  | `1`       | The number of a number list's first item |
+| `prefix`   | string   | —         | Text before each number of a number list |
+| `suffix`   | string   | `.`       | Text after each number of a number list |
+| `indent`   | token/pt | `24pt`    | The width of the marker's column: the words of an item start this far from the list's left edge, at every level |
+
+### `li`
+
+One item of a list: a box that holds what a layout holds, beside the item's marker. Its words go in a `text`. It takes the attributes of a [box](?p=xml/elements#column), which go around the marker and the content together, and its `gap` goes between its children: the `gap` of the list unless the item sets one. `data-source` repeats the item once for each entry of the data, and the numbers follow what is made. See [List](?p=doc/layout/list).
+
 ### `frame`
 
 Single-child container with padding, border, and background. Always centres its child, so it takes no `gap`, `align` or `justify`, and a second child is an error.

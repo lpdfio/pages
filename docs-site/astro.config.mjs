@@ -67,6 +67,7 @@ export default defineConfig({
                                 { slug: 'doc/layout/column', label: 'Column' },
                                 { slug: 'doc/layout/row', label: 'Row' },
                                 { slug: 'doc/layout/text', label: 'Text' },
+                                { slug: 'doc/layout/list', label: 'List' },
                                 { slug: 'doc/layout/footnote', label: 'Footnote' },
                                 { slug: 'doc/layout/code', label: 'Code' },
                                 { slug: 'doc/layout/divider', label: 'Divider' },

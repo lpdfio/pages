@@ -145,7 +145,7 @@ Values are the [tokens](?p=xml/elements#tokens) (`font-size="xxl"`, `color="prim
 
 A rule that is not one of these, or an attribute it does not take, is an error that names it, and so is a value that does not read.
 
-**Characters a built-in font has not got.** A built-in font draws the Windows-1252 characters. For the lines and corners of a box it draws `-`, `|` and `+`, for the arrows `>`, `<`, `^` and `v`, and for the other characters it has not got, such as `✓` or `日本`, a `?`. A document that needs them as they are sets the `font` of the rule, `code` for a diagram, to an embedded font that has them.
+**Characters a built-in font has not got.** A built-in font draws the Windows-1252 characters and the comparison signs `≥`, `≤`, `≠` and `≈`. For the lines and corners of a box it draws `-`, `|` and `+`, for the arrows `>`, `<`, `^` and `v`, and for the other characters it has not got, such as `✓` or `日本`, a `?`. A document that needs them as they are sets the `font` of the rule, `code` for a diagram, to an embedded font that has them.
 
 **Italic and bold in an embedded font are fonts.** A span has `bold` but no italic, and `bold` picks the bold face of a built-in font only. A document that sets the Markdown in an embedded font names the faces:
 

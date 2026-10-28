@@ -131,4 +131,4 @@ A `code-span` inside a [`text`](?p=doc/layout/text) is the same look in a line: 
 <text>Run <code-span>cargo test</code-span> before you push, and open <code-span>README.md</code-span>. One has colors of its own: <code-span color="#ffffff" background="#1763cf">white on blue</code-span>.</text>
 ```
 
-Like a `span`, a `code-span` is not broken inside: a run longer than a line runs on past it, and white space in it collapses as in the text around it. A `code-span` is not allowed in a `code`, which keeps its own spaces.
+Like a `span`, a `code-span` is not broken inside, so it goes to the next line whole, and a run longer than a whole line breaks at the last character that fits, so nothing runs past the box. White space in it collapses as in the text around it. A `code-span` is not allowed in a `code`, which keeps its own spaces.

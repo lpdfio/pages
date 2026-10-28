@@ -6,14 +6,14 @@
 //   lpdf                                      as it is
 //   document                                  in lpdf
 //   section                                   in document and lpdf
-//   layout, layer                             in section and the rest
+//   layout, layer, markdown                   in section and the rest
 //   rect circle ellipse line path             in layer and the rest
 //   text-at img-at barcode-at                 in layer and the rest
 //   anything else, such as column or region   in layout and the rest
 //
 // Images named in a snippet are declared with a one-pixel placeholder, so an example that uses `logo` renders. A
 // snippet that is not meant to run is skipped: one that starts with assets or tokens, one with an ellipsis in it,
-// and one that is not XML for the engine at all.
+// one that names a file of Markdown rules with a src, and one that is not XML for the engine at all.
 //
 // LPDF_ENGINE_DIR names another folder with lpdf-web.js and lpdf_bg.wasm, to check an engine that is not in the tree
 // yet, such as the dist/web of a core checkout.
@@ -85,6 +85,7 @@ export function wrap(xml)
     if (xml.includes('…')) return { skip: 'has an ellipsis' };
     if (first.tag === 'assets' || first.tag === 'tokens') return { skip: `starts with ${first.tag}` };
     if (first.tag === 'PackageReference') return { skip: 'not lpdf XML' };
+    if (/<markdown-styles\b[^>]*\bsrc=/.test(xml)) return { skip: 'names a file of rules, which the check does not load' };
 
     const images = PLACEHOLDER_IMAGES.map(n => `<image name="${n}"/>`).join('');
     const assets = `<assets>${images}</assets>`;
@@ -92,10 +93,10 @@ export function wrap(xml)
     let level = first.tag;
 
     if (LAYER_CONTENT.has(level)) { body = `<layer>${body}</layer>`; level = 'layer'; }
-    else if (!['lpdf', 'document', 'section', 'layout', 'layer'].includes(level)) level = 'content';
+    else if (!['lpdf', 'document', 'section', 'layout', 'layer', 'markdown'].includes(level)) level = 'content';
 
     if (level === 'content') { body = `<layout margin="48pt">${body}</layout>`; level = 'layout'; }
-    if (level === 'layout' || level === 'layer') { body = `<section>${body}</section>`; level = 'section'; }
+    if (level === 'layout' || level === 'layer' || level === 'markdown') { body = `<section>${body}</section>`; level = 'section'; }
     if (level === 'section') { body = `<document size="letter">${body}</document>`; level = 'document'; }
     if (level === 'document') { body = `<lpdf version="1">${assets}${body}</lpdf>`; level = 'lpdf'; }
     return { xml: body };

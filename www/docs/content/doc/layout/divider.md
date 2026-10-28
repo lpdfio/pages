@@ -7,9 +7,9 @@ A horizontal or vertical rule.
 | Attribute   | Type    | Default      | Description |
 |-------------|---------|--------------|-------------|
 | `direction` | string  | `horizontal` | `horizontal` or `vertical` |
-| `color`     | color   | `#000000`    | Line color |
+| `color`     | color   | `line`       | Line color. The `line` color token is a mid grey, `#737373`, and a document can give it another value in its tokens |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
-| `thickness` | token/pt | `1pt`       | Line thickness: a border token (`xs` 0.5pt, `s` 1pt, `m` 1.5pt, `l` 2pt, `xl` 3pt, `xxl` 4pt) or a length such as `1pt` |
+| `thickness` | token/pt | `xs`        | Line thickness: a border token (`xs` 0.5pt, `s` 1pt, `m` 1.5pt, `l` 2pt, `xl` 3pt, `xxl` 4pt) or a length such as `1pt` |
 
 ## Horizontal rule
 

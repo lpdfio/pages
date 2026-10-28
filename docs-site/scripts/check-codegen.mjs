@@ -20,7 +20,7 @@ import path from 'node:path';
 import { PIXEL, PLACEHOLDER_IMAGES, SRC, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const sdkDir = process.env.LPDF_SDK_DIR ? path.resolve(process.env.LPDF_SDK_DIR) : undefined;
-const { L, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
+const { L, LMarkdown, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
 const verbose = process.argv.includes('--verbose');
 console.log(`SDK: ${sdkDir ?? '@lpdfio/lpdf of node_modules'}`);
 
@@ -46,7 +46,7 @@ for (const file of await walk())
             if (code.includes('TODO') || code.includes('L.element(')) { skipped.push(`${where}  (the generator cannot express it)`); continue; }
 
             const fromXml = await engine.render(wrapped.xml);
-            const fromCode = await engine.render(new Function('L', 'NoAttr', `return ${code};`)(L, NoAttr));
+            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr));
             if (Buffer.compare(Buffer.from(fromXml), Buffer.from(fromCode)) !== 0)
             {
                 failed.push(`${where}  the code renders another PDF than the XML`);

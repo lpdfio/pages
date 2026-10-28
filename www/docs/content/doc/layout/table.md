@@ -21,9 +21,11 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
-| `cols`       | string  | —       | **Required.** Space-separated column widths: `"2fr 1fr 80pt"` or `"40% 60%"` |
+| `cols`       | string  | —       | **Required.** Space-separated column widths: `"2fr 1fr 80pt"`, `"40% 60%"`, or `auto` for a column the width of its cells: `"auto 90pt 60pt"`. See [Column width units](#column-width-units) |
 | `border`     | string  | —       | Grid lines between and around the cells |
-| `stripe`     | color   | —       | Alternating row background |
+| `stripe`     | color   | —       | The background of every other row below the header, or `none` |
+| `head-border` | string | —       | The line under the header row: a thickness and a color like `border`, for example `xs line`, or `none`. See [Lines and stripes](#lines-and-stripes) |
+| `row-border` | string  | —       | The line under each row, in the same form, or `none`. Under the header, `head-border` takes its place when it is set |
 | `gap`        | token/pt | —      | Space between columns and between rows |
 | `padding`    | spacing | —       | Space between the table's edge and its content. This is not cell padding: set `padding` on each `td` |
 | `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
@@ -171,6 +173,27 @@ If the content of a spanning cell is taller than the rows it spans together, the
 
 The rows a cell spans stay on one page. When they do not fit in what is left of a page, they move to the next page together, under the repeated header, and a row with `keep="with-next"` just above them goes with them. Rows that a cell spans and that are taller than a page are placed whole where they start a page, and cut at the bottom of the page, above the footer. With a `border`, the grid has no line across a spanning cell: neither the rule under a row nor a rule between two columns inside it.
 
+## Lines and stripes
+
+`stripe`, `head-border` and `row-border` set the rows of a table apart. The lines are drawn across the table, under the row they belong to, and take a thickness and a color as `border` does. The `line` color token, a mid grey, and `line-muted`, a lighter one, are for them.
+
+```xml
+<table cols="2fr 1fr 1fr" head-border="xs line" row-border="xs line-muted">
+  <thead>
+    <td padding="s"><text bold="true">Plan</text></td>
+    <td padding="s" align="end"><text bold="true">Seats</text></td>
+    <td padding="s" align="end"><text bold="true">Price</text></td>
+  </thead>
+  <tr>
+    <td padding="s"><text>Starter</text></td>
+    <td padding="s" align="end"><text>5</text></td>
+    <td padding="s" align="end"><text>$29</text></td>
+  </tr>
+</table>
+```
+
+A table with `head-border` alone has the line under its header and none between the rows. One with `row-border` alone has the same line under every row, the header included. Add `stripe="surface-alt"` for a stripe as well, with or without the lines. `none` turns an attribute off, which matters where the table takes a look from styles, as a table of a [`<markdown>`](?p=doc/markdown) does. A line stops where a cell spans on into the next row, as the grid does. A table that goes on to the next page has its header there again, with its line.
+
 ## Invoice line items
 
 ```xml
@@ -195,5 +218,36 @@ The rows a cell spans stay on one page. When they do not fit in what is left of 
 | `fr` | Fraction of remaining width (like CSS fr) |
 | `pt` | Fixed point width |
 | `%`  | Percentage of table width |
+| `auto` | The width the cells of the column need on one line |
 
-Mixing units is supported: `"2fr 80pt 20%"`.
+Mixing units is supported: `"2fr 80pt 20%"`. `auto` mixes with `pt` and `%`, and not with `fr`, which also shares what is left: `"auto 90pt"` is allowed and `"auto 1fr"` is an error that says so.
+
+### Columns the width of their cells
+
+An `auto` column takes the width its cells need to stay on one line, so a column of numbers is as narrow as its numbers and a column of names as wide as its longest name. The `auto` columns share what the `pt` and `%` columns leave:
+
+- when every `auto` column fits on one line, each takes that width, and the room that is left is shared in proportion to it;
+- when they do not fit, each keeps at least its longest word, and shares what is left in proportion to how much more it could use, so the columns of long text are the ones that wrap;
+- when not even the longest words fit, the longest are cut down and a shorter column keeps its width, so a long name goes over two lines and a number never does.
+
+```xml
+<table cols="auto auto auto" border="xs #e0e0e0" stripe="#f9f9f9">
+  <thead background="#f0f0f0">
+    <td padding="xs"><text font-size="s" bold="true">Benchmark</text></td>
+    <td padding="xs" align="end"><text font-size="s" bold="true">Time (ns/iter)</text></td>
+    <td padding="xs" align="end"><text font-size="s" bold="true">± (ns)</text></td>
+  </thead>
+  <tr>
+    <td padding="xs"><text font-size="s">parse_xml/small/example1</text></td>
+    <td padding="xs" align="end"><text font-size="s">12,571</text></td>
+    <td padding="xs" align="end"><text font-size="s">590</text></td>
+  </tr>
+  <tr>
+    <td padding="xs"><text font-size="s">parse_xml/medium/example8</text></td>
+    <td padding="xs" align="end"><text font-size="s">273,184</text></td>
+    <td padding="xs" align="end"><text font-size="s">74,779</text></td>
+  </tr>
+</table>
+```
+
+A table split across pages keeps the widths it has on the first. The tables of a [markdown](?p=doc/markdown) are always `auto`.

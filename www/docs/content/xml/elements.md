@@ -128,7 +128,7 @@ A document holds an optional `meta` and one or more `section` elements. Other at
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
 | `debug`       | boolean | false    | Render layout boxes |
 
-A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout`, painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with no layout is one page.
+A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout` or one [`markdown`](#markdown), painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with neither is one page.
 
 ### `layout`
 
@@ -137,6 +137,36 @@ The flowing content of a section. Its elements are [layout elements](#layout-ele
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
 | `margin`  | spacing | `36pt`  | The space between the page edges and the flowing content and its regions: `48pt`, a token, or one to four values like `"48pt 24pt"`. A layer ignores it |
+
+### `markdown`
+
+Markdown as the content of a section, in the place of a `layout`. It holds an optional `markdown-styles` and one `markdown-content`, and nothing else: the page, a header, a footer or a cover stay in the XML around it, and a layer draws a header or a footer in its margin. See [Markdown](?p=doc/markdown).
+
+| Attribute   | Type     | Default | Description |
+|-------------|----------|---------|-------------|
+| `margin`    | spacing  | `36pt`  | The space between the page edges and the Markdown, as the `margin` of a `layout` |
+| `font`      | string   | the document's | The font of the Markdown, which a rule can change |
+| `font-size` | token/pt | `m`     | The size of its text, which a rule can change |
+| `color`     | color    | the `text` token | The color of its text, which a rule can change |
+| `gap`       | token/pt | `l`     | The space between blocks |
+| `bookmarks` | integer  | `6`     | How many levels of headings are bookmarks, 0 to 6 |
+| `debug`     | boolean  | `false` | Draw the outline of each box |
+
+### `markdown-styles`
+
+The rules that say how each part of a markdown looks, inside `markdown`. A rule is an element named after the Markdown it styles: `h1` to `h6`, `p`, `code`, `quote`, `li`, `a`, `strong`, `em`, `del`, `table`, `th` and `td`. It takes the attributes of the Lpdf element it becomes, and an attribute it does not set stays as the file or the defaults have it. See [Styling](?p=doc/markdown#styling).
+
+| Attribute | Type   | Default | Description |
+|-----------|--------|---------|-------------|
+| `src`     | string | —       | A file of rules, whose root is a `markdown-styles`. The rules written inside override it, and it overrides the defaults. The SDK, the command line or the extension reads it, as it reads the `src` of a font or an image |
+
+### `markdown-content`
+
+The Markdown, inside `markdown`: written inline, best in a CDATA section, with the indent its lines share removed first, or read from the data. See [Where the Markdown comes from](?p=doc/markdown#where-the-markdown-comes-from).
+
+| Attribute    | Type   | Default | Description |
+|--------------|--------|---------|-------------|
+| `data-value` | string | —       | The path in the data of a string that holds the Markdown. The text written inside is what a document with no data shows |
 
 ---
 

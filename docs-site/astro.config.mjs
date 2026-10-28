@@ -59,6 +59,7 @@ export default defineConfig({
                     items: [
                         { slug: 'doc/section', label: 'Section' },
                         { slug: 'doc/toc', label: 'Table of Contents' },
+                        { slug: 'doc/markdown', label: 'Markdown' },
                         {
                             label: 'Layout',
                             items: [

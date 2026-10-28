@@ -16,10 +16,11 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
         …shapes, text-at, img-at, barcode-at
       <layout>       ← optional: flow content, at most one
         …elements
+      <markdown>     ← or Markdown in the place of the layout
       <layer>*       ← fixed content, painted over the layout
 ```
 
-A document holds sections, and a section holds any number of layers and at most one `layout`, painted in the order they are written. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
+A document holds sections, and a section holds any number of layers and at most one `layout` or one [`markdown`](?p=doc/markdown), painted in the order they are written. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
 
 ```xml
 <document size="letter">

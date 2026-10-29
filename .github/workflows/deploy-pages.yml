@@ -51,18 +51,23 @@ jobs:
         working-directory: docs-site
 
       # The code tabs are run with an SDK. The published @lpdfio/lpdf has no element that came after its
-      # release, and the docs of one are merged before that, so the SDK is built from lpdf-js main against
-      # the engine of CORE_TAG, as lpdf-js's own CI builds it. Move CORE_TAG with the engine copy in
-      # www/assets/js/lpdf-demo (docs-site/engine.json names the commit it was taken from).
+      # release, and the docs of one are merged with their feature, before that, so the SDK is built from
+      # lpdf-js main against the engine of the newest core release, pre-releases included, as lpdf-js's own
+      # CI builds it.
       - name: Build the SDK the code tabs are checked with
         env:
           GH_TOKEN: ${{ github.token }}
-          CORE_TAG: v0.30.0-rc.7
         run: |
+          core_tag=$(gh api repos/lpdfio/lpdf/releases --jq 'map(select(.draft | not))[0].tag_name // empty')
+          if [ -z "$core_tag" ]; then
+              echo "::error::No published release in lpdfio/lpdf to build the SDK against."
+              exit 1
+          fi
+          echo "Building the SDK against core $core_tag"
           sdk="$RUNNER_TEMP/lpdf-js"
           git clone --depth 1 https://github.com/lpdfio/lpdf-js.git "$sdk"
           mkdir -p "$sdk/wasm"
-          gh release download "$CORE_TAG" --repo lpdfio/lpdf \
+          gh release download "$core_tag" --repo lpdfio/lpdf \
             --pattern lpdf.js --pattern lpdf-web.js --pattern lpdf_bg.wasm --dir "$sdk/wasm"
           npm ci --prefix "$sdk"
           npm run build --prefix "$sdk"

@@ -18,7 +18,7 @@ The notes of a page stand at the bottom of it, in the order of their numbers, un
 
 A page with notes has less room for its text. When the notes of a page would crowd out a line, the line moves to the next page with its note, and the page it leaves ends a little early. A note is always whole and on the page of its number. A note taller than a page is cut at the page.
 
-An element taller than a page that can't split, such as a frame, a box with `paginate="no"` or a grid row, is cut at the bottom of the page (see [Pagination rules](?p=doc/layout#pagination-rules)), and a number cut off there has no note, on that page or any other. A text or a column splits instead, and its numbers keep their notes. A number the cut runs through keeps its note. The notes of the numbers cut off take no room, so the page shows more of the element. With `footnote-counter="page"` the numbers shown run on 1, 2, … without a gap; with `section` and `document` the numbers cut off are skipped, and the next note goes on from the number after them.
+An element taller than a page that can't split, such as a frame, a box with `paginate="no"` or a grid row, is cut at the bottom of the page (see [Pagination rules](?p=doc/layout#pagination-rules)), and a number cut off there has no note, on that page or any other. A text splits across pages instead, so its numbers keep their notes. A number the cut runs through keeps its note. The notes of the numbers cut off take no room, so the page shows more of the element. With `footnote-counter="page"` the numbers shown run on 1, 2, … without a gap; with `section` and `document` the numbers cut off are skipped, and the next note goes on from the number after them.
 
 ## Numbering
 

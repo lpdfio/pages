@@ -3,6 +3,7 @@ name: Deploy Pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,8 @@ jobs:
   # fill in with script is drawn into their HTML when the site is assembled. It is built once and
   # the same files go to pre and then prod: what was looked at on pre.lpdf.io is what ships. The
   # docs carry the prod canonical address, like every other page, so nothing in them differs
-  # between the two stages.
+  # between the two stages. A pull request runs every check and builds the site to prove it can;
+  # only main uploads it and deploys. This job is the check main's ruleset requires.
   build:
     name: Build the site
     runs-on: ubuntu-24.04
@@ -37,9 +39,39 @@ jobs:
           cache: npm
           cache-dependency-path: docs-site/package-lock.json
 
+      # Writes each page's SEO block from sitemap.yaml. A page whose block or sitemap entry was
+      # edited by hand, or a sitemap.yaml edit with no `make meta-pages` after it, changes a file here.
+      - name: Check the static pages' meta tags match sitemap.yaml
+        run: |
+          node update-meta.mjs
+          git diff --exit-code -- www
+
       - name: Install the docs dependencies
         run: npm ci
         working-directory: docs-site
+
+      # The code tabs are run with an SDK. The published @lpdfio/lpdf has no element that came after its
+      # release, and the docs of one are merged with their feature, before that, so the SDK is built from
+      # lpdf-js main against the engine of the newest core release, pre-releases included, as lpdf-js's own
+      # CI builds it.
+      - name: Build the SDK the code tabs are checked with
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          core_tag=$(gh api repos/lpdfio/lpdf/releases --jq 'map(select(.draft | not))[0].tag_name // empty')
+          if [ -z "$core_tag" ]; then
+              echo "::error::No published release in lpdfio/lpdf to build the SDK against."
+              exit 1
+          fi
+          echo "Building the SDK against core $core_tag"
+          sdk="$RUNNER_TEMP/lpdf-js"
+          git clone --depth 1 https://github.com/lpdfio/lpdf-js.git "$sdk"
+          mkdir -p "$sdk/wasm"
+          gh release download "$core_tag" --repo lpdfio/lpdf \
+            --pattern lpdf.js --pattern lpdf-web.js --pattern lpdf_bg.wasm --dir "$sdk/wasm"
+          npm ci --prefix "$sdk"
+          npm run build --prefix "$sdk"
+          echo "LPDF_SDK_DIR=$sdk" >> "$GITHUB_ENV"
 
       # Renders every XML example in the docs with the engine copy in www/assets/js/lpdf-demo. An example
       # the engine rejects fails the build here, so a broken one is never deployed. It shows the engine
@@ -69,7 +101,17 @@ jobs:
       - name: Assemble the site
         run: bash ./.github/assemble-site.sh _site
 
+      # The deploy sets the stage on the artifact. Do it here on copies, so a placeholder left in a
+      # page or a pre host in prod fails the pull request and not the deploy.
+      - name: Check the site takes each stage
+        run: |
+          for stage in pre prod; do
+              cp -a _site "$RUNNER_TEMP/site-$stage"
+              bash ./.github/set-stage.sh "$RUNNER_TEMP/site-$stage" "$stage"
+          done
+
       - uses: actions/upload-artifact@v6
+        if: github.event_name != 'pull_request'
         with:
           name: site
           path: _site
@@ -80,6 +122,7 @@ jobs:
 
   deploy-pre:
     name: Deploy to pre (pages-pre) ${{ needs.build.outputs.revision }}
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-24.04
     concurrency:
@@ -107,6 +150,7 @@ jobs:
 
   deploy-prod:
     name: Deploy to prod (GitHub Pages) ${{ needs.build.outputs.revision }}
+    if: github.event_name != 'pull_request'
     needs: [build, deploy-pre]
     runs-on: ubuntu-24.04
     concurrency:

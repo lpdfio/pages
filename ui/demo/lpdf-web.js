@@ -47,6 +47,20 @@ export class LpdfEngine {
         wasm.lpdfengine_load_image(this.__wbg_ptr, ptr0, len0, ptr1, len1);
     }
     /**
+     * Register the text of a file of Markdown rules, the root of which is a `<markdown-styles>`, for the
+     * `src` that names it. The engine reads no files: call this once for every `<markdown-styles src="…">`
+     * of the document before `render_pdf`, as `load_font` is called for a font.
+     * @param {string} src
+     * @param {string} xml
+     */
+    load_markdown_styles(src, xml) {
+        const ptr0 = passStringToWasm0(src, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.lpdfengine_load_markdown_styles(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+    }
+    /**
      * @param {string} license_key
      */
     constructor(license_key) {
@@ -152,26 +166,40 @@ export class LpdfEngine {
         wasm.lpdfengine_set_created_on(this.__wbg_ptr, ptr0, len0);
     }
     /**
-     * Configure RC4-128 encryption applied to every subsequent `render_pdf` call.
+     * Configure encryption applied to every subsequent `render_pdf` call.
      *
      * `permissions_json` is a JSON object with boolean fields matching the
      * `Permissions` struct (`print`, `modify`, `copy`, `annotate`, `fill_forms`,
      * `accessibility`, `assemble`, `print_hq`). Omitted fields default to `true`.
+     *
+     * `algorithm` is `"aes-256"` or `"rc4-128"`. AES-256 needs `entropy`: at least 32
+     * random bytes from the host's secure generator, from which the core cuts the file
+     * key, salts and IVs. RC4-128 ignores it. Fails when the algorithm is unknown or
+     * AES-256 gets too little entropy.
      *
      * To apply permissions without an open password, pass an empty `user_password`
      * and a non-empty `owner_password`.
      * @param {string} user_password
      * @param {string} owner_password
      * @param {string} permissions_json
+     * @param {string} algorithm
+     * @param {Uint8Array} entropy
      */
-    set_encryption(user_password, owner_password, permissions_json) {
+    set_encryption(user_password, owner_password, permissions_json, algorithm, entropy) {
         const ptr0 = passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         const ptr2 = passStringToWasm0(permissions_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len2 = WASM_VECTOR_LEN;
-        wasm.lpdfengine_set_encryption(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2);
+        const ptr3 = passStringToWasm0(algorithm, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len3 = WASM_VECTOR_LEN;
+        const ptr4 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_set_encryption(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Inject glyph advance-width tables for custom fonts.
@@ -342,6 +370,132 @@ export function kit_to_xml(json) {
         return getStringFromWasm0(ptr2, len2);
     } finally {
         wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
+    }
+}
+
+/**
+ * The template `template` with an `<image>` declared for each path of the JSON array `srcs`, named as
+ * `markdown_file_images` says.
+ * @param {string} template
+ * @param {string} srcs
+ * @returns {string}
+ */
+export function markdown_declare_images(template, srcs) {
+    let deferred4_0;
+    let deferred4_1;
+    try {
+        const ptr0 = passStringToWasm0(template, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(srcs, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.markdown_declare_images(ptr0, len0, ptr1, len1);
+        var ptr3 = ret[0];
+        var len3 = ret[1];
+        if (ret[3]) {
+            ptr3 = 0; len3 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred4_0 = ptr3;
+        deferred4_1 = len3;
+        return getStringFromWasm0(ptr3, len3);
+    } finally {
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
+}
+
+/**
+ * The rules a `<markdown>` with no styles uses, as the file to start a style of one's own from.
+ * @returns {string}
+ */
+export function markdown_default_styles() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.markdown_default_styles();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * The data a template gets for the `.md` file `markdown`, as JSON: the text as `markdown`, and the fields of its
+ * front matter, each a string.
+ * @param {string} markdown
+ * @returns {string}
+ */
+export function markdown_file_data(markdown) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passStringToWasm0(markdown, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.markdown_file_data(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * The relative paths of the images of the `.md` file `markdown`, as a JSON array. The caller declares them with
+ * `markdown_declare_images` and loads each file, relative to the `.md`, under the name `markdown-image-N` where N
+ * counts from 1 in the order of the array.
+ * @param {string} markdown
+ * @returns {string}
+ */
+export function markdown_file_images(markdown) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passStringToWasm0(markdown, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.markdown_file_images(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * The looks a `.md` file can start from besides the default one, as a JSON array of `name`, `label`, `description`
+ * and `styles`: the file of styles, to write beside the `.md` file and edit.
+ * @returns {string}
+ */
+export function markdown_style_presets() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.markdown_style_presets();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * The template that wraps a `.md` file when it is rendered with no template of its own: A4, a margin and the
+ * page number. It reads the Markdown from the data `markdown`, the rest of which is the file's front matter.
+ * @returns {string}
+ */
+export function markdown_template() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.markdown_template();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
     }
 }
 function __wbg_get_imports() {

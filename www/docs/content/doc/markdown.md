@@ -70,11 +70,12 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | a table | a [table](?p=doc/layout/table) with a header row | The columns are `auto`: each takes the width its cells need, and a name that does not fit breaks. A column takes its alignment from the `:---:` row, and the header row repeats on each page |
 | `[^1]` | a [footnote](?p=doc/layout/footnote) | A note that holds more than a paragraph is cut down to its words, and a note in a table is an error |
 | a newline in a paragraph | a space | |
-| two spaces or a `\` at the end of a line, `<br>`, `<br/>`, `<br />` | a new line in the same paragraph, cell or item | A hard break, as CommonMark has it, and the one HTML that is read, in any case. The lines stand close, with no paragraph gap. A table cell is one line of the source, so a `<br>` is how it holds more than a line. Breaks in a row make one break, and a heading takes one as a space. A `<br>` alone on a line is an error: write it at the end of the line it breaks |
+| two spaces or a `\` at the end of a line, `<br>`, `<br/>`, `<br />` | a new line in the same paragraph, cell or item | A hard break, as CommonMark has it, and a `<br>` in any case. The lines stand close, with no paragraph gap. A table cell is one line of the source, so a `<br>` is how it holds more than a line. Breaks in a row make one break, and a heading takes one as a space. A `<br>` alone on a line breaks nothing: write it at the end of the line it breaks |
 | front matter | nothing | See [A `.md` file](#a-md-file) |
 | `- [ ] task`, `- [x] task` | an `li` with `checked`: a box in place of the marker | The box is an outline in the `line` color, ticked in the color of the item's words when it is `[x]`. A plain item in the same list keeps its bullet, and a task in a number list takes its number. `[ ]` anywhere but at the start of an item is text |
 | a definition list | plain text | It is not read as such |
-| other raw HTML | an error | It names the line and the tag. A `<tag>` that is meant as text is written in backticks, `` `<tag>` ``, or as `\<tag>`: see [Errors](#errors) |
+| `<img src="name" width="…" height="…">` | an image, at that size | The one thing an `<img>` says that `![]()` can't: see [Images](#images) |
+| other raw HTML | its words | Raw HTML is for an HTML output, which a PDF is not, so a tag is left out and the words in it are kept. A block such as a `<p>`, a `<div>` or an `<h2>` puts the words around it on lines of their own. A comment, a `<script>` and a `<style>` leave nothing, and a character reference such as `&amp;` or `&nbsp;` is its character. Nothing says that a tag was left out, so a `<tag>` that is meant as text is written in backticks, `` `<tag>` ``, or as `\<tag>` |
 | a `$` | text | `$5` and `$1M—$10M` are drawn as written: there is no math |
 
 ## Headings
@@ -177,7 +178,9 @@ The defaults are rules like any other. Their colors are token names, so that a t
 
 ## Images
 
-An image of the Markdown names an [asset](?p=doc/layout/img) in the way it is written: by its `name`, or by its `src`. Declaring `<image name="photo" src="img/photo.png"/>` answers `![](photo)` and `![](img/photo.png)`, so a `.md` file can keep the relative paths it has everywhere else. An image that is neither is an error that names the line, and so is one at a URL: Lpdf does not download. The image is as wide as the page allows and as tall as its proportions make it.
+An image of the Markdown names an [asset](?p=doc/layout/img) in the way it is written: by its `name`, or by its `src`. Declaring `<image name="photo" src="img/photo.png"/>` answers `![](photo)` and `![](img/photo.png)`, so a `.md` file can keep the relative paths it has everywhere else. An image that is neither is an error that names the line. One at a URL is left out, as `![]()` or as an `<img>`, since Lpdf does not download: the badges and logos of a README leave nothing, and the words around them stay. The image is as wide as the page allows and as tall as its proportions make it.
+
+An `<img>` names an asset in its `src` in the same way, and its `width` and `height` give it a size, which Markdown's own image has no way to say. They are pixels, with or without `px`, and a pixel is 0.75pt: `width="320"` is 240pt wide. With one of them, the other follows the image's proportions. A percentage is ignored, and the image is as wide as the page allows.
 
 ```xml
 <lpdf version="1">
@@ -189,6 +192,8 @@ An image of the Markdown names an [asset](?p=doc/layout/img) in the way it is wr
       <markdown>
         <markdown-content><![CDATA[
           ![The photo of the quarter](img/photo.png)
+
+          <img src="photo" width="200">
         ]]></markdown-content>
       </markdown>
     </section>
@@ -201,7 +206,7 @@ An image of the Markdown names an [asset](?p=doc/layout/img) in the way it is wr
 A `.md` file is wrapped in a template: a document with a `markdown` that reads its text from the data `markdown`, which the file's front matter goes with. The VS Code extension and the command line do it the same way.
 
 - A YAML block at the top of the file, from `---` to `---`, is not drawn. Its `key: value` lines are data beside the text, so a template can show them: `<text-at data-value="title">`. A value that is not on the line, a list and a nested field are left out.
-- A relative image is declared in the template as an asset, read relative to the `.md` file.
+- A relative image, in `![]()` or in an `<img>`, is declared in the template as an asset, read relative to the `.md` file.
 - With no template of its own, the file is set on an A4 page with a margin of 54pt and the page number at the foot.
 
 ```
@@ -231,11 +236,10 @@ In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button
 
 ## Errors
 
-The Markdown is read strictly, because it is in the hands of whoever renders it, and a mistake is an error that names the line of the Markdown and what to write instead. An application that renders Markdown of its users catches the error and shows it.
+The Markdown is read strictly, because it is in the hands of whoever renders it, and a mistake is an error that names the line of the Markdown and what to write instead. An application that renders Markdown of its users catches the error and shows it. Raw HTML is not a mistake: it is left out, as [What it turns into](#what-it-turns-into) says, so that a README renders.
 
 ```
 markdown line 12: an image's source must be the name or the src of an asset: 'missing.png' is neither
-markdown line 31: raw HTML <Biller> is not supported: to show it as text, write it in backticks, `<Biller>`; otherwise write the Markdown it stands for, or leave it out
 markdown line 5: the footnote [^2] has no definition; define it with [^2]: and its words, or write \[ to show it as text
 ```
 

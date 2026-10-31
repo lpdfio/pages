@@ -94,6 +94,14 @@ var pdf = await engine.Render(xml, new RenderOptions { Data = data });
 
 :::
 
+On the command line, `lpdf convert` reads the same object from a JSON file:
+
+```
+lpdf convert --input document.xml --data data.json --output document.pdf
+```
+
+A `.md` file takes `--data` too, for fields beside those of its front matter, as [A `.md` file](?p=doc/markdown#a-md-file) says.
+
 ## `data-value` — inject a scalar
 
 Replaces the element's text content with the value at the dot-path. A number or a boolean is written as text. An object, an array, or a path with no value gives empty text.

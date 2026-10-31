@@ -134,7 +134,7 @@ A [layer](?p=doc/layer#opacity) has `opacity` too. A shape or a `-at` element in
 
 ## Shadow
 
-`shadow` draws a hard-edged copy of a box under it: `"x y color"`, with an optional opacity from 0 to 1 after the color that fades the shadow alone. `x` and `y` are signed lengths: positive is right and down, and negative is left and up. `shadow="3pt 3pt #000000 0.2"` is a black shadow 3pt right and down, at 20%. The color takes any [form](?p=xml/schema#colors): `shadow="3pt 3pt cmyk(0, 0, 0, 100) 0.2"` is the same shadow in black ink.
+`shadow` draws a hard-edged copy of a box under it: `"x y color"`, with an optional opacity from 0 to 1 after the color that fades the shadow alone. `x` and `y` are signed lengths: positive is right and down, and negative is left and up. `shadow="3pt 3pt #000000 0.2"` is a black shadow 3pt right and down, at 20%. The color takes any [form](?p=xml/schema#colors): `shadow="3pt 3pt cmyk(0, 0, 0, 100)"` is a shadow in black ink. A shadow with an opacity is blended in RGB, its `cmyk()` color too, so keep a print shadow opaque.
 
 - There is no blur. The copy has the box's `radius`.
 - A shadow takes no room in the layout. It can run into a margin or a neighbor, and the siblings after the box are drawn over it, so leave the space yourself.

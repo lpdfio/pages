@@ -149,6 +149,7 @@ Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`
 - **Both in one document.** RGB and CMYK colors can sit side by side, on one page or in sections of their own: `color="#1763cf"` in a section for the screen and `color="cmyk(91, 61, 0, 19)"` in one for print. A gradient is the exception: its colors are all CMYK or all RGB (see [Gradients](#gradients)).
 - **Commas or spaces.** The values are separated by commas or by spaces, as in CSS: `cmyk(0, 0, 0, 100)` and `cmyk(0 0 0 100)` are the same black. One color uses one or the other, so `rgb(23, 99 207)` is an error.
 - **No alpha.** A color is always solid: `rgba(23, 99, 207, 0.5)` and `rgb(23 99 207 / 50%)` are errors. Use `opacity` on a [layer](?p=doc/layer#opacity) or on a [box](?p=doc/layout#opacity), or the opacity of a `shadow`.
+- **Keep print colors opaque.** Whatever is faded, a layer or a box with an `opacity` below 1 or a shadow with an opacity, is blended in RGB: its `cmyk()` colors are still written as inks, but they are converted to RGB to blend them, and so at print too. Leave the colors meant for print at full opacity.
 
 **A color is read strictly**, so that a typo stops the render instead of printing the wrong color. Each of these is an error that names the value:
 

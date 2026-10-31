@@ -104,12 +104,13 @@ Document properties written to the PDF. Child of `document`, before the sections
 
 ### `output`
 
-How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it. Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | everything | What a reader may do without the owner password, separated by spaces: `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. `allow=""` allows nothing. It needs `encrypt` |
+| `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits or `encrypt`, each an error that says what to change |
 
 ### `document`
 

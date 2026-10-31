@@ -103,7 +103,10 @@ export default defineConfig({
                 },
                 {
                     label: 'PDF output',
-                    items: [{ slug: 'encryption', label: 'Encryption' }],
+                    items: [
+                        { slug: 'encryption', label: 'Encryption' },
+                        { slug: 'pdfa', label: 'PDF/A' },
+                    ],
                 },
                 {
                     label: 'Reference',

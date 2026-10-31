@@ -126,6 +126,6 @@
     },
     "encryption": {
         "title": "Encrypt a PDF with AES-256 and passwords in Lpdf",
-        "description": "Encrypt a PDF with AES-256 from Node.js, .NET, PHP or Python: an open password, an owner password and permission flags for printing, copying and editing."
+        "description": "Encrypt a PDF with AES-256: the document asks for it in its output element, and the passwords come with the render call in Node.js, .NET, PHP or Python."
     }
 }

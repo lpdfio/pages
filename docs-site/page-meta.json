@@ -131,5 +131,9 @@
     "pdfa": {
         "title": "Create PDF/A-2b and PDF/A-2u files for archiving in Lpdf",
         "description": "Write PDF/A for archives: the document asks for it in its output element, and Lpdf embeds the fonts, the sRGB profile and the XMP metadata, or says what to fix."
+    },
+    "attachments": {
+        "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
+        "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a source spreadsheet or terms, read from src or loaded in Node.js, .NET, PHP or Python."
     }
 }

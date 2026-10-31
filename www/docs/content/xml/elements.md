@@ -110,7 +110,24 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | everything | What a reader may do without the owner password, separated by spaces: `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. `allow=""` allows nothing. It needs `encrypt` |
-| `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits or `encrypt`, each an error that says what to change |
+| `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
+
+### `attachments`
+
+The files the PDF carries inside it, which a reader lists in its attachments panel: see [Attachments](?p=attachments). Child of `document`, after `meta` and `output` and before the sections. It holds one `file` for each file.
+
+### `file`
+
+A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or it was loaded on the engine under its `ref` or name.
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `name` | string | required | The name a reader shows the file under and saves it as. Each file of a document has a name of its own |
+| `src` | path | — | Where the SDK reads the file from, when it was not loaded on the engine |
+| `ref` | string | the name | The key the file was loaded on the engine under |
+| `mime` | string | `application/octet-stream` | The type of the file, such as `text/xml` or `application/pdf` |
+| `relationship` | string | `unspecified` | `source` `data` `alternative` `supplement` `unspecified`: how the file relates to the document |
+| `description` | string | — | A line about the file, which a reader shows beside its name |
 
 ### `document`
 
@@ -123,7 +140,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
 | `debug`       | boolean | false      | Render layout boxes |
 
-A document holds an optional `meta`, an optional `output` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
+A document holds an optional `meta`, an optional `output`, optional `attachments` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
 
 ### `section`
 

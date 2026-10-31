@@ -14,7 +14,8 @@
 // Images named in a snippet are declared with a one-pixel placeholder, so an example that uses `logo` renders. A font
 // a snippet declares with a src is loaded with the site's Radley (FONT, `declaredFonts`), so a PDF/A example, which
 // refuses a font that is not embedded, renders, and the checks give every render a date (CREATED_ON), which PDF/A
-// needs. A
+// needs. Each file a snippet carries in its attachments is loaded under its ref or name with a few placeholder bytes
+// (FILE, `declaredFiles`), so its src is never read. A
 // snippet that is not meant to run is skipped: one that starts with assets or tokens, one with an ellipsis in it,
 // one that names a file of Markdown rules with a src, and one that is not XML for the engine at all.
 //
@@ -41,6 +42,17 @@ export const FONT = await fs.readFile(path.resolve(root, 'src/fonts/Radley-Regul
 
 /** The date of every render of the checks, which a document that asks for PDF/A needs. */
 export const CREATED_ON = '2026-01-01T00:00:00Z';
+
+/** The bytes loaded for each file a snippet carries in its attachments. */
+export const FILE = Buffer.from('Placeholder for a file the docs attach to a PDF.\n');
+
+/** The key, `ref` or else `name`, of each file `xml` carries in its attachments, which renders only once it is loaded. */
+export function declaredFiles(xml)
+{
+    return [...xml.matchAll(/<file\b[^>]*>/g)]
+        .map(([tag]) => tag.match(/\bref="([^"]*)"/)?.[1] ?? tag.match(/\bname="([^"]*)"/)?.[1])
+        .filter(Boolean);
+}
 
 /** The names of the fonts `xml` declares with a src, which the engine draws in only once they are loaded. */
 export function declaredFonts(xml)

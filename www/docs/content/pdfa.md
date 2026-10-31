@@ -28,7 +28,7 @@ PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask 
 |-----------|------|---------|-------------|
 | `pdfa` | `2b` `2u` | — | Writes the PDF as PDF/A-2b, which keeps the look of every page, or PDF/A-2u, which also maps all text to Unicode so it can be searched and copied. Without it the PDF is a plain one |
 
-Part 2 of the standard allows transparency, so opacity, shadows and gradients are kept. Level 2a, which adds the structure of tagged PDF, and part 3, which embeds other files such as the XML of an e-invoice, are not written yet.
+Part 2 of the standard allows transparency, so opacity, shadows and gradients are kept. Level 2a, which adds the structure of tagged PDF, and part 3, which carries other files such as the XML of an e-invoice, are not written yet.
 
 ## What the file gets
 
@@ -110,4 +110,5 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - a form field, whose text is drawn in Helvetica
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file
+- [`attachments`](?p=attachments): a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check
 - a render without `createdOn`, or with one that is not a date

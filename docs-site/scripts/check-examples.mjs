@@ -9,13 +9,14 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { PIXEL, PLACEHOLDER_IMAGES, SRC, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
+import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, SRC, declaredFonts, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const verbose = process.argv.includes('--verbose');
 
 const web = await loadEngine();
 const engine = new web.LpdfEngine('');
 for (const name of PLACEHOLDER_IMAGES) engine.load_image(name, PIXEL);
+engine.set_created_on(CREATED_ON);
 
 let passed = 0;
 const failed = [];
@@ -29,6 +30,7 @@ for (const file of await walk())
         const where = `${file}:${fence.line}`;
         const wrapped = wrap(fence.xml);
         if (wrapped.skip) { skipped.push(`${where}  (${wrapped.skip})`); continue; }
+        for (const name of declaredFonts(wrapped.xml)) engine.load_font(name, FONT);
         try
         {
             // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.

@@ -17,7 +17,7 @@
 import { promises as fs } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { PIXEL, PLACEHOLDER_IMAGES, SRC, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
+import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, SRC, declaredFonts, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const sdkDir = process.env.LPDF_SDK_DIR ? path.resolve(process.env.LPDF_SDK_DIR) : undefined;
 const { L, LMarkdown, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
@@ -45,9 +45,11 @@ for (const file of await walk())
             const code = web.codegen_fragment_wasm(wrapped.xml, JSON.stringify({ target: 'js' }));
             if (code.includes('TODO') || code.includes('L.element(')) { skipped.push(`${where}  (the generator cannot express it)`); continue; }
 
+            for (const name of declaredFonts(wrapped.xml)) engine.loadFont(name, FONT);
             // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
-            const fromXml = await engine.render(wrapped.xml, { skipEncryption: true });
-            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr), { skipEncryption: true });
+            const options = { skipEncryption: true, createdOn: CREATED_ON };
+            const fromXml = await engine.render(wrapped.xml, options);
+            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr), options);
             if (Buffer.compare(Buffer.from(fromXml), Buffer.from(fromCode)) !== 0)
             {
                 failed.push(`${where}  the code renders another PDF than the XML`);

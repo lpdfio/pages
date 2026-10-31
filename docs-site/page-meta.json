@@ -122,7 +122,7 @@
         "description": "Every Lpdf XML element with its attributes, types, defaults and required flags, from the lpdf root and document structure to layout elements and layers."
     },
     "xml/schema": {
-        "description": "The Lpdf XML schema: document structure, page sizes, units, tokens, colors and the border value format, with a download link for lpdf.xsd."
+        "description": "The Lpdf XML schema: document structure, attribute types, page sizes, units, tokens, colors and the border value format, with a download link for lpdf.xsd."
     },
     "encryption": {
         "title": "Encrypt a PDF with AES-256 and passwords in Lpdf",

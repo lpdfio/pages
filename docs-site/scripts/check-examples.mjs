@@ -31,7 +31,8 @@ for (const file of await walk())
         if (wrapped.skip) { skipped.push(`${where}  (${wrapped.skip})`); continue; }
         try
         {
-            engine.render_pdf(wrapped.xml, null);
+            // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
+            engine.render_pdf(wrapped.xml, null, null, null, true, new Uint8Array(0));
             passed++;
             if (verbose) console.log(`ok    ${where}`);
         }

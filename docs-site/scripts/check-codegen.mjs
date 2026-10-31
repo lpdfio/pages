@@ -45,8 +45,9 @@ for (const file of await walk())
             const code = web.codegen_fragment_wasm(wrapped.xml, JSON.stringify({ target: 'js' }));
             if (code.includes('TODO') || code.includes('L.element(')) { skipped.push(`${where}  (the generator cannot express it)`); continue; }
 
-            const fromXml = await engine.render(wrapped.xml);
-            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr));
+            // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
+            const fromXml = await engine.render(wrapped.xml, { skipEncryption: true });
+            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr), { skipEncryption: true });
             if (Buffer.compare(Buffer.from(fromXml), Buffer.from(fromCode)) !== 0)
             {
                 failed.push(`${where}  the code renders another PDF than the XML`);

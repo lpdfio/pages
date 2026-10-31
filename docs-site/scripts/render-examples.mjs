@@ -46,7 +46,8 @@ async function renderExample(web, id)
     {
         for (const m of body.matchAll(/<font\s+name="([^"]+)"\s+src="([^"]+)"/g)) engine.load_font(m[1], await fs.readFile(path.join(folder, m[2])));
         for (const m of body.matchAll(/<image\s+name="([^"]+)"\s+src="([^"]+)"/g)) engine.load_image(m[1], await fs.readFile(path.join(folder, m[2])));
-        const pdf = engine.render_pdf(xml, data);
+        // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
+        const pdf = engine.render_pdf(xml, data, null, null, true, new Uint8Array(0));
         await fs.writeFile(path.join(folder, 'document.pdf'), pdf);
         return pdf.length;
     }

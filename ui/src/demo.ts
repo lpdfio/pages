@@ -192,15 +192,18 @@ const editorSlice = createSlice({
 
 const renderSlice = createSlice({
     name: 'render',
-    initialState: { status: 'idle', error: '', byteSize: 0 },
+    // `unencrypted`: the document asks for encryption, and the PDF shown is not encrypted, as the playground has no
+    // passwords.
+    initialState: { status: 'idle', error: '', byteSize: 0, unencrypted: false },
     reducers: {
         renderStarted: state => { state.status = 'rendering'; state.error = ''; },
-        renderDone: (state, { payload }: { payload: { byteSize: number } }) => {
-            state.status   = 'done';
-            state.byteSize = payload.byteSize;
+        renderDone: (state, { payload }: { payload: { byteSize: number; unencrypted: boolean } }) => {
+            state.status      = 'done';
+            state.byteSize    = payload.byteSize;
+            state.unencrypted = payload.unencrypted;
         },
         renderFailed: (state, { payload }: { payload: string }) => { state.status = 'error'; state.error = payload; },
-        renderReset:  state => { state.status = 'idle'; state.error = ''; state.byteSize = 0; },
+        renderReset:  state => { state.status = 'idle'; state.error = ''; state.byteSize = 0; state.unencrypted = false; },
     },
 });
 
@@ -230,6 +233,16 @@ const { renderStarted, renderDone, renderFailed, renderReset } = renderSlice.act
 const { modeSelected }                                         = modeSlice.actions;
 
 // ── Asset helpers ─────────────────────────────────────────────────────────────
+
+/**
+ * Whether the document asks for encryption, with `encrypt` on its `<output>`. Comments and CDATA, where an example of
+ * a document may sit, are not read.
+ */
+function asksForEncryption(xml: string) {
+    const text   = xml.replace(/<!--[\s\S]*?-->/g, '').replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, '');
+    const output = /<output\b[^>]*>/.exec(text)?.[0];
+    return output !== undefined && /\bencrypt\s*=/.test(output);
+}
 
 function extractAssetSrcs(xml: string, tag: string) {
     const result = new Map<string, string>();
@@ -516,9 +529,11 @@ class LpdfDemo extends LitElement {
         this._postToViewer({ type: 'showLoading' });
         try {
             await loadAssetsFromXml(this._currentXml, this._currentBase);
-            const bytes = await lpdfEngine.render(this._currentXml, this._currentData != null ? { data: this._currentData } : {});
+            // The playground has no passwords: a document that asks for encryption is shown unencrypted, and says so.
+            const options = { ...(this._currentData != null ? { data: this._currentData } : {}), skipEncryption: true };
+            const bytes   = await lpdfEngine.render(this._currentXml, options);
             currentPdfBytes = bytes.slice();
-            store.dispatch(renderDone({ byteSize: currentPdfBytes.length }));
+            store.dispatch(renderDone({ byteSize: currentPdfBytes.length, unencrypted: asksForEncryption(this._currentXml) }));
             // A document that has not been shown before starts at the top, fitted to the width.
             this._postToViewer({ type: 'updatePdf', pdfBase64: bytesToBase64(currentPdfBytes), filename: 'document.pdf', zoom: 'fit' });
         } catch (err: any) {
@@ -624,7 +639,7 @@ class LpdfDemo extends LitElement {
     // ── Render ────────────────────────────────────────────────────────────────
 
     render() {
-        const { engine, editor, mode } = this._s;
+        const { engine, editor, mode, render } = this._s;
         const engineReady   = engine.status === 'ready';
         const example       = EXAMPLES.find(candidate => candidate.id === editor.selectedId);
         // The data tab is there only for an example that has data.
@@ -654,6 +669,12 @@ class LpdfDemo extends LitElement {
                         </select>
                     </div>
                     <div class="lpdf-toolbar-wing">
+                        ${render.unencrypted ? html`
+                            <span class="lpdf-encryption-note"
+                                  title="The document asks for encryption in its output. The playground has no passwords, so it shows and downloads the PDF unencrypted.">
+                                Not encrypted here
+                            </span>
+                        ` : nothing}
                     </div>
                 </div>
 

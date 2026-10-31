@@ -127,6 +127,35 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="Cipher">
+    <xs:annotation>
+      <xs:documentation>The cipher a PDF is encrypted with: AES-256, or RC4-128 for readers that cannot open AES-256. PDF 2.0 deprecates RC4-128.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="aes-256"/>
+      <xs:enumeration value="rc4-128"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Permission">
+    <xs:annotation>
+      <xs:documentation>What a reader of an encrypted PDF may do without the owner password: print (at full quality), modify, copy, annotate, fill in forms, extract text for accessibility tools, and assemble (insert, delete and rotate pages).</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="print"/>
+      <xs:enumeration value="modify"/>
+      <xs:enumeration value="copy"/>
+      <xs:enumeration value="annotate"/>
+      <xs:enumeration value="fill-forms"/>
+      <xs:enumeration value="accessibility"/>
+      <xs:enumeration value="assemble"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Permissions">
+    <xs:list itemType="Permission"/>
+  </xs:simpleType>
+
   <xs:simpleType name="BookmarkLevel">
     <xs:restriction base="xs:positiveInteger">
       <xs:maxInclusive value="6"/>
@@ -140,24 +169,27 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <!-- e.g. "#1763cf" or "#fff" -->
+  <!-- a color as written: hex, or cmyk() with 0-100 values, rgb() with 0-255 values, or hsl() with a 0-360 hue and
+       saturation and lightness in %. The values are separated by commas or by spaces, not a mix. The pattern checks
+       the form; the engine checks the ranges. e.g. "#1763cf", "#fff", "cmyk(91, 61, 0, 19)", "rgb(23 99 207)",
+       "hsl(215, 80%, 45%)". The same alternatives are in Color, Fill and ShadowValue. -->
   <xs:simpleType name="ColorHex">
     <xs:restriction base="xs:string">
-      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?"/>
+      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|cmyk\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){3}|\d+(\.\d+)?(\s+\d+(\.\d+)?){3})\s*\)|rgb\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){2}|\d+(\.\d+)?(\s+\d+(\.\d+)?){2})\s*\)|hsl\(\s*(\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%|\d+(\.\d+)?\s+\d+(\.\d+)?%\s+\d+(\.\d+)?%)\s*\)"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <!-- hex or a named color token e.g. "primary", "surface-alt" -->
+  <!-- a color as written, or a named color token e.g. "primary", "surface-alt" -->
   <xs:simpleType name="Color">
     <xs:restriction base="xs:string">
-      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|[a-z][a-z0-9-]*"/>
+      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|cmyk\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){3}|\d+(\.\d+)?(\s+\d+(\.\d+)?){3})\s*\)|rgb\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){2}|\d+(\.\d+)?(\s+\d+(\.\d+)?){2})\s*\)|hsl\(\s*(\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%|\d+(\.\d+)?\s+\d+(\.\d+)?%\s+\d+(\.\d+)?%)\s*\)|[a-z][a-z0-9-]*"/>
     </xs:restriction>
   </xs:simpleType>
 
   <!-- a color, or a gradient of the tokens e.g. "gradient:brand-fade" -->
   <xs:simpleType name="Fill">
     <xs:restriction base="xs:string">
-      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|gradient:[a-z][a-z0-9-]*|[a-z][a-z0-9-]*"/>
+      <xs:pattern value="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|cmyk\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){3}|\d+(\.\d+)?(\s+\d+(\.\d+)?){3})\s*\)|rgb\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){2}|\d+(\.\d+)?(\s+\d+(\.\d+)?){2})\s*\)|hsl\(\s*(\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%|\d+(\.\d+)?\s+\d+(\.\d+)?%\s+\d+(\.\d+)?%)\s*\)|gradient:[a-z][a-z0-9-]*|[a-z][a-z0-9-]*"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -178,7 +210,7 @@
   <!-- x offset, y offset, color and optionally an opacity, e.g. "2pt 3pt #000000" or "2pt 3pt text 0.2" -->
   <xs:simpleType name="ShadowValue">
     <xs:restriction base="xs:string">
-      <xs:pattern value="-?\d+(\.\d+)?(pt|mm|in) -?\d+(\.\d+)?(pt|mm|in) (#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|[a-z][a-z0-9-]*)( (0(\.\d+)?|1(\.0+)?|\.\d+))?"/>
+      <xs:pattern value="-?\d+(\.\d+)?(pt|mm|in) -?\d+(\.\d+)?(pt|mm|in) (#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?|cmyk\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){3}|\d+(\.\d+)?(\s+\d+(\.\d+)?){3})\s*\)|rgb\(\s*(\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?){2}|\d+(\.\d+)?(\s+\d+(\.\d+)?){2})\s*\)|hsl\(\s*(\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%|\d+(\.\d+)?\s+\d+(\.\d+)?%\s+\d+(\.\d+)?%)\s*\)|[a-z][a-z0-9-]*)( (0(\.\d+)?|1(\.0+)?|\.\d+))?"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -456,7 +488,7 @@
   <xs:attributeGroup name="DataColorAttr">
     <xs:attribute name="data-color" type="xs:string">
       <xs:annotation>
-        <xs:documentation>Dot-path to a string that sets color: a hex value or a name from the colors row of the tokens. When the path finds nothing, color stays. A value that is not a color is an error that names the path.</xs:documentation>
+        <xs:documentation>Dot-path to a string that sets color: a color as written (hex, cmyk(), rgb() or hsl()) or a name from the colors row of the tokens. When the path finds nothing, color stays. A value that is not a color is an error that names the path.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:attributeGroup>
@@ -979,7 +1011,7 @@
       </xs:attribute>
       <xs:attribute name="color" type="Color" use="required">
         <xs:annotation>
-          <xs:documentation>The color at the stop: hex or a color token.</xs:documentation>
+          <xs:documentation>The color at the stop: hex, cmyk(), rgb(), hsl() or a color token. The stops of a gradient are all CMYK or all RGB.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
     </xs:complexType>
@@ -1005,12 +1037,12 @@
       </xs:attribute>
       <xs:attribute name="from" type="Color">
         <xs:annotation>
-          <xs:documentation>The first color: hex or a color token. Used with to, when there are no stop children. For a radial gradient it is the center.</xs:documentation>
+          <xs:documentation>The first color: hex, cmyk(), rgb(), hsl() or a color token, CMYK if to is and RGB if it is not. Used with to, when there are no stop children. For a radial gradient it is the center.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute name="to" type="Color">
         <xs:annotation>
-          <xs:documentation>The last color: hex or a color token. Used with from, when there are no stop children. For a radial gradient it is the edge.</xs:documentation>
+          <xs:documentation>The last color: hex, cmyk(), rgb(), hsl() or a color token. Used with from, when there are no stop children. For a radial gradient it is the edge.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute name="angle" type="xs:decimal">
@@ -1080,6 +1112,24 @@
       <xs:attribute name="subject"  type="xs:string"/>
       <xs:attribute name="keywords" type="xs:string"/>
       <xs:attribute name="creator"  type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="output">
+    <xs:annotation>
+      <xs:documentation>How the PDF file is written, apart from what its pages show: whether it is encrypted, and what a reader may do with it. The passwords are not here: they come with the render call, since they change from one render to the next. A document that asks for encryption renders only with an owner password, or when the render asks to skip the encryption, as a preview does.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="encrypt" type="Cipher">
+        <xs:annotation>
+          <xs:documentation>Encrypts the PDF with this cipher, with the passwords given to the render call: aes-256, or rc4-128 for readers that cannot open AES-256. Without it the PDF is not encrypted, and passwords given to the render call are an error.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="allow" type="Permissions">
+        <xs:annotation>
+          <xs:documentation>What a reader may do without the owner password, separated by spaces: print, modify, copy, annotate, fill-forms, accessibility and assemble. Without allow everything is allowed; allow="" allows nothing. It needs encrypt. Readers that follow the standard honor it, and a tool that does not can remove it, so use an open password when the content must stay private.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
 
@@ -1358,11 +1408,12 @@
        stops with "unexpected element in <document>". -->
   <xs:element name="document">
     <xs:annotation>
-      <xs:documentation>The whole document, and the page settings every section starts from: size, orientation, background and font. It holds an optional meta element and at least one section.</xs:documentation>
+      <xs:documentation>The whole document, and the page settings every section starts from: size, orientation, background and font. It holds an optional meta element, an optional output element and at least one section.</xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="meta" minOccurs="0"/>
+        <xs:element ref="output" minOccurs="0"/>
         <xs:element ref="section" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="font"        type="xs:string"/>

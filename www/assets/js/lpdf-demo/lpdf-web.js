@@ -191,8 +191,9 @@ export class LpdfEngine {
         return v5;
     }
     /**
-     * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`).
-     * When provided, written as `/CreationDate` in the PDF info dictionary.
+     * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`, `"2024-06-01T12:00:00.000Z"` or
+     * `"2024-06-01T12:00:00+01:00"`). When provided, written as `/CreationDate` in the PDF info dictionary, with
+     * the precision and the time zone it was given in; a value that is not a date makes the render an error.
      * Omitting this keeps builds reproducible (no embedded timestamp).
      * @param {string} iso
      */

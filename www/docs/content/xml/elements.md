@@ -109,7 +109,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
-| `allow`   | list   | everything | What a reader may do without the owner password, separated by spaces: `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. `allow=""` allows nothing. It needs `encrypt` |
+| `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
 
 ### `attachments`
@@ -140,7 +140,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
 | `debug`       | boolean | false      | Render layout boxes |
 
-A document holds an optional `meta`, an optional `output`, optional `attachments` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
+A document holds an optional `meta`, an optional `output`, optional `attachments` and one or more `section` elements. Any other attribute is an [error](?p=xml/schema#attribute-types), `width`, `height`, `color`, `title` and `font-size` among them, and the one for `margin` says it is set on the `layout`. Set a page size with `size="200pt 300pt"`, and the title on `meta`.
 
 ### `section`
 

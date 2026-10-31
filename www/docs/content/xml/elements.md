@@ -140,7 +140,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
 | `debug`       | boolean | false      | Render layout boxes |
 
-A document holds an optional `meta`, an optional `output`, optional `attachments` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
+A document holds an optional `meta`, an optional `output`, optional `attachments` and one or more `section` elements. Any other attribute is an [error](?p=xml/schema#attribute-types), `width`, `height`, `color`, `title` and `font-size` among them, and the one for `margin` says it is set on the `layout`. Set a page size with `size="200pt 300pt"`, and the title on `meta`.
 
 ### `section`
 

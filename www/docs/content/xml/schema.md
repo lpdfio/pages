@@ -39,13 +39,13 @@ A document holds sections, and a section holds any number of layers and at most 
 Each attribute has the type the schema gives it, and the engine checks every attribute against it before it lays anything out. The reference tables name the types.
 
 - **A boolean** is `true` or `false`, nothing else: `bold="yes"` and `bold="1"` are errors.
-- **A whole number**, such as `cols` or `start`, and **a number**, such as `opacity` or a gradient's `angle`, are written in digits, with a point for a fraction: `opacity="0.5"`. Each has the range the schema gives it: `cols` goes from 1 to 12, `opacity` from 0 to 1.
+- **A whole number**, such as a grid's `cols` or a list's `start`, and **a number**, such as `opacity` or a gradient's `angle`, are written in digits, with a minus sign where the range allows one and a point for a fraction: `opacity="0.5"`, `start="-3"`. Each has the range the schema gives it: a grid's `cols` goes from 1 to 12, `opacity` from 0 to 1.
 - **`line-height`** is a name from the line-height row of the [tokens](#tokens), such as `m`, or a factor above 0, such as `1.5`.
 - Everything else is text, lengths with their unit included: `font-size="12pt"`.
 
 A value that is not of its type is an error that names the element, the attribute and the type, such as `<grid> at line 12, col 9: cols must be a whole number from 1 to 12, not "x"`. So is an attribute the element doesn't have, which lists the ones it has: `<gradient> at line 4, col 7: unknown attribute 'agle' — expected name, type, from, to, angle`. The `data-*` attributes of [data binding](?p=data/binding) and the namespaced ones that point an editor at the schema, such as `xsi:noNamespaceSchemaLocation`, are left out of the check.
 
-In code, the attribute objects of each SDK take the same types: `bold: true`, `cols: 3`, `opacity: 0.5`, and `lineHeight: 1.5` or `'m'`. TypeScript and C# refuse a value of another type when they compile, PHP when the object is made, and the engine when it renders for Python and plain JavaScript, with the same error as for the XML.
+In code, the attribute objects of each SDK take the same types: `bold: true`, a grid's `cols: 3`, `opacity: 0.5`, and `lineHeight: 1.5` or `'m'`. TypeScript and C# refuse a value of another type when they compile, and the engine refuses it when it renders for Python and plain JavaScript, with the same error as for the XML. PHP refuses it when the object is made, but in a file without `declare(strict_types=1)` it first converts what it can, so `bold: 'false'` becomes `true`.
 
 ## Page sizes
 

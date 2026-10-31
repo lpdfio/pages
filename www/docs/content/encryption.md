@@ -21,6 +21,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 |-----------|------|---------|-------------|
 | `encrypt` | `aes-256` `rc4-128` | — | Encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted |
 | `allow` | list | everything | What a reader may do without the owner password, separated by spaces. `allow=""` allows nothing. It needs `encrypt` |
+| `pdfa` | `2b` `2u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
 
 The template is the only place that turns encryption on. Passwords given to the render of a document without `encrypt` are an error, so a file never goes out unencrypted while you believe it is locked.
 
@@ -130,4 +131,5 @@ Each of these stops the render with an error that says what to change:
 - the render has passwords, and the document doesn't ask for encryption
 - the render has passwords and skips the encryption
 - `allow` without `encrypt`
+- `encrypt` with `pdfa`: PDF/A forbids encryption
 - a word in `allow` that isn't one of the seven, or a cipher in `encrypt` that isn't `aes-256` or `rc4-128`

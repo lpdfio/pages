@@ -11,7 +11,10 @@
 //   text-at img-at barcode-at                 in layer and the rest
 //   anything else, such as column or region   in layout and the rest
 //
-// Images named in a snippet are declared with a one-pixel placeholder, so an example that uses `logo` renders. A
+// Images named in a snippet are declared with a one-pixel placeholder, so an example that uses `logo` renders. A font
+// a snippet declares with a src is loaded with the site's Radley (FONT, `declaredFonts`), so a PDF/A example, which
+// refuses a font that is not embedded, renders, and the checks give every render a date (CREATED_ON), which PDF/A
+// needs. A
 // snippet that is not meant to run is skipped: one that starts with assets or tokens, one with an ellipsis in it,
 // one that names a file of Markdown rules with a src, and one that is not XML for the engine at all.
 //
@@ -32,6 +35,21 @@ const ENGINE = process.env.LPDF_ENGINE_DIR
 export const PLACEHOLDER_IMAGES = ['logo', 'photo', 'avatar', 'watermark'];
 export const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
 const LAYER_CONTENT = new Set(['rect', 'circle', 'ellipse', 'line', 'path', 'text-at', 'img-at', 'barcode-at']);
+
+/** The face loaded for each font a snippet declares with a src: the Radley of the site's header. */
+export const FONT = await fs.readFile(path.resolve(root, 'src/fonts/Radley-Regular.ttf'));
+
+/** The date of every render of the checks, which a document that asks for PDF/A needs. */
+export const CREATED_ON = '2026-01-01T00:00:00Z';
+
+/** The names of the fonts `xml` declares with a src, which the engine draws in only once they are loaded. */
+export function declaredFonts(xml)
+{
+    return [...xml.matchAll(/<font\b[^>]*>/g)]
+        .filter(([tag]) => /\bsrc="/.test(tag))
+        .map(([tag]) => tag.match(/\bname="([^"]*)"/)?.[1])
+        .filter(Boolean);
+}
 
 export async function loadEngine()
 {

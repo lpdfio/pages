@@ -172,7 +172,7 @@ composer require lpdfio/lpdf:~0.22.0
 
 ## Requirements
 
-- Python 3.10 or later
+- Python 3.11 or later
 - The [`wasmtime`](https://wasmtime.dev) command-line tool on your `PATH`, which runs the bundled WASI binary
 
 ## Install

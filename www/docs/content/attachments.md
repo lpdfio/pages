@@ -102,7 +102,7 @@ A document built in code lists its files in `attachments`, a list of `FileAttr` 
 
 ## Size and memory
 
-A file has no size limit of its own. In the .NET, PHP and Python SDKs the engine runs as a separate WebAssembly process, and the bytes travel to it as base64 in the request, so a large file costs several times its size in memory while it renders: the request, the bytes the engine decodes, the PDF that holds them and the PDF sent back. Node.js hands the bytes to the engine directly.
+A file has no size limit of Lpdf's own, beyond the 2 GB a PDF can say a file holds. In the .NET, PHP and Python SDKs the engine is a WASI binary, and the bytes travel to it as base64 in a JSON request, so a large file costs several times its size in memory while it renders: the request, the bytes the engine decodes, the PDF that holds them and the PDF sent back. Node.js hands the bytes to the engine directly.
 
 ## Encryption and PDF/A
 
@@ -119,4 +119,5 @@ Each of these stops the render with an error that says what to change:
 - two files with the same name
 - a `relationship` that isn't one of the five, or a `mime` that isn't a type and a subtype
 - a file without a name
+- a file over 2 GB
 - `attachments` in a document whose `output` asks for `pdfa`

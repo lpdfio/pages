@@ -101,6 +101,13 @@ lpdf-demo {
 .lpdf-s-ok      { color: #4ec9b0; }
 .lpdf-s-error   { color: #f44747; word-break: break-all; }
 
+/* A document that asks for encryption is shown unencrypted: the playground has no passwords. */
+.lpdf-encryption-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
 .lpdf-spinner {
     display: inline-block;
     width: 9px;

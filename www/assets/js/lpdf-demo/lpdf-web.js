@@ -12,12 +12,6 @@ export class LpdfEngine {
         wasm.__wbg_lpdfengine_free(ptr, 0);
     }
     /**
-     * Remove any previously configured encryption.
-     */
-    clear_encryption() {
-        wasm.lpdfengine_clear_encryption(this.__wbg_ptr);
-    }
-    /**
      * Register raw font bytes (TTF/OTF) for a custom font name.
      * Call this once per font before calling `render_pdf`.
      * Glyph advance-width metrics are extracted automatically from the font
@@ -98,22 +92,38 @@ export class LpdfEngine {
      * `json_data` is an optional JSON string used to resolve `data-*`
      * attributes in the template.  Pass `None` (or `null` / `undefined` from
      * JavaScript) to render the template with its inline fallback content.
+     *
+     * The rest is for a document that asks for encryption in its `<output>`, which sets the cipher and
+     * the permissions: the passwords, which the template never holds, and `entropy`, at least 32 random
+     * bytes from the host's secure generator for AES-256. A document that asks for encryption needs an
+     * owner password, or `skip_encryption` to render it unencrypted, as a preview does; passwords for a
+     * document that doesn't ask for it are an error, and so are passwords with `skip_encryption`.
      * @param {string} xml
-     * @param {string | null} [json_data]
+     * @param {string | null | undefined} json_data
+     * @param {string | null | undefined} user_password
+     * @param {string | null | undefined} owner_password
+     * @param {boolean} skip_encryption
+     * @param {Uint8Array} entropy
      * @returns {Uint8Array}
      */
-    render_pdf(xml, json_data) {
+    render_pdf(xml, json_data, user_password, owner_password, skip_encryption, entropy) {
         const ptr0 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         var ptr1 = isLikeNone(json_data) ? 0 : passStringToWasm0(json_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
-        const ret = wasm.lpdfengine_render_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+        var ptr2 = isLikeNone(user_password) ? 0 : passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len2 = WASM_VECTOR_LEN;
+        var ptr3 = isLikeNone(owner_password) ? 0 : passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len3 = WASM_VECTOR_LEN;
+        const ptr4 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_render_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, skip_encryption, ptr4, len4);
         if (ret[3]) {
             throw takeFromExternrefTable0(ret[2]);
         }
-        var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        var v6 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        return v3;
+        return v6;
     }
     /**
      * @param {string} json
@@ -140,19 +150,32 @@ export class LpdfEngine {
      * when an `LpdfDocument` Kit tree is passed to `renderPdf()`, avoiding an
      * intermediate XML serialisation step. PHP, Python, and .NET adapters also
      * use this entry point.
+     *
+     * The passwords, `skip_encryption` and `entropy` are those of `render_pdf`, for a document whose
+     * `output` asks for encryption.
      * @param {string} json
+     * @param {string | null | undefined} user_password
+     * @param {string | null | undefined} owner_password
+     * @param {boolean} skip_encryption
+     * @param {Uint8Array} entropy
      * @returns {Uint8Array}
      */
-    render_tree_pdf(json) {
+    render_tree_pdf(json, user_password, owner_password, skip_encryption, entropy) {
         const ptr0 = passStringToWasm0(json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.lpdfengine_render_tree_pdf(this.__wbg_ptr, ptr0, len0);
+        var ptr1 = isLikeNone(user_password) ? 0 : passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        var ptr2 = isLikeNone(owner_password) ? 0 : passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len2 = WASM_VECTOR_LEN;
+        const ptr3 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
+        const len3 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_render_tree_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, skip_encryption, ptr3, len3);
         if (ret[3]) {
             throw takeFromExternrefTable0(ret[2]);
         }
-        var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        var v5 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        return v2;
+        return v5;
     }
     /**
      * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`).
@@ -164,42 +187,6 @@ export class LpdfEngine {
         const ptr0 = passStringToWasm0(iso, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.lpdfengine_set_created_on(this.__wbg_ptr, ptr0, len0);
-    }
-    /**
-     * Configure encryption applied to every subsequent `render_pdf` call.
-     *
-     * `permissions_json` is a JSON object with boolean fields matching the
-     * `Permissions` struct (`print`, `modify`, `copy`, `annotate`, `fill_forms`,
-     * `accessibility`, `assemble`, `print_hq`). Omitted fields default to `true`.
-     *
-     * `algorithm` is `"aes-256"` or `"rc4-128"`. AES-256 needs `entropy`: at least 32
-     * random bytes from the host's secure generator, from which the core cuts the file
-     * key, salts and IVs. RC4-128 ignores it. Fails when the algorithm is unknown or
-     * AES-256 gets too little entropy.
-     *
-     * To apply permissions without an open password, pass an empty `user_password`
-     * and a non-empty `owner_password`.
-     * @param {string} user_password
-     * @param {string} owner_password
-     * @param {string} permissions_json
-     * @param {string} algorithm
-     * @param {Uint8Array} entropy
-     */
-    set_encryption(user_password, owner_password, permissions_json, algorithm, entropy) {
-        const ptr0 = passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ptr1 = passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len1 = WASM_VECTOR_LEN;
-        const ptr2 = passStringToWasm0(permissions_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len2 = WASM_VECTOR_LEN;
-        const ptr3 = passStringToWasm0(algorithm, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len3 = WASM_VECTOR_LEN;
-        const ptr4 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
-        const len4 = WASM_VECTOR_LEN;
-        const ret = wasm.lpdfengine_set_encryption(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
     }
     /**
      * Inject glyph advance-width tables for custom fonts.

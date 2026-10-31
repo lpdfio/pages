@@ -11,12 +11,6 @@ var LpdfEngine = class {
     wasm.__wbg_lpdfengine_free(ptr, 0);
   }
   /**
-   * Remove any previously configured encryption.
-   */
-  clear_encryption() {
-    wasm.lpdfengine_clear_encryption(this.__wbg_ptr);
-  }
-  /**
    * Register raw font bytes (TTF/OTF) for a custom font name.
    * Call this once per font before calling `render_pdf`.
    * Glyph advance-width metrics are extracted automatically from the font
@@ -44,6 +38,20 @@ var LpdfEngine = class {
     const ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
     wasm.lpdfengine_load_image(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+  }
+  /**
+   * Register the text of a file of Markdown rules, the root of which is a `<markdown-styles>`, for the
+   * `src` that names it. The engine reads no files: call this once for every `<markdown-styles src="…">`
+   * of the document before `render_pdf`, as `load_font` is called for a font.
+   * @param {string} src
+   * @param {string} xml
+   */
+  load_markdown_styles(src, xml) {
+    const ptr0 = passStringToWasm0(src, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    wasm.lpdfengine_load_markdown_styles(this.__wbg_ptr, ptr0, len0, ptr1, len1);
   }
   /**
    * @param {string} license_key
@@ -83,22 +91,38 @@ var LpdfEngine = class {
    * `json_data` is an optional JSON string used to resolve `data-*`
    * attributes in the template.  Pass `None` (or `null` / `undefined` from
    * JavaScript) to render the template with its inline fallback content.
+   *
+   * The rest is for a document that asks for encryption in its `<output>`, which sets the cipher and
+   * the permissions: the passwords, which the template never holds, and `entropy`, at least 32 random
+   * bytes from the host's secure generator for AES-256. A document that asks for encryption needs an
+   * owner password, or `skip_encryption` to render it unencrypted, as a preview does; passwords for a
+   * document that doesn't ask for it are an error, and so are passwords with `skip_encryption`.
    * @param {string} xml
-   * @param {string | null} [json_data]
+   * @param {string | null | undefined} json_data
+   * @param {string | null | undefined} user_password
+   * @param {string | null | undefined} owner_password
+   * @param {boolean} skip_encryption
+   * @param {Uint8Array} entropy
    * @returns {Uint8Array}
    */
-  render_pdf(xml, json_data) {
+  render_pdf(xml, json_data, user_password, owner_password, skip_encryption, entropy) {
     const ptr0 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     var ptr1 = isLikeNone(json_data) ? 0 : passStringToWasm0(json_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     var len1 = WASM_VECTOR_LEN;
-    const ret = wasm.lpdfengine_render_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+    var ptr2 = isLikeNone(user_password) ? 0 : passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len2 = WASM_VECTOR_LEN;
+    var ptr3 = isLikeNone(owner_password) ? 0 : passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len3 = WASM_VECTOR_LEN;
+    const ptr4 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
+    const len4 = WASM_VECTOR_LEN;
+    const ret = wasm.lpdfengine_render_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, skip_encryption, ptr4, len4);
     if (ret[3]) {
       throw takeFromExternrefTable0(ret[2]);
     }
-    var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    var v6 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v3;
+    return v6;
   }
   /**
    * @param {string} json
@@ -119,25 +143,38 @@ var LpdfEngine = class {
     }
   }
   /**
-   * Render a JSON kit-tree or canvas-tree document to PDF bytes.
+   * Render a JSON kit-tree document to PDF bytes.
    *
    * This is the JSON counterpart of `render_pdf`. The Node adapter uses it
    * when an `LpdfDocument` Kit tree is passed to `renderPdf()`, avoiding an
    * intermediate XML serialisation step. PHP, Python, and .NET adapters also
    * use this entry point.
+   *
+   * The passwords, `skip_encryption` and `entropy` are those of `render_pdf`, for a document whose
+   * `output` asks for encryption.
    * @param {string} json
+   * @param {string | null | undefined} user_password
+   * @param {string | null | undefined} owner_password
+   * @param {boolean} skip_encryption
+   * @param {Uint8Array} entropy
    * @returns {Uint8Array}
    */
-  render_tree_pdf(json) {
+  render_tree_pdf(json, user_password, owner_password, skip_encryption, entropy) {
     const ptr0 = passStringToWasm0(json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.lpdfengine_render_tree_pdf(this.__wbg_ptr, ptr0, len0);
+    var ptr1 = isLikeNone(user_password) ? 0 : passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ptr2 = isLikeNone(owner_password) ? 0 : passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len2 = WASM_VECTOR_LEN;
+    const ptr3 = passArray8ToWasm0(entropy, wasm.__wbindgen_malloc);
+    const len3 = WASM_VECTOR_LEN;
+    const ret = wasm.lpdfengine_render_tree_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, skip_encryption, ptr3, len3);
     if (ret[3]) {
       throw takeFromExternrefTable0(ret[2]);
     }
-    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    var v5 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v2;
+    return v5;
   }
   /**
    * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`).
@@ -149,28 +186,6 @@ var LpdfEngine = class {
     const ptr0 = passStringToWasm0(iso, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     wasm.lpdfengine_set_created_on(this.__wbg_ptr, ptr0, len0);
-  }
-  /**
-   * Configure RC4-128 encryption applied to every subsequent `render_pdf` call.
-   *
-   * `permissions_json` is a JSON object with boolean fields matching the
-   * `Permissions` struct (`print`, `modify`, `copy`, `annotate`, `fill_forms`,
-   * `accessibility`, `assemble`, `print_hq`). Omitted fields default to `true`.
-   *
-   * To apply permissions without an open password, pass an empty `user_password`
-   * and a non-empty `owner_password`.
-   * @param {string} user_password
-   * @param {string} owner_password
-   * @param {string} permissions_json
-   */
-  set_encryption(user_password, owner_password, permissions_json) {
-    const ptr0 = passStringToWasm0(user_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passStringToWasm0(owner_password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ptr2 = passStringToWasm0(permissions_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len2 = WASM_VECTOR_LEN;
-    wasm.lpdfengine_set_encryption(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2);
   }
   /**
    * Inject glyph advance-width tables for custom fonts.
@@ -203,6 +218,20 @@ var LpdfEngine = class {
   }
 };
 if (Symbol.dispose) LpdfEngine.prototype[Symbol.dispose] = LpdfEngine.prototype.free;
+function check_license(token, now_unix) {
+  let deferred2_0;
+  let deferred2_1;
+  try {
+    const ptr0 = passStringToWasm0(token, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.check_license(ptr0, len0, now_unix);
+    deferred2_0 = ret[0];
+    deferred2_1 = ret[1];
+    return getStringFromWasm0(ret[0], ret[1]);
+  } finally {
+    wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+  }
+}
 function __wbg_get_imports() {
   const import0 = {
     __proto__: null,
@@ -378,12 +407,94 @@ async function __wbg_init(module_or_path) {
   return __wbg_finalize_init(instance, module);
 }
 
+// src/_shared.ts
+var ENTROPY_BYTES = 32;
+function encryptionArguments(options, randomBytes) {
+  const hasPassword = options.userPassword !== void 0 || options.ownerPassword !== void 0;
+  return [
+    options.userPassword ?? null,
+    options.ownerPassword ?? null,
+    options.skipEncryption ?? false,
+    hasPassword ? randomBytes(ENTROPY_BYTES) : new Uint8Array(0)
+  ];
+}
+
+// src/constants.ts
+var FieldType = {
+  Text: "text",
+  Checkbox: "checkbox",
+  Dropdown: "dropdown",
+  Radio: "radio",
+  Button: "button"
+};
+var Pin = {
+  Top: "top",
+  Bottom: "bottom",
+  Left: "left",
+  Right: "right"
+};
+var Orientation = {
+  Portrait: "portrait",
+  Landscape: "landscape"
+};
+var SectionType = {
+  Toc: "toc"
+};
+var FootnoteCounter = {
+  Page: "page",
+  Section: "section",
+  Document: "document"
+};
+var Cipher = {
+  Aes256: "aes-256",
+  Rc4128: "rc4-128"
+};
+var Permission = {
+  Print: "print",
+  Modify: "modify",
+  Copy: "copy",
+  Annotate: "annotate",
+  FillForms: "fill-forms",
+  Accessibility: "accessibility",
+  Assemble: "assemble"
+};
+var BuiltinFont = {
+  Courier: "Courier",
+  CourierBold: "Courier-Bold",
+  CourierOblique: "Courier-Oblique",
+  CourierBoldOblique: "Courier-BoldOblique",
+  Helvetica: "Helvetica",
+  HelveticaBold: "Helvetica-Bold",
+  HelveticaOblique: "Helvetica-Oblique",
+  HelveticaBoldOblique: "Helvetica-BoldOblique",
+  TimesRoman: "Times-Roman",
+  TimesBold: "Times-Bold",
+  TimesItalic: "Times-Italic",
+  TimesBoldItalic: "Times-BoldItalic",
+  Symbol: "Symbol",
+  ZapfDingbats: "ZapfDingbats"
+};
+var PageScope = {
+  Each: "each",
+  First: "first",
+  Last: "last",
+  Odd: "odd",
+  Even: "even"
+};
+
 // src/browser.ts
 var NoAttr = null;
+function nowUnix() {
+  return BigInt(Math.floor(Date.now() / 1e3));
+}
+function secureRandomBytes(count) {
+  return crypto.getRandomValues(new Uint8Array(count));
+}
 async function initLpdf(wasmSource, licenseKey = "") {
   await __wbg_init(wasmSource);
   const fontMap = /* @__PURE__ */ new Map();
   const imageMap = /* @__PURE__ */ new Map();
+  const markdownStyles = /* @__PURE__ */ new Map();
   return {
     loadFont(name, bytes) {
       fontMap.set(name, bytes);
@@ -391,37 +502,53 @@ async function initLpdf(wasmSource, licenseKey = "") {
     loadImage(name, bytes) {
       imageMap.set(name, bytes);
     },
+    loadMarkdownStyles(src, text) {
+      markdownStyles.set(src, text);
+    },
+    checkLicenseKey(key) {
+      return JSON.parse(check_license(key ?? licenseKey, nowUnix()));
+    },
     async render(input, callOptions = {}) {
       const engine = new LpdfEngine(licenseKey);
+      engine.set_now(nowUnix());
       for (const [name, bytes] of fontMap) {
         engine.load_font(name, bytes);
       }
       for (const [name, bytes] of imageMap) {
         engine.load_image(name, bytes);
       }
+      for (const [src, text] of markdownStyles) {
+        engine.load_markdown_styles(src, text);
+      }
       if (callOptions.createdOn) {
         engine.set_created_on(callOptions.createdOn);
       }
+      const encryption = encryptionArguments(callOptions, secureRandomBytes);
       let pdf;
-      if (typeof input === "string") {
-        const dataJson = callOptions.data != null ? JSON.stringify(callOptions.data) : null;
-        pdf = engine.render_pdf(input, dataJson);
-      } else {
-        const wasmExt = engine;
-        if (typeof wasmExt.render_tree_pdf === "function") {
-          pdf = wasmExt.render_tree_pdf(JSON.stringify(input));
+      try {
+        if (typeof input === "string") {
+          const dataJson = callOptions.data != null ? JSON.stringify(callOptions.data) : null;
+          pdf = engine.render_pdf(input, dataJson, ...encryption);
         } else {
-          const mod = engine;
-          const xml = mod.constructor.kit_to_xml?.(JSON.stringify(input)) ?? "";
-          pdf = engine.render_pdf(xml, null);
+          pdf = engine.render_tree_pdf(JSON.stringify(input), ...encryption);
         }
+      } finally {
+        engine.free();
       }
-      engine.free();
       return pdf;
     }
   };
 }
 export {
+  BuiltinFont,
+  Cipher,
+  FieldType,
+  FootnoteCounter,
   NoAttr,
+  Orientation,
+  PageScope,
+  Permission,
+  Pin,
+  SectionType,
   initLpdf
 };

@@ -102,6 +102,15 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `keywords` | string | Keywords |
 | `creator`  | string | Creating application |
 
+### `output`
+
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it. Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
+| `allow`   | list   | everything | What a reader may do without the owner password, separated by spaces: `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. `allow=""` allows nothing. It needs `encrypt` |
+
 ### `document`
 
 | Attribute     | Type    | Default    | Description |
@@ -113,7 +122,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
 | `debug`       | boolean | false      | Render layout boxes |
 
-A document holds an optional `meta` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
+A document holds an optional `meta`, an optional `output` and one or more `section` elements. Other attributes are not read: `width`, `height`, `color` and `title` are ignored, and `font-size` and `margin` are errors (the margin is set on the `layout`). Set a page size with `size="200pt 300pt"`, and the title on `meta`.
 
 ### `section`
 

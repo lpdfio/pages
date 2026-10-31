@@ -12,6 +12,19 @@ export class LpdfEngine {
         wasm.__wbg_lpdfengine_free(ptr, 0);
     }
     /**
+     * Register the bytes of a file a document carries, for the `<file>` of its `<attachments>` whose `ref`, or with
+     * no ref whose name, is `name`. The PDF carries them as they are.
+     * @param {string} name
+     * @param {Uint8Array} bytes
+     */
+    load_file(name, bytes) {
+        const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.lpdfengine_load_file(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+    }
+    /**
      * Register raw font bytes (TTF/OTF) for a custom font name.
      * Call this once per font before calling `render_pdf`.
      * Glyph advance-width metrics are extracted automatically from the font

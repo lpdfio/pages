@@ -109,7 +109,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
-| `allow`   | list   | everything | What a reader may do without the owner password, separated by spaces: `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. `allow=""` allows nothing. It needs `encrypt` |
+| `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
 
 ### `attachments`

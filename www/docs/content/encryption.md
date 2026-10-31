@@ -20,7 +20,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | `aes-256` `rc4-128` | — | Encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted |
-| `allow` | list | everything | What a reader may do without the owner password, separated by spaces. `allow=""` allows nothing. It needs `encrypt` |
+| `allow` | list | nothing | What a reader may do without the owner password, separated by spaces, or `all`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa` | `2b` `2u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
 
 The files a document carries in its [`attachments`](?p=attachments) are encrypted with the rest, under the same passwords.
@@ -36,10 +36,11 @@ A PDF with both passwords opens with either. The permissions are advisory: a rea
 
 ## Permissions
 
-`allow` lists what a reader may do, separated by spaces, as `cols` lists the columns of a table. What it doesn't name is denied.
+`allow` lists what a reader may do, separated by spaces, as `cols` lists the columns of a table. A permission comes only from naming it: what `allow` doesn't name is denied, and without `allow` everything is. `allow="all"` allows everything.
 
 | Word | Allows |
 |------|--------|
+| `all` | Everything below |
 | `print` | Printing, at full quality |
 | `modify` | Changing the content |
 | `copy` | Copying text and graphics |
@@ -48,7 +49,7 @@ A PDF with both passwords opens with either. The permissions are advisory: a rea
 | `accessibility` | Reading the text aloud with a screen reader |
 | `assemble` | Inserting, deleting and rotating pages |
 
-`allow="print fill-forms"` lets a reader print the PDF and fill in its fields, and nothing else.
+`allow="print fill-forms"` lets a reader print the PDF and fill in its fields, and nothing else. A value that goes missing on its way, such as a `NaN` in code that the tree carries as `null`, leaves `allow` out, so the file stays locked rather than open.
 
 ## Cipher
 
@@ -134,4 +135,4 @@ Each of these stops the render with an error that says what to change:
 - the render has passwords and skips the encryption
 - `allow` without `encrypt`
 - `encrypt` with `pdfa`: PDF/A forbids encryption
-- a word in `allow` that isn't one of the seven, or a cipher in `encrypt` that isn't `aes-256` or `rc4-128`
+- a word in `allow` that isn't `all` or one of the seven, or a cipher in `encrypt` that isn't `aes-256` or `rc4-128`

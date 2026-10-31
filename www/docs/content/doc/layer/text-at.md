@@ -16,7 +16,7 @@
 | `font`        | string    | the layer's `font`, else the document's, or `Helvetica` | Font name: a built-in font or one declared in `assets` |
 | `font-size`   | token/pt  | the layer's, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
 | `bold`        | boolean   | `false`     | The bold face of a built-in font |
-| `color`       | color     | the layer's, else `#1a1a1a` | Text color: `#333333` or a named token. A color named `text` in `tokens` changes the default |
+| `color`       | color     | the layer's, else `#1a1a1a` | Text color: a [color](?p=xml/schema#colors), such as `#333333` or `cmyk(0, 0, 0, 80)`, or a named token. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
 | `data-value`  | string    | —           | Dot-path: replaces the text with the bound value. See [Text from data](#text-from-data) |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |

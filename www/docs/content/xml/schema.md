@@ -133,7 +133,30 @@ A name is lowercase letters, digits and `-`, and starts with a letter. It cannot
 
 ## Colors
 
-A color is `#rgb` or `#rrggbb`, or the name of a color in `tokens`. There is no alpha channel: use `opacity` on a [layer](?p=doc/layer#opacity) or on a [box](?p=doc/layout#opacity). A name that is not defined is an error.
+A color is written in one of four forms, or as the name of a color in `tokens`:
+
+```
+"#1763cf"               ← hex: #rrggbb or #rgb
+"cmyk(91, 61, 0, 19)"   ← cyan, magenta, yellow and black, each from 0 to 100
+"rgb(23, 99, 207)"      ← red, green and blue, each from 0 to 255
+"hsl(215, 80%, 45%)"    ← hue from 0 to 360, saturation and lightness from 0% to 100%
+"brand"                 ← a color named in tokens
+```
+
+Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`, the color of a `border` or a `shadow`, the `value` of a `color` in `tokens`, the colors of a gradient, and a value that `data-color` finds. A name that is not defined is an error.
+
+- **Screen and print.** Hex, `rgb()` and `hsl()` are screen colors, in RGB, and `rgb()` and `hsl()` give the same PDF as their hex: `rgb(23, 99, 207)` and `hsl(215, 80%, 45%)` are both `#1763cf`. `hsl()` makes shades of one color easy: keep the hue and change the lightness. `cmyk()` is a print color: the PDF has it as the four inks, so a printer separates its plates without converting it from RGB, which shifts colors. Lpdf never converts between the two.
+- **Both in one document.** RGB and CMYK colors can sit side by side, on one page or in sections of their own: `color="#1763cf"` in a section for the screen and `color="cmyk(91, 61, 0, 19)"` in one for print. A gradient is the exception: its colors are all CMYK or all RGB (see [Gradients](#gradients)).
+- **Commas or spaces.** The values are separated by commas or by spaces, as in CSS: `cmyk(0, 0, 0, 100)` and `cmyk(0 0 0 100)` are the same black. One color uses one or the other, so `rgb(23, 99 207)` is an error.
+- **No alpha.** A color is always solid: `rgba(23, 99, 207, 0.5)` and `rgb(23 99 207 / 50%)` are errors. Use `opacity` on a [layer](?p=doc/layer#opacity) or on a [box](?p=doc/layout#opacity), or the opacity of a `shadow`.
+- **Keep print colors opaque.** Whatever is faded, a layer or a box with an `opacity` below 1 or a shadow with an opacity, is blended in RGB: its `cmyk()` colors are still written as inks, but they are converted to RGB to blend them, and so at print too. Leave the colors meant for print at full opacity.
+
+**A color is read strictly**, so that a typo stops the render instead of printing the wrong color. Each of these is an error that names the value:
+
+- a malformed color, such as `cmyk(0, 0, 100)` with three values, or a part that is not a number
+- a value out of its range: `cmyk(0, 0, 0, 120)`, `rgb(256, 0, 0)`, or a hue past 360, which does not wrap as in CSS, so `hsl(2150, 80%, 45%)` with a digit too many is not the red that 350 would be
+- a percentage in `rgb()`: `rgb(9%, 39%, 81%)`. Write 0 to 255
+- `hsl()` without its `%`: `hsl(215, 0.8, 0.45)` would be a near-black gray, so the `%` is required
 
 ## Gradients
 
@@ -143,7 +166,7 @@ A gradient is a named blend of colors. Define it once in `gradients` inside `tok
 |----------------------|-------------|
 | `name`               | **Required.** The name that follows `gradient:`: lowercase letters, digits and `-`, starting with a letter |
 | `type`               | **Required.** `linear` or `radial` |
-| `from`, `to`         | The first and the last color, for two colors: `#rrggbb`, `#rgb` or a color name |
+| `from`, `to`         | The first and the last color, for two colors: hex, `cmyk()`, `rgb()`, `hsl()` or a color name |
 | `angle`              | The direction of a linear gradient, in degrees. Default `0` |
 
 For more than two colors, give `stop` children in place of `from` and `to`. Each has an `offset`, a percentage from `0%` to `100%`, and a `color`. The offsets must increase. The first color holds up to the first stop, and the last color after the last stop.
@@ -151,7 +174,8 @@ For more than two colors, give `stop` children in place of `from` and `to`. Each
 - **Where it goes.** The `background` of `column`, `row`, `grid`, `frame`, `td`, `table`, `thead`, `tr`, `section` and `document`, and the `fill` of `rect`, `circle`, `ellipse` and `path`. A stroke, a text's `color` and the backgrounds of `barcode`, `img` and `field` take colors only, and `gradient:` there is an error.
 - **Angle.** `0` runs from the top to the bottom, `90` from the left to the right, and `180` from the bottom to the top. `45` runs from the top-left corner to the bottom-right. The line is as long as the box needs, so the first and last colors reach the corners.
 - **Radial.** A circle at the center of the box, out to its farthest corner: `from` is the center and `to` the edge.
-- **Colors.** Hex or a color name, never another gradient. A color name in a gradient is looked up after the `colors` are read, so the order in `tokens` does not matter.
+- **Colors.** Any [color](#colors) or a color name, never another gradient. A color name in a gradient is looked up after the `colors` are read, so the order in `tokens` does not matter.
+- **All CMYK or all RGB.** A PDF shading has one color space, so a gradient's colors are all `cmyk()`, or all hex, `rgb()` and `hsl()`. A gradient that mixes them is an error that names it, since converting one kind to the other would change the colors.
 - **Pages.** A box that splits across pages gets its own gradient on each page. The `background` of a page or a section spans the page.
 - **Border, shadow and opacity.** A border is drawn flat over the gradient, and a shadow under it. A box's `opacity` fades the gradient with the rest.
 
@@ -198,9 +222,10 @@ One document with each kind: two colors, three stops, and a radial gradient on a
 A border is a thickness and a color, separated by a space. The thickness is a token or a `pt` value:
 
 ```
-"s #cccccc"       ← token thickness + hex color
-"1.5pt #333333"   ← pt thickness + hex color
-"m brand"         ← token thickness + color token
+"s #cccccc"          ← token thickness + hex color
+"1.5pt #333333"      ← pt thickness + hex color
+"m brand"            ← token thickness + color token
+"s cmyk(0 0 0 40)"   ← token thickness + any other form of a color
 ```
 
 A border with only a color, such as `"#e0e0e0"`, is an error.

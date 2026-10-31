@@ -67,7 +67,7 @@ A name of your own for a slot of the scale. An attribute that takes a slot (`xs`
 | Attribute | Type   | Description |
 |-----------|--------|-------------|
 | `name`    | string | **Required.** Name to use in any color attribute. A color named `text` becomes the default text color |
-| `value`   | color  | **Required.** `#rgb` or `#rrggbb` |
+| `value`   | color  | **Required.** `#rgb`, `#rrggbb`, `cmyk()`, `rgb()` or `hsl()`. See [Colors](?p=xml/schema#colors) |
 
 ### `gradient`
 
@@ -77,7 +77,7 @@ A named blend of colors, in `gradients` inside `tokens`. A `background` or a `fi
 |-----------|--------|----------|-------------|
 | `name`    | string | —        | **Required.** The name that follows `gradient:`. Lowercase letters, digits and `-`, starting with a letter |
 | `type`    | string | —        | **Required.** `linear` or `radial` |
-| `from`    | color  | —        | The first color: `#rgb`, `#rrggbb` or a color name. Used with `to`, when there are no `stop` children. For a radial gradient it is the center |
+| `from`    | color  | —        | The first color: hex, `cmyk()`, `rgb()`, `hsl()` or a color name. Used with `to`, when there are no `stop` children. For a radial gradient it is the center |
 | `to`      | color  | —        | The last color. Used with `from`. For a radial gradient it is the edge |
 | `angle`   | number | `0`      | The direction of a linear gradient, in degrees: `0` runs from the top to the bottom, `90` from the left to the right, `180` from the bottom to the top. A radial gradient has no direction |
 
@@ -88,7 +88,7 @@ A color at a place along a `gradient`. A gradient takes two or more, in increasi
 | Attribute | Type    | Description |
 |-----------|---------|-------------|
 | `offset`  | percent | **Required.** Where the color is reached, from `0%` (the start) to `100%` (the end). Offsets must increase |
-| `color`   | color   | **Required.** `#rgb`, `#rrggbb` or a color name. A gradient's colors are never another gradient |
+| `color`   | color   | **Required.** Hex, `cmyk()`, `rgb()`, `hsl()` or a color name. A gradient's colors are never another gradient, and are all CMYK or all RGB |
 
 ### `meta`
 

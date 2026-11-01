@@ -101,16 +101,18 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `subject`  | string | Subject |
 | `keywords` | string | Keywords |
 | `creator`  | string | Creating application |
+| `lang`     | string | The language of the text, as a language tag such as `en-US`, which a screen reader reads it in. A [PDF/UA](?p=pdfua) document needs it |
 
 ### `output`
 
-How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa) or [PDF/UA](?p=pdfua). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
+| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout an `alt`, and every text a font of `assets`, each an error that says what to change |
 
 ### `attachments`
 
@@ -303,6 +305,7 @@ Paragraph or inline text.
 | `line-height`| number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
 | `max-lines`  | integer | —         | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](?p=doc/layout/text#capping-a-text) |
 | `ellipsis`   | boolean | `false`   | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |
+| `role`       | string  | —         | `h1` … `h6`: makes the text a heading, which a [PDF/UA](?p=pdfua) document tags as one. It changes nothing a page shows. A document without `pdfua` ignores it |
 | `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
 | `orphans`    | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page. `1` turns it off |
 | `capture`    | string  | —         | Records the words of this text under a name, for a header or a footer to show. See [Running headers](?p=doc/layout#running-headers) |
@@ -363,6 +366,7 @@ Inline image.
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
+| `alt`        | string  | —       | What the image shows, which a screen reader reads in a [PDF/UA](?p=pdfua) document; `alt=""` marks it as decoration. A PDF/UA document needs it. A document without `pdfua` ignores it |
 | `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
 | `height`     | token/pt | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
@@ -437,6 +441,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 |-------------|---------|-----------|-------------|
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
+| `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a [PDF/UA](?p=pdfua) document in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it. A document without `pdfua` ignores it |
 | `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`    | token/pt| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
@@ -519,6 +524,7 @@ Fixed content, in the order it is written among the section's layers and layout.
 | `font`      | string  | the document's `font`, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own |
 | `font-size` | token/pt| `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
 | `color`     | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
+| `alt`       | string  | —       | In a [PDF/UA](?p=pdfua) document, what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, which a reader skips with its text |
 | `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
 | `data-if-not` | string | —      | Draw the layer only when the value at the path is falsy |
 

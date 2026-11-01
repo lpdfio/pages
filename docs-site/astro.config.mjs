@@ -106,6 +106,7 @@ export default defineConfig({
                     items: [
                         { slug: 'encryption', label: 'Encryption' },
                         { slug: 'pdfa', label: 'PDF/A' },
+                        { slug: 'pdfua', label: 'PDF/UA' },
                         { slug: 'attachments', label: 'Attachments' },
                     ],
                 },

@@ -275,11 +275,13 @@ var xml = """
     """;
 
 var engine = L.Engine();
-var pdf = await engine.Render(xml);
+var pdf = engine.Render(xml);
 await File.WriteAllBytesAsync("hello.pdf", pdf);
 ```
 
 To render a file, read it into a string with `File.ReadAllTextAsync` and pass that to `Render`.
+
+`Render` runs on the caller's thread and returns the PDF's bytes. To render on another thread, write `await Task.Run(() => engine.Render(xml))`.
 
 ## Create PDF with code
 
@@ -301,7 +303,7 @@ var doc = L.Document(new() { Size = "a4" }, [
 ]);
 
 var engine = L.Engine();
-var pdf = await engine.Render(doc);
+var pdf = engine.Render(doc);
 await File.WriteAllBytesAsync("hello.pdf", pdf);
 ```
 

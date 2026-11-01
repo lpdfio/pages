@@ -89,7 +89,7 @@ var data = new {
     total = "$1,600.00",
 };
 
-var pdf = await engine.Render(xml, new RenderOptions { Data = data });
+var pdf = engine.Render(xml, new RenderOptions { Data = data });
 ```
 
 :::

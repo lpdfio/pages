@@ -90,7 +90,7 @@ using Lpdf;
 
 using var engine = L.Engine();
 engine.LoadFile("invoice.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
-var pdf = await engine.Render(xml);
+var pdf = engine.Render(xml);
 
 await File.WriteAllBytesAsync("invoice.pdf", pdf);
 ```

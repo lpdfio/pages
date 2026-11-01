@@ -172,8 +172,8 @@ composer require lpdfio/lpdf:~0.22.0
 
 ## Requirements
 
-- Python 3.11 or later
-- The [`wasmtime`](https://wasmtime.dev) command-line tool on your `PATH`, which runs the bundled WASI binary
+- Python 3.11 or later, on Linux (x86_64 or aarch64, glibc or musl), macOS (x86_64 or arm64) or Windows (x64 or arm64)
+- Nothing else: the engine runs inside Python on the [`wasmtime`](https://pypi.org/project/wasmtime/) package, which pip installs with the SDK
 
 ## Install
 
@@ -230,6 +230,10 @@ engine = L.engine()
 pdf = engine.render(doc)
 Path('hello.pdf').write_bytes(pdf)
 ```
+
+## Threads
+
+A render releases the GIL, so renders on threads run in parallel: use a thread pool, or `asyncio.to_thread` in async code. The first render of a process compiles the engine, which takes a few hundred milliseconds, and the renders after it share it.
 
 ## Versioning
 

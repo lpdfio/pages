@@ -158,6 +158,8 @@ $pdf = $engine->render($doc);
 file_put_contents('hello.pdf', $pdf);
 ```
 
+An attribute class takes its attributes as named arguments, `new TextAttr(fontSize: 'xl')`. Positional arguments aren't supported: the parameters follow the schema's order, so an attribute added in a later version can move them.
+
 ## Versioning
 
 The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.22.3` runs engine `0.22`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes:

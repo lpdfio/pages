@@ -49,9 +49,13 @@ Both groups start on, and the viewer turns one off as it shows the page, or as i
 - A link in print content does nothing: its words are drawn and printed, and no link is written, so there is no spot on screen to click where nothing shows. A link in screen content works as any other.
 - A form field can't be in print content, where it could be filled neither on screen, which hides it, nor on paper. It is an error, which says to use a [`frame`](?p=doc/layout/frame) with a border for a box filled in by hand, as the slip above does. A field in screen content is filled on screen as any other.
 
-## PDF/A, PDF/UA and PDF/X
+## PDF/A and PDF/UA
 
-With `pdfa`, `pdfua` or `pdfx` on the [`output`](?p=xml/elements#output), everything shows: the file is written as if the document had no `ocg`, on screen and in print, and a link in print content is a link. PDF/A and PDF/UA forbid the entry that switches a group between screen and print. A document with `ocg` renders with any of them without an error, so one template serves both: the [PDF/A](?p=pdfa) copy holds the print content and the screen content alike, and a screen reader reads all of a [PDF/UA](?p=pdfua) file. A form field in print content is an error there too.
+With `pdfa` or `pdfua` on the [`output`](?p=xml/elements#output), everything shows: the file is written as if the document had no `ocg`, on screen and in print, and a link in print content is a link. PDF/A and PDF/UA forbid the entry that switches a group between screen and print. A document with `ocg` renders with either without an error, so one template serves both: the [PDF/A](?p=pdfa) copy holds the print content and the screen content alike, and a screen reader reads all of a [PDF/UA](?p=pdfua) file. A form field in print content is an error there too.
+
+## PDF/X
+
+A [PDF/X](?p=pdfx) file goes to a press, which prints what is on by default, and PDF/X-4 has no switching between screen and print. So with `pdfx`, the file is the print version: print content is on, and screen content stays in the file, off. A viewer shows the print version too, as a proof of what the press prints, and a reader can turn "Screen only" on in a layers panel, such as Acrobat's. With `pdfua` as well, everything shows, as in any PDF/UA file.
 
 ## Hidden is not removed
 

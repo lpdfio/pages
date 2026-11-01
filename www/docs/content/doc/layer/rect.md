@@ -17,6 +17,7 @@ A filled or stroked rectangle in a [layer](?p=doc/layer).
 | `stroke-width` | pt        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
 | `shadow`       | string    | —       | A hard-edged shadow under the rectangle: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 Either `anchor` or both `x` and `y` must be provided. To fade a rectangle, put it in a layer with `opacity`.
 

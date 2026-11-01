@@ -240,6 +240,7 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 | `font`      | string  | inherit | Font for the text inside |
 | `font-size` | token/pt| inherit | Font size for the text inside |
 | `debug`     | boolean | false   | Draw the box outlines |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `column`
 
@@ -281,6 +282,7 @@ A list of items, each marked with a bullet drawn as a shape or a number the engi
 | `prefix`   | string   | —         | Text before each number of a number list |
 | `suffix`   | string   | `.`       | Text after each number of a number list |
 | `indent`   | token/pt | `24pt`    | The width of the marker's column: the words of an item start this far from the list's left edge, at every level |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `li`
 
@@ -307,6 +309,7 @@ Code, or any text whose spaces and lines matter, in a box. The text is kept as i
 | `widows`, `orphans` | integer | `2` | The fewest lines of the code that may stand alone at the top or the bottom of a page when it splits |
 | `paginate`, `debug` | | | As on a box |
 | `data-value` | string  | —         | Dot-path to a string that replaces the code, as it is |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `text`
 
@@ -332,6 +335,7 @@ Paragraph or inline text.
 | `paginate`   | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false     | Draw the box outline |
 | `data-value` | string  | —         | Dot-path to a scalar value that replaces the text |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 Children: `span` for inline style overrides, `code-span` for a run of code, and `fn` for a footnote.
 
@@ -375,6 +379,7 @@ Horizontal (or vertical) rule.
 | `color`     | color   | `#000000`    | Line color |
 | `thickness` | token/pt| `1pt`        | Line thickness. Tokens are border sizes: `xs` 0.5pt up to `xxl` 4pt |
 | `debug`     | boolean | false        | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `img` (layout)
 
@@ -392,6 +397,7 @@ Inline image.
 | `radius`     | token/pt| `0`     | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false   | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 `width="fill"` makes the picture as wide as the room it has: the column it is in, what the line of a row leaves after the other children (shared with the other `fill` children), or a table cell. Its height follows its proportions, and a `height` limits it. See [Image](?p=doc/layout/img#fill-the-slot).
 
@@ -414,6 +420,7 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 3"` |
 | `opacity`      | 0–1       | `1`     | How opaque the shape is |
 | `debug`        | boolean   | false   | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `table`
 
@@ -429,6 +436,7 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens` |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false   | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 A table holds an optional `thead` and any number of `tr`.
 
@@ -438,6 +446,7 @@ A table holds an optional `thead` and any number of `tr`.
 |-------------|-------|-------------|
 | `background`| color or `gradient:name` | Row background. A gradient spans the row |
 | `keep`      | string | `tr` only. `with-next` keeps the row on the same page as the row after it: a run of such rows and the row that ends it move to the next page together. See [Table](?p=doc/layout/table#keeping-rows-together) |
+| `ocg` | string | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 `thead` repeats at the top of every page. Both hold `td` cells.
 
@@ -468,6 +477,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 | `background`| color   | —         | Background color |
 | `paginate`  | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false     | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `link`
 
@@ -478,6 +488,7 @@ Clickable hyperlink wrapper.
 | `href`    | URL     | **Required.** Link target: a URL, or `#id` to jump to the bookmark with that id. Fixed: `data-value` does not change it |
 | `gap`     | spacing | Gap between child elements |
 | `debug`   | boolean | Draw the box outline |
+| `ocg` | string | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 In an entry of a table of contents, `href="#"` on a `link` or a `span` jumps to that entry's bookmark.
 
@@ -511,6 +522,7 @@ PDF form field.
 | `width`      | token/pt| —       | Field width |
 | `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of `tokens` |
 | `debug`      | boolean | false   | Draw the box outline |
+| `ocg` | string | — | `screen`: shown only on screen. `print` is an error: a field in print content could be filled nowhere. See [Print and screen content](?p=print-and-screen#links-and-form-fields) |
 
 ### `region`
 
@@ -544,6 +556,7 @@ Fixed content, in the order it is written among the section's layers and layout.
 | `alt`       | string  | —       | In a [PDF/UA](?p=pdfua) document, what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, which a reader skips with its text |
 | `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
 | `data-if-not` | string | —      | Draw the layer only when the value at the path is falsy |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 A layer cannot contain another layer.
 
@@ -562,6 +575,7 @@ A layer cannot contain another layer.
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
 | `radius`       | pt        | —       | Corner radius |
 | `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `circle`
 
@@ -576,6 +590,7 @@ A layer cannot contain another layer.
 | `stroke-width` | pt        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern |
 | `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `ellipse`
 
@@ -598,6 +613,7 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 | `stroke-width` | pt        | `1pt`     | Line thickness |
 | `stroke-dash`  | string    | —         | Dash pattern: `"4 2"` |
 | `line-cap`     | string    | `butt`    | `butt` `round` `square` |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `path`
 
@@ -610,6 +626,7 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 | `stroke-width` | pt      | `1pt`     | Stroke width |
 | `stroke-dash`  | string  | —         | Dash pattern |
 | `line-cap`     | string  | `butt`    | `butt` `round` `square` |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `text-at`
 
@@ -630,6 +647,7 @@ Text at a fixed place. It is the layout's `text`: `max-lines`, `ellipsis` and `l
 | `color`       | color     | the layer's, else `#1a1a1a` | Text color. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
 | `data-value`  | string    | —           | Dot-path to a value that replaces the text |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `img-at`
 
@@ -643,6 +661,7 @@ An image at a fixed place. It needs `width` or `height`.
 | `anchor`     | string    | —       | Reference point |
 | `width`      | pt        | —       | Width. Without `height`, the height follows the image's proportions |
 | `height`     | pt        | —       | Height. With both, they are a maximum: the image is never stretched |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `barcode-at`
 
@@ -662,6 +681,7 @@ A barcode at a fixed place. It needs `width` or `height`.
 | `color`      | color     | `#000000` | Bar color |
 | `background` | color     | —         | Background color |
 | `data-value` | string    | —         | Dot-path to a value that replaces the data the barcode encodes |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ---
 

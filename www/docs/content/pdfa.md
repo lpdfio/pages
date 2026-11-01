@@ -37,6 +37,7 @@ Part 2 of the standard allows transparency, so opacity, shadows and gradients ar
 - The sRGB output intent: a color profile that gives the RGB colors and images their meaning.
 - The date of the render as both its creation and its modification date, and a file ID, the same for the same document.
 - Links that print.
+- Everything the document has, on screen and in print: [print and screen content](?p=print-and-screen) (`ocg`) shows everywhere, so the archive copy holds both.
 
 Lpdf's own tests check a PDF/A-2b and a PDF/A-2u document with veraPDF, the PDF Association's reference validator, on every change. To check a file of yours, run veraPDF on it: it reads the level the file declares and checks it against that level's rules.
 

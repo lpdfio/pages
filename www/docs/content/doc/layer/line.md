@@ -14,6 +14,7 @@ A straight line between two points in a [layer](?p=doc/layer). All four coordina
 | `stroke-width` | pt        | —       | Line thickness |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` (4pt dash, 2pt gap) |
 | `line-cap`     | string    | `butt`  | `butt` `round` `square` |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Horizontal rule on each page
 

@@ -144,6 +144,10 @@
         "title": "Fast web view: linearized PDF for browsers in Lpdf",
         "description": "Write a linearized PDF for fast web view: page 1 and its hints come first, so a browser shows page 1 while the rest of a large file still downloads."
     },
+    "print-and-screen": {
+        "title": "Print-only and screen-only PDF content in Lpdf",
+        "description": "Show content only on screen or only on paper with ocg: a pay-online link on screen, a return slip in print. Acrobat, Chrome and Firefox switch."
+    },
     "attachments": {
         "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
         "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a source spreadsheet or terms, read from src or loaded in Node.js, .NET, PHP or Python."

@@ -19,6 +19,7 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 | `color`      | color   | `#000000` | Barcode foreground color |
 | `background` | color   | —       | Background color |
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## One size or both
 

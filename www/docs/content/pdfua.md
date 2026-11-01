@@ -87,6 +87,7 @@ A [layer](?p=doc/layer) is decoration unless it says otherwise, as a header is: 
 | `img`, `barcode`, and a `layer` with `alt` | A figure with its description |
 | A `region` (a header or a footer), a `layer` without `alt`, a `divider`, a `shape`, backgrounds, borders, and an image or a barcode with `alt=""` | Decoration, which a reader skips |
 | The header row of a table, repeated on the next page | Decoration: it is read once |
+| [Print and screen content](?p=print-and-screen) (`ocg`) | Read as any other: a PDF/UA file shows everything, so a reader reads all of it |
 
 A table's header cells are those of its `thead`. A header in the first column of each row is not marked as one.
 

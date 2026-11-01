@@ -17,6 +17,7 @@ The image must be declared in `assets` before use, with a `src` file path or byt
 | `data-if`     | string    | —       | Draw only when the value at the path is truthy |
 | `data-if-not` | string    | —       | Draw only when the value at the path is falsy |
 | `data-name` | string | — | Dot-path: picks the image from the data, among the assets declared in `assets`. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 Either `anchor` or both `x` and `y` must be provided.
 

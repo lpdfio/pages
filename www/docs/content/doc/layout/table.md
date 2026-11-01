@@ -31,6 +31,7 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
 | `width`      | token/pt | —      | Constrain table width |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## `thead` attributes
 
@@ -45,6 +46,7 @@ A `thead` row is repeated at the top of each page. It takes the same `background
 | `data-source` | string  | —       | Dot-path to array — repeats this row per item |
 | `data-if`     | string  | —       | Render only when value is truthy |
 | `data-if-not` | string  | —       | Render only when value is falsy |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## `td` attributes
 
@@ -62,6 +64,7 @@ A `thead` row is repeated at the top of each page. It takes the same `background
 | `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `opacity`    | 0–1     | `1`     | How opaque the cell and everything in it is. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`     | string  | —       | A hard-edged shadow under the cell. See [Shadow](?p=doc/layout#shadow) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Keeping rows together
 

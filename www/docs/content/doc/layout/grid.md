@@ -25,6 +25,7 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 | `data-source` | string | —       | Dot-path to array — repeats children per item |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Three-column layout
 

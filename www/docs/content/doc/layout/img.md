@@ -35,6 +35,7 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | `border`     | string  | —       | Border, drawn on the edge of the box |
 | `radius`     | token/pt | —      | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Fixed width
 

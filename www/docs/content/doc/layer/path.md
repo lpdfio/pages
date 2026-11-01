@@ -13,6 +13,7 @@ Draws an arbitrary shape in a [layer](?p=doc/layer) using SVG path data. Support
 | `stroke-width` | pt      | —          | Stroke width |
 | `stroke-dash`  | string  | —          | Dash pattern |
 | `line-cap`     | string  | `butt`     | `butt` `round` `square` |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 A `path` has no box, so it does not support `anchor`. Use absolute coordinates in the `d` attribute. To fade a path, put it in a layer with `opacity`.
 

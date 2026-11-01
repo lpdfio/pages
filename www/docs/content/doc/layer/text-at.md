@@ -22,6 +22,7 @@
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `data-if`     | string    | —           | Draw only when the value is truthy |
 | `data-if-not` | string    | —           | Draw only when the value is falsy |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 Either `anchor` or both `x` and `y` must be provided. To fade text, put it in a layer with `opacity`.
 

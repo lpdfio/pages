@@ -62,7 +62,7 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | `*em*`, `**strong**`, `~~del~~` | a [span](?p=doc/layout/text#inline-spans-for-mixed-styling) | A built-in font gets its italic and bold face by itself. An embedded font names them: see [Styling](#styling) |
 | `` `code` `` | a `code-span` | The code font on a tint |
 | `[text](url)`, `[text](#id)` | a span with `href` | `#id` jumps to the heading whose text is that id: see [Headings](#headings) |
-| `![alt](name)` | an [image](?p=doc/layout/img) as wide as the page allows | JPEG or PNG: see [Images](#images). The alt text is not kept: there are no tagged PDFs yet |
+| `![alt](name)` | an [image](?p=doc/layout/img) as wide as the page allows | JPEG or PNG: see [Images](#images). The alt text is the image's `alt`, which a [PDF/UA](?p=pdfua) document reads; `![](name)` marks decoration |
 | `---` | a [divider](?p=doc/layout/divider) | |
 | `> quote` | a bar beside the blocks of the quote | The quote splits across pages between its blocks |
 | `- item`, `1. item` | a list of items, with a disc, a circle or a square for the level, or the numbers | A number list starts at the number its first item has. Lists nest |

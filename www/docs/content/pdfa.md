@@ -28,7 +28,7 @@ PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask 
 |-----------|------|---------|-------------|
 | `pdfa` | `2b` `2u` | — | Writes the PDF as PDF/A-2b, which keeps the look of every page, or PDF/A-2u, which also maps all text to Unicode so it can be searched and copied. Without it the PDF is a plain one |
 
-Part 2 of the standard allows transparency, so opacity, shadows and gradients are kept. Level 2a, which adds the structure of tagged PDF, and part 3, which carries other files such as the XML of an e-invoice, are not written yet.
+Part 2 of the standard allows transparency, so opacity, shadows and gradients are kept. Level 2a, which adds the structure of tagged PDF, and part 3, which carries other files such as the XML of an e-invoice, are not written yet. A file can be PDF/A and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfa="2u" pdfua="1"/>`.
 
 ## What the file gets
 

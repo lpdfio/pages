@@ -8,6 +8,7 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 |--------------|---------|---------|-------------|
 | `type`       | string  | —       | **Required.** `qr`, `code128`, or `ean13` |
 | `data`       | string  | —       | **Required.** Payload string to encode |
+| `alt`        | string  | —       | What the barcode is for, which a screen reader reads in a [PDF/UA](?p=pdfua) document in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer. A document without `pdfua` ignores it |
 | `width`      | token/pt | —      | Width. Without `height`, the height follows the barcode's proportions |
 | `height`     | token/pt | —      | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the barcode's proportions |
 | `ec`         | string  | `M`     | QR error correction: `L` `M` `Q` `H` |

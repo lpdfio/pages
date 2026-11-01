@@ -22,6 +22,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 | `encrypt` | `aes-256` `rc4-128` | — | Encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted |
 | `allow` | list | nothing | What a reader may do without the owner password, separated by spaces, or `all`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa` | `2b` `2u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
+| `pdfua` | `1` | — | Writes the PDF as [PDF/UA](?p=pdfua), which an encrypted file meets only when `allow` names `accessibility` |
 
 The files a document carries in its [`attachments`](?p=attachments) are encrypted with the rest, under the same passwords.
 
@@ -135,4 +136,5 @@ Each of these stops the render with an error that says what to change:
 - the render has passwords and skips the encryption
 - `allow` without `encrypt`
 - `encrypt` with `pdfa`: PDF/A forbids encryption
+- `pdfua` with an `allow` that leaves out `accessibility`: a screen reader must be allowed to read a PDF/UA file
 - a word in `allow` that isn't `all` or one of the seven, or a cipher in `encrypt` that isn't `aes-256` or `rc4-128`

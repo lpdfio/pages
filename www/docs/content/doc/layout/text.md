@@ -16,6 +16,7 @@ Text has one set of defaults wherever it is, in the flow and in a [layer](?p=doc
 | `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens`. See [Line height](#line-height) |
 | `max-lines` | integer | —       | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](#capping-a-text) |
 | `ellipsis`  | boolean | `false` | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |
+| `role`      | string  | —       | `h1` … `h6`: makes the text a heading, which a [PDF/UA](?p=pdfua) document tags as one. It changes nothing a page shows. A document without `pdfua` ignores it |
 | `widows`    | integer | `2`     | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. See [Widows and orphans](#widows-and-orphans) |
 | `orphans`   | integer | `2`     | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page |
 | `capture`   | string  | —       | Records the words of this text under a name, for a header or a footer to show. See [Running headers](?p=doc/layout#running-headers) |

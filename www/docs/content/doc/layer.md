@@ -40,6 +40,7 @@ A [`bookmark`](?p=doc/layout/bookmark) as the section's first child comes before
 | `font`        | string  | document's font, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own. See [Text style](#text-style) |
 | `font-size`   | token/pt | `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
 | `color`       | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
+| `alt`         | string  | —       | In a [PDF/UA](?p=pdfua) document, what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, skipped with its text. A document without `pdfua` ignores it |
 | `data-if`     | string  | —       | Draw the layer only when the value at the path is truthy. See [Data in a layer](#data-in-a-layer) |
 | `data-if-not` | string  | —       | Draw the layer only when the value at the path is falsy |
 

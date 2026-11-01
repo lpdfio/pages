@@ -110,7 +110,7 @@ Path('secret.pdf').write_bytes(pdf)
 using Lpdf;
 using Lpdf.Engine;
 
-var pdf = await L.Engine().Render(xml, new RenderOptions { UserPassword = "open-sesame", OwnerPassword = "owner-secret" });
+var pdf = L.Engine().Render(xml, new RenderOptions { UserPassword = "open-sesame", OwnerPassword = "owner-secret" });
 
 await File.WriteAllBytesAsync("secret.pdf", pdf);
 ```

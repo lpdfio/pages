@@ -90,7 +90,7 @@ Path('report.pdf').write_bytes(pdf)
 using Lpdf;
 using Lpdf.Engine;
 
-var pdf = await L.Engine().Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
+var pdf = L.Engine().Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
 
 await File.WriteAllBytesAsync("report.pdf", pdf);
 ```

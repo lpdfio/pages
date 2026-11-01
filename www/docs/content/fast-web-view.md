@@ -25,6 +25,8 @@ It is an attribute of [`output`](?p=xml/elements#output), the element of `docume
 
 It combines with every other attribute of `output`: a file can be [encrypted](?p=encryption), [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and linearized too.
 
+A document built in code asks for it in its `output`, as a boolean: `output: { linearize: true }` in Node.js, and `DocumentOutput` in the other SDKs, with `Linearize = true` in .NET, `linearize: true` in PHP and `linearize=True` in Python.
+
 ## What changes in the file
 
 - Page 1 comes first, with every font, image and object it draws, after a short dictionary that says the file is linearized and how long it is. A viewer that has those bytes shows page 1.
@@ -51,13 +53,13 @@ With `encrypt` as well, the file is encrypted first and linearized last, so the 
 
 ## Serving the file
 
-A viewer fetches a PDF by range only when the server answers range requests. A static file server, object storage such as Amazon S3, and a CDN do. To check a server, ask it for the first kilobyte of the file:
+A viewer fetches a PDF by range only when the server answers range requests. A static file server, object storage such as Amazon S3, and a CDN do. To check a server, fetch the first kilobyte of the file, and print the status of the answer:
 
 ```sh
-curl -sI -H "Range: bytes=0-1023" https://example.com/catalogue.pdf
+curl -s -o /dev/null -w '%{http_code}\n' -r 0-1023 https://example.com/catalogue.pdf
 ```
 
-The answer to look for is `206 Partial Content`. With `200 OK` the server sends the whole file every time, and a viewer shows page 1 only once it has all of it, as for any PDF.
+`206` means the server sent only the bytes asked for. With `200` it sends the whole file every time, and a viewer shows page 1 only once it has all of it, as for any PDF. Ask with a GET, as this does: some servers that answer ranges answer a `HEAD` request with `200`.
 
 ## After the render
 

@@ -18,7 +18,7 @@ Root element.
 
 ### `assets`
 
-Container for font and image declarations. Comes before `tokens` and `document`.
+Container for font, image and color profile declarations. Comes before `tokens` and `document`.
 
 ### `font`
 
@@ -40,6 +40,18 @@ A built-in font can also be used by its name without declaring it: `font="Courie
 | `ref`     | string | The key the image's bytes are registered under with `loadImage`. Defaults to `name` |
 
 An image needs either a readable `src` or bytes loaded with `loadImage`.
+
+### `profile`
+
+An ICC color profile: the profile of the printing press a [PDF/X](?p=pdfx) document is made for, which the printer gives out. `profile` on `output` names it.
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `name`    | string | **Required.** Alias the `profile` of `output` uses. Same characters as a font `name` |
+| `src`     | path   | Path of the `.icc` file, read by the SDK from the machine that renders |
+| `ref`     | string | The key the profile's bytes are registered under with `loadProfile`. Defaults to `name` |
+
+It has to be a printer profile, in gray, RGB or CMYK. The engine bundles no press profile.
 
 ### `tokens`
 
@@ -105,7 +117,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 
 ### `output`
 
-How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa) or [PDF/UA](?p=pdfua). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -113,6 +125,8 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
 | `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
+| `pdfx`    | string | — | `4`: writes the PDF as PDF/X-4, for a commercial printer, made for the press profile `profile` names. It combines with `pdfua`. Every page gets a `TrimBox` and a `BleedBox`, RGB is tied to sRGB, and links print as text. The render needs `createdOn`, `meta` a `title`, and every text a font of `assets`, and the document no form field, barcode digits, `encrypt`, `pdfa` or `attachments`, each an error that says what to change |
+| `profile` | string | — | The [`profile`](#profile) of `assets` a PDF/X file is made for: the ICC profile of the printing press. It needs `pdfx`, and `pdfx` needs it |
 
 ### `attachments`
 
@@ -137,6 +151,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 |---------------|---------|------------|-------------|
 | `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
+| `bleed`       | pt/mm/in | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
 | `background`  | color or `gradient:name` | — | Page background: a color, or a [gradient](?p=xml/schema#gradients) that spans the page |
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
@@ -150,6 +165,7 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 |---------------|---------|----------|-------------|
 | `size`        | string  | inherit  | Override page size for this section |
 | `orientation` | string  | inherit  | Override orientation |
+| `bleed`       | pt/mm/in | inherit | Override the bleed for this section's pages; `0mm` takes it away |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |

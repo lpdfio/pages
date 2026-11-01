@@ -11,6 +11,19 @@ var LpdfEngine = class {
     wasm.__wbg_lpdfengine_free(ptr, 0);
   }
   /**
+   * Register the bytes of a file a document carries, for the `<file>` of its `<attachments>` whose `ref`, or with
+   * no ref whose name, is `name`. The PDF carries them as they are.
+   * @param {string} name
+   * @param {Uint8Array} bytes
+   */
+  load_file(name, bytes) {
+    const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    wasm.lpdfengine_load_file(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+  }
+  /**
    * Register raw font bytes (TTF/OTF) for a custom font name.
    * Call this once per font before calling `render_pdf`.
    * Glyph advance-width metrics are extracted automatically from the font
@@ -52,6 +65,19 @@ var LpdfEngine = class {
     const ptr1 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len1 = WASM_VECTOR_LEN;
     wasm.lpdfengine_load_markdown_styles(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+  }
+  /**
+   * Register the bytes of an ICC colour profile, for the `<profile>` of a document's `<assets>` whose `ref`, or with
+   * no ref whose name, is `name`: the press profile a PDF/X document names in `<output profile>`.
+   * @param {string} name
+   * @param {Uint8Array} bytes
+   */
+  load_profile(name, bytes) {
+    const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    wasm.lpdfengine_load_profile(this.__wbg_ptr, ptr0, len0, ptr1, len1);
   }
   /**
    * @param {string} license_key
@@ -177,8 +203,9 @@ var LpdfEngine = class {
     return v5;
   }
   /**
-   * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`).
-   * When provided, written as `/CreationDate` in the PDF info dictionary.
+   * Set an optional ISO 8601 creation timestamp (e.g. `"2024-06-01T12:00:00"`, `"2024-06-01T12:00:00.000Z"` or
+   * `"2024-06-01T12:00:00+01:00"`). When provided, written as `/CreationDate` in the PDF info dictionary, with
+   * the precision and the time zone it was given in; a value that is not a date makes the render an error.
    * Omitting this keeps builds reproducible (no embedded timestamp).
    * @param {string} iso
    */
@@ -450,6 +477,7 @@ var Cipher = {
   Rc4128: "rc4-128"
 };
 var Permission = {
+  All: "all",
   Print: "print",
   Modify: "modify",
   Copy: "copy",
@@ -457,6 +485,13 @@ var Permission = {
   FillForms: "fill-forms",
   Accessibility: "accessibility",
   Assemble: "assemble"
+};
+var FileRelationship = {
+  Source: "source",
+  Data: "data",
+  Alternative: "alternative",
+  Supplement: "supplement",
+  Unspecified: "unspecified"
 };
 var BuiltinFont = {
   Courier: "Courier",
@@ -494,6 +529,8 @@ async function initLpdf(wasmSource, licenseKey = "") {
   await __wbg_init(wasmSource);
   const fontMap = /* @__PURE__ */ new Map();
   const imageMap = /* @__PURE__ */ new Map();
+  const fileMap = /* @__PURE__ */ new Map();
+  const profileMap = /* @__PURE__ */ new Map();
   const markdownStyles = /* @__PURE__ */ new Map();
   return {
     loadFont(name, bytes) {
@@ -501,6 +538,12 @@ async function initLpdf(wasmSource, licenseKey = "") {
     },
     loadImage(name, bytes) {
       imageMap.set(name, bytes);
+    },
+    loadFile(name, bytes) {
+      fileMap.set(name, bytes);
+    },
+    loadProfile(name, bytes) {
+      profileMap.set(name, bytes);
     },
     loadMarkdownStyles(src, text) {
       markdownStyles.set(src, text);
@@ -516,6 +559,12 @@ async function initLpdf(wasmSource, licenseKey = "") {
       }
       for (const [name, bytes] of imageMap) {
         engine.load_image(name, bytes);
+      }
+      for (const [name, bytes] of fileMap) {
+        engine.load_file(name, bytes);
+      }
+      for (const [name, bytes] of profileMap) {
+        engine.load_profile(name, bytes);
       }
       for (const [src, text] of markdownStyles) {
         engine.load_markdown_styles(src, text);
@@ -543,6 +592,7 @@ export {
   BuiltinFont,
   Cipher,
   FieldType,
+  FileRelationship,
   FootnoteCounter,
   NoAttr,
   Orientation,

@@ -68,6 +68,19 @@ export class LpdfEngine {
         wasm.lpdfengine_load_markdown_styles(this.__wbg_ptr, ptr0, len0, ptr1, len1);
     }
     /**
+     * Register the bytes of an ICC colour profile, for the `<profile>` of a document's `<assets>` whose `ref`, or with
+     * no ref whose name, is `name`: the press profile a PDF/X document names in `<output profile>`.
+     * @param {string} name
+     * @param {Uint8Array} bytes
+     */
+    load_profile(name, bytes) {
+        const ptr0 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.lpdfengine_load_profile(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+    }
+    /**
      * @param {string} license_key
      */
     constructor(license_key) {

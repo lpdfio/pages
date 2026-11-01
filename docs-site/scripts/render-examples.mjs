@@ -1,6 +1,6 @@
 // Renders each example of the docs to a PDF with the engine the site ships, so the viewer on its page shows what that
 // engine makes, and the PDF never goes stale. An example is a folder public/examples/<id>/ with its document.xml, its
-// document.json if it has data, and the fonts and images the XML names; those folders are written by scripts/sync-examples.mjs
+// document.json if it has data, and the fonts, images and color profiles the XML names; those folders are written by scripts/sync-examples.mjs
 // of the lpdf repository (see README.md, "The example pages"). The PDF is written beside them, as document.pdf, and is
 // not kept in git.
 //
@@ -29,6 +29,9 @@ async function exampleIds()
     return entries.filter(e => e.isDirectory()).map(e => e.name).sort();
 }
 
+/** The date each example is rendered with, which a PDF/A, PDF/UA or PDF/X example carries, so the same example gives the same PDF. */
+const CREATED_ON = '2026-01-01T00:00:00Z';
+
 /** The XML without its comments, so a font or image named in the text about the format is not taken for one the document uses. */
 function withoutComments(xml)
 {
@@ -46,6 +49,8 @@ async function renderExample(web, id)
     {
         for (const m of body.matchAll(/<font\s+name="([^"]+)"\s+src="([^"]+)"/g)) engine.load_font(m[1], await fs.readFile(path.join(folder, m[2])));
         for (const m of body.matchAll(/<image\s+name="([^"]+)"\s+src="([^"]+)"/g)) engine.load_image(m[1], await fs.readFile(path.join(folder, m[2])));
+        for (const m of body.matchAll(/<profile\s+name="([^"]+)"\s+src="([^"]+)"/g)) engine.load_profile(m[1], await fs.readFile(path.join(folder, m[2])));
+        engine.set_created_on(CREATED_ON);
         // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
         const pdf = engine.render_pdf(xml, data, null, null, true, new Uint8Array(0));
         await fs.writeFile(path.join(folder, 'document.pdf'), pdf);

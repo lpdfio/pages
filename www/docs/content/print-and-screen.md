@@ -22,14 +22,14 @@ Some content belongs on screen and not on paper, or the other way round: a "Pay 
 |-----------|------|---------|-------------|
 | `ocg` | string | — | `print`: the element and everything in it are printed and not shown on screen. `screen`: shown on screen and not printed. Any other value is an error that names it |
 
-It goes on every element that draws: the boxes and the leaves of the layout, from `column` to `field`, the rows of a table, a [`layer`](?p=doc/layer), and each element a layer draws. A document built in code sets it as it sets any other attribute: `ocg: 'print'` in Node.js and PHP, `Ocg = "print"` in .NET and `ocg="print"` in Python.
+It goes on the elements that draw: `column`, `row`, `grid`, `frame`, `list`, `li`, `code`, `link`, `text`, `img`, `barcode`, `shape`, `divider`, `field`, a `table` with its `thead`, `tr` and `td`, a [`layer`](?p=doc/layer), and each element a layer draws. A `region`, a `markdown`, a `section` and the parts of a text (`span`, `code-span`, `fn`) take none: put it on the elements a region holds, or on the text a span is in. A document built in code sets it as it sets any other attribute: `ocg: 'print'` in Node.js and PHP, `Ocg = "print"` in .NET and `ocg="print"` in Python.
 
 ## In a group
 
 - Everything in the element is in its group: a box's children, the cells and the background of a table row, what a layer draws.
 - Hidden content keeps its room. Nothing moves when a group is hidden, so screen content leaves its gap on paper, and print content its gap on screen.
 - An element with a group inside an element with another shows only where both show, which is never: a `screen` link inside a `print` slip is in neither the print nor the screen version.
-- Content split across pages, and content repeated on each page, such as a [region](?p=doc/layout#pinned-regions) or the header row of a table, is in its group on every page.
+- Content split across pages, and content repeated on each page, such as an element in a [region](?p=doc/layout#pinned-regions) or the header row of a table, is in its group on every page.
 
 To show one thing on screen and another in the same place on paper, put both in a layer, where nothing takes room:
 

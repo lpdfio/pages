@@ -25,7 +25,6 @@ Same as `circle` except `r` is replaced by:
 |-----------|------|-------------|
 | `rx`      | pt   | **Required.** Horizontal radius |
 | `ry`      | pt   | **Required.** Vertical radius |
-| `ocg` | string | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## The box
 

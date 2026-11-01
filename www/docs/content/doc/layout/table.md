@@ -35,7 +35,7 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 
 ## `thead` attributes
 
-A `thead` row is repeated at the top of each page. It takes the same `background` as `tr`: a color, or a [gradient](?p=xml/schema#gradients) that spans the row.
+A `thead` row is repeated at the top of each page. It takes the same `background` as `tr`: a color, or a [gradient](?p=xml/schema#gradients) that spans the row, and the same `ocg`, which puts the row in its group on every page it is repeated on.
 
 ## `tr` attributes
 

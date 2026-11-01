@@ -50,6 +50,7 @@ if a < b && c {
 | `debug`      | boolean  | `false` | Draw the box outline |
 | `data-value` | string   | —       | Dot-path: replaces the code with the bound value, with its spaces and lines. See [Code from data](#code-from-data) |
 | `data-if`, `data-if-not`, `data-source` | string | — | Leave the box out, or repeat it for each item of a list |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Words in color
 

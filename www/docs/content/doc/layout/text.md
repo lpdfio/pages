@@ -28,6 +28,7 @@ Text has one set of defaults wherever it is, in the flow and in a [layer](?p=doc
 | `data-if`   | string  | —       | Render only when value is truthy |
 | `data-if-not` | string | —     | Render only when value is falsy |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Basic
 

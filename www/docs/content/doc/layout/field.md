@@ -19,6 +19,7 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 | `action-url` | URL     | —       | Submit URL (button) |
 | `width`      | token/pt | —      | Field width |
 | `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
+| `ocg` | string | — | `screen`: shown only on screen. `print` is an error: a field in print content could be filled nowhere. See [Print and screen content](?p=print-and-screen#links-and-form-fields) |
 
 ## Text form
 

@@ -25,6 +25,7 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 3"` |
 | `opacity`      | 0–1       | `1`     | How opaque the shape is |
 | `debug`        | boolean   | false   | Draw the box outline |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 A shape with no `fill` and no `stroke` draws nothing, but keeps its box. A stroke is centered on the edge of the box, so half of it lies outside, and it takes no room. A shape that lacks what its type needs is an error that says so: a `rect` without a `width` and a `height`, or a `circle` without an `r`.
 

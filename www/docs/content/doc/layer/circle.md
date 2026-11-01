@@ -15,6 +15,7 @@
 | `stroke-width` | pt        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern |
 | `shadow`       | string    | —       | A hard-edged shadow under the circle: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## `ellipse` attributes
 

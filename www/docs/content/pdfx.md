@@ -143,6 +143,7 @@ A press prints in its own inks, and the press profile says how. A PDF/X-4 file k
 - Every font embedded, cut down to the characters the document uses.
 - The title, the version, `PDF/X-4`, and that the file is not trapped, in its information dictionary and an XMP packet, with the ids printers' tools read.
 - The date of the render as both its creation and its modification date, and a file ID, the same for the same document.
+- The print version of [print and screen content](?p=print-and-screen) (`ocg`): print content is on, and screen content stays in the file, off, where a reader can turn it on in a layers panel.
 - No links: PDF/X allows nothing clickable on the printed page, so a `link`, a link in a span or in Markdown, a table of contents entry and the line an unlicensed render adds print their text and are not clickable. Bookmarks stay.
 
 No free tool validates PDF/X: Acrobat Pro's Preflight does ("Verify compliance with PDF/X-4"), and so does the printer's own preflight. Lpdf's tests check every part of the file, and open it with qpdf, on every change.

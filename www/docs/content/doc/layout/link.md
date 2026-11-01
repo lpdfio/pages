@@ -9,6 +9,7 @@ Wraps any layout content in a clickable hyperlink. The link is active in PDF vie
 | `href`    | URL    | —       | **Required.** Link destination: a URL, or `#id` to jump to the [bookmark](?p=doc/layout/bookmark) with that id |
 | `data-href` | string | — | Dot-path: sets `href` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `gap`     | spacing | —      | Gap between child elements |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Text link
 

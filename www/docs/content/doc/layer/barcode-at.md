@@ -22,6 +22,7 @@ A QR code, a Code 128 or an EAN-13 at a fixed place on the page, in a [layer](?p
 | `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `data-if`     | string    | —         | Draw only when the value at the path is truthy |
 | `data-if-not` | string    | —         | Draw only when the value at the path is falsy |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 Either `anchor` or both `x` and `y` must be provided.
 

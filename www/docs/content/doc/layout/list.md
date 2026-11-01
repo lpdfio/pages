@@ -28,6 +28,7 @@ The words of an item go in a [`text`](?p=doc/layout/text). A long item wraps und
 | `padding`, `background`, `border`, `radius`, `opacity`, `shadow`, `width`, `height` | | | As on a [box](?p=doc/layout/column) |
 | `paginate`, `debug` | | | As on a box |
 | `data-source`, `data-if`, `data-if-not`, `data-color`, `data-background` | string | — | As on a box |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 An `li` takes the attributes of a box too, other than `width`: `padding`, `background`, `border` and `radius` go around the marker and the words together, and `gap` goes between the children of the item: the `gap` of the list, so a text and the list under it are spaced like two items, unless the item sets its own. Its `data-source` repeats the item once for each entry of the data.
 

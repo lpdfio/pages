@@ -43,6 +43,7 @@ A [`bookmark`](?p=doc/layout/bookmark) as the section's first child comes before
 | `alt`         | string  | —       | In a [PDF/UA](?p=pdfua) document, what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, skipped with its text. A document without `pdfua` ignores it |
 | `data-if`     | string  | —       | Draw the layer only when the value at the path is truthy. See [Data in a layer](#data-in-a-layer) |
 | `data-if-not` | string  | —       | Draw the layer only when the value at the path is falsy |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Coordinate system
 

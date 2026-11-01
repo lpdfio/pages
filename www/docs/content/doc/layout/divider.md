@@ -10,6 +10,7 @@ A horizontal or vertical rule.
 | `color`     | color   | `line`       | Line color. The `line` color token is a mid grey, `#737373`, and a document can give it another value in its tokens |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `thickness` | token/pt | `xs`        | Line thickness: a border token (`xs` 0.5pt, `s` 1pt, `m` 1.5pt, `l` 2pt, `xl` 3pt, `xxl` 4pt) or a length such as `1pt` |
+| `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## Horizontal rule
 

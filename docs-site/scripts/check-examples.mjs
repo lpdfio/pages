@@ -9,7 +9,7 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { CREATED_ON, FILE, FONT, PIXEL, PLACEHOLDER_IMAGES, SRC, declaredFiles, declaredFonts, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
+import { CREATED_ON, FILE, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const verbose = process.argv.includes('--verbose');
 
@@ -32,6 +32,7 @@ for (const file of await walk())
         if (wrapped.skip) { skipped.push(`${where}  (${wrapped.skip})`); continue; }
         for (const name of declaredFonts(wrapped.xml)) engine.load_font(name, FONT);
         for (const key of declaredFiles(wrapped.xml)) engine.load_file(key, FILE);
+        for (const key of declaredProfiles(wrapped.xml)) engine.load_profile(key, PROFILE);
         try
         {
             // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.

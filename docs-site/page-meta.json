@@ -136,6 +136,10 @@
         "title": "Create accessible tagged PDF/UA files in Lpdf",
         "description": "Write PDF/UA for screen readers: headings, tables, lists, links and alt text tagged from the document, with lang and alt, or an error that says what to fix."
     },
+    "pdfx": {
+        "title": "Create PDF/X-4 print files with bleed in Lpdf",
+        "description": "Write PDF/X-4 for commercial printers: the printer's ICC profile as output intent, trim and bleed boxes, CMYK and sRGB color, or an error that says what to fix."
+    },
     "attachments": {
         "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
         "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a source spreadsheet or terms, read from src or loaded in Node.js, .NET, PHP or Python."

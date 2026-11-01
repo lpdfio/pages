@@ -104,11 +104,13 @@ A document built in code lists its files in `attachments`, a list of `FileAttr` 
 
 A file has no size limit of Lpdf's own, beyond the 2 GB a PDF can say a file holds. In the .NET, PHP and Python SDKs the engine is a WASI binary, and the bytes travel to it as base64 in a JSON request, so a large file costs several times its size in memory while it renders: the request, the bytes the engine decodes, the PDF that holds them and the PDF sent back. Node.js hands the bytes to the engine directly.
 
-## Encryption and PDF/A
+## Encryption, PDF/A and PDF/X
 
 In an [encrypted](?p=encryption) document the files are encrypted with the rest, under the same passwords.
 
 A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa` is an error. PDF/A-3, which carries any file, as an e-invoice does, is not written yet.
+
+A [PDF/X](?p=pdfx) file holds only what the press prints, so `attachments` with `pdfx` is an error.
 
 ## Errors
 
@@ -120,4 +122,4 @@ Each of these stops the render with an error that says what to change:
 - a `relationship` that isn't one of the five, or a `mime` that isn't a type and a subtype
 - a file without a name
 - a file over 2 GB
-- `attachments` in a document whose `output` asks for `pdfa`
+- `attachments` in a document whose `output` asks for `pdfa` or `pdfx`

@@ -1,6 +1,6 @@
 # Link
 
-Wraps any layout content in a clickable hyperlink. The link is active in PDF viewers that support annotations.
+Wraps any layout content in a clickable hyperlink. The link is active in PDF viewers that support annotations. In a [PDF/X](?p=pdfx) document, made for a printer, links print their content and are not clickable.
 
 ## Attributes
 

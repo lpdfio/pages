@@ -41,7 +41,7 @@ PDF/UA (ISO 14289-1) is the PDF a screen reader can read: a tagged PDF that says
 | [`img`](?p=xml/elements#img-layout), [`barcode`](?p=xml/elements#barcode) | `alt` | string | What the image shows, or what the barcode is for; `alt=""` marks it as decoration. Required with `pdfua` on every image and barcode of the layout but a header's or a footer's, which are decoration |
 | [`layer`](?p=xml/elements#layer) | `alt` | string | Makes the layer one figure with that description. Without it a layer is decoration |
 
-`pdfua` combines with [`pdfa`](?p=pdfa): `<output pdfa="2u" pdfua="1"/>` writes an accessible file for the archive.
+`pdfua` combines with [`pdfa`](?p=pdfa): `<output pdfa="2u" pdfua="1"/>` writes an accessible file for the archive. It combines with [`pdfx`](?p=pdfx) too, for a print file a screen reader reads; a PDF/X file has no links, so its link text is read as text.
 
 ## Headings
 

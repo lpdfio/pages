@@ -244,10 +244,10 @@ function asksForEncryption(xml: string) {
     return output !== undefined && /\bencrypt\s*=/.test(output);
 }
 
-function extractAssetSrcs(xml: string, tag: string) {
+function extractAssetSrcs(xml: string, tag: 'font' | 'image' | 'profile') {
     const result = new Map<string, string>();
-    const re     = tag === 'font' ? /<font\b[\s\S]*?>/g : /<image\b[\s\S]*?>/g;
-    // An <image> or <font> inside a comment is text about the format, not an asset the document uses.
+    const re     = new RegExp(`<${tag}\\b[\\s\\S]*?>`, 'g');
+    // An <image>, <font> or <profile> inside a comment is text about the format, not an asset the document uses.
     for (const match of xml.replace(/<!--[\s\S]*?-->/g, '').matchAll(re)) {
         const t    = match[0];
         const name = /\bname=["']([^"']*)["']/.exec(t)?.[1];
@@ -260,7 +260,7 @@ function extractAssetSrcs(xml: string, tag: string) {
 }
 
 /**
- * Registers the fonts and images a document names with the engine. An asset's `src` is relative to
+ * Registers the fonts, images and color profiles a document names with the engine. An asset's `src` is relative to
  * the document, as it is on disk, so it is fetched from the folder of the example. Examples reuse
  * names (two of them have a font called `body`), so an asset is loaded again when the address
  * behind its name changes.
@@ -270,9 +270,10 @@ function extractAssetSrcs(xml: string, tag: string) {
 async function loadAssetsFromXml(xml: string, base: string) {
     if (!lpdfEngine) return;
     const kinds = [
-        { tag: 'font',  register: (key: string, bytes: Uint8Array) => lpdfEngine.loadFont(key, bytes) },
-        { tag: 'image', register: (key: string, bytes: Uint8Array) => lpdfEngine.loadImage(key, bytes) },
-    ];
+        { tag: 'font',    register: (key: string, bytes: Uint8Array) => lpdfEngine.loadFont(key, bytes) },
+        { tag: 'image',   register: (key: string, bytes: Uint8Array) => lpdfEngine.loadImage(key, bytes) },
+        { tag: 'profile', register: (key: string, bytes: Uint8Array) => lpdfEngine.loadProfile(key, bytes) },
+    ] as const;
     for (const { tag, register } of kinds) {
         for (const [key, src] of extractAssetSrcs(xml, tag)) {
             const url = new URL(src, base).href;
@@ -530,7 +531,12 @@ class LpdfDemo extends LitElement {
         try {
             await loadAssetsFromXml(this._currentXml, this._currentBase);
             // The playground has no passwords: a document that asks for encryption is shown unencrypted, and says so.
-            const options = { ...(this._currentData != null ? { data: this._currentData } : {}), skipEncryption: true };
+            // Every render is dated, as a PDF/A, PDF/UA or PDF/X document carries its date and the engine has no clock.
+            const options = {
+                ...(this._currentData != null ? { data: this._currentData } : {}),
+                skipEncryption: true,
+                createdOn: new Date().toISOString(),
+            };
             const bytes   = await lpdfEngine.render(this._currentXml, options);
             currentPdfBytes = bytes.slice();
             store.dispatch(renderDone({ byteSize: currentPdfBytes.length, unencrypted: asksForEncryption(this._currentXml) }));

@@ -110,5 +110,6 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - a form field, whose text is drawn in Helvetica
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file
+- `pdfx` on the same `output`: a PDF/A file keeps to the sRGB profile, and a [PDF/X](?p=pdfx) file to the press profile
 - [`attachments`](?p=attachments): a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check
 - a render without `createdOn`, or with one that is not a date

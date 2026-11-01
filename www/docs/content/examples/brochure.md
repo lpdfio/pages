@@ -30,6 +30,15 @@ the contract:
                  0pt so its panels reach the edge, and the inside page's is 36pt
   justify        justify="between" on a column spreads its parts from top to bottom of its height
   barcode        a QR code, dark on light so that it scans on the dark band
+  pdfx           written for a commercial printer, as PDF/X-4: <output pdfx="4" profile="press">,
+                 with the printer's profile declared in <assets> (a FOGRA39 one, in assets/profiles).
+                 The render needs created_on, the date the file carries, and every text an embedded font
+  bleed          bleed="3mm" on the document: each page reaches 3mm past its trim edge, the sand
+                 background fills it, and the cover's panel, drawn from x=-9pt, runs off the edge
+  cmyk           brass is a process color, cmyk(), as the printer separates it; the greens and the
+                 sand are hex, which the file ties to sRGB, as it does the chart, an RGB image
+  link           the address on the cover is a link: a PDF/X file prints its text and leaves out
+                 what makes it clickable
 
 All the text is in the layout. A text-at in a layer is one line unless it has a width and
 max-lines, which wrap it. A layer can also be turned with transform, as the contract's watermark
@@ -38,11 +47,13 @@ is; nothing is rotated here.
 
 ## Fonts and images
 
-The document names 2 files, which go in an `assets` folder next to it. In Visual Studio Code, **Lpdf: New Document** puts them there.
+The document names 4 files, which go in an `assets` folder next to it. In Visual Studio Code, **Lpdf: New Document** puts them there.
 
 - [assets/fonts/Montserrat-Regular.ttf](/docs/examples/brochure/assets/fonts/Montserrat-Regular.ttf)
 - [assets/fonts/Radley-Regular.ttf](/docs/examples/brochure/assets/fonts/Radley-Regular.ttf)
+- [assets/images/committed-capital.png](/docs/examples/brochure/assets/images/committed-capital.png)
+- [assets/profiles/FOGRA39L_coated.icc](/docs/examples/brochure/assets/profiles/FOGRA39L_coated.icc)
 
 ## The document
 
-The document is 351 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.
+The document is 369 lines, so it is not repeated here. Download it above to read it beside the PDF it makes.

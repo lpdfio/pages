@@ -231,6 +231,8 @@ pdf = engine.render(doc)
 Path('hello.pdf').write_bytes(pdf)
 ```
 
+An attribute class takes its attributes as keyword arguments, `TextAttr(font_size='xl')`, and raises a `TypeError` for positional ones, so an attribute added in a later version never changes what a call sets.
+
 ## Threads
 
 A render releases the GIL, so renders on threads run in parallel: use a thread pool, or `asyncio.to_thread` in async code. The first render of a process compiles the engine, which takes a few hundred milliseconds, and the renders after it share it.

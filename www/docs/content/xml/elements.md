@@ -117,7 +117,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 
 ### `output`
 
-How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, and whether it is [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, whether it is [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and whether it is [linearized](?p=fast-web-view). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -127,6 +127,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
 | `pdfx`    | string | — | `4`: writes the PDF as PDF/X-4, for a commercial printer, made for the press profile `profile` names. It combines with `pdfua`. Every page gets a `TrimBox` and a `BleedBox`, RGB is tied to sRGB, and links print as text. The render needs `createdOn`, `meta` a `title`, and every text a font of `assets`, and the document no form field, barcode digits, `encrypt`, `pdfa` or `attachments`, each an error that says what to change |
 | `profile` | string | — | The [`profile`](#profile) of `assets` a PDF/X file is made for: the ICC profile of the printing press. It needs `pdfx`, and `pdfx` needs it |
+| `linearize` | boolean | `false` | Writes the PDF linearized, for [fast web view](?p=fast-web-view): page 1 and hints that say where every other page is come first, so a viewer that fetches the file by ranges shows page 1 while the rest downloads. Each page then names only the fonts and images it draws. With `encrypt` the file is encrypted first and linearized last. Any change to the file afterwards ends the linearization |
 
 ### `attachments`
 

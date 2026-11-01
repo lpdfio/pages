@@ -24,6 +24,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 | `pdfa` | `2b` `2u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
 | `pdfua` | `1` | — | Writes the PDF as [PDF/UA](?p=pdfua), which an encrypted file meets only when `allow` names `accessibility` |
 | `pdfx` | `4` | — | Writes the PDF as [PDF/X](?p=pdfx), which forbids encryption: not with `encrypt` |
+| `linearize` | boolean | `false` | Writes the PDF [linearized](?p=fast-web-view), for fast web view: the file is encrypted first and linearized last |
 
 The files a document carries in its [`attachments`](?p=attachments) are encrypted with the rest, under the same passwords.
 

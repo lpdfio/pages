@@ -112,7 +112,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
-| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout an `alt`, and every text a font of `assets`, each an error that says what to change |
+| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
 
 ### `attachments`
 
@@ -366,7 +366,7 @@ Inline image.
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
-| `alt`        | string  | —       | What the image shows, which a screen reader reads in a [PDF/UA](?p=pdfua) document; `alt=""` marks it as decoration. A PDF/UA document needs it. A document without `pdfua` ignores it |
+| `alt`        | string  | —       | What the image shows, which a screen reader reads in a [PDF/UA](?p=pdfua) document; `alt=""` marks it as decoration. A PDF/UA document needs it on each image outside a header or a footer. A document without `pdfua` ignores it |
 | `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
 | `height`     | token/pt | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
@@ -441,7 +441,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 |-------------|---------|-----------|-------------|
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
-| `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a [PDF/UA](?p=pdfua) document in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it. A document without `pdfua` ignores it |
+| `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a [PDF/UA](?p=pdfua) document in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer. A document without `pdfua` ignores it |
 | `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`    | token/pt| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |

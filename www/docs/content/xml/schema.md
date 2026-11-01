@@ -9,8 +9,8 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
   <assets>           ← optional: fonts, images
   <tokens>           ← optional: custom scales, aliases, colors and gradients
   <document>         ← required
-    <meta>           ← optional: title, author, subject, keywords, creator
-    <output>         ← optional: encryption, what a reader may do, PDF/A
+    <meta>           ← optional: title, author, subject, keywords, creator, lang
+    <output>         ← optional: encryption, what a reader may do, PDF/A, PDF/UA
     <attachments>    ← optional: the files the PDF carries
     <section>+       ← one or more, each with its own pages
       <bookmark>     ← optional: marks the section's first page

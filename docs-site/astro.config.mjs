@@ -108,6 +108,7 @@ export default defineConfig({
                         { slug: 'pdfa', label: 'PDF/A' },
                         { slug: 'pdfua', label: 'PDF/UA' },
                         { slug: 'pdfx', label: 'PDF/X' },
+                        { slug: 'fast-web-view', label: 'Fast web view' },
                         { slug: 'attachments', label: 'Attachments' },
                     ],
                 },

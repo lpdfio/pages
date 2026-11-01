@@ -140,6 +140,10 @@
         "title": "Create PDF/X-4 print files with bleed in Lpdf",
         "description": "Write PDF/X-4 for commercial printers: the printer's ICC profile as output intent, trim and bleed boxes, CMYK and sRGB color, or an error that says what to fix."
     },
+    "fast-web-view": {
+        "title": "Fast web view: linearized PDF for browsers in Lpdf",
+        "description": "Write a linearized PDF for fast web view: page 1 and its hints come first, so a browser shows page 1 while the rest of a large file still downloads."
+    },
     "attachments": {
         "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
         "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a source spreadsheet or terms, read from src or loaded in Node.js, .NET, PHP or Python."

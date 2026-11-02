@@ -101,7 +101,7 @@ A number is set at the right of its column, so `9.` and `10.` end together. The 
 
 ## Nested lists
 
-A list inside an item starts where the words of the item start, and its numbers start over. The nesting has no limit but the width of the page, which each level takes `indent` from.
+A list inside an item starts where the words of the item start, and its numbers start over. Each level takes `indent` from the width of the page. Lists nest 47 deep at most in a `layout`: each level is a `list` and an `li`, and a document nests 100 levels (see [XML Schema](?p=xml/schema#document-structure)).
 
 ```xml
 <list type="number">

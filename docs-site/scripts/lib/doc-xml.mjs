@@ -15,7 +15,8 @@
 // a snippet declares with a src is loaded with the site's Radley (FONT, `declaredFonts`), so a PDF/A example, which
 // refuses a font that is not embedded, renders, and the checks give every render a date (CREATED_ON), which PDF/A
 // needs. Each file a snippet carries in its attachments is loaded under its ref or name with a few placeholder bytes
-// (FILE, `declaredFiles`), so its src is never read, and each color profile it declares with the header of a printer
+// (FILE, `declaredFiles`), so its src is never read, or for the invoice file of a Factur-X example, factur-x.xml or
+// xrechnung.xml, with the XML of an invoice that names its profile, and each color profile it declares with the header of a printer
 // profile (PROFILE, `declaredProfiles`), which a PDF/X example names as its press profile. A
 // snippet that is not meant to run is skipped: one that starts with assets or tokens, one with an ellipsis in it,
 // one that names a file of Markdown rules with a src, and one that is not XML for the engine at all.
@@ -46,6 +47,27 @@ export const CREATED_ON = '2026-01-01T00:00:00Z';
 
 /** The bytes loaded for each file a snippet carries in its attachments. */
 export const FILE = Buffer.from('Placeholder for a file the docs attach to a PDF.\n');
+
+/** The XML of a Factur-X invoice whose BT-24 is `guideline`, as little of it as the engine reads. */
+function invoice(guideline)
+{
+    return Buffer.from(
+        '<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"'
+        + ' xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">'
+        + '<rsm:ExchangedDocumentContext><ram:GuidelineSpecifiedDocumentContextParameter>'
+        + `<ram:ID>${guideline}</ram:ID>`
+        + '</ram:GuidelineSpecifiedDocumentContextParameter></rsm:ExchangedDocumentContext></rsm:CrossIndustryInvoice>',
+    );
+}
+
+/**
+ * The bytes loaded for the invoice file of a Factur-X example, by its name: the engine reads its profile from BT-24 of
+ * the XML, so placeholder bytes would be an error.
+ */
+const INVOICES = {
+    'factur-x.xml': invoice('urn:cen.eu:en16931:2017'),
+    'xrechnung.xml': invoice('urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0'),
+};
 
 /**
  * The header of an ICC printer profile in CMYK, with a description and nothing else: enough for the engine to take it
@@ -79,11 +101,19 @@ export function declaredProfiles(xml)
         .filter(Boolean);
 }
 
-/** The key, `ref` or else `name`, of each file `xml` carries in its attachments, which renders only once it is loaded. */
+/**
+ * Each file `xml` carries in its attachments, which renders only once it is loaded: its key, `ref` or else `name`, and
+ * the bytes to load under it, an invoice's XML for the invoice file of a Factur-X example and FILE for any other.
+ */
 export function declaredFiles(xml)
 {
     return [...xml.matchAll(/<file\b[^>]*>/g)]
-        .map(([tag]) => tag.match(/\bref="([^"]*)"/)?.[1] ?? tag.match(/\bname="([^"]*)"/)?.[1])
+        .map(([tag]) =>
+        {
+            const name = tag.match(/\bname="([^"]*)"/)?.[1];
+            const key = tag.match(/\bref="([^"]*)"/)?.[1] ?? name;
+            return key ? [key, INVOICES[name] ?? FILE] : null;
+        })
         .filter(Boolean);
 }
 

@@ -35,13 +35,13 @@ PDF/UA (ISO 14289-1) is the PDF a screen reader can read: a tagged PDF that says
 
 | Element | Attribute | Type | Description |
 |---------|-----------|------|-------------|
-| [`output`](?p=xml/elements#output) | `pdfua` | `1` | Writes the PDF as PDF/UA-1, a tagged PDF. Without it nothing is tagged, and the attributes below change nothing |
+| [`output`](?p=xml/elements#output) | `pdfua` | `1` | Writes the PDF as PDF/UA-1, a tagged PDF. Without it, or a `pdfa` of [level a](?p=pdfa#level-a), which tags the file too, nothing is tagged, and the attributes below change nothing |
 | [`meta`](?p=xml/elements#meta) | `lang` | language tag | The language of the text, such as `en`, `en-US` or `de-CH`, which a screen reader reads it in. Required with `pdfua` |
 | [`text`](?p=xml/elements#text) | `role` | `h1` … `h6` | Makes the text a heading. A text without it is a paragraph |
 | [`img`](?p=xml/elements#img-layout), [`barcode`](?p=xml/elements#barcode) | `alt` | string | What the image shows, or what the barcode is for; `alt=""` marks it as decoration. Required with `pdfua` on every image and barcode of the layout but a header's or a footer's, which are decoration |
 | [`layer`](?p=xml/elements#layer) | `alt` | string | Makes the layer one figure with that description. Without it a layer is decoration |
 
-`pdfua` combines with [`pdfa`](?p=pdfa): `<output pdfa="2u" pdfua="1"/>` writes an accessible file for the archive. It combines with [`pdfx`](?p=pdfx) too, for a print file a screen reader reads; a PDF/X file has no links, so its link text is read as text.
+`pdfua` combines with [`pdfa`](?p=pdfa): `<output pdfa="2u" pdfua="1"/>` writes an accessible file for the archive, and `<output pdfa="2a" pdfua="1"/>` one that is PDF/A [level a](?p=pdfa#level-a) too, the level for tagged files. Level a alone tags the file the same way, without the checks of PDF/UA. `pdfua` combines with [`pdfx`](?p=pdfx) too, for a print file a screen reader reads; a PDF/X file has no links, so its link text is read as text.
 
 ## Headings
 

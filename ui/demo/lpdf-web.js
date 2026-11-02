@@ -258,6 +258,32 @@ export class LpdfEngine {
     set_now(unix) {
         wasm.lpdfengine_set_now(this.__wbg_ptr, unix);
     }
+    /**
+     * Draw PNG stamps over the pages of an existing PDF, and return the file with them added as an incremental
+     * update: the input, byte for byte, then the images and the pages they change. The original bytes stay as they
+     * were, so an owner password and its permissions stay, and so does a digital signature's revision.
+     *
+     * `stamps` is a JSON list of stamps, each with an `image`, the name of a PNG loaded with `load_image`, a `page`
+     * scope, a box (`x`, `y`, `anchor`, `width`, `height`, placed as a layer element is) and how the image sits in it
+     * (`align`, `justify`, `scale`, `max-grow`). Without a valid license key, each stamped page gets the attribution
+     * line of a render in its top-right corner.
+     * @param {Uint8Array} pdf
+     * @param {string} stamps
+     * @returns {Uint8Array}
+     */
+    stamp(pdf, stamps) {
+        const ptr0 = passArray8ToWasm0(pdf, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(stamps, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_stamp(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v3;
+    }
 }
 if (Symbol.dispose) LpdfEngine.prototype[Symbol.dispose] = LpdfEngine.prototype.free;
 
@@ -532,6 +558,9 @@ function __wbg_get_imports() {
         __wbg___wbindgen_throw_6b64449b9b9ed33c: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
+        __wbg_getRandomValues_cc7f052a444bb2ce: function() { return handleError(function (arg0, arg1) {
+            globalThis.crypto.getRandomValues(getArrayU8FromWasm0(arg0, arg1));
+        }, arguments); },
         __wbindgen_cast_0000000000000001: function(arg0, arg1) {
             // Cast intrinsic for `Ref(String) -> Externref`.
             const ret = getStringFromWasm0(arg0, arg1);
@@ -557,6 +586,12 @@ const LpdfEngineFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_lpdfengine_free(ptr >>> 0, 1));
 
+function addToExternrefTable0(obj) {
+    const idx = wasm.__externref_table_alloc();
+    wasm.__wbindgen_externrefs.set(idx, obj);
+    return idx;
+}
+
 function getArrayU8FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
@@ -573,6 +608,15 @@ function getUint8ArrayMemory0() {
         cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
     }
     return cachedUint8ArrayMemory0;
+}
+
+function handleError(f, args) {
+    try {
+        return f.apply(this, args);
+    } catch (e) {
+        const idx = addToExternrefTable0(e);
+        wasm.__wbindgen_exn_store(idx);
+    }
 }
 
 function isLikeNone(x) {

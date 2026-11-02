@@ -174,9 +174,12 @@ The shapes of a [layer](?p=doc/layer/rect) (`rect`, `circle` and `ellipse`) take
 
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
-| `pin`     | string | —       | **Required.** `top` or `bottom`. `left` and `right` pass validation but are not implemented yet |
+| `pin`     | string | —       | **Required.** `top` or `bottom`, or `inset` for a block inside the section's columns. `left` and `right` pass validation but are not implemented yet |
 | `page`    | string | `each`  | Which pages show the region: `each`, `first`, `last`, `odd`, `even`, or a range like `2-last`. `odd` and `even` follow the number printed on the page: see [Odd and even pages](#odd-and-even-pages) |
+| `col`, `colspan`, `top`, `height` | — | — | Where an inset is in the columns: see [Insets](?p=doc/section#insets). An error on a region pinned to an edge |
 | `debug`   | boolean | false  | Render the region's box for debugging |
+
+With `pin="inset"`, a region is a block at a spot inside the flow instead, which the flow goes around: `top` and `height` place it, and in a section with [`columns`](?p=doc/section#columns), `col` and `colspan` say which columns it covers. See [Insets](?p=doc/section#insets).
 
 In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are replaced in a region and in a layer's [`text-at`](?p=doc/layer/text-at#page-numbers), and count on from one section to the next unless a section starts them again: see [Page numbers](?p=doc/section#page-numbers). A region takes its space out of the flow, inside the margin. For a page number that takes no space, or sits in the margin, use a layer.
 

@@ -176,6 +176,10 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 | `page-start`  | whole number | —   | The number of the section's first page, which starts a new run of pages: `1` restarts the count. 1 or more. Without it the pages count on from the section before. See [Page numbers](?p=doc/section#page-numbers) |
 | `page-format` | string  | the section before's | How the page numbers are written: `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman` or `upper-roman`. Past z, letters repeat: aa, bb, cc |
 | `page-prefix` | string  | the section before's | Text before the page numbers, such as `A-`. `""` takes it away |
+| `columns`     | whole number | 1   | Sets the section's flow, a `layout` or a `markdown`, in this many columns, from 1 to 12: each fills like a small page, left to right, then the next page. See [Columns](?p=doc/section#columns) |
+| `column-gap`  | token/pt | `l`     | The space between two columns, as `gap` takes it. Ignored with one column |
+| `column-rule` | border  | —        | A line in the middle of each gap between two columns that hold something, as `border` takes it: `0.5pt #cccccc`. Ignored with one column |
+| `column-fill` | string  | `auto`   | How the columns of the last page fill: `auto`, in order like every other page, or `balance`, levelled. CSS's default is `balance`. Ignored with one column |
 | `debug`       | boolean | false    | Render layout boxes |
 
 A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout` or one [`markdown`](#markdown), painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with neither is one page.
@@ -536,9 +540,15 @@ Pinned header or footer that repeats across pages. Only allowed directly inside 
 
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
-| `pin`     | string | —       | **Required.** `top` or `bottom`. `left` and `right` pass validation but are not implemented yet |
-| `page`    | string | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages) |
+| `pin`     | string | —       | **Required.** `top` or `bottom`, or `inset` for a block inside the section's columns. `left` and `right` pass validation but are not implemented yet |
+| `page`    | string | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages). An inset on `last` goes on the last page of the flow filled without it, and stays there if it pushes text on to a new page |
+| `top`     | pt/mm/in | —     | An inset only, and required with it: how far below the top of the columns it starts |
+| `height`  | pt/mm/in | —     | An inset only, and required with it: how tall it is. Content taller than it is clipped at its foot; an inset that reaches below the room the headers and footers leave is an error |
+| `col`     | whole number | 1 | An inset only: the column it starts in, from 1 |
+| `colspan` | whole number | 1 | An inset only: how many columns it covers. Past the section's `columns` is an error |
 | `debug`   | boolean | false  | Draw the region's outline |
+
+With `pin="inset"` the region is an inset: a block at a spot in the section's columns, which the columns it covers fill above and carry on below. See [Insets](?p=doc/section#insets).
 
 ---
 

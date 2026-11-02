@@ -1,6 +1,6 @@
 # PDF/A
 
-PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask for: a file that carries everything it needs to look the same decades from now. Lpdf writes PDF/A-2b and PDF/A-2u when the document asks for it in its `output`, and the render gives the date the file carries.
+PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask for: a file that carries everything it needs to look the same decades from now. Lpdf writes PDF/A-2b, PDF/A-2u, PDF/A-3b and PDF/A-3u when the document asks for it in its `output`, and the render gives the date the file carries.
 
 ```xml
 <lpdf version="1">
@@ -26,9 +26,9 @@ PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask 
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `pdfa` | `2b` `2u` | — | Writes the PDF as PDF/A-2b, which keeps the look of every page, or PDF/A-2u, which also maps all text to Unicode so it can be searched and copied. Without it the PDF is a plain one |
+| `pdfa` | `2b` `2u` `3b` `3u` | — | Writes the PDF as PDF/A-2b, which keeps the look of every page, or PDF/A-2u, which also maps all text to Unicode so it can be searched and copied, or the same levels of part 3, PDF/A-3b and PDF/A-3u, which also carry [attachments](?p=attachments) of any kind. Without it the PDF is a plain one |
 
-Part 2 of the standard allows transparency, so opacity, shadows and gradients are kept. Level 2a, which adds the structure of tagged PDF, and part 3, which carries other files such as the XML of an e-invoice, are not written yet. A file can be PDF/A and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfa="2u" pdfua="1"/>`.
+Parts 2 and 3 of the standard allow transparency, so opacity, shadows and gradients are kept. Part 3 is part 2 with files of any kind attached, such as the XML of an e-invoice: a PDF/A-3 file that carries `factur-x.xml` is a [Factur-X e-invoice](?p=facturx). Level a, which adds the structure of tagged PDF, is not written yet. A file can be PDF/A and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfa="2u" pdfua="1"/>`.
 
 ## What the file gets
 
@@ -39,7 +39,7 @@ Part 2 of the standard allows transparency, so opacity, shadows and gradients ar
 - Links that print.
 - Everything the document has, on screen and in print: [print and screen content](?p=print-and-screen) (`ocg`) shows everywhere, so the archive copy holds both.
 
-Lpdf's own tests check a PDF/A-2b and a PDF/A-2u document with veraPDF, the PDF Association's reference validator, on every change. To check a file of yours, run veraPDF on it: it reads the level the file declares and checks it against that level's rules.
+Lpdf's own tests check a document at each of the four levels with veraPDF, the PDF Association's reference validator, on every change. To check a file of yours, run veraPDF on it: it reads the level the file declares and checks it against that level's rules.
 
 ## The date
 
@@ -112,5 +112,6 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file
 - `pdfx` on the same `output`: a PDF/A file keeps to the sRGB profile, and a [PDF/X](?p=pdfx) file to the press profile
-- [`attachments`](?p=attachments): a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check
+- [`attachments`](?p=attachments) with `2b` or `2u`: a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check. Write `3b` or `3u` to carry files
+- an attachment named `factur-x.xml` or `xrechnung.xml` with `2b` or `2u`: it makes the file a [Factur-X invoice](?p=facturx), which is PDF/A-3
 - a render without `createdOn`, or with one that is not a date

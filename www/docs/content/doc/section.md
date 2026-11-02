@@ -163,7 +163,7 @@ A section that sets none of the three carries on the count, the format and the p
 The cover and its back say "Page i of iii" and "Page ii of iii", the preface "Page iii of iii", the chapter "Page 1 of 2" and "Page 2 of 2", and the appendix "Page A-1 of 1".
 
 - **`{pages}`** counts the pages of a run, from one `page-start` to the next, or to the end of the document. It is written in the run's format and without the prefix, since it is a count and not a page. A file of invoices sets `page-start="1"` on each section, and each invoice says "Page 1 of 2" and "Page 2 of 2".
-- **The table of contents and the viewer** show the same numbers. A [table of contents](?p=doc/toc) prints the number each entry's page prints, and the PDF labels its pages with them, so the page box of a viewer shows ii or A-1, and a reader who types A-1 there goes to that page. A document whose sections set none of the three has no labels: a viewer counts 1, 2, 3 without them.
+- **The table of contents, cross-references and the viewer** show the same numbers. A [table of contents](?p=doc/toc) prints the number each entry's page prints, and so does a [cross-reference](?p=doc/layout/bookmark#referring-to-a-bookmark) for the page of its bookmark. The PDF labels its pages with them, so the page box of a viewer shows ii or A-1, and a reader who types A-1 there goes to that page. A document whose sections set none of the three has no labels: a viewer counts 1, 2, 3 without them.
 - **Letters past z** repeat one letter, aa, bb, cc, as PDF viewers count pages, where the letters of a [list](?p=doc/layout/list) go aa, ab, ac. A number past 3999 in letters or numerals is written in decimal.
 
 ## Table of contents

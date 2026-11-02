@@ -351,6 +351,7 @@ Inline text with overridden style.
 | `font`      | string  | Font override |
 | `color`     | color   | Color override |
 | `href`      | URL     | Makes the span a link: a URL, or `#id` to jump to the bookmark with that id |
+| `bookmark-ref` | string | Makes the span a cross-reference to the bookmark with that id: a link to it. In its words, `{bookmark-page}` prints the page the bookmark is on, as that page's footer prints it, and `{bookmark-label}` its label. An id no bookmark has, another `{…}` in the words, and `href` beside it are errors. See [Referring to a bookmark](?p=doc/layout/bookmark#referring-to-a-bookmark) |
 | `underline` | boolean | Underline text |
 | `strike`    | boolean | Strikethrough text |
 
@@ -497,13 +498,14 @@ In an entry of a table of contents, `href="#"` on a `link` or a `span` jumps to 
 
 ### `bookmark`
 
-An entry of the PDF's outline and a target for `href="#id"` links. It draws nothing, and marks the element that follows it, which must be in the same container. Directly inside a `section`, as its first child, it marks the section's first page. Not allowed in a layer. See [Bookmark](?p=doc/layout/bookmark).
+An entry of the PDF's outline and a target for `href="#id"` links and `bookmark-ref` cross-references. It draws nothing, and marks the element that follows it, which must be in the same container. Directly inside a `section`, as its first child, it marks the section's first page. Not allowed in a layer. See [Bookmark](?p=doc/layout/bookmark).
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
 | `label`   | string  | —       | **Required.** The text of the entry, in the outline and in a table of contents |
 | `level`   | integer | `1`     | Depth in the outline, 1 to 6. An entry nests under the closest entry before it with a lower level |
 | `id`      | string  | from `label` | The name links jump to. Without it, the label lowercased with other characters than letters and digits turned into hyphens, and `-2`, `-3` added when the id is taken. Two bookmarks may not have the same id |
+| `ref-only` | boolean | `false` | `true` leaves the bookmark out of the outline and the table of contents; links and cross-references still reach it |
 
 ### `field`
 

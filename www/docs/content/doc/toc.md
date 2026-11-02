@@ -53,7 +53,7 @@ The contents page lists Introduction and Results on pages 2 and 3, with Backgrou
 
 ## Entries
 
-Each item of `$toc` is one bookmark, in document order:
+Each item of `$toc` is one bookmark, in document order. A bookmark with `ref-only="true"` is not listed, as it is not in the outline: see [A target for references only](?p=doc/layout/bookmark#a-target-for-references-only).
 
 | Field    | Example       | Description |
 |----------|---------------|-------------|

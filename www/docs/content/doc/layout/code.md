@@ -54,7 +54,7 @@ if a < b && c {
 
 ## Words in color
 
-A `span` in a `code` colors a stretch of it, and keeps its spaces. `font`, `color`, `bold`, `href`, `underline` and `strike` are the attributes of [a span in a text](?p=doc/layout/text#inline-spans-for-mixed-styling). The engine knows no language: the keywords and strings are the ones you wrap, or the ones your own highlighter does.
+A `span` in a `code` colors a stretch of it, and keeps its spaces. `font`, `color`, `bold`, `href`, `underline` and `strike` are the attributes of [a span in a text](?p=doc/layout/text#inline-spans-for-mixed-styling), and `bookmark-ref` makes it a [cross-reference](?p=doc/layout/bookmark#referring-to-a-bookmark), such as a comment that names the page a function is described on. The engine knows no language: the keywords and strings are the ones you wrap, or the ones your own highlighter does.
 
 ```xml
 <code>

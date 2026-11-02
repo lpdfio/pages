@@ -16,6 +16,10 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `page-start`  | whole number | — | The number of the section's first page, which starts a new run of pages: `1` restarts the count. 1 or more. See [Page numbers](#page-numbers) |
 | `page-format` | string  | the section before's | How the page numbers are written: `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman` or `upper-roman`. The first section's are decimal |
 | `page-prefix` | string  | the section before's | Text before the page numbers, such as `A-`. `""` takes it away |
+| `columns`     | whole number | 1 | Sets the flow in this many columns, from 1 to 12. See [Columns](#columns) |
+| `column-gap`  | token/pt | `l`    | The space between two columns, as `gap` takes it |
+| `column-rule` | border  | —       | A line in the middle of each gap, as `border` takes it: `0.5pt #cccccc` |
+| `column-fill` | string  | `auto`  | How the columns of the last page fill: `auto`, in order, or `balance`, levelled. CSS's default is `balance` |
 | `debug`       | boolean | false   | Render layout boxes for debugging |
 
 All attributes are optional. The page settings inherit from `document` when not set.
@@ -97,6 +101,75 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
   </layout>
 </section>
 ```
+
+## Columns
+
+`columns` sets the section's flow in columns: a long text, or a long list of short items, runs down the first column, carries on at the top of the next, and goes on to the next page after the last. Each column fills like a small page, so what comes from data lays itself out: a glossary, a price list, a directory, terms and conditions in small print, a newsletter. It works the same for a `layout` and a [`markdown`](?p=doc/markdown), since both are the section's flow. Headers and footers ([regions](?p=doc/layout#pinned-regions) pinned to the top or the bottom), the notes of [footnotes](?p=doc/layout/footnote) and [layers](?p=doc/layer) keep the full width of the page.
+
+```xml
+<document size="a4">
+  <section columns="3" column-gap="m" column-rule="0.5pt #c5ccd6">
+    <layout margin="40pt">
+      <region pin="top">
+        <text font-size="xxl" font="Times-Bold">The Harbour Gazette</text>
+      </region>
+      <region pin="bottom">
+        <text font-size="s" align="center">Page {page} of {pages}</text>
+      </region>
+      <text font-size="l" font="Helvetica-Bold">The lamp-keepers' record</text>
+      <text align="justify">The lamp-keepers of the northern coast kept a record of every evening they lit the harbour light, and the record grew longer than the harbour itself. Each entry gives the hour, the weather and the ships that passed before midnight.</text>
+      <text align="justify">The oldest keeper claimed that she could tell the season from the smell of the oil alone, and she was seldom wrong. When a storm did come, the entries ran past the margin and onto the back of the page.</text>
+      <text font-size="l" font="Helvetica-Bold" paginate="break-before">The new light</text>
+      <text align="justify">When the board sent the new lens, it came in eleven crates and a letter of instructions longer than the record of that year.</text>
+    </layout>
+  </section>
+</document>
+```
+
+- **`column-gap`** is the space between two columns, a space token or a length, as `gap` takes it. It defaults to `l`, so the text of two columns never runs together, and follows a theme that changes the spacing scale.
+- **`column-rule`** draws a line in the middle of each gap, as `border` takes it: a thickness and a color. It runs from the top of the columns to the foot of the tallest one on the page, and only between two columns that hold something: three columns with content for two get one line.
+- **`column-fill`** says how the columns of the last page fill. `auto`, the default, fills them in order, as on every other page, so the last column can be short or empty. `balance` levels them: the columns are as short as they can be and still hold the rest. A node that isn't cut, such as an image, moves whole to the next column, so balanced columns can end a little uneven. CSS's `column-fill` defaults to `balance`; Lpdf's defaults to `auto`, and balances only when asked.
+- `column-gap`, `column-rule` and `column-fill` are ignored when `columns` is missing or 1, which is a section as it always was.
+
+What ends a page in one column ends a column in several: [`paginate="break-before"`](?p=doc/layout#page-breaks) moves its element to the top of the next column, and `break-after` and `keep-next` act per column. A new page is a new section. A text splits between its lines from one column to the next, a table between its rows, with its header row at the top of each column it is in, and a node taller than an empty column is placed anyway and cut at its foot, as on a page. An image with `width="fill"` takes the column's width, and one with a fixed width wider than a column runs over the gap into the next. The notes of the footnotes go at the foot of the page, under all the columns, numbered in reading order, column by column.
+
+Lpdf doesn't hyphenate words, so justified text in a narrow column can show wide gaps between them: in columns under about forty characters, left-aligned text reads better.
+
+### Insets
+
+An inset is a block at a spot inside the columns that the flow goes around: a picture across two columns of a newsletter, a quote, a box of opening hours. It is a [`region`](?p=doc/layout#pinned-regions) with `pin="inset"`, written in the layout, and holds what any region holds. The columns it covers fill above it and carry on below it; the others run straight down.
+
+```xml
+<document size="a4">
+  <section columns="4" column-gap="m" column-rule="0.5pt #c5ccd6">
+    <layout margin="36pt">
+      <region pin="inset" col="2" colspan="2" top="110pt" height="210pt">
+        <column background="#eef3fb" padding="m" gap="xs" height="fill">
+          <text font-size="l" font="Times-Italic" align="center">"Kept to the end."</text>
+          <text font-size="s" align="center">The last line of the record, in the daughter's hand.</text>
+        </column>
+      </region>
+      <text align="justify">The lamp-keepers of the northern coast kept a record of every evening they lit the harbour light, and the record grew longer than the harbour itself. Each entry gives the hour, the weather and the ships that passed before midnight. Most nights the third column stayed empty, and the keepers took pride in that.</text>
+      <text align="justify">The oldest keeper claimed that she could tell the season from the smell of the oil alone, and she was seldom wrong. Nobody could say when the first entry was made, only that the ink in it had faded to the color of weak tea.</text>
+      <text align="justify">Under the lamp room stood a cupboard of spare wicks, glass chimneys and one brass bell that nobody remembered buying. A page of the record was ruled into three columns: the hour, the weather, and a line for anything worth remembering.</text>
+      <text align="justify">In the winter of the great storm the record runs to four pages for a single night. The oil came by boat in spring and autumn, and a late boat meant a careful winter. A keeper's daughter wrote the entries for six years when her father's hands failed.</text>
+    </layout>
+  </section>
+</document>
+```
+
+| Attribute | Default | Description |
+|-----------|---------|-------------|
+| `top`     | —       | **Required.** How far below the top of the columns the inset starts, under the headers: `110pt`, `40mm` |
+| `height`  | —       | **Required.** How tall it is. Content taller than it is clipped at its foot |
+| `col`     | 1       | The column it starts in, counted from 1 at the left |
+| `colspan` | 1       | How many columns it covers, from `col`. It is as wide as those columns and the gaps between them |
+| `page`    | `each`  | The pages it is on, as for any region: `each`, `first`, `last`, `odd`, `even`, or a range such as `2-last` |
+
+- **It is never cut.** An inset whose `top` and `height` reach below the room the headers and footers leave, on a page it is on, is an error, which shows the first time the template is tried. A `col` and `colspan` that run past the section's `columns` are an error, and so are `col`, `colspan`, `top` and `height` on a region pinned to an edge.
+- **The notes of footnotes give way to it.** They don't rise above the foot of an inset: a line whose note would need them to goes on to the next page, with its note.
+- **`page="last"`** puts the inset on the last page of the flow filled without it. That page is filled again with it, and if text no longer fits, the text goes on to a new page with no inset, and the inset stays where it was, one page before the end. No error: a template that worked for months doesn't fail on a longer list.
+- A layout can hold several insets. Two that overlap each keep the flow out of their own rectangle, and are drawn in the order they are written. An inset needs no columns: in a section of one, it is a block the text goes around.
 
 ## Bookmarking a section
 

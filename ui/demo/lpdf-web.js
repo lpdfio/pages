@@ -236,6 +236,20 @@ export class LpdfEngine {
         wasm.lpdfengine_set_font_metrics(this.__wbg_ptr, ptr0, len0);
     }
     /**
+     * Set the memory a render may allocate, in megabytes: 1024 when it isn't set. A render that needs more stops
+     * with an error that names the cap. What the engine holds before the render, such as its loaded fonts, doesn't
+     * count.
+     *
+     * Returns an error when `mb` is 0 or above 4096, the most 32-bit WebAssembly addresses.
+     * @param {number} mb
+     */
+    set_max_memory_mb(mb) {
+        const ret = wasm.lpdfengine_set_max_memory_mb(this.__wbg_ptr, mb);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * Set the current Unix timestamp (seconds) for license expiry checking.
      * Must be called before `render_pdf` when using a time-limited token.
      * If not set (default `0`), expiry is not checked.

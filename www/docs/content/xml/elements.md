@@ -117,17 +117,18 @@ Document properties written to the PDF. Child of `document`, before the sections
 
 ### `output`
 
-How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, whether it is [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and whether it is [linearized](?p=fast-web-view). Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
+How the PDF file is written, apart from what its pages show: whether it is [encrypted](?p=encryption), and what a reader may do with it, whether it is [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), whether it is [linearized](?p=fast-web-view), and how strictly a [Factur-X invoice](?p=facturx) keeps to its spec. Child of `document`, after `meta` and before the sections. The passwords are not here: they come with the render call.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
-| `pdfa`    | string | — | `2b` `2u`: writes the PDF as PDF/A-2b or PDF/A-2u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt` or `attachments`, each an error that says what to change |
+| `pdfa`    | string | — | `2b` `2u` `3b` `3u`: writes the PDF as PDF/A-2b, PDF/A-2u, PDF/A-3b or PDF/A-3u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt`, or `attachments` with `2b` or `2u`, each an error that says what to change. With `3b` or `3u`, an attachment named `factur-x.xml` or `xrechnung.xml` makes the PDF a [Factur-X e-invoice](?p=facturx) |
 | `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
 | `pdfx`    | string | — | `4`: writes the PDF as PDF/X-4, for a commercial printer, made for the press profile `profile` names. It combines with `pdfua`. Every page gets a `TrimBox` and a `BleedBox`, RGB is tied to sRGB, and links print as text. The render needs `createdOn`, `meta` a `title`, and every text a font of `assets`, and the document no form field, barcode digits, `encrypt`, `pdfa` or `attachments`, each an error that says what to change |
 | `profile` | string | — | The [`profile`](#profile) of `assets` a PDF/X file is made for: the ICC profile of the printing press. It needs `pdfx`, and `pdfx` needs it |
 | `linearize` | boolean | `false` | Writes the PDF linearized, for [fast web view](?p=fast-web-view): page 1 and hints that say where every other page is come first, so a viewer that fetches the file by ranges shows page 1 while the rest downloads. Each page then names only the fonts and images it draws. With `encrypt` the file is encrypted first and linearized last. Any change to the file afterwards ends the linearization |
+| `facturx-strict` | boolean | `false` | Refuses, in a [Factur-X invoice](?p=facturx), an invoice file whose `mime` is not `text/xml` or whose `relationship` its profile doesn't allow, and another file with no `mime` or of a format the Factur-X spec doesn't list. It does nothing in a document without `factur-x.xml` or `xrechnung.xml` |
 
 ### `attachments`
 
@@ -142,8 +143,8 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 | `name` | string | required | The name a reader shows the file under and saves it as. Each file of a document has a name of its own |
 | `src` | path | — | Where the SDK reads the file from, when it was not loaded on the engine |
 | `ref` | string | the name | The key the file was loaded on the engine under |
-| `mime` | string | `application/octet-stream` | The type of the file, such as `text/xml` or `application/pdf` |
-| `relationship` | string | `unspecified` | `source` `data` `alternative` `supplement` `unspecified`: how the file relates to the document |
+| `mime` | string | `application/octet-stream` | The type of the file, such as `text/xml` or `application/pdf`. A Factur-X invoice file defaults to `text/xml` |
+| `relationship` | string | `unspecified` | `source` `data` `alternative` `supplement` `unspecified`: how the file relates to the document. A Factur-X invoice file defaults to the one its profile asks for |
 | `description` | string | — | A line about the file, which a reader shows beside its name |
 
 ### `document`

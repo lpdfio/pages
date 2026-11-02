@@ -106,6 +106,7 @@ export default defineConfig({
                     items: [
                         { slug: 'encryption', label: 'Encryption' },
                         { slug: 'pdfa', label: 'PDF/A' },
+                        { slug: 'facturx', label: 'Factur-X e-invoices' },
                         { slug: 'pdfua', label: 'PDF/UA' },
                         { slug: 'pdfx', label: 'PDF/X' },
                         { slug: 'fast-web-view', label: 'Fast web view' },

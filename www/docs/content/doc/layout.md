@@ -178,7 +178,7 @@ The shapes of a [layer](?p=doc/layer/rect) (`rect`, `circle` and `ellipse`) take
 | `page`    | string | `each`  | Which pages show the region: `each`, `first`, `last`, `odd`, `even`, or a range like `2-last` |
 | `debug`   | boolean | false  | Render the region's box for debugging |
 
-In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are replaced in a region and in a layer's [`text-at`](?p=doc/layer/text-at#page-numbers), and they count within the section. A region takes its space out of the flow, inside the margin. For a page number that takes no space, or sits in the margin, use a layer.
+In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are replaced in a region and in a layer's [`text-at`](?p=doc/layer/text-at#page-numbers), and count on from one section to the next unless a section starts them again: see [Page numbers](?p=doc/section#page-numbers). A region takes its space out of the flow, inside the margin. For a page number that takes no space, or sits in the margin, use a layer.
 
 ```xml
 <region pin="top" page="first">

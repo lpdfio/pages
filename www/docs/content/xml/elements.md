@@ -172,6 +172,9 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
 | `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
+| `page-start`  | whole number | —   | The number of the section's first page, which starts a new run of pages: `1` restarts the count. 1 or more. Without it the pages count on from the section before. See [Page numbers](?p=doc/section#page-numbers) |
+| `page-format` | string  | the section before's | How the page numbers are written: `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman` or `upper-roman`. Past z, letters repeat: aa, bb, cc |
+| `page-prefix` | string  | the section before's | Text before the page numbers, such as `A-`. `""` takes it away |
 | `debug`       | boolean | false    | Render layout boxes |
 
 A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout` or one [`markdown`](#markdown), painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with neither is one page.
@@ -526,7 +529,7 @@ PDF form field.
 
 ### `region`
 
-Pinned header or footer that repeats across pages. Only allowed directly inside `layout`. `pin` chooses the edge wherever the region is written among the flow, and regions on one edge stack in the order written. In its text, `{page}` is the page number and `{pages}` the total, and a `text` with `capture-ref` shows what the flow captured on its page (see [Running headers](?p=doc/layout#running-headers)).
+Pinned header or footer that repeats across pages. Only allowed directly inside `layout`. `pin` chooses the edge wherever the region is written among the flow, and regions on one edge stack in the order written. In its text, `{page}` is the page's number and `{pages}` how many pages its run has (see [Page numbers](?p=doc/section#page-numbers)), and a `text` with `capture-ref` shows what the flow captured on its page (see [Running headers](?p=doc/layout#running-headers)).
 
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|

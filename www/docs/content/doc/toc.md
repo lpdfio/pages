@@ -60,7 +60,7 @@ Each item of `$toc` is one bookmark, in document order:
 | `index`  | `1`           | The entry's place in the list, from 1 |
 | `level`  | `2`           | The bookmark's `level` |
 | `label`  | `Background`  | The bookmark's `label` |
-| `page`   | `2`           | The page the bookmark is on, counting every page of the document from 1 |
+| `page`   | `2`           | The number the bookmark's page prints, as a text: counted through the document, in its section's format and prefix, so `iv` or `A-1` too. See [Page numbers](?p=doc/section#page-numbers) |
 | `anchor` | `#background` | `#` and the bookmark's id |
 | `indent` | `12pt`        | The indent of the entry's level: `toc-indent-step` for each level below the first |
 

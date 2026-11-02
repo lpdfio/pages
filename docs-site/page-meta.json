@@ -155,5 +155,9 @@
     "facturx": {
         "title": "Create Factur-X and ZUGFeRD e-invoices as PDF/A-3 in Lpdf",
         "description": "Write a Factur-X or ZUGFeRD e-invoice: a PDF/A-3 that carries factur-x.xml, with its profile read from BT-24 and the XMP metadata the spec asks for."
+    },
+    "stamp": {
+        "title": "Stamp images onto existing PDFs with Lpdf",
+        "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from Node.js, .NET, PHP or Python, keeping its original bytes and encryption."
     }
 }

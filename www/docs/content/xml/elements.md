@@ -351,7 +351,7 @@ Inline text with overridden style.
 | `font`      | string  | Font override |
 | `color`     | color   | Color override |
 | `href`      | URL     | Makes the span a link: a URL, or `#id` to jump to the bookmark with that id |
-| `bookmark-ref` | string | Makes the span a cross-reference to the bookmark with that id: a link to it. In its words, `{bookmark-page}` prints the page the bookmark is on, as that page's footer prints it, and `{bookmark-label}` its label. An id no bookmark has, another `{…}` in the words, and `href` beside it are errors. Not in a `code`. See [Referring to a bookmark](?p=doc/layout/bookmark#referring-to-a-bookmark) |
+| `bookmark-ref` | string | Makes the span a cross-reference to the bookmark with that id: a link to it. In its words, `{bookmark-page}` prints the page the bookmark is on, as that page's footer prints it, and `{bookmark-label}` its label. An id no bookmark has, another `{…}` in the words, and `href` beside it are errors. See [Referring to a bookmark](?p=doc/layout/bookmark#referring-to-a-bookmark) |
 | `underline` | boolean | Underline text |
 | `strike`    | boolean | Strikethrough text |
 

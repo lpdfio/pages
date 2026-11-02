@@ -86,7 +86,7 @@ A link to an id that no bookmark has is left out of the PDF: its text is drawn, 
 The first line reads "The notice period is set in clause 4, on page 2.", and the whole span is a link to the clause. When an edit moves the clause to another page, the reference follows it.
 
 - **The page is printed as the footer of that page prints it:** counted through the document, in the format and prefix of its section, so `iv` or `A-3` too. See [Page numbers](?p=doc/section#page-numbers).
-- **It works wherever a span does:** in a `text`, a footnote, a [region](?p=doc/layout#pinned-regions)'s text and a layer's [`text-at`](?p=doc/layer/text-at#inline-spans-for-mixed-styling). Not in a [`code`](?p=doc/layout/code), whose text keeps its spaces and lines.
+- **It works wherever a span does:** in a `text`, a footnote, a [region](?p=doc/layout#pinned-regions)'s text, a layer's [`text-at`](?p=doc/layer/text-at#inline-spans-for-mixed-styling) and a [`code`](?p=doc/layout/code#words-in-color), where its words keep their spaces as the code's do.
 - **Errors.** An id that no bookmark has fails the render, with the line of the span. So does any other `{…}` in the span's words, such as a typo or `{page}`, and an `href` beside `bookmark-ref`: the span is a link to its bookmark already.
 - **The layout settles.** Where a bookmark lands depends on the words before it, and a reference's words are among them: a longer number can wrap a line and push the bookmark to the next page. So the engine lays the document out again until each reference shows the page its bookmark is on. A reference keeps room for the widest words it has shown, so that the layout stops moving, and a number that got narrower can leave a small gap after it. A document without references is laid out once.
 

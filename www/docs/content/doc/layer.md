@@ -142,7 +142,7 @@ Data binding reaches layers, with two limits.
 - **`data-if` and `data-if-not` on the `layer`** switch the whole layer on or off, such as a DRAFT watermark while a status is `draft`. The check happens once, so the layer is on every page its `page` selects, or on none.
 - **`data-source`** is not allowed on a layer's elements: every copy would sit in the same place. A list from data belongs in the layout.
 - A layer reads single values. An array item can be read by its index, `signers[0].name`, which suits a number of items fixed by the design, such as two signature lines.
-- A layer drawn on several pages shows the same values on each. Only `{page}` and `{pages}` change, and they count within the section.
+- A layer drawn on several pages shows the same values on each. Only `{page}` and `{pages}` change: see [Page numbers](?p=doc/section#page-numbers).
 
 Text that comes from data, and so can be any length, belongs in the layout. In a layer, a longer text loses its end without a warning. See [`text-at`](?p=doc/layer/text-at#text-from-data).
 

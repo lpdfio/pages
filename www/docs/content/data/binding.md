@@ -228,7 +228,7 @@ To skip some items, put the condition on an element inside the loop. There it re
 
 ## `$toc` — the table of contents
 
-In a section with `type="toc"`, the data also holds `$toc`: one item per bookmark, with its `label`, `level` and `page`. The engine adds it, so it is there even when you pass no data. See [Table of Contents](?p=doc/toc).
+In a section with `type="toc"`, the data also holds `$toc`: one item per bookmark, with its `label`, `level` and `page`, the number its page prints. The engine adds it, so it is there even when you pass no data. See [Table of Contents](?p=doc/toc).
 
 ```xml
 <column data-source="$toc">

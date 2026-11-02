@@ -79,7 +79,7 @@ The text's box is its natural width, or `width`, by the lines drawn × `font-siz
 
 ## Page numbers
 
-`{page}` becomes the page number and `{pages}` the number of pages. They count within the section, so the first page of a section is page 1 of its own pages.
+`{page}` becomes the page's number and `{pages}` how many pages its run has. Pages count on from one section to the next, in decimal from 1, unless a section sets `page-start`, `page-format` or `page-prefix`: see [Page numbers](?p=doc/section#page-numbers).
 
 ```xml
 <layer page="each">

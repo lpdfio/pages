@@ -113,7 +113,7 @@ Document properties written to the PDF. Child of `document`, before the sections
 | `subject`  | string | Subject |
 | `keywords` | string | Keywords |
 | `creator`  | string | Creating application |
-| `lang`     | string | The language of the text, as a language tag such as `en-US`, which a screen reader reads it in. A [PDF/UA](?p=pdfua) document needs it |
+| `lang`     | string | The language of the text, as a language tag such as `en-US`, which a screen reader reads it in. A [PDF/UA](?p=pdfua) document needs it, and a PDF/A document of [level a](?p=pdfa#level-a) takes it only as a language tag |
 
 ### `output`
 
@@ -123,8 +123,8 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 |-----------|------|---------|-------------|
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
-| `pdfa`    | string | — | `2b` `2u` `3b` `3u`: writes the PDF as PDF/A-2b, PDF/A-2u, PDF/A-3b or PDF/A-3u. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt`, or `attachments` with `2b` or `2u`, each an error that says what to change. With `3b` or `3u`, an attachment named `factur-x.xml` or `xrechnung.xml` makes the PDF a [Factur-X e-invoice](?p=facturx) |
-| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
+| `pdfa`    | string | — | `2a` `2b` `2u` `3a` `3b` `3u`: writes the PDF as PDF/A-2a, PDF/A-2b, PDF/A-2u, PDF/A-3a, PDF/A-3b or PDF/A-3u. Level a tags the file as `pdfua` does, without PDF/UA's checks. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt`, or `attachments` in part 2, and at level a no `lang` that is not a language tag and no character of Unicode's private use area, each an error that says what to change. With `3a`, `3b` or `3u`, an attachment named `factur-x.xml` or `xrechnung.xml` makes the PDF a [Factur-X e-invoice](?p=facturx) |
+| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`, and with `2a` or `3a` the file is PDF/A level a too. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
 | `pdfx`    | string | — | `4`: writes the PDF as PDF/X-4, for a commercial printer, made for the press profile `profile` names. It combines with `pdfua`. Every page gets a `TrimBox` and a `BleedBox`, RGB is tied to sRGB, and links print as text. The render needs `createdOn`, `meta` a `title`, and every text a font of `assets`, and the document no form field, barcode digits, `encrypt`, `pdfa` or `attachments`, each an error that says what to change |
 | `profile` | string | — | The [`profile`](#profile) of `assets` a PDF/X file is made for: the ICC profile of the printing press. It needs `pdfx`, and `pdfx` needs it |
 | `linearize` | boolean | `false` | Writes the PDF linearized, for [fast web view](?p=fast-web-view): page 1 and hints that say where every other page is come first, so a viewer that fetches the file by ranges shows page 1 while the rest downloads. Each page then names only the fonts and images it draws. With `encrypt` the file is encrypted first and linearized last. Any change to the file afterwards ends the linearization |
@@ -329,7 +329,7 @@ Paragraph or inline text.
 | `line-height`| number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
 | `max-lines`  | integer | —         | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](?p=doc/layout/text#capping-a-text) |
 | `ellipsis`   | boolean | `false`   | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |
-| `role`       | string  | —         | `h1` … `h6`: makes the text a heading, which a [PDF/UA](?p=pdfua) document tags as one. It changes nothing a page shows. A document without `pdfua` ignores it |
+| `role`       | string  | —         | `h1` … `h6`: makes the text a heading, which a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), tags as one. It changes nothing a page shows. A document that is not tagged ignores it |
 | `widows`     | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may carry to the top of the next page. `1` turns it off |
 | `orphans`    | integer | `2`       | The fewest lines, 1 to 10, that a split paragraph may leave at the bottom of a page. `1` turns it off |
 | `capture`    | string  | —         | Records the words of this text under a name, for a header or a footer to show. See [Running headers](?p=doc/layout#running-headers) |
@@ -393,7 +393,7 @@ Inline image.
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
-| `alt`        | string  | —       | What the image shows, which a screen reader reads in a [PDF/UA](?p=pdfua) document; `alt=""` marks it as decoration. A PDF/UA document needs it on each image outside a header or a footer. A document without `pdfua` ignores it |
+| `alt`        | string  | —       | What the image shows, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a); `alt=""` marks it as decoration. A PDF/UA document needs it on each image outside a header or a footer; at level a without `pdfua`, an image without it is decoration. A document that is not tagged ignores it |
 | `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
 | `height`     | token/pt | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
@@ -472,7 +472,7 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 |-------------|---------|-----------|-------------|
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
-| `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a [PDF/UA](?p=pdfua) document in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer. A document without `pdfua` ignores it |
+| `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer; at level a without `pdfua`, a barcode without it is decoration. A document that is not tagged ignores it |
 | `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`    | token/pt| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
@@ -559,7 +559,7 @@ Fixed content, in the order it is written among the section's layers and layout.
 | `font`      | string  | the document's `font`, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own |
 | `font-size` | token/pt| `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
 | `color`     | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
-| `alt`       | string  | —       | In a [PDF/UA](?p=pdfua) document, what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, which a reader skips with its text |
+| `alt`       | string  | —       | In a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, which a reader skips with its text |
 | `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
 | `data-if-not` | string | —      | Draw the layer only when the value at the path is falsy |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |

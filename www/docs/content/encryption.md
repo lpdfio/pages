@@ -21,7 +21,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 |-----------|------|---------|-------------|
 | `encrypt` | `aes-256` `rc4-128` | — | Encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted |
 | `allow` | list | nothing | What a reader may do without the owner password, separated by spaces, or `all`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
-| `pdfa` | `2b` `2u` `3b` `3u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
+| `pdfa` | `2a` `2b` `2u` `3a` `3b` `3u` | — | Writes the PDF as [PDF/A](?p=pdfa), which forbids encryption: not with `encrypt` |
 | `pdfua` | `1` | — | Writes the PDF as [PDF/UA](?p=pdfua), which an encrypted file meets only when `allow` names `accessibility` |
 | `pdfx` | `4` | — | Writes the PDF as [PDF/X](?p=pdfx), which forbids encryption: not with `encrypt` |
 | `linearize` | boolean | `false` | Writes the PDF [linearized](?p=fast-web-view), for fast web view: the file is encrypted first and linearized last |

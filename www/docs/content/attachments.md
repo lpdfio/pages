@@ -108,7 +108,7 @@ A file has no size limit of its own: its bytes count toward the render's [memory
 
 In an [encrypted](?p=encryption) document the files are encrypted with the rest, under the same passwords.
 
-A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa="2b"` or `"2u"` is an error. PDF/A-3, `pdfa="3b"` or `"3u"`, carries files of any kind. In a PDF/A-3 document, a file named `factur-x.xml` makes the PDF a [Factur-X e-invoice](?p=facturx).
+A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa="2a"`, `"2b"` or `"2u"` is an error. PDF/A-3, `pdfa="3a"`, `"3b"` or `"3u"`, carries files of any kind. In a PDF/A-3 document, a file named `factur-x.xml` makes the PDF a [Factur-X e-invoice](?p=facturx).
 
 A [PDF/X](?p=pdfx) file holds only what the press prints, so `attachments` with `pdfx` is an error.
 
@@ -122,5 +122,5 @@ Each of these stops the render with an error that says what to change:
 - a `relationship` that isn't one of the five, or a `mime` that isn't a type and a subtype
 - a file without a name
 - a file over 2 GB
-- `attachments` in a document whose `output` asks for `pdfa="2b"`, `pdfa="2u"` or `pdfx`
+- `attachments` in a document whose `output` asks for `pdfa="2a"`, `pdfa="2b"`, `pdfa="2u"` or `pdfx`
 - a file named `factur-x.xml` or `xrechnung.xml` in a document that is not PDF/A-3: see [Factur-X](?p=facturx#errors)

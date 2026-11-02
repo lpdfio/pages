@@ -27,7 +27,7 @@ Your software writes the XML, as it writes the pages, and Lpdf attaches it and m
 
 ## The file name is the switch
 
-In a document whose `output` has `pdfa="3b"` or `pdfa="3u"`, an attachment named `factur-x.xml`, or `xrechnung.xml` for the XRECHNUNG profile, is the invoice. No other attribute turns it on. The file is an [attachment](?p=attachments) like any other: its bytes come from its `src` or from `loadFile`, under its `ref` or name.
+In a document whose `output` has `pdfa="3a"`, `pdfa="3b"` or `pdfa="3u"`, an attachment named `factur-x.xml`, or `xrechnung.xml` for the XRECHNUNG profile, is the invoice. No other attribute turns it on. The file is an [attachment](?p=attachments) like any other: its bytes come from its `src` or from `loadFile`, under its `ref` or name.
 
 Lpdf then reads which profile the invoice is from its XML, BT-24, the `ram:ID` of `rsm:ExchangedDocumentContext` / `ram:GuidelineSpecifiedDocumentContextParameter`. Spaces around the value, and namespace prefixes other than `rsm` and `ram`, are read as the spec's own files write them.
 
@@ -46,7 +46,7 @@ Choose BASIC or a fuller profile for an invoice. The spec notes that MINIMUM and
 
 ## What the file gets
 
-- PDF/A-3b or PDF/A-3u, with everything a [PDF/A](?p=pdfa) file gets: embedded fonts, the sRGB output intent, the dates and the XMP metadata.
+- PDF/A-3a, PDF/A-3b or PDF/A-3u, with everything a [PDF/A](?p=pdfa) file gets: embedded fonts, the sRGB output intent, the dates and the XMP metadata.
 - In the XMP metadata, the Factur-X extension schema and its four properties: `fx:DocumentType` `INVOICE`, `fx:DocumentFileName` the name of the invoice file, `fx:Version` `1.0`, and `fx:ConformanceLevel` the profile. For XRECHNUNG, `fx:Version` is the XRechnung version BT-24 ends with, such as `3.0`, as the spec's own samples write it.
 - The invoice file listed in the document's associated files, as PDF/A-3 asks, dated as the document is.
 
@@ -172,7 +172,7 @@ await File.WriteAllBytesAsync("invoice-2026-0412.pdf", pdf);
 
 Each of these stops the render with an error that says what to change:
 
-- `factur-x.xml` or `xrechnung.xml` in a document whose `output` has no `pdfa`, or `pdfa="2b"` or `"2u"`: a Factur-X invoice is a PDF/A-3 file. Give the file another name if it is not the invoice
+- `factur-x.xml` or `xrechnung.xml` in a document whose `output` has no `pdfa`, or `pdfa="2a"`, `"2b"` or `"2u"`: a Factur-X invoice is a PDF/A-3 file. Give the file another name if it is not the invoice
 - XML that does not parse, or that is not UTF-8
 - a BT-24 that is missing, or that names none of the profiles above
 - `factur-x.xml` and `xrechnung.xml` in one document: the metadata names one invoice
@@ -180,4 +180,6 @@ Each of these stops the render with an error that says what to change:
 
 What any PDF/A file refuses applies too, such as text in a built-in font: see [PDF/A](?p=pdfa#errors).
 
-Lpdf doesn't write PDF/A-3a, the level that adds the structure of a tagged PDF, the legacy ZUGFeRD 2.0 metadata, or document types other than an invoice, such as an order.
+The spec recommends PDF/A-3a, the level that adds the structure of a tagged PDF, for invoices people read with a screen reader: write `pdfa="3a"`, and `pdfua="1"` beside it for what PDF/UA asks too (see [Level a](?p=pdfa#level-a)).
+
+Lpdf doesn't write the legacy ZUGFeRD 2.0 metadata, or document types other than an invoice, such as an order.

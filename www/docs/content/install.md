@@ -87,7 +87,7 @@ The first two numbers are the Lpdf engine, and the last number counts changes to
 
 ## Requirements
 
-- PHP 8.3 or later, with the DOM extension (`ext-dom`; on Debian and Ubuntu it is the `php-xml` package)
+- PHP 8.2 or later, with the DOM extension (`ext-dom`; on Debian and Ubuntu it is the `php-xml` package)
 - Composer
 - The [`wasmtime`](https://wasmtime.dev) command-line tool on your `PATH`, which runs the bundled WASI binary
 

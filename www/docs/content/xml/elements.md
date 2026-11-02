@@ -536,7 +536,7 @@ Pinned header or footer that repeats across pages. Only allowed directly inside 
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
 | `pin`     | string | —       | **Required.** `top` or `bottom`. `left` and `right` pass validation but are not implemented yet |
-| `page`    | string | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last` |
+| `page`    | string | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages) |
 | `debug`   | boolean | false  | Draw the region's outline |
 
 ---
@@ -551,7 +551,7 @@ Fixed content, in the order it is written among the section's layers and layout.
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `page`      | string  | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last` |
+| `page`      | string  | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages) |
 | `opacity`   | 0–1     | 1       | Opacity of everything in the layer as one. `0` draws nothing |
 | `transform` | string  | —       | `translate(x, y)`, `scale(s)`, `rotate(deg, cx, cy)` or `matrix(a, b, c, d, e, f)`, with plain numbers |
 | `clip`      | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page: what the layer draws outside it is cut off |

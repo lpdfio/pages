@@ -175,7 +175,7 @@ The shapes of a [layer](?p=doc/layer/rect) (`rect`, `circle` and `ellipse`) take
 | Attribute | Type   | Default | Description |
 |-----------|--------|---------|-------------|
 | `pin`     | string | —       | **Required.** `top` or `bottom`. `left` and `right` pass validation but are not implemented yet |
-| `page`    | string | `each`  | Which pages show the region: `each`, `first`, `last`, `odd`, `even`, or a range like `2-last` |
+| `page`    | string | `each`  | Which pages show the region: `each`, `first`, `last`, `odd`, `even`, or a range like `2-last`. `odd` and `even` follow the number printed on the page: see [Odd and even pages](#odd-and-even-pages) |
 | `debug`   | boolean | false  | Render the region's box for debugging |
 
 In the text of a region, `{page}` becomes the page number and `{pages}` the total number of pages. Use them for "Page 2 of 5" footers. They are replaced in a region and in a layer's [`text-at`](?p=doc/layer/text-at#page-numbers), and count on from one section to the next unless a section starts them again: see [Page numbers](?p=doc/section#page-numbers). A region takes its space out of the flow, inside the margin. For a page number that takes no space, or sits in the margin, use a layer.
@@ -185,6 +185,28 @@ In the text of a region, `{page}` becomes the page number and `{pages}` the tota
   <text font-size="22pt">Cover page title</text>
 </region>
 ```
+
+### Odd and even pages
+
+`page="odd"` and `page="even"` follow the number printed on the page, in any `page-format` and after any `page-prefix`, so a book's right-hand and left-hand running heads stay on their side when a section starts on an even page. A chapter that starts on page 4, by `page-start` or by counting on from the section before, shows its even head on 4 and 6 and its odd head on 5:
+
+```xml
+<section page-start="4">
+  <layout margin="48pt">
+    <region pin="top" page="even">
+      <text font-size="9pt">{page} · The Lamplighter's Almanac</text>
+    </region>
+    <region pin="top" page="odd">
+      <text font-size="9pt" align="right">Chapter 2 · {page}</text>
+    </region>
+    <text font-size="xl">Chapter 2</text>
+    <text paginate="break-before">The chapter goes on.</text>
+    <text paginate="break-before">It ends on page 6.</text>
+  </layout>
+</section>
+```
+
+`first`, `last`, numbers and ranges count the section's own pages, whatever is printed on them: `page="2-last"` leaves out the first page of the section wherever it starts, and `page="2"` is its second page, printed 5 here. A layer's `page` works the same way. A section that sets `page-start="1"` counts its odd pages from its first.
 
 ## Running headers
 

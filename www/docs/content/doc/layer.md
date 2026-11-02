@@ -33,7 +33,7 @@ A [`bookmark`](?p=doc/layout/bookmark) as the section's first child comes before
 
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
-| `page`        | string  | `each`  | Which pages the layer is drawn on: `each` `first` `last` `odd` `even`, or numbers and ranges such as `1`, `2-last` or `1,3-5` |
+| `page`        | string  | `each`  | Which pages the layer is drawn on: `each` `first` `last` `odd` `even`, or numbers and ranges such as `1`, `2-last` or `1,3-5`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages) |
 | `opacity`     | 0–1     | 1       | How opaque everything in the layer is. See [Opacity](#opacity) |
 | `transform`   | string  | —       | Transform applied to everything in the layer. See [Transforms](#transforms) |
 | `clip`        | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page. What the layer draws outside it is cut off |

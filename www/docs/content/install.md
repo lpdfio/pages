@@ -378,6 +378,61 @@ var engine = L.Engine(new EngineOptions { Timeout = 60 });
 At its limit the render throws an `EngineException`. Renders on other threads go on.
 :::
 
+## Memory limit
+
+A render may allocate 1024 MB, which holds thousands of pages of text and tables. One that needs more stops with the SDK's render error, which names the cap: `the render needs more memory than its cap of 1024 MB: raise the cap in the engine's options, or render the document in smaller parts`. What counts is what the render allocates, the data it binds included. There is no limit on the size of the XML or of a document built in code. `maxMemoryMb` on the engine sets another cap, a whole number of megabytes from 1 to 4096: lower in a small container, higher for a big document on a machine with the memory for it. 4096 is the most the engine, a 32-bit WebAssembly module, can address. A render stopped at its cap leaves the engine as it was, and the next render runs as usual.
+
+If the engine crashes, by a fault in it or a render that runs out of memory before its cap stops it, the render fails with the same message in every SDK: `The engine crashed during the render. This is a bug in Lpdf, or the render ran out of memory before its cap stopped it: please report it with the document at https://github.com/lpdfio/lpdf/issues.` The next render runs on a fresh engine.
+
+::: sdk js
+
+```javascript
+import { L } from '@lpdfio/lpdf'
+
+const engine = L.engine({ maxMemoryMb: 2048 })
+```
+
+Past the cap the render rejects with an `LpdfRenderError`. In the browser, `initLpdf(wasmUrl, licenseKey, { maxMemoryMb: 2048 })` takes the same option. After a crash the error's `cause` holds the engine's own error, and the worker is replaced for the next render.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\EngineOptions;
+use Lpdf\L;
+
+$engine = L::engine(new EngineOptions(maxMemoryMb: 2048));
+```
+
+Past the cap the render throws an `EngineException`. After a crash its previous exception holds what `wasmtime` reported.
+:::
+
+::: sdk python
+
+```python
+from lpdf import EngineOptions, L
+
+engine = L.engine(EngineOptions(max_memory_mb=2048))
+```
+
+Past the cap the render raises an `EngineException`. After a crash it is raised from the engine's trap.
+:::
+
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+var engine = L.Engine(new EngineOptions { MaxMemoryMb = 2048 });
+```
+
+Past the cap the render throws an `EngineException`. After a crash its `InnerException` is the engine's trap.
+:::
+
 ## Images and fonts
 
 An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory. The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.

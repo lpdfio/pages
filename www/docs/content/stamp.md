@@ -150,12 +150,7 @@ A stamp is not a digital signature either. A drawn signature or a seal shows a m
 
 ## Without a license key
 
-Like a render, a stamp works without a license key and says which part of the page Lpdf made: each stamp gets the Lpdf attribution line, the mark and the name, beside its box on each page.
-
-- It goes 2 pt above the box, its right edge on the box's.
-- Where there is no room above, it goes 2 pt below the box.
-- Where there is room for neither, as with a box the height of the page, it goes in the page's top-right corner, where a render puts its line, over everything.
-- It is never drawn inside the box.
+Like a render, a stamp works without a license key. Each page it draws on gets the Lpdf attribution line, the mark and the name, once, however many stamps the page has. It goes in the page's top-right corner, where a render puts its line, and is drawn over the stamps and the page's content. Pages without a stamp get none.
 
 It links to lpdf.io, except on a tagged PDF. A free Community key removes it.
 

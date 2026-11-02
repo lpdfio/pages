@@ -55,6 +55,7 @@ Use `span` children to apply different styles within a single text block.
 | `font`         | Font name |
 | `color`        | Text color |
 | `href`         | Makes the span a link: a URL, or `#id` to jump to the [bookmark](?p=doc/layout/bookmark) with that id |
+| `bookmark-ref` | Makes the span a cross-reference to the bookmark with that id: a link to it, whose words can print its page, `{bookmark-page}`, and its label, `{bookmark-label}`. See [Referring to a bookmark](?p=doc/layout/bookmark#referring-to-a-bookmark) |
 | `underline`    | `true` / `false` |
 | `strike`       | `true` / `false` |
 

@@ -89,7 +89,7 @@ The text's box is its natural width, or `width`, by the lines drawn × `font-siz
 
 ## Inline spans for mixed styling
 
-`span` children work like those in flow `text`:
+`span` children work like those in flow `text`, and a span with `bookmark-ref` is a [cross-reference](?p=doc/layout/bookmark#referring-to-a-bookmark) here too:
 
 ```xml
 <layer>

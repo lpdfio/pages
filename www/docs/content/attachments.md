@@ -102,7 +102,7 @@ A document built in code lists its files in `attachments`, a list of `FileAttr` 
 
 ## Size and memory
 
-A file has no size limit of Lpdf's own, beyond the 2 GB a PDF can say a file holds. In the .NET, PHP and Python SDKs the engine is a WASI binary, and the bytes travel to it as base64 in a JSON request, so a large file costs several times its size in memory while it renders: the request, the bytes the engine decodes, the PDF that holds them and the PDF sent back. Node.js hands the bytes to the engine directly.
+A file has no size limit of its own: its bytes count toward the render's [memory cap](?p=install#memory-limit), 1024 MB unless the engine sets another. In the .NET, PHP and Python SDKs the engine is a WASI binary, and the bytes travel to it as base64 in a JSON request, so a large file costs several times its size in memory while it renders, and each copy counts toward the cap: the request, the bytes the engine decodes and the PDF that holds them. The SDK holds the request and the PDF sent back besides. Node.js hands the bytes to the engine directly, before the render, so only the PDF that holds them counts.
 
 ## Encryption, PDF/A and PDF/X
 

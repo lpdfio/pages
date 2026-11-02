@@ -325,6 +325,59 @@ The first two numbers are the Lpdf engine, and the last number counts changes to
 
 :::
 
+## Time limit
+
+A render stops after 5 seconds with the SDK's render error, which names the limit: `The render timed out after 5 seconds.` A PDF renders in milliseconds, so a render that runs that long is a document far larger than usual or a fault in the engine, and stopping it frees the thread or the process it held. `timeout` on the engine sets another limit, in seconds, and `timeout: 0` sets none. A render stopped at its limit leaves the engine as it was, and the next render runs as usual.
+
+::: sdk js
+
+```javascript
+import { L } from '@lpdfio/lpdf'
+
+const engine = L.engine({ timeout: 60 })
+```
+
+A render runs on a worker thread, one at a time, so it doesn't hold up the event loop. At its limit the render rejects with an `LpdfRenderError`, the worker is stopped, and the next render starts a new one. In the browser, `initLpdf(wasmUrl, licenseKey, { timeout: 60 })` takes the same option, and renders run on a Web Worker started from a `blob:` URL: a page with a Content-Security-Policy allows `blob:` in `worker-src`.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\EngineOptions;
+use Lpdf\L;
+
+$engine = L::engine(new EngineOptions(timeout: 60));
+```
+
+At its limit the `wasmtime` process is stopped and the render throws an `EngineException`.
+:::
+
+::: sdk python
+
+```python
+from lpdf import EngineOptions, L
+
+engine = L.engine(EngineOptions(timeout=60))
+```
+
+At its limit the render raises an `EngineException`. Renders on other threads go on.
+:::
+
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+var engine = L.Engine(new EngineOptions { Timeout = 60 });
+```
+
+At its limit the render throws an `EngineException`. Renders on other threads go on.
+:::
+
 ## Images and fonts
 
 An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory. The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.

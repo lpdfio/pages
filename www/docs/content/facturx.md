@@ -42,6 +42,8 @@ Lpdf then reads which profile the invoice is from its XML, BT-24, the `ram:ID` o
 
 Since the profile comes from the XML, the PDF and the XML can't name two different ones.
 
+Choose BASIC or a fuller profile for an invoice. The spec notes that MINIMUM and BASIC WL hold too little to be an invoice under German fiscal law, and that France stops taking them as compliant invoices once its B2B e-invoicing reform is fully in place, in 2028. They suit a PDF whose own pages are the invoice, with the XML as a booking aid.
+
 ## What the file gets
 
 - PDF/A-3b or PDF/A-3u, with everything a [PDF/A](?p=pdfa) file gets: embedded fonts, the sRGB output intent, the dates and the XMP metadata.

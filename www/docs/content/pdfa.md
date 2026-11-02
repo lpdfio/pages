@@ -141,6 +141,6 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - `pdfx` on the same `output`: a PDF/A file keeps to the sRGB profile, and a [PDF/X](?p=pdfx) file to the press profile
 - [`attachments`](?p=attachments) with `2a`, `2b` or `2u`: a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check. Write `3a`, `3b` or `3u` to carry files
 - an attachment named `factur-x.xml` or `xrechnung.xml` with `2a`, `2b` or `2u`: it makes the file a [Factur-X invoice](?p=facturx), which is PDF/A-3
-- at level a, a `lang` on `meta` that is not a language tag, such as `en` or `en-US`
+- at level a, a `lang` on `meta` that is not a language tag: give one such as `en`, `en-US` or `de-CH`
 - at level a, a character of Unicode's private use area, such as an icon font's symbol: see [Level a](#level-a)
 - a render without `createdOn`, or with one that is not a date

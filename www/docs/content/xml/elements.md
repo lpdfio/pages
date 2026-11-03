@@ -258,6 +258,7 @@ Vertical column of children.
 |------------|---------|-----------|-------------|
 | `align`    | string  | `stretch` | Horizontal alignment: `start` `center` `end` `stretch` |
 | `justify`  | string  | `start`   | Vertical distribution: `start` `center` `end` `between` |
+| `bulk`     | boolean | `false`   | `true` lays out the texts of its `text` with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 
 ### `row`
 
@@ -276,6 +277,7 @@ Equal columns, filled left to right.
 |-----------|---------|---------|-------------|
 | `cols`    | integer | `1`     | Number of columns (1–12) |
 | `col-width` | token/pt | —    | Minimum column width: fits as many columns as the width allows, at least one, stretched to fill the row (overrides `cols`). Tokens are grid sizes |
+| `bulk`    | boolean | `false` | `true` lays out the cells of its child with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 
 ### `list`
 
@@ -290,6 +292,7 @@ A list of items, each marked with a bullet drawn as a shape or a number the engi
 | `prefix`   | string   | —         | Text before each number of a number list |
 | `suffix`   | string   | `.`       | Text after each number of a number list |
 | `indent`   | token/pt | `24pt`    | The width of the marker's column: the words of an item start this far from the list's left edge, at every level |
+| `bulk`     | boolean  | `false`   | `true` lays out the items of its `li` with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `li`
@@ -445,6 +448,7 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens` |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false   | Draw the box outline |
+| `bulk`      | boolean | `false` | `true` lays out the rows of its `tr` with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 A table holds an optional `thead` and any number of `tr`.

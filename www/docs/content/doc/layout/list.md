@@ -27,6 +27,7 @@ The words of an item go in a [`text`](?p=doc/layout/text). A long item wraps und
 | `font`, `font-size`, `color` | | inherit | Set the text inside and the markers, as on a [box](?p=doc/layout/column) |
 | `padding`, `background`, `border`, `radius`, `opacity`, `shadow`, `width`, `height` | | | As on a [box](?p=doc/layout/column) |
 | `paginate`, `debug` | | | As on a box |
+| `bulk`       | boolean  | `false` | `true` lays out the items of its `li` with `data-source` a page at a time, straight from the data, for lists of tens of thousands of items. See [Bulk Records](?p=data/bulk) |
 | `data-source`, `data-if`, `data-if-not`, `data-color`, `data-background` | string | — | As on a box |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
@@ -150,7 +151,7 @@ An `li` takes the box attributes, so an item can be a card.
 
 ## Items from data
 
-`data-source` on an `li` makes one item for each entry of a list in the data, and the numbers of a number list follow what it makes.
+`data-source` on an `li` makes one item for each entry of a list in the data, and the numbers of a number list follow what it makes. For tens of thousands of items, see [Bulk Records](?p=data/bulk).
 
 ```xml
 <list type="number">

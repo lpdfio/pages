@@ -31,6 +31,7 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
 | `width`      | token/pt | —      | Constrain table width |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `bulk`       | boolean  | `false` | `true` lays out the rows of its `tr` with `data-source` a page at a time, straight from the data, for tables of tens of thousands of rows. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ## `thead` attributes

@@ -118,6 +118,9 @@
     "data/binding": {
         "description": "Data binding in Lpdf XML: fill a document from JSON with data-value, data-source, data-if and data-if-not. Inject values, loop over lists, show or hide parts."
     },
+    "data/bulk": {
+        "description": "Bulk records in Lpdf XML: lay out tables, lists, grids and columns of tens of thousands of records from data a page at a time, within the SDKs' limits."
+    },
     "xml/elements": {
         "description": "Every Lpdf XML element with its attributes, types, defaults and required flags, from the lpdf root and document structure to layout elements and layers."
     },

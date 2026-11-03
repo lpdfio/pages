@@ -138,6 +138,8 @@ Repeats the element once per item. Inside the loop, paths are relative to the cu
 
 Works on any layout element — `column`, `tr`, `frame`, etc. If the path is missing or is not an array, the element is left out.
 
+Each item is a copy of the element, held until the PDF is written. For tens of thousands of items, such as the rows of a ledger or the lines of a log, `bulk` on the table, list, grid or column lays them out a page at a time: see [Bulk Records](?p=data/bulk).
+
 Two prefixes reach outside the current item: a path that starts with `/` is read from the root of the data, and each `../` goes up one loop level.
 
 ```xml

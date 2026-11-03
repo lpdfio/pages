@@ -22,6 +22,7 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 | `font`       | string  | inherit | Font name |
 | `font-size`  | token/pt | inherit | Font size |
 | `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `bulk`       | boolean  | `false` | `true` lays out the cells of its child with `data-source` a page at a time, straight from the data, for sheets of tens of thousands of labels or cards. See [Bulk Records](?p=data/bulk) |
 | `data-source` | string | —       | Dot-path to array — repeats children per item |
 | `data-color` | string | — | Dot-path: sets `color` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `data-background` | string | — | Dot-path: sets `background` from the data. See [Attributes from data](?p=data/binding#attributes-from-data) |

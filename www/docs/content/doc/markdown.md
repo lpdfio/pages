@@ -64,8 +64,8 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | `[text](url)`, `[text](#id)` | a span with `href` | `#id` jumps to the heading whose text is that id: see [Headings](#headings) |
 | `![alt](name)` | an [image](?p=doc/layout/img) as wide as the page allows | JPEG or PNG: see [Images](#images). The alt text is the image's `alt`, which a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), reads; `![](name)` marks decoration |
 | `---` | a [divider](?p=doc/layout/divider) | |
-| `> quote` | a bar beside the blocks of the quote | The quote splits across pages between its blocks |
-| `- item`, `1. item` | a list of items, with a disc, a circle or a square for the level, or the numbers | A number list starts at the number its first item has. Lists nest |
+| `> quote` | a bar beside the blocks of the quote | The quote splits across pages between its blocks. Quotes nest only so deep: see [How deep it nests](#how-deep-it-nests) |
+| `- item`, `1. item` | a list of items, with a disc, a circle or a square for the level, or the numbers | A number list starts at the number its first item has. Lists nest only so deep: see [How deep it nests](#how-deep-it-nests) |
 | a fenced or indented block | a [code](?p=doc/layout/code) | It keeps its spaces and lines and wraps what is long. The language of a fence is ignored: there is no highlighting by language |
 | a table | a [table](?p=doc/layout/table) with a header row | The columns are `auto`: each takes the width its cells need, and a name that does not fit breaks. A column takes its alignment from the `:---:` row, and the header row repeats on each page |
 | `[^1]` | a [footnote](?p=doc/layout/footnote) | A note that holds more than a paragraph is cut down to its words, and a note in a table is an error |
@@ -233,6 +233,19 @@ lpdf convert --input notes.md --template markdown-template.xml --output notes.pd
 ```
 
 In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Link Markdown Styles...** offers a look to start from, Sans, Serif or Typewriter, which it writes beside the file as styles of its own and links, so that the preview shows it and the styles in the CodeLens open the file to edit, and links a file of styles you have. **Lpdf: Write Markdown Styles** writes the default ones beside it to start from. **Lpdf: Create Lpdf Document** writes a document like the one above, named after the file, and links it: the file is then set in that document, where the page size, the margin, a header and a footer are yours. The other way round, **Lpdf: Link Markdown File...** on a document with a `markdown` makes a `.md` file its body. The preview follows an edit of the Markdown, the document, the styles file and an image.
+
+## How deep it nests
+
+Quotes and lists nest in one another, and a document nests 100 levels at most (see [XML Schema](?p=xml/schema#document-structure)). A `markdown` is level 4, as a `layout` is, since `lpdf`, `document` and `section` are above it. A quote is written as a `table`, a row and a cell, so it takes 3 levels, and a list item as a `list` and an `li`, so it takes 2. The words, the table or the code inside the deepest one need a level too, so a Markdown holds 31 quotes or 47 list items in one another, and fewer of each in a mix: 19 times a quote with a list item in it, for one.
+
+Emphasis, strong text, strikethrough and links nest 100 deep at most. They are spans of one text, not levels of the document, so they add none to the count above.
+
+Markdown that nests deeper fails with an error that names the line it begins on, and what it may hold, not a crash. A Markdown from the data is held to it too: its error comes when the data is bound.
+
+```
+markdown line 3: a quote is nested too deep: a Markdown nests 31 quotes or 47 list items in one another at most, and fewer of each in a mix, since a document nests 100 levels at most and a quote counts 3 of them and a list item 2
+markdown line 8: emphasis, strong text, strikethrough and links are nested too deep: a Markdown nests 100 of them in one another at most
+```
 
 ## Errors
 

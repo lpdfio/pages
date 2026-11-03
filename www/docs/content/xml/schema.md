@@ -24,6 +24,8 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
 
 A document nests 100 levels at most: the elements that enclose one another on one path from `<lpdf>`, `<lpdf>` included, so siblings don't add up. A list inside a list nests two levels for each, its `list` and its `li`. A deeper document fails with an error that names the element: `<text> at line 1, col 814 is nested 101 levels deep, past the limit of 100: a document nests 100 levels at most, <lpdf> included`. A document built in code counts as its XML does, and its error names the type of the node: `the node 'text' is nested 101 levels deep, …`.
 
+A container narrower than 2.5 mm (about 7.1pt), or with a `height` set lower, is too small to hold other containers. It draws its own box, with its background and border, its texts, images, shapes and other single elements, and its empty boxes, such as a swatch or a rule, but no `column`, `row`, `grid`, `frame`, `link` or table part inside it that holds something. A line of 6pt text is taller than that. It also ends grids nested in the cells of grids, which halve in width at each level.
+
 A document holds sections, and a section holds any number of layers and at most one `layout` or one [`markdown`](?p=doc/markdown), painted in the order they are written. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
 
 ```xml

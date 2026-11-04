@@ -53,6 +53,25 @@ once its markdown is drawn, in `data-prerendered-src` on its script tag, and the
 `__PORTAL_URL__` until `.github/set-stage.sh` sets them, as the bundle's do. `lpdf.local` serves the pages as they are
 in git, so it never shows the copy; run `assemble-site.sh` and serve its output to look at it.
 
+## The engine copy
+
+The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js` and `lpdf_bg.wasm` in `ui/demo`
+and `www/assets/js/lpdf-demo`, the schema in `www/schema`, the examples of the demo and the docs (core's `examples/`),
+and the stamp `docs-site/engine.json`. `.github/workflows/engine-refresh.yml` takes them from each core release
+candidate and release: core's `release.yml` sends `core-rc` and `core-release`, and the workflow runs
+`.github/refresh-engine.sh` and opens one PR, from the branch `engine-refresh`, which the releases after it update
+instead of opening another. The engine files are the release's own assets, checked against its `SHA256SUMS`.
+
+Nothing merges the PR: merge it when the copy should move. A docs PR for a feature the old copy lacks fails
+*Check the docs examples render*. Once the refresh PR is merged, close and reopen the docs PR: a re-run reuses the
+merge commit of the original run, and a reopened PR gets a new merge with `main`. For a release the dispatch
+missed, run the workflow by hand (*Actions → Engine refresh → Run workflow*, from `main`, with a core tag).
+
+The PR is opened with the release App's token, because a PR opened with `GITHUB_TOKEN` starts no checks and `main`
+requires *Build the site*. Its key is a secret of the `engine-refresh` environment, which only `main` may use, and
+the client id is the repo variable `LPDF_RELEASE_APP_CLIENT_ID`. `make build-pages` in a core checkout still copies
+an engine by hand, one that no release has yet.
+
 ## How the content is converted
 
 `scripts/sync-content.mjs` copies each markdown file into `src/content/docs/`, which is generated and
@@ -88,7 +107,7 @@ those links.
 
 `scripts/check-examples.mjs` renders each XML block in `../www/docs/content` with the demo engine (`../www/assets/js/lpdf-demo`) and exits 1 if the engine rejects one. A partial snippet is wrapped in the elements it needs, chosen from its first element, and the images `logo`, `photo`, `avatar` and `watermark` are declared with a one-pixel placeholder. A font a snippet declares with a `src` is loaded with the site's Radley, each file it carries in its `attachments` gets a few placeholder bytes under its `ref` or name, so no `src` is read, or, for `factur-x.xml` and `xrechnung.xml`, the XML of an invoice that names its profile, and every render is dated, as PDF/A needs (`scripts/lib/doc-xml.mjs`). It proves the engine accepts the example and nothing more: an attribute the engine ignores still passes, so it does not replace reading a change against the schema.
 
-`scripts/check-codegen.mjs` takes the same examples and has the engine write their JavaScript, as the code tabs do. It runs that code with the JS SDK (`@lpdfio/lpdf`, a dev dependency, pinned to a release) and exits 1 if it renders another PDF than the XML, which is a tab that teaches the wrong thing. The SDK's own engine renders both, so the code generator is the only difference. An example the generator leaves as XML only is skipped. `LPDF_ENGINE_DIR=<folder with lpdf-web.js and lpdf_bg.wasm>` checks an engine that is not in the tree yet, such as `dist/web` of a core checkout (copy `lpdf.js` as `lpdf-web.js`). The released SDK has no element that came after it, so the docs of one fail this check until the dependency moves to the release that ships it: `LPDF_SDK_DIR=<folder of an SDK build>` checks them against another build, such as `repos/lpdf-js` of a core checkout, which is what `make check-pages-docs` there does. The deploy workflow does the same: it builds lpdf-js `main` against the engine of the newest core release, pre-releases included, so a build is not held until the SDK with a new element is published. The engine copy in the tree is what `check-examples` and the demo run, so a docs PR for a newer element carries its refresh: `make build-pages` in a core checkout at a release candidate that has the element.
+`scripts/check-codegen.mjs` takes the same examples and has the engine write their JavaScript, as the code tabs do. It runs that code with the JS SDK (`@lpdfio/lpdf`, a dev dependency, pinned to a release) and exits 1 if it renders another PDF than the XML, which is a tab that teaches the wrong thing. The SDK's own engine renders both, so the code generator is the only difference. An example the generator leaves as XML only is skipped. `LPDF_ENGINE_DIR=<folder with lpdf-web.js and lpdf_bg.wasm>` checks an engine that is not in the tree yet, such as `dist/web` of a core checkout (copy `lpdf.js` as `lpdf-web.js`). The released SDK has no element that came after it, so the docs of one fail this check until the dependency moves to the release that ships it: `LPDF_SDK_DIR=<folder of an SDK build>` checks them against another build, such as `repos/lpdf-js` of a core checkout, which is what `make check-pages-docs` there does. The deploy workflow does the same: it builds lpdf-js `main` against the engine of the newest core release, pre-releases included, so a build is not held until the SDK with a new element is published. The engine copy in the tree is what `check-examples` and the demo run, and the Engine refresh workflow keeps it current (*The engine copy*), so a docs PR for a newer element waits for that PR to merge and is then closed and reopened.
 
 ## The example pages
 
@@ -123,8 +142,8 @@ from the example with the engine in `../www/assets/js/lpdf-demo`, on every `npm 
   Icons (CC0).
 - `src/code-languages.ts`: the languages in picker order, with their repository and registry links.
 - `engine.json` and `scripts/build-info.mjs`: the stamp in the header, like `v0.22-r0930.3`. The first part is
-  the core the docs describe: `engine.json` is written by `make stamp-pages-docs` in the core repo (which
-  `make build-pages` and `make dev-pages` run) and committed with the engine copy it names. Hovering the stamp says
+  the core the docs describe: `engine.json` is written by the Engine refresh workflow, or by `make stamp-pages-docs`
+  in the core repo (which `make build-pages` and `make dev-pages` run), and committed with the engine copy it names. Hovering the stamp says
   how many commits past the v0.22 release that engine is. The second part is the revision of the pages build: the date of the
   commit and its place among that day's commits, so a commit always gets the same one. `build-info.mjs` works it
   out from git at build time into `src/build-info.json`, which is generated and ignored. It needs the full history,

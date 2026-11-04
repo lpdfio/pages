@@ -1,0 +1,152 @@
+name: Engine refresh
+run-name: "${{ github.event_name == 'repository_dispatch' && format('{0} {1}: take the engine into the docs', github.event.action == 'core-rc' && 'RC' || 'Release', github.event.client_payload.version) || format('By hand: take the engine of {0} into the docs', inputs.version) }}"
+
+# Answers core's `core-rc` and `core-release` dispatches (Lpdf-devcycle.md §4.2 in lpdfio/lpdf). The docs
+# examples and the demo run on the engine copy in this repo, so a docs PR for a new feature fails its
+# check until the copy has the feature. This takes the engine, the schema, the example files and the
+# stamp of the core release into a PR (.github/refresh-engine.sh). It never merges it.
+#
+# One branch and one open PR serve every release candidate of a release: each run builds the branch
+# again from main with the newest engine, so eight RCs don't leave eight PRs to merge. The branch is this
+# workflow's own. Merge the PR when the copy should move.
+#
+# A PR opened with GITHUB_TOKEN starts no checks, and main's ruleset requires `Build the site`, so the
+# branch is pushed and the PR opened with the release App's token. Its key is a secret of the
+# `engine-refresh` environment, which only main may use: no branch's workflow can read it.
+#
+# By hand: Actions → Engine refresh → Run workflow, from main, with the core tag. It takes the engine
+# of a release that is already out, such as one an earlier dispatch missed.
+
+on:
+  repository_dispatch:
+    types: [core-rc, core-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Core tag to take the engine of, e.g. v0.33.0-rc.8 or v0.33.0"
+        required: true
+
+permissions:
+  contents: read
+
+# A run that waits is replaced by a newer one, which has the newer engine.
+concurrency:
+  group: engine-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Take the engine into the docs
+    runs-on: ubuntu-24.04
+    environment: engine-refresh
+    env:
+      BRANCH: engine-refresh
+    steps:
+      # core-rc carries a release candidate and core-release a release. Nothing is derived from either:
+      # stripping the last number of v0.33.0-rc.8 would give v0.33.0-rc.0.
+      - name: Resolve version
+        id: version
+        env:
+          EVENT: ${{ github.event.action }}
+          VERSION: ${{ github.event.client_payload.version || inputs.version }}
+        run: |
+          case "$EVENT" in
+              core-rc)      pattern='^v[0-9]+\.[0-9]+\.0-rc\.[0-9]+$';       what='a release-candidate tag like v0.33.0-rc.8' ;;
+              core-release) pattern='^v[0-9]+\.[0-9]+\.0$';                  what='a release tag like v0.33.0' ;;
+              *)            pattern='^v[0-9]+\.[0-9]+\.0(-rc\.[0-9]+)?$';    what='a core tag like v0.33.0-rc.8 or v0.33.0' ;;
+          esac
+          if ! echo "$VERSION" | grep -qE "$pattern"; then
+              echo "::error::Expected $what, got '$VERSION'"
+              exit 1
+          fi
+          echo "CORE_TAG=$VERSION" >> "$GITHUB_ENV"
+          echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # Scoped to this repo, with the two permissions the PR needs.
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.LPDF_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.LPDF_RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      # The App's token stays in this checkout's git config, which is what pushes the branch.
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+
+      # The whole history and the tags: the stamp counts the commits since the last release.
+      - name: Check out core at the tag
+        uses: actions/checkout@v5
+        with:
+          repository: lpdfio/lpdf
+          ref: refs/tags/${{ steps.version.outputs.tag }}
+          path: _core
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Take the engine of the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/refresh-engine.sh "$CORE_TAG" _core
+
+      - name: Open or update the PR
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          # Everything the refresh wrote, and nothing of core's checkout.
+          if [ -z "$(git status --porcelain -- . ':(exclude)_core')" ]; then
+              echo "main already has the engine of $CORE_TAG: nothing to refresh."
+              echo "main already has the engine of $CORE_TAG, so there is nothing to refresh." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add -- . ':(exclude)_core'
+          title="Take the engine of $CORE_TAG"
+          git commit --quiet -m "$title"
+
+          # The branch's last push, so that replacing it fails if someone else pushed to it meanwhile.
+          if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
+              git fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          fi
+          git push --force-with-lease origin "$BRANCH"
+
+          cat > "$RUNNER_TEMP/pr-template.md" <<'EOF'
+          The docs examples and the demo on lpdf.io run on the engine copy in this repo, so the copy moves with the engine they describe. This takes the copy of @TAG@ (@RELEASE@).
+
+          ## What changes
+
+          - `lpdf-web.js` and `lpdf_bg.wasm` of the release, in `ui/demo` and `www/assets/js/lpdf-demo`
+          - `lpdf.xsd` at the tag, in `www/schema` and `www/schema/1`
+          - `docs-site/engine.json`, the stamp the docs header shows
+          - the examples, as core's `sync-examples` writes them: the demo's, and the docs' example pages and downloads
+
+          ## How it was checked
+
+          Build the site renders every docs example with this copy.
+
+          Opened by the Engine refresh workflow, which keeps this PR and its branch and updates them on each release candidate and release. A docs PR that failed on the older copy passes once this is merged and the PR is closed and reopened, which starts its checks again on a new merge with main.
+          EOF
+          sed -e "s|@TAG@|$CORE_TAG|g" \
+              -e "s|@RELEASE@|https://github.com/lpdfio/lpdf/releases/tag/$CORE_TAG|g" \
+              "$RUNNER_TEMP/pr-template.md" > "$RUNNER_TEMP/pr-body.md"
+
+          number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+              gh pr edit "$number" --title "$title" --body-file "$RUNNER_TEMP/pr-body.md"
+          else
+              gh pr create --base main --head "$BRANCH" --title "$title" --body-file "$RUNNER_TEMP/pr-body.md"
+          fi
+          echo "Engine refresh PR: $(gh pr view "$BRANCH" --json url --jq .url)" >> "$GITHUB_STEP_SUMMARY"

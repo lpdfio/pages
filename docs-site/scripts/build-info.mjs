@@ -1,9 +1,10 @@
 // Writes src/build-info.json, which the header reads: the core the docs describe, and the revision
 // of this build.
 //
-// The core comes from engine.json, which `make build-pages` in the core repo writes when it copies
-// the engine into the pages tree. Because it is committed, the docs name the engine they were
-// checked against, not whatever the latest release is.
+// The core comes from engine.json, which the Engine refresh workflow writes when it takes a core
+// release's engine into the pages tree (`make build-pages` in the core repo does it by hand). Because
+// it is committed, the docs name the engine they were checked against, not whatever the latest
+// release is.
 //
 // The revision is r<mmdd>.<n>: the date of the HEAD commit, and that commit's place among the
 // commits of that day, both in the time zone the commit was made in. Only the commit decides it, so

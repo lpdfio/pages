@@ -19,6 +19,7 @@ Places children top to bottom with a configurable gap. By default each child fil
 | `shadow`     | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity. See [Shadow](?p=doc/layout#shadow) |
 | `height`     | token/pt/`fill`/`full` | — | Fixed height (a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens)), fill remaining space, or full page height |
 | `paginate`   | string           | — | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
+| `bulk`       | boolean | `false`  | `true` lays out the texts of its `text` with `data-source` a page at a time, straight from the data, for logs of tens of thousands of lines. See [Bulk Records](?p=data/bulk) |
 | `font`       | string  | inherit  | Font name (declared in `assets`) |
 | `font-size`  | token/pt | inherit | Font size for all children |
 | `data-source` | string | —       | Dot-path to array — repeats this element per item |

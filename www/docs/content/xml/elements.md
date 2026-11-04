@@ -64,6 +64,7 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 | `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
 | `gradients` | Holds `gradient` elements |
+| `rulings` | Holds `ruling` elements |
 
 ### `alias`
 
@@ -101,6 +102,32 @@ A color at a place along a `gradient`. A gradient takes two or more, in increasi
 |-----------|---------|-------------|
 | `offset`  | percent | **Required.** Where the color is reached, from `0%` (the start) to `100%` (the end). Offsets must increase |
 | `color`   | color   | **Required.** Hex, `cmyk()`, `rgb()`, `hsl()` or a color name. A gradient's colors are never another gradient, and are all CMYK or all RGB |
+
+### `ruling`
+
+Lines on every page of a section that names it with `ruling`, in `rulings` inside `tokens`: ruled paper, squared paper, or a page cut into equal parts. It holds one or more `lines`. See [Rulings](?p=xml/schema#rulings).
+
+| Attribute | Type    | Default | Description |
+|-----------|---------|---------|-------------|
+| `name`    | string  | —       | **Required.** The name a section gives in `ruling`. Lowercase letters, digits and `-`, starting with a letter |
+| `origin`  | string  | `page`  | The space the lines fill and a count divides: `page`, up to the trim edge, or `margin`, inside the margin of the section's `layout` or `markdown` |
+| `edges`   | boolean | true    | Whether the lines on the edges of that space are drawn |
+| `ocg`     | string  | —       | `print` or `screen`: the lines are only printed, or only shown on screen |
+
+### `lines`
+
+One set of lines of a `ruling`, cut by a step or a count in each direction. A direction with neither has no lines, and a step and a count in the same direction is an error. A cell narrower than 2.5pt is an error.
+
+| Attribute | Type    | Default | Description |
+|-----------|---------|---------|-------------|
+| `step`    | pt/mm/in | —      | The distance between two lines in both directions |
+| `step-x`  | pt/mm/in | —      | The distance between the lines that run down the page. Takes the place of `step` |
+| `step-y`  | pt/mm/in | —      | The distance between the lines that run across the page. Takes the place of `step` |
+| `count`   | whole number | —  | Equal parts in both directions, from 1 to 100 |
+| `count-x` | whole number | —  | Equal columns, from 1 to 100. Takes the place of `count` |
+| `count-y` | whole number | —  | Equal rows, from 1 to 100. Takes the place of `count` |
+| `color`   | color   | `line-muted` | The color of the lines |
+| `thickness` | token/pt | `0.4pt` | A length or a name of the `border` row |
 
 ### `meta`
 
@@ -169,6 +196,7 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 | `orientation` | string  | inherit  | Override orientation |
 | `bleed`       | pt/mm/in | inherit | Override the bleed for this section's pages; `0mm` takes it away |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
+| `ruling`      | string  | —        | The name of a [ruling](?p=xml/schema#rulings) of the tokens, whose lines are drawn on every page, under everything else and over the background |
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |

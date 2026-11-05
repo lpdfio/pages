@@ -175,7 +175,7 @@ The package carries the engine twice: a native library, which PHP loads through 
 
 The native library loads where PHP has the FFI extension, which the official Docker images leave out (`docker-php-ext-install ffi`, with `libffi-dev`), and where `ffi.enable` allows it. Its default, `preload`, allows FFI on the command line only, so PHP-FPM and Apache's PHP module need `ffi.enable=true` in php.ini. Alpine's C library, musl, isn't supported: there the SDK renders with `wasmtime`.
 
-`runner` on the engine picks one: `ffi` renders with the native library only, and throws an `EngineException` that names what stands in the way where it can't load; `wasm` renders with `wasmtime` only. For an app that renders templates, fonts or images its own users upload, `wasm` keeps the engine in WebAssembly's sandbox. `libPath` loads the native library from another path.
+`runner` on the engine picks how: `auto`, the default, chooses as above; `ffi` renders with the native library only, and throws an `EngineException` that names what stands in the way where it can't load; `wasm` renders with `wasmtime` only. For an app that renders templates, fonts or images its own users upload, `wasm` keeps the engine in WebAssembly's sandbox. `libPath` loads the native library from another path.
 
 ```php
 <?php
@@ -188,7 +188,7 @@ $engine = L::engine(new EngineOptions(runner: 'ffi'));
 echo $engine->runner(); // ffi, or an EngineException that says why not
 ```
 
-The time limit and the memory cap below hold through both, and the engine's memory is outside PHP's `memory_limit` either way. Through the native library, a fault the engine can't catch ends PHP's process, where through `wasmtime` it ends the `wasmtime` process and the render throws an `EngineException`.
+The time limit and the memory cap below hold through both, with the differences their PHP notes give, and the engine's memory is outside PHP's `memory_limit` either way. Through the native library, a fault the engine can't catch, such as running out of memory before its cap stops it, ends PHP's process; through `wasmtime` it ends the `wasmtime` process, and the render throws an `EngineException`.
 
 ## Versioning
 
@@ -382,7 +382,7 @@ use Lpdf\L;
 $engine = L::engine(new EngineOptions(timeout: 60));
 ```
 
-At its limit the render throws an `EngineException`: through the native library the engine stops the render itself, and through `wasmtime` its process is stopped.
+At its limit the render throws an `EngineException`. Through `wasmtime` its process is stopped. Through the native library the engine stops the render itself, at its next check: a step the engine hands to a library, such as reading the XML, subsetting a font or compressing an image, finishes first, so a render can run past its limit by that step's time.
 :::
 
 ::: sdk python
@@ -410,9 +410,9 @@ At its limit the render throws an `EngineException`. Renders on other threads go
 
 ## Memory limit
 
-A render may allocate 1024 MB, which holds thousands of pages of text and tables. One that needs more stops with the SDK's render error, which names the cap: `the render needs more memory than its cap of 1024 MB: raise the cap in the engine's options, or render the document in smaller parts`. What counts is what the render allocates, the data it binds included. In the .NET, PHP and Python SDKs the fonts, images and files sent with a render count too; in JavaScript what is loaded on the engine before the render doesn't. There is no limit on the size of the XML or of a document built in code. `maxMemoryMb` on the engine sets another cap, a whole number of megabytes from 1 to 4096: lower in a small container, higher for a big document on a machine with the memory for it. 4096 is the most the engine, a 32-bit WebAssembly module, can address. A render stopped at its cap leaves the engine as it was, and the next render runs as usual.
+A render may allocate 1024 MB, which holds thousands of pages of text and tables. One that needs more stops with the SDK's render error, which names the cap: `the render needs more memory than its cap of 1024 MB: raise the cap in the engine's options, or render the document in smaller parts`. What counts is what the render allocates, the data it binds included. In the .NET, PHP and Python SDKs the fonts, images and files sent with a render count too; in JavaScript what is loaded on the engine before the render doesn't. There is no limit on the size of the XML or of a document built in code. `maxMemoryMb` on the engine sets another cap, a whole number of megabytes from 1 to 4096: lower in a small container, higher for a big document on a machine with the memory for it. 4096 is the most the engine can address as a 32-bit WebAssembly module, and PHP's native library keeps the same range. A render stopped at its cap leaves the engine as it was, and the next render runs as usual.
 
-If the engine crashes, by a fault in it or a render that runs out of memory before its cap stops it, the render fails with the same message in every SDK: `The engine crashed during the render. This is a bug in Lpdf, or the render ran out of memory before its cap stopped it: please report it with the document at https://github.com/lpdfio/lpdf/issues.` The next render runs on a fresh engine.
+If the engine crashes, by a fault in it or a render that runs out of memory before its cap stops it, the render fails with the same message in every SDK: `The engine crashed during the render. This is a bug in Lpdf, or the render ran out of memory before its cap stopped it: please report it with the document at https://github.com/lpdfio/lpdf/issues.` The next render runs on a fresh engine. PHP's native library is the exception, below.
 
 ::: sdk js
 
@@ -437,7 +437,7 @@ use Lpdf\L;
 $engine = L::engine(new EngineOptions(maxMemoryMb: 2048));
 ```
 
-Past the cap the render throws an `EngineException`. After a crash its previous exception holds what `wasmtime` or the native library reported.
+Past the cap the render throws an `EngineException`. Through `wasmtime`, after a crash its previous exception holds what `wasmtime` reported. Through the native library, a fault the engine catches throws the same message, its previous exception holding the engine's own, and the next render runs as usual. A render that runs out of memory before its cap stops it ends PHP's process instead, and nothing is thrown: under PHP-FPM the request fails and FPM starts a new worker. Where a render could need more memory than the machine has, keep `maxMemoryMb` below it, or render with `wasm`.
 :::
 
 ::: sdk python

@@ -39,6 +39,11 @@ jobs:
           cache: npm
           cache-dependency-path: docs-site/package-lock.json
 
+      # The demo's wasm and the two copies of its glue (lpdf-web.js, and browser.js from lpdf-js) must be
+      # from one engine: a mismatch builds and deploys fine and the demo's engine never starts.
+      - name: Check the demo's engine files come from one engine
+        run: node .github/check-demo-engine.mjs
+
       # Writes each page's SEO block from sitemap.yaml. A page whose block or sitemap entry was
       # edited by hand, or a sitemap.yaml edit with no `make meta-pages` after it, changes a file here.
       - name: Check the static pages' meta tags match sitemap.yaml

@@ -94,7 +94,11 @@ const argumentCounts = new Map();
 for (const file of GLUE)
 {
     const source = readFileSync(join(SERVED, file), 'utf8');
-    argumentCounts.set(file, callArguments(source));
+
+    // A bundler that renames the glue's `wasm` variable leaves no call to read, and the checks below would pass on nothing.
+    const calls = callArguments(source);
+    argumentCounts.set(file, calls);
+    if (calls.size === 0) problems.push(`${file} has no wasm.<name>(...) call, so what it calls in the wasm could not be checked`);
 
     for (const name of imports)
     {

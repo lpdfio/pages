@@ -332,7 +332,7 @@ export function check_license(token, now_unix) {
  * in multiple target languages.
  *
  * `options_json` accepts the same shape as `codegen_wasm`:
- * - `target`: `"js"`, `"dotnet"`, `"php"`, or `"python"` (required)
+ * - `target`: `"js"`, `"dotnet"`, `"php"`, `"python"` or `"java"` (required)
  * - `indent`: `2` or `4` (optional, default `4`)
  * @param {string} xml
  * @param {string} options_json
@@ -365,7 +365,7 @@ export function codegen_fragment_wasm(xml, options_json) {
  * Generate SDK source code from an Lpdf XML string.
  *
  * `options_json` is a JSON object with:
- * - `target`: `"js"` (required)
+ * - `target`: `"js"`, `"dotnet"`, `"php"`, `"python"` or `"java"` (required)
  * - `indent`: `2` or `4` (optional, default `4`)
  *
  * Returns the generated source code as a string.

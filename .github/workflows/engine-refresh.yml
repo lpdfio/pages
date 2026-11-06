@@ -18,7 +18,9 @@ run-name: "${{ github.event_name == 'repository_dispatch' && format('{0} {1}: ta
 #
 # A PR opened with GITHUB_TOKEN starts no checks, and main's ruleset requires `Build the site`, so the
 # branch is pushed and the PR opened with the release App's token. Its key is a secret of the
-# `engine-refresh` environment, which only main may use: no branch's workflow can read it.
+# `engine-refresh` environment, which only main may use: no branch's workflow can read it. The token is
+# minted after lpdf-js is built, and only the push and the PR calls get it, so the code of that build
+# never runs beside a token with write access.
 #
 # By hand: Actions → Engine refresh → Run workflow, from main, with the core tag. It takes the engine
 # of a release that is already out, such as one an earlier dispatch missed.
@@ -68,21 +70,12 @@ jobs:
           echo "CORE_TAG=$VERSION" >> "$GITHUB_ENV"
           echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
 
-      # Scoped to this repo, with the two permissions the PR needs.
-      - name: Mint GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ vars.LPDF_RELEASE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.LPDF_RELEASE_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
-
-      # The App's token stays in this checkout's git config, which is what pushes the branch.
+      # Keeps no credential in the checkout's git config: the build of lpdf-js below runs code this repo
+      # doesn't own, from the same checkout and job.
       - uses: actions/checkout@v5
         with:
           ref: main
-          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       # The whole history and the tags: the stamp counts the commits since the last release.
       - name: Check out core at the tag
@@ -106,6 +99,17 @@ jobs:
       # Build the site runs it on the PR too. Here it stops a refresh before a PR that could not pass is opened.
       - name: Check the demo's engine files come from one engine
         run: node .github/check-demo-engine.mjs
+
+      # Minted only now, after the builds, so that no token with write access exists while lpdf-js builds.
+      # Scoped to this repo, with the two permissions the PR needs.
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.LPDF_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.LPDF_RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Open or update the PR
         env:
@@ -131,7 +135,15 @@ jobs:
           if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
               git fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
           fi
-          git push --force-with-lease origin "$BRANCH"
+
+          # The App's token goes to this one command, as the header the checkout action would have kept in the
+          # git config. Reading the public repo above needs none.
+          basic=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$basic"
+          GIT_CONFIG_COUNT=1 \
+          GIT_CONFIG_KEY_0=http.https://github.com/.extraheader \
+          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $basic" \
+              git push --force-with-lease origin "$BRANCH"
 
           cat > "$RUNNER_TEMP/pr-template.md" <<'EOF'
           The docs examples and the demo on lpdf.io run on the engine copy in this repo, so the copy moves with the engine they describe. This takes the copy of @TAG@ (@RELEASE@).

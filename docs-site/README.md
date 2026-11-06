@@ -91,8 +91,10 @@ missed, run the workflow by hand (*Actions → Engine refresh → Run workflow*,
 
 The PR is opened with the release App's token, because a PR opened with `GITHUB_TOKEN` starts no checks and `main`
 requires *Build the site*. Its key is a secret of the `engine-refresh` environment, which only `main` may use, and
-the client id is the repo variable `LPDF_RELEASE_APP_CLIENT_ID`. `make build-pages` in a core checkout still copies
-an engine by hand, one that no release has yet.
+the client id is the repo variable `LPDF_RELEASE_APP_CLIENT_ID`. The workflow mints the token only after it has built
+`browser.js`, and gives it to the push and the PR calls alone: lpdf-js's build runs code this repo doesn't own, and it
+never runs beside a token with write access. `make build-pages` in a core checkout still copies an engine by hand, one
+that no release has yet.
 
 ## How the content is converted
 

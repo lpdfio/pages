@@ -7,7 +7,7 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
 ```
 <lpdf version="1">
   <assets>           ← optional: fonts, images, color profiles
-  <tokens>           ← optional: custom scales, aliases, colors and gradients
+  <tokens>           ← optional: custom scales, aliases, colors, gradients and rulings
   <document>         ← required
     <meta>           ← optional: title, author, subject, keywords, creator, lang
     <output>         ← optional: encryption, what a reader may do, PDF/A, PDF/UA, PDF/X
@@ -94,7 +94,7 @@ A token is a name for a length. Each attribute reads its own scale, so `m` is 8p
 
 `padding` and `margin` take one to four values, written like CSS, and each can be a token: `padding="m 24pt"` is 8pt top and bottom and 24pt left and right.
 
-To change a scale, or to name colors or gradients, add `tokens` before `document`. A scale row needs all six values:
+To change a scale, or to name colors, gradients or rulings, add `tokens` before `document`. A scale row needs all six values:
 
 ```xml
 <lpdf version="1">
@@ -231,6 +231,68 @@ One document with each kind: two colors, three stops, and a radial gradient on a
       <layer>
         <circle x="400pt" y="520pt" r="60pt" fill="gradient:spotlight"/>
       </layer>
+    </section>
+  </document>
+</lpdf>
+```
+
+## Rulings
+
+A ruling is lines on every page of a section: ruled paper to write on, squared paper to draw on, or a grid to place things by. Define it once in `rulings` inside `tokens`, and name it on a [section](?p=doc/section#ruled-and-squared-pages) with `ruling`. Its lines are drawn under everything else on each page of the section, over its background.
+
+| `ruling` attribute | Description |
+|--------------------|-------------|
+| `name`             | **Required.** The name a section gives in `ruling`: lowercase letters, digits and `-`, starting with a letter |
+| `origin`           | The space the lines fill and a count divides: `page`, the default, the whole page up to its trim edge, or `margin`, the area inside the margin of the section's `layout` or `markdown` |
+| `edges`            | `false` leaves out the lines on the edges of that space. Default `true` |
+| `ocg`              | `screen` shows the lines on screen and doesn't print them, and `print` prints them and doesn't show them. See [Print and screen](?p=print-and-screen) |
+
+A ruling holds one or more `lines`, each a set of lines of one color and thickness. They are drawn in order, so a later set paints over an earlier one.
+
+| `lines` attribute    | Description |
+|----------------------|-------------|
+| `step`               | The distance between two lines in both directions, a length such as `5mm` |
+| `step-x`, `step-y`   | The distance in one direction: `step-x` between the lines that run down the page, `step-y` between the lines that run across it. Each takes the place of `step` in its direction |
+| `count`              | Cuts the space into this many equal parts in both directions, from 1 to 100 |
+| `count-x`, `count-y` | The parts in one direction: columns or rows. Each takes the place of `count` in its direction |
+| `color`              | The color of the lines: any [color](#colors) or a color name. Default `line-muted` (`#d4d4d4`) |
+| `thickness`          | A length or a name of the `border` row. Default `0.4pt` |
+
+- **A step or a count.** A step makes cells of one size from the top left corner of the space, and leaves what is over at the right and the bottom. A count makes cells that stretch to fit, so the lines land on both edges. A direction with neither has no lines, so `step-y` alone is ruled paper. A step and a count in the same direction is an error that names both.
+- **Edges.** With them, a count of 12 draws 13 lines, and a step draws a line on the start edge, and on the far edge when it lands there. Without them, the lines on the edges are left out: a count of 12 draws 11.
+- **The smallest cell** is 2.5pt, so 1mm graph paper (2.83pt) fits. A smaller step is an error, and so is a count that cuts a page finer, with the count that fits: `ruling 'grid': a count of 100 cuts the area inside the margin into columns 2.28pt wide, narrower than the 2.5pt a ruling allows: give a count of 91 or less in x`.
+- **Page sizes.** A step keeps its size on every page, and a count its number of parts.
+- **On the page.** The lines stop at the trim edge of a page with a `bleed`, run across the columns of a section with `columns`, and are decoration, which a screen reader skips. A section that holds only a ruling is one page of paper.
+- **Size.** The lines are written into the PDF once, and every page of the section refers to them, so a dense ruling makes a file no larger than a coarse one.
+- **Names.** A section that names a ruling the tokens don't declare is an error that lists the ones they do.
+
+Graph paper in two sets, and ruled paper:
+
+```xml
+<lpdf version="1">
+  <tokens>
+    <rulings>
+      <!-- a fine line every 5mm and a heavier one every 25mm, inside the margin -->
+      <ruling name="graph" origin="margin">
+        <lines step="5mm"  color="#dde6f0" thickness="0.3pt"/>
+        <lines step="25mm" color="#b5c4d6" thickness="0.6pt"/>
+      </ruling>
+      <!-- lines across the page every 8mm, none on its edges -->
+      <ruling name="notes" edges="false">
+        <lines step-y="8mm" color="#cccccc"/>
+      </ruling>
+    </rulings>
+  </tokens>
+  <document size="a4">
+    <section ruling="graph">
+      <layout margin="40pt">
+        <text font-size="l">Graph paper</text>
+      </layout>
+    </section>
+    <section ruling="notes">
+      <layout margin="40pt">
+        <text font-size="l">Notes</text>
+      </layout>
     </section>
   </document>
 </lpdf>

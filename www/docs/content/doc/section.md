@@ -9,6 +9,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"` |
 | `orientation` | string  | inherit | `portrait` or `landscape` |
 | `background`  | color   | inherit | Page background color |
+| `ruling`      | string  | —       | Draws a [ruling](?p=xml/schema#rulings) of the tokens on every page. See [Ruled and squared pages](#ruled-and-squared-pages) |
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —       | Section title. Accepted, but not used: the PDF's outline takes its entries from [bookmarks](?p=doc/layout/bookmark) |
 | `type`        | string  | —       | `toc` makes the section the document's [table of contents](?p=doc/toc) |
@@ -170,6 +171,41 @@ An inset is a block at a spot inside the columns that the flow goes around: a pi
 - **The notes of footnotes give way to it.** They don't rise above the foot of an inset: a line whose note would need them to goes on to the next page, with its note.
 - **`page="last"`** puts the inset on the last page of the flow filled without it. That page is filled again with it, and if text no longer fits, the text goes on to a new page with no inset, and the inset stays where it was, one page before the end. No error: a template that worked for months doesn't fail on a longer list.
 - A layout can hold several insets. Two that overlap each keep the flow out of their own rectangle, and are drawn in the order they are written. An inset needs no columns: in a section of one, it is a block the text goes around.
+
+## Ruled and squared pages
+
+`ruling` draws the lines of a ruling on every page of the section: ruled paper to write on, squared paper to draw on, or a grid to place things by while editing. The ruling is defined once in the [tokens](?p=xml/schema#rulings), and any number of sections name it. Its lines go under the section's layers and its layout, over its background, and stop at the trim edge.
+
+```xml
+<lpdf version="1">
+  <tokens>
+    <rulings>
+      <!-- squares of 5mm from the corner of the page -->
+      <ruling name="squares">
+        <lines step="5mm"/>
+      </ruling>
+      <!-- the area inside the margin cut into 12 columns and 16 rows, shown on screen and not printed -->
+      <ruling name="grid" origin="margin" ocg="screen">
+        <lines count-x="12" count-y="16" color="#f2b8b8" thickness="0.25pt"/>
+      </ruling>
+    </rulings>
+  </tokens>
+  <document size="a4">
+    <section ruling="squares">
+      <layout margin="40pt">
+        <text font-size="l">Squared paper</text>
+      </layout>
+    </section>
+    <section ruling="grid">
+      <layout margin="60pt">
+        <text font-size="l">Placed by the grid</text>
+      </layout>
+    </section>
+  </document>
+</lpdf>
+```
+
+A step keeps its size on a page of any size, and a count its number of parts. With `origin="margin"` the lines fill the area inside the margin of the section's `layout` or `markdown`, and ignore its `columns`. A section that holds only a ruling, `<section ruling="squares"/>`, is one page of paper.
 
 ## Bookmarking a section
 

@@ -43,10 +43,14 @@ const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET'
 
 // The languages the generated code is shown in, in tab order: Node.js, Python, PHP, .NET and Java. The SDKs share
 // one API: the attribute classes and constants of each follow lpdf.xsd, so the code reads alike in every language.
-// The checks differ by language. scripts/check-codegen.mjs runs the JavaScript of every XML example in these docs
-// with the JS SDK and fails when it renders another PDF than the XML, on every `npm run check`. The Java was checked
-// the same way once, when its tab was added: compiled with `javac --release 17` against io.lpdf:lpdf 0.33.0 and
-// rendered with it. Nothing checks the Python, PHP or .NET code of these examples. The generator's targets are js,
+// Two checks stand behind the code. Each SDK's CI has the generator write the code of every fixture of core and of a
+// document for every attribute and every value of an enumeration of the schema (one value of the others), builds it
+// with the SDK, and fails when it renders another PDF than the XML (scripts/check-codegen-sdk.mjs in lpdfio/lpdf). It
+// leaves out what the generator cannot write, data binding and the markdown rule hr, and what the engine ignores. So a
+// name an SDK lacks is found for nearly every attribute, not only where an example uses it. scripts/check-codegen.mjs
+// here runs the JavaScript of every XML example in these docs with the JS SDK and fails on the same terms, on every
+// `npm run check`: only JavaScript, but these very examples, whose elements combine in ways the corpus, one attribute
+// at a time, does not. The generator's targets are js,
 // python, php, dotnet and java; the .NET code is highlighted as csharp.
 const CODE_TABS = [
     { target: 'js', lang: 'js' },

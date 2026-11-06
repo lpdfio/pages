@@ -89,11 +89,14 @@ ignored by git:
   two levels down, so they stay out of "On this page".
 - Each XML block becomes tabs: XML, then the same document built in code in Node.js, Python, PHP, .NET and Java
   (`CODE_TABS` in the script). The code is generated at build time by the engine's own generator, the WASM build in
-  `../www/assets/js/lpdf-demo` that the demo on the site runs in the browser. The checks differ by language:
-  `npm run check` runs the JavaScript of every example with the JS SDK and fails when it renders another PDF than
-  the XML (*Checking the examples*). The Java was checked the same way once, when its tab was added: compiled with
-  `javac --release 17` against `io.lpdf:lpdf` 0.33.0 and rendered with it. Nothing checks the Python, PHP or .NET
-  code of the examples. A block stays XML only when the generator cannot express it in one of the languages: an
+  `../www/assets/js/lpdf-demo` that the demo on the site runs in the browser. Two checks stand behind the code. Each
+  SDK's CI has the generator write the code of every fixture of core and of a document for every attribute and every
+  value of an enumeration of the schema (one value of the others), builds it with the SDK and fails when it renders
+  another PDF than the XML (`scripts/check-codegen-sdk.mjs` in `lpdfio/lpdf`). It leaves out what the generator cannot
+  write, data binding and the markdown rule `hr`, and what the engine ignores. So a name an SDK lacks is found for
+  nearly every attribute, not only where an example uses it. `npm run check` runs the JavaScript of every example here
+  with the JS SDK and fails on the same terms (*Checking the examples*): only JavaScript, but these very examples,
+  whose elements combine in ways the corpus, one attribute at a time, does not. A block stays XML only when the generator cannot express it in one of the languages: an
   element it does not know (full documents, assets), data binding (it leaves TODO comments), or several root
   elements. The sync lists these blocks every time it runs.
 - Standalone `---` lines are dropped, since the old docs page hid them.

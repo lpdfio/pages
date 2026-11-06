@@ -118,10 +118,13 @@ Path('report.pdf').write_bytes(pdf)
 using Lpdf;
 using Lpdf.Engine;
 
-var pdf = L.Engine().Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
+var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
+    .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
 
 await File.WriteAllBytesAsync("report.pdf", pdf);
 ```
+
+.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
 ::: sdk java

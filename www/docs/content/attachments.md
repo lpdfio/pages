@@ -87,15 +87,16 @@ Path('invoice.pdf').write_bytes(pdf)
 
 ```csharp
 using Lpdf;
+using Lpdf.Engine;
 
-using var engine = L.Engine();
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 engine.LoadFile("invoice.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
 var pdf = engine.Render(xml);
 
 await File.WriteAllBytesAsync("invoice.pdf", pdf);
 ```
 
-.NET reads a `src` only through the engine's `SrcFallback`, as it does an image's: `L.Engine(new() { SrcFallback = File.ReadAllBytes })`. Without one, a file with a `src` that was not loaded is an error that says so.
+.NET reads a `src` only through the engine's `SrcFallback`, as it does an image's: here it reads `terms.pdf`. Without one, a file with a `src` that was not loaded is an error that says so.
 :::
 
 ::: sdk java

@@ -25,7 +25,7 @@ import { xml as xmlLang } from '@codemirror/lang-xml';
 import { javascript as jsLang } from '@codemirror/lang-javascript';
 import { python as pythonLang } from '@codemirror/lang-python';
 import { php as phpLang } from '@codemirror/lang-php';
-import { csharp } from '@codemirror/legacy-modes/mode/clike';
+import { csharp, java } from '@codemirror/legacy-modes/mode/clike';
 
 import {
     LPDF_URL, LPDFWEB_URL,
@@ -38,6 +38,7 @@ const MODES = [
     { id: 'dotnet', label: '.NET/C#',  icon: 'fa-solid fa-hashtag' },
     { id: 'php',    label: 'PHP',      icon: 'fa-brands fa-php' },
     { id: 'python', label: 'Python',   icon: 'fa-brands fa-python' },
+    { id: 'java',   label: 'Java',     icon: 'fa-brands fa-java' },
     { id: 'xml',    label: 'XML',      icon: 'fa-solid fa-code' },
 ];
 /** The tab that shows document.json, offered only for an example that has data. */
@@ -160,6 +161,7 @@ function langExtForMode(mode: string) {
         case 'python': return pythonLang();
         case 'php':    return phpLang({ plain: true });
         case 'dotnet': return StreamLanguage.define(csharp);
+        case 'java':   return StreamLanguage.define(java);
         default:       return xmlLang();
     }
 }

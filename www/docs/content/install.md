@@ -175,6 +175,8 @@ The package carries the engine twice: a native library, which PHP loads through 
 
 The native library loads where PHP has the FFI extension, which the official Docker images leave out (`docker-php-ext-install ffi`, with `libffi-dev`), and where `ffi.enable` allows it. Its default, `preload`, allows FFI on the command line only, so PHP-FPM and Apache's PHP module need `ffi.enable=true` in php.ini. Alpine's C library, musl, isn't supported: there the SDK renders with `wasmtime`.
 
+`wasmtime` compiles the engine to native code at the first render and keeps it for the renders after, in a folder of the SDK's: `lpdf-wasmtime-<uid>` in PHP's temp directory, `sys_get_temp_dir()`, made with mode 0700 where it is missing. This way the SDK renders under PHP-FPM too, where PHP runs as `www-data`, whose home wasmtime can't write. `wasmCacheDir` on the engine sets another folder. wasmtime runs what the folder holds without checking it, so the SDK uses a folder only where PHP's user owns it and group and others can't open it. Otherwise wasmtime keeps the engine in its own default place, in the user's home, and where it can't create that either, the render throws an `EngineException` that says why the folder wasn't used and names `wasmCacheDir`.
+
 `runner` on the engine picks how: `auto`, the default, chooses as above; `ffi` renders with the native library only, and throws an `EngineException` that names what stands in the way where it can't load; `wasm` renders with `wasmtime` only. For an app that renders templates, fonts or images its own users upload, `wasm` keeps the engine in WebAssembly's sandbox. `libPath` loads the native library from another path.
 
 ```php

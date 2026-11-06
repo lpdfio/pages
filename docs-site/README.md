@@ -55,12 +55,34 @@ in git, so it never shows the copy; run `assemble-site.sh` and serve its output 
 
 ## The engine copy
 
-The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js` and `lpdf_bg.wasm` in `ui/demo`
-and `www/assets/js/lpdf-demo`, the schema in `www/schema`, the examples of the demo and the docs (core's `examples/`),
-and the stamp `docs-site/engine.json`. `.github/workflows/engine-refresh.yml` takes them from each core release
-candidate and release: core's `release.yml` sends `core-rc` and `core-release`, and the workflow runs
+The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js`, `lpdf_bg.wasm` and `browser.js` in
+`ui/demo` and `www/assets/js/lpdf-demo`, the schema in `www/schema`, the examples of the demo and the docs (core's
+`examples/`), and the stamp `docs-site/engine.json`. `.github/workflows/engine-refresh.yml` takes them from each core
+release candidate and release: core's `release.yml` sends `core-rc` and `core-release`, and the workflow runs
 `.github/refresh-engine.sh` and opens one PR, from the branch `engine-refresh`, which the releases after it update
-instead of opening another. The engine files are the release's own assets, checked against its `SHA256SUMS`.
+instead of opening another. `lpdf-web.js` and `lpdf_bg.wasm` are the release's own assets, checked against its
+`SHA256SUMS`. `browser.js` is lpdf-js's browser bundle, which the demo loads (`initLpdf`). It holds a copy of the wasm
+glue, so it starts the wasm only when it was built with the `lpdf-web.js` of the same release. The refresh builds it
+from lpdf-js `main` with the release's engine files, as the deploy workflow builds the SDK the code tabs run with, and
+the PR names the lpdf-js commit it came from. So it follows `main` of the day, and the refresh fails when `main` doesn't
+compile against the release's engine.
+
+`.github/check-demo-engine.mjs` checks that `lpdf_bg.wasm`, `lpdf-web.js` and `browser.js` come from one engine, from
+the wasm's own list of imports and exports. `lpdf-web.js` and `browser.js` each define every import the wasm asks for
+and call only exports it has. `browser.js` passes as many arguments to each `wasm.<name>(…)` call as `lpdf-web.js`
+does: the list has no parameters, and an export can keep its name and change them, as `lpdfengine_render_pdf` did from
+5 to 12 at v0.31.0-rc.1. And the copies in `ui/demo` are the files in `www`. *Build the site* runs it, and so does the
+refresh before it opens or updates the PR. Without it, a mismatch builds and deploys fine, and the demo's engine fails
+to start in the visitor's browser. When it fails:
+
+- *In the refresh run*, in the step *Take the engine of the release*, which builds `browser.js`, or in *Check the
+  demo's engine files come from one engine*: lpdf-js `main` doesn't match the release's engine. The PR and its branch
+  stay as they were. Fix lpdf-js, then run the workflow by hand with the same core tag.
+- *In Build the site on another PR*: the demo's files were edited by hand, or only some of them were copied. Run the
+  refresh by hand to take the three from one release, or rebuild `browser.js`: in a lpdf-js checkout, put the engine's
+  `lpdf.js`, `lpdf-web.js` and `lpdf_bg.wasm` in `wasm/`, run `npm ci && npm run build`, and copy `dist/browser.js` to
+  `ui/demo` and to `www/assets/js/lpdf-demo`. A fix pushed to the `engine-refresh` branch itself doesn't last: the next
+  release candidate builds the branch again from `main`.
 
 Nothing merges the PR: merge it when the copy should move. A docs PR for a feature the old copy lacks fails
 *Check the docs examples render*. Once the refresh PR is merged, close and reopen the docs PR: a re-run reuses the
@@ -69,8 +91,10 @@ missed, run the workflow by hand (*Actions → Engine refresh → Run workflow*,
 
 The PR is opened with the release App's token, because a PR opened with `GITHUB_TOKEN` starts no checks and `main`
 requires *Build the site*. Its key is a secret of the `engine-refresh` environment, which only `main` may use, and
-the client id is the repo variable `LPDF_RELEASE_APP_CLIENT_ID`. `make build-pages` in a core checkout still copies
-an engine by hand, one that no release has yet.
+the client id is the repo variable `LPDF_RELEASE_APP_CLIENT_ID`. The workflow mints the token only after it has built
+`browser.js`, and gives it to the push and the PR calls alone: lpdf-js's build runs code this repo doesn't own, and it
+never runs beside a token with write access. `make build-pages` in a core checkout still copies an engine by hand, one
+that no release has yet.
 
 ## How the content is converted
 

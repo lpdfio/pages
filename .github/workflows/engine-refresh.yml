@@ -3,8 +3,14 @@ run-name: "${{ github.event_name == 'repository_dispatch' && format('{0} {1}: ta
 
 # Answers core's `core-rc` and `core-release` dispatches (Lpdf-devcycle.md §4.2 in lpdfio/lpdf). The docs
 # examples and the demo run on the engine copy in this repo, so a docs PR for a new feature fails its
-# check until the copy has the feature. This takes the engine, the schema, the example files and the
-# stamp of the core release into a PR (.github/refresh-engine.sh). It never merges it.
+# check until the copy has the feature. This takes the engine, the demo's browser bundle built with it
+# (lpdf-js `main`), the schema, the example files and the stamp of the core release into a PR
+# (.github/refresh-engine.sh). It never merges it.
+#
+# The demo starts only when its three engine files come from one engine, so the run checks that
+# (.github/check-demo-engine.mjs) before it opens or updates the PR. A run that fails there, because lpdf-js
+# `main` doesn't match the engine, leaves the PR and its branch as they were: fix lpdf-js, then run the
+# workflow by hand with the same tag.
 #
 # One branch and one open PR serve every release candidate of a release: each run builds the branch
 # again from main with the newest engine, so eight RCs don't leave eight PRs to merge. The branch is this
@@ -12,7 +18,9 @@ run-name: "${{ github.event_name == 'repository_dispatch' && format('{0} {1}: ta
 #
 # A PR opened with GITHUB_TOKEN starts no checks, and main's ruleset requires `Build the site`, so the
 # branch is pushed and the PR opened with the release App's token. Its key is a secret of the
-# `engine-refresh` environment, which only main may use: no branch's workflow can read it.
+# `engine-refresh` environment, which only main may use: no branch's workflow can read it. The token is
+# minted after lpdf-js is built, and only the push and the PR calls get it, so the code of that build
+# never runs beside a token with write access.
 #
 # By hand: Actions → Engine refresh → Run workflow, from main, with the core tag. It takes the engine
 # of a release that is already out, such as one an earlier dispatch missed.
@@ -62,21 +70,12 @@ jobs:
           echo "CORE_TAG=$VERSION" >> "$GITHUB_ENV"
           echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
 
-      # Scoped to this repo, with the two permissions the PR needs.
-      - name: Mint GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ vars.LPDF_RELEASE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.LPDF_RELEASE_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
-
-      # The App's token stays in this checkout's git config, which is what pushes the branch.
+      # Keeps no credential in the checkout's git config: the build of lpdf-js below runs code this repo
+      # doesn't own, from the same checkout and job.
       - uses: actions/checkout@v5
         with:
           ref: main
-          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       # The whole history and the tags: the stamp counts the commits since the last release.
       - name: Check out core at the tag
@@ -96,6 +95,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: bash .github/refresh-engine.sh "$CORE_TAG" _core
+
+      # Build the site runs it on the PR too. Here it stops a refresh before a PR that could not pass is opened.
+      - name: Check the demo's engine files come from one engine
+        run: node .github/check-demo-engine.mjs
+
+      # Minted only now, after the builds, so that no token with write access exists while lpdf-js builds.
+      # Scoped to this repo, with the two permissions the PR needs.
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.LPDF_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.LPDF_RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Open or update the PR
         env:
@@ -121,7 +135,15 @@ jobs:
           if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
               git fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
           fi
-          git push --force-with-lease origin "$BRANCH"
+
+          # The App's token goes to this one command, as the header the checkout action would have kept in the
+          # git config. Reading the public repo above needs none.
+          basic=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::$basic"
+          GIT_CONFIG_COUNT=1 \
+          GIT_CONFIG_KEY_0=http.https://github.com/.extraheader \
+          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $basic" \
+              git push --force-with-lease origin "$BRANCH"
 
           cat > "$RUNNER_TEMP/pr-template.md" <<'EOF'
           The docs examples and the demo on lpdf.io run on the engine copy in this repo, so the copy moves with the engine they describe. This takes the copy of @TAG@ (@RELEASE@).
@@ -129,18 +151,20 @@ jobs:
           ## What changes
 
           - `lpdf-web.js` and `lpdf_bg.wasm` of the release, in `ui/demo` and `www/assets/js/lpdf-demo`
+          - `browser.js` there, the demo's browser bundle: it holds a copy of the wasm glue, so it is built from lpdf-js `main` (commit [`@SDK@`](https://github.com/lpdfio/lpdf-js/commit/@SDK@)) with the release's engine files
           - `lpdf.xsd` at the tag, in `www/schema` and `www/schema/1`
           - `docs-site/engine.json`, the stamp the docs header shows
           - the examples, as core's `sync-examples` writes them: the demo's, and the docs' example pages and downloads
 
           ## How it was checked
 
-          Build the site renders every docs example with this copy.
+          Build the site renders every docs example with this copy. It also checks that the demo's three engine files come from one engine: that `lpdf-web.js` and `browser.js` define every import the wasm asks for and call only exports it has, and that `browser.js` calls each of them with as many arguments as `lpdf-web.js` does. The workflow ran that check before it opened or updated this PR. If it fails here after a change to the demo's files, `docs-site/README.md` (*The engine copy*) says how to rebuild `browser.js`.
 
           Opened by the Engine refresh workflow, which keeps this PR and its branch and updates them on each release candidate and release. A docs PR that failed on the older copy passes once this is merged and the PR is closed and reopened, which starts its checks again on a new merge with main.
           EOF
           sed -e "s|@TAG@|$CORE_TAG|g" \
               -e "s|@RELEASE@|https://github.com/lpdfio/lpdf/releases/tag/$CORE_TAG|g" \
+              -e "s|@SDK@|${LPDF_JS_COMMIT:?refresh-engine.sh sets the lpdf-js commit}|g" \
               "$RUNNER_TEMP/pr-template.md" > "$RUNNER_TEMP/pr-body.md"
 
           number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')

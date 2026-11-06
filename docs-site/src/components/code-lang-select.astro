@@ -69,8 +69,28 @@ const labelsById = Object.fromEntries(CODE_LANGUAGES.map(({ id, label }) => [id,
             if (index !== -1) tabs.switchTab(tabs.tabs[index], index, false);
         }
         if (anchor) frame?.scrollBy({ top: anchor.getBoundingClientRect().top - before, behavior: 'instant' });
+        revealSelectedTabs();
         try { localStorage.setItem(CODE_LANG_STORAGE_KEY, label); }
         catch { /* storage blocked: the choice lasts for this page */ }
+    }
+
+    /**
+     * Scrolls each synced tab row sideways so its selected tab is in view. On a phone the six tabs of a code block are
+     * wider than the column, and the row scrolls: Java, the last, would be selected out of sight, with its code shown
+     * under the tabs that are in view.
+     */
+    function revealSelectedTabs(): void
+    {
+        for (const tabs of document.querySelectorAll<StarlightTabs>(SYNCED_TABS))
+        {
+            const row = tabs.querySelector<HTMLElement>(':scope > .tablist-wrapper');
+            const selected = row?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
+            if (!row || !selected || row.scrollWidth <= row.clientWidth) continue;
+            const tab = selected.getBoundingClientRect();
+            const box = row.getBoundingClientRect();
+            if (tab.right > box.right) row.scrollLeft += tab.right - box.right;
+            else if (tab.left < box.left) row.scrollLeft -= box.left - tab.left;
+        }
     }
 
     class LpdfCodeLang extends HTMLElement
@@ -94,6 +114,8 @@ const labelsById = Object.fromEntries(CODE_LANGUAGES.map(({ id, label }) => [id,
             const mirror = (e: Event): void =>
             {
                 if (!(e.target instanceof Element) || !e.target.closest(SYNCED_TABS)) return;
+                // The other code blocks have switched with this one by the next frame.
+                requestAnimationFrame(revealSelectedTabs);
                 const stored = readStored();
                 if (!stored || stored === select.value || ![...select.options].some(o => o.value === stored)) return;
                 select.value = stored;
@@ -101,6 +123,11 @@ const labelsById = Object.fromEntries(CODE_LANGUAGES.map(({ id, label }) => [id,
             };
             document.addEventListener('click', mirror);
             document.addEventListener('keyup', mirror);
+
+            // Starlight has restored the stored language in every tab set by now, as the page was parsed. The web
+            // fonts change the tabs' widths once they are in.
+            revealSelectedTabs();
+            void document.fonts.ready.then(revealSelectedTabs);
         }
     }
 

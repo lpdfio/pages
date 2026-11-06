@@ -115,6 +115,26 @@ await File.WriteAllBytesAsync("brochure.pdf", pdf);
 ```
 :::
 
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+import io.lpdf.RenderOptions;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+
+byte[] pdf = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))))
+    .loadProfile("press", Files.readAllBytes(Path.of("profiles/printer-coated.icc")))
+    .render(xml, new RenderOptions().createdOn(Instant.now().toString()));
+
+Files.write(Path.of("brochure.pdf"), pdf);
+```
+
+Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/X refuses.
+:::
+
 In .NET a `src` is read through the engine's `SrcFallback`, as a font's is. A document built in code declares the profile in its assets and asks for PDF/X in its `output`: `assets: { profiles: [{ name: 'press', src }] }` and `output: { pdfx: '4', profile: 'press' }` in Node.js, `DocumentAssets` with `ProfileAttr` and `DocumentOutput` in the other SDKs, where .NET names it `PdfX`.
 
 ## Bleed

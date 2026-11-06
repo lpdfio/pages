@@ -43,4 +43,10 @@ export const CODE_LANGUAGES: CodeLanguage[] = [
         github: 'https://github.com/lpdfio/lpdf-dotnet',
         registry: { name: 'NuGet', url: 'https://www.nuget.org/packages/Lpdfio.Lpdf' },
     },
+    {
+        id: 'java',
+        label: 'Java',
+        github: 'https://github.com/lpdfio/lpdf-java',
+        registry: { name: 'Maven Central', url: 'https://central.sonatype.com/artifact/io.lpdf/lpdf' },
+    },
 ];

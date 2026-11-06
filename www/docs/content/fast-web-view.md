@@ -25,7 +25,7 @@ It is an attribute of [`output`](?p=xml/elements#output), the element of `docume
 
 It combines with every other attribute of `output`: a file can be [encrypted](?p=encryption), [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and linearized too.
 
-A document built in code asks for it in its `output`, as a boolean: `output: { linearize: true }` in Node.js, and `DocumentOutput` in the other SDKs, with `Linearize = true` in .NET, `linearize: true` in PHP and `linearize=True` in Python.
+A document built in code asks for it in its `output`, as a boolean: `output: { linearize: true }` in Node.js, and `DocumentOutput` in the other SDKs, with `Linearize = true` in .NET, `linearize: true` in PHP, `linearize=True` in Python and `new DocumentOutput().linearize(true)` in Java.
 
 ## What changes in the file
 

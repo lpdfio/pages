@@ -98,11 +98,29 @@ await File.WriteAllBytesAsync("invoice.pdf", pdf);
 .NET reads a `src` only through the engine's `SrcFallback`, as it does an image's: `L.Engine(new() { SrcFallback = File.ReadAllBytes })`. Without one, a file with a `src` that was not loaded is an error that says so.
 :::
 
-A document built in code lists its files in `attachments`, a list of `FileAttr` with the attributes of `file`: `attachments: [{ name: 'invoice.xml', mime: 'text/xml', relationship: FileRelationship.Data }]` in Node.js, `Attachments` in .NET. `FileRelationship` holds the five relationships.
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+byte[] pdf = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))))
+    .loadFile("invoice.xml", Files.readAllBytes(Path.of("data/invoice-2026-0412.xml")))
+    .render(xml);
+
+Files.write(Path.of("invoice.pdf"), pdf);
+```
+
+Java reads a `src` only through the engine's `srcFallback`, as it does an image's: here it reads `terms.pdf`. Without one, a file with a `src` that was not loaded is an error that says so.
+:::
+
+A document built in code lists its files in `attachments`, a list of `FileAttr` with the attributes of `file`: `attachments: [{ name: 'invoice.xml', mime: 'text/xml', relationship: FileRelationship.Data }]` in Node.js, `Attachments` in .NET, `attachments(List.of(…))` on `DocumentAttr` in Java. `FileRelationship` holds the five relationships.
 
 ## Size and memory
 
-A file has no size limit of its own: its bytes count toward the render's [memory cap](?p=install#memory-limit), 1024 MB unless the engine sets another. In the .NET, PHP and Python SDKs the bytes travel to the engine as base64 in a JSON request, so a large file costs several times its size in memory while it renders, and each copy counts toward the cap: the request, the bytes the engine decodes and the PDF that holds them. The SDK holds the request and the PDF sent back besides. Node.js hands the bytes to the engine directly, before the render, so only the PDF that holds them counts.
+A file has no size limit of its own: its bytes count toward the render's [memory cap](?p=install#memory-limit), 1024 MB unless the engine sets another. In the .NET, PHP, Python and Java SDKs the bytes travel to the engine as base64 in a JSON request, so a large file costs several times its size in memory while it renders, and each copy counts toward the cap: the request, the bytes the engine decodes and the PDF that holds them. The SDK holds the request and the PDF sent back besides. Node.js hands the bytes to the engine directly, before the render, so only the PDF that holds them counts.
 
 ## Encryption, PDF/A and PDF/X
 

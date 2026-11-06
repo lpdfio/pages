@@ -5,7 +5,9 @@
 // on a script. Starlight renders this in the header and again in the phone menu.
 import { Icon } from '@astrojs/starlight/components';
 import { CODE_LANGUAGES, CODE_LANG_STORAGE_KEY } from '../code-languages';
-// Registry marks from Simple Icons (CC0), unmodified.
+// Registry marks from Simple Icons, unmodified: CC0, except Packagist's (MIT) and Apache Maven's (Apache-2.0), which
+// stands for Maven Central.
+import MavenIcon from '../icons/apachemaven.svg';
 import NpmIcon from '../icons/npm.svg';
 import NuGetIcon from '../icons/nuget.svg';
 import PackagistIcon from '../icons/packagist.svg';
@@ -16,6 +18,7 @@ const REGISTRY_ICONS: Record<string, typeof NpmIcon> = {
     NuGet: NuGetIcon,
     Packagist: PackagistIcon,
     PyPI: PyPIIcon,
+    'Maven Central': MavenIcon,
 };
 const firstLabel = CODE_LANGUAGES[0].label;
 ---

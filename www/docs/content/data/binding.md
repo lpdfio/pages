@@ -18,7 +18,7 @@ A layer reads single values, so `data-source` is not allowed on its elements: ev
 
 ## Passing data
 
-The data is a plain object (a dictionary in Python, an array or object in PHP, any object in .NET) that the SDK sends to the engine as JSON. It is an option of the `render` call, and it applies only when you render XML.
+The data is a plain object (a dictionary in Python, an array or object in PHP, any object in .NET, maps, lists and records in Java) that the SDK sends to the engine as JSON. It is an option of the `render` call, and it applies only when you render XML.
 
 ::: sdk js
 
@@ -91,6 +91,28 @@ var data = new {
 
 var pdf = engine.Render(xml, new RenderOptions { Data = data });
 ```
+
+:::
+
+::: sdk java
+
+```java
+import io.lpdf.RenderOptions;
+import java.util.List;
+import java.util.Map;
+
+byte[] pdf = engine.render(xml, new RenderOptions().data(Map.of(
+    "invoice_number", "INV-2026-001",
+    "customer", Map.of("name", "Acme Inc", "address", "123 Main St"),
+    "items", List.of(
+        Map.of("description", "Consulting", "price", "$1,200.00"),
+        Map.of("description", "Support",    "price", "$400.00")
+    ),
+    "total", "$1,600.00"
+)));
+```
+
+Data that is JSON text already, such as a file's or a request body's, goes to the engine as it is with `dataJson(…)` in place of `data(…)`.
 
 :::
 

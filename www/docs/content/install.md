@@ -1,8 +1,8 @@
 # Installation
 
-Lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, to a WASI binary for PHP, Python, and .NET, and to a native library for PHP on Linux.
+Lpdf generates PDF from XML, or from code that builds the same document. One engine runs in every SDK, so the output is identical on every platform. It is compiled to WebAssembly for Node.js and the browser, to a WASI binary for PHP, Python, .NET, and Java (Java runs it compiled to JVM classes), and to a native library for PHP on Linux.
 
-The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code, in a tab for each language, as under *Create PDF with code*. The builders are the same in every language: the same elements, the same attributes under the schema's names, and the same constants, written in each language's own case (`fontSize` in Node.js and PHP, `font_size` in Python, `FontSize` in .NET).
+The examples in these docs are XML, and they work in every language: pass the XML to `render`, as under *Create PDF* below. Most examples also show the same document built in code, in a tab for each language, as under *Create PDF with code*. The builders are the same in every language: the same elements, the same attributes under the schema's names, and the same constants, written in each language's own case (`fontSize` in Node.js, PHP and Java, `font_size` in Python, `FontSize` in .NET).
 
 ::: sdk js
 
@@ -355,6 +355,117 @@ The first two numbers are the Lpdf engine, and the last number counts changes to
 
 :::
 
+::: sdk java
+
+## Requirements
+
+- Java 17 or later
+- No native code: the engine is compiled to JVM classes inside the jar, and runs on [Endive](https://github.com/bytecodealliance/endive), a WebAssembly runtime written in Java, which Maven or Gradle installs with the SDK
+
+## Install
+
+Maven, with the newest version on [Maven Central](https://central.sonatype.com/artifact/io.lpdf/lpdf) in place of `VERSION`:
+
+```xml
+<dependency>
+  <groupId>io.lpdf</groupId>
+  <artifactId>lpdf</artifactId>
+  <version>VERSION</version>
+</dependency>
+```
+
+Gradle:
+
+```kotlin
+implementation("io.lpdf:lpdf:VERSION")
+```
+
+## Create PDF
+
+```java
+import io.lpdf.L;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class Hello {
+    public static void main(String[] args) throws Exception {
+        var xml = """
+            <lpdf version="1">
+              <document size="a4">
+                <section>
+                  <layout margin="48pt">
+                    <column gap="m">
+                      <text font-size="xl">Hello, world</text>
+                      <text>This PDF was made with Lpdf.</text>
+                    </column>
+                  </layout>
+                </section>
+              </document>
+            </lpdf>
+            """;
+
+        var engine = L.engine();
+        byte[] pdf = engine.render(xml);
+        Files.write(Path.of("hello.pdf"), pdf);
+    }
+}
+```
+
+To render a file, read it into a string with `Files.readString(Path.of("document.xml"))` and pass that to `render`.
+
+## Create PDF with code
+
+The same document, built with `L` instead of written as XML. `render` takes either one and makes the same PDF.
+
+```java
+import io.lpdf.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import static io.lpdf.L.NoAttr;
+
+public class Hello {
+    public static void main(String[] args) throws Exception {
+        var doc = L.document(new DocumentAttr().size("a4"), List.of(
+            L.section(NoAttr, List.of(
+                L.layout(new LayoutAttr().margin("48pt"), List.of(
+                    L.column(new ColumnAttr().gap("m"), List.of(
+                        L.text(new TextAttr().fontSize("xl"), List.of("Hello, world")),
+                        L.text(NoAttr, List.of("This PDF was made with Lpdf."))
+                    ))
+                ))
+            ))
+        ));
+
+        var engine = L.engine();
+        byte[] pdf = engine.render(doc);
+        Files.write(Path.of("hello.pdf"), pdf);
+    }
+}
+```
+
+An attribute class sets each attribute with a method of its name, `new TextAttr().fontSize("xl")`, which returns the object, so the calls chain. Each method takes the attribute's type, such as `bold(true)` or `cols(3)`, so a value of another type doesn't compile.
+
+## Threads
+
+`render` runs on the caller's thread and returns the PDF's bytes. An engine can be shared by every thread: each render runs in an instance of the engine of its own, so renders on several threads run in parallel.
+
+## Versioning
+
+The first two numbers are the Lpdf engine, and the last number counts changes to this package only. `0.33.2` runs engine `0.33`. Every engine release publishes all SDKs at `X.Y.0`, so the same `X.Y` means the same engine in every language. To stay on one engine and still get package fixes, use a version range:
+
+```xml
+<dependency>
+  <groupId>io.lpdf</groupId>
+  <artifactId>lpdf</artifactId>
+  <version>[0.33.0,0.34.0)</version>
+</dependency>
+```
+
+Gradle takes the same range: `implementation("io.lpdf:lpdf:[0.33.0,0.34.0)")`.
+
+:::
+
 ## Time limit
 
 A render stops after 5 seconds with the SDK's render error, which names the limit: `The render timed out after 5 seconds.` A PDF renders in milliseconds, so a render that runs that long is a document far larger than usual or a fault in the engine, and stopping it frees the thread or the process it held. `timeout` on the engine sets another limit, in seconds, and `timeout: 0` sets none. A render stopped at its limit leaves the engine as it was, and the next render runs as usual.
@@ -408,9 +519,21 @@ var engine = L.Engine(new EngineOptions { Timeout = 60 });
 At its limit the render throws an `EngineException`. Renders on other threads go on.
 :::
 
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+
+var engine = L.engine(new EngineOptions().timeout(60));
+```
+
+At its limit the engine interrupts the thread the render runs on, and the render throws an `EngineException`. Renders on other threads go on.
+:::
+
 ## Memory limit
 
-A render may allocate 1024 MB, which holds thousands of pages of text and tables. One that needs more stops with the SDK's render error, which names the cap: `the render needs more memory than its cap of 1024 MB: raise the cap in the engine's options, or render the document in smaller parts`. What counts is what the render allocates, the data it binds included. In the .NET, PHP and Python SDKs the fonts, images and files sent with a render count too; in JavaScript what is loaded on the engine before the render doesn't. There is no limit on the size of the XML or of a document built in code. `maxMemoryMb` on the engine sets another cap, a whole number of megabytes from 1 to 4096: lower in a small container, higher for a big document on a machine with the memory for it. 4096 is the most the engine can address as a 32-bit WebAssembly module, and PHP's native library keeps the same range. A render stopped at its cap leaves the engine as it was, and the next render runs as usual.
+A render may allocate 1024 MB, which holds thousands of pages of text and tables. One that needs more stops with the SDK's render error, which names the cap: `the render needs more memory than its cap of 1024 MB: raise the cap in the engine's options, or render the document in smaller parts`. What counts is what the render allocates, the data it binds included. In the .NET, PHP, Python and Java SDKs the fonts, images and files sent with a render count too; in JavaScript what is loaded on the engine before the render doesn't. There is no limit on the size of the XML or of a document built in code. `maxMemoryMb` on the engine sets another cap, a whole number of megabytes from 1 to 4096: lower in a small container, higher for a big document on a machine with the memory for it. 4096 is the most the engine can address as a 32-bit WebAssembly module, and PHP's native library keeps the same range. A render stopped at its cap leaves the engine as it was, and the next render runs as usual.
 
 If the engine crashes, by a fault in it or a render that runs out of memory before its cap stops it, the render fails with the same message in every SDK: `The engine crashed during the render. This is a bug in Lpdf, or the render ran out of memory before its cap stopped it: please report it with the document at https://github.com/lpdfio/lpdf/issues.` The next render runs on a fresh engine. PHP's native library is the exception, below.
 
@@ -463,8 +586,20 @@ var engine = L.Engine(new EngineOptions { MaxMemoryMb = 2048 });
 Past the cap the render throws an `EngineException`. After a crash its `InnerException` is the engine's trap.
 :::
 
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+
+var engine = L.engine(new EngineOptions().maxMemoryMb(2048));
+```
+
+Past the cap the render throws an `EngineException`. The engine's memory is part of the JVM's heap, so a render that fills the heap before it reaches the cap throws an `EngineException` too, which says so: give the JVM more heap with `-Xmx`, or set a lower cap. After a crash the exception's cause is the engine's trap.
+:::
+
 ## Images and fonts
 
-An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory. The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.
+An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory: Node.js, PHP and Python on their own, .NET and Java only through the engine's `SrcFallback` (`srcFallback` in Java), as under [Attachments](?p=attachments). The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.
 
 Asset names use lowercase letters, digits, and `-`, and start with a letter: `logo`, `serif-bold`.

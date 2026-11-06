@@ -39,18 +39,21 @@ const REFERENCE_SUFFIX = ' — Lpdf XML reference';
 
 // The sync key and labels are shared with src/components/code-lang-select.astro.
 const SYNC_KEY = 'lang';
-const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET' };
+const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET', java: 'Java' };
 
-// The languages the generated code is shown in, in tab order. The SDKs share one API: the attribute
-// classes and constants of each follow lpdf.xsd, so the code reads alike in every language. The generator
-// is checked against the SDKs by building the code it makes for every XML example in these docs and
-// rendering it to the same PDF as the XML. The generator's targets are js, php, python and dotnet; the
-// .NET code is highlighted as csharp.
+// The languages the generated code is shown in, in tab order: Node.js, Python, PHP, .NET and Java. The SDKs share
+// one API: the attribute classes and constants of each follow lpdf.xsd, so the code reads alike in every language.
+// The checks differ by language. scripts/check-codegen.mjs runs the JavaScript of every XML example in these docs
+// with the JS SDK and fails when it renders another PDF than the XML, on every `npm run check`. The Java was checked
+// the same way once, when its tab was added: compiled with `javac --release 17` against io.lpdf:lpdf 0.33.0 and
+// rendered with it. Nothing checks the Python, PHP or .NET code of these examples. The generator's targets are js,
+// python, php, dotnet and java; the .NET code is highlighted as csharp.
 const CODE_TABS = [
     { target: 'js', lang: 'js' },
     { target: 'python', lang: 'python' },
     { target: 'php', lang: 'php' },
     { target: 'dotnet', lang: 'csharp' },
+    { target: 'java', lang: 'java' },
 ];
 
 let codegenLoad;

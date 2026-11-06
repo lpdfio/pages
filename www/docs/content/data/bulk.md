@@ -86,7 +86,7 @@ The container:
 - sits directly in the layout of a section: not in a column, a row, a cell, a region or another container.
 - has no `data-source` of its own, and exactly one child with it, the template. Its other children, such as a header row, a total row or an item before the records, keep the same rules as a record.
 - takes its height from its records: it has no `height`.
-- as a table, sets its `cols` in `fr`, `pt` or `%`. A column of `auto` width would need every record first.
+- as a table, sets its `cols` in `fr`, a length (`pt`, `mm` or `in`) or `%`. A column of `auto` width would need every record first.
 - has no `paginate`, and neither has anything in it.
 
 Each record, and each of the container's other children:

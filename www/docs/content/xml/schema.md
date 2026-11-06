@@ -63,19 +63,21 @@ Set on `document`, and overridden per `section`, with `size`. Without one, a doc
 | `a4`     | 210 × 297 mm      |
 | `a5`     | 148 × 210 mm      |
 
-Custom: `size="200pt 300pt"`, the width then the height, both in `pt`. `orientation="landscape"` swaps the two.
+Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`. `orientation="landscape"` swaps the two.
 
 ## Units
 
-Lengths are in points (`pt`, 1/72 in). Where other units work depends on the attribute:
+A length is a number and a unit: `pt` (a point, 1/72 in), `mm` or `in`. Every attribute that takes a length takes all three, and no other unit: `cm`, `px`, `em` and `%` stop the engine with an error that names the units. Millimetres and inches are worked out to points, so `1in` is `72pt`. A bare `0` needs no unit; write the unit on every other length.
 
 | Where | Accepts |
 |-------|---------|
-| Layout lengths: `gap`, `padding`, `margin`, `width`, `height`, `font-size`, `radius`, `thickness`, `toc-indent-step` | `pt` or a [token](#tokens) name |
-| Layer positions and sizes: `x` `y` `width` `height` `r` `rx` `ry` `x1`…`y2`, and a layer's `radius` and `stroke-width` | `pt`, `mm` or `in` |
-| Table `cols` | `fr`, `pt` or `%` |
+| Layout lengths: `gap`, `padding`, `margin`, `width`, `height`, `font-size`, `radius`, `thickness`, `toc-indent-step`, the thickness of a `border`, the `col-width` of a grid | a length, or a [token](#tokens) name |
+| The six values of a [token](#tokens) row | a length |
+| A custom page `size`, such as `"210mm 297mm"` | two lengths |
+| Layer positions and sizes: `x` `y` `width` `height` `r` `rx` `ry` `x1`…`y2`, and a layer's `radius` and `stroke-width` | a length |
+| Table `cols` | `fr`, a length, `%` or `auto` |
 
-Layout lengths do not take `mm`, `in`, `px` or `%`: the engine stops with an "invalid space value" or "invalid width value" error. A layer's `x`, `y` and the line ends are signed, so they accept negative numbers: `-18pt`.
+A length in another unit is an error that says what it expects: `invalid space value: '2cm': expected a slot from xs to xxl or a length in pt, mm or in`. A layer's `x`, `y` and the line ends are signed, so they accept negative numbers: `-18pt`.
 
 ## Tokens
 
@@ -117,7 +119,7 @@ To change a scale, or to name colors, gradients or rulings, add `tokens` before 
 </lpdf>
 ```
 
-The scale elements are `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` and `line-height`. A `line-height` row takes factors, not `pt` values: `<line-height xs="1.0" s="1.1" m="1.2" l="1.4" xl="1.6" xxl="2.0"/>`, and in code the factors are numbers: `lineHeight: { xs: 1, s: 1.1, m: 1.2, l: 1.4, xl: 1.6, xxl: 2 }`. A color named `text` becomes the default text color.
+The scale elements are `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` and `line-height`. A `line-height` row takes factors, not lengths: `<line-height xs="1.0" s="1.1" m="1.2" l="1.4" xl="1.6" xxl="2.0"/>`, and in code the factors are numbers: `lineHeight: { xs: 1, s: 1.1, m: 1.2, l: 1.4, xl: 1.6, xxl: 2 }`. A color named `text` becomes the default text color.
 
 ## Aliases
 
@@ -148,7 +150,7 @@ An alias names a slot, not a row, so every row shares it: `caption` is the text 
 
 A name is lowercase letters, digits and `-`, and starts with a letter. It cannot be `xs`, `s`, `m`, `l`, `xl`, `xxl`, `fill` or `full`, which mean something already. Its `value` is a slot, not another alias, and a name defined twice is an error.
 
-**The engine catches a mistyped name, not the schema.** An attribute that takes a slot accepts any name, so checking a document against the schema no longer flags `gap="medum"`. The engine stops on it and says what it expects: `invalid space value: 'medum': expected a slot from xs to xxl, an alias (body, caption) or a pt value`.
+**The engine catches a mistyped name, not the schema.** An attribute that takes a slot accepts any name, so checking a document against the schema no longer flags `gap="medum"`. The engine stops on it and says what it expects: `invalid space value: 'medum': expected a slot from xs to xxl, an alias (body, caption) or a length in pt, mm or in`.
 
 ## Colors
 
@@ -300,11 +302,12 @@ Graph paper in two sets, and ruled paper:
 
 ## BorderValue format
 
-A border is a thickness and a color, separated by a space. The thickness is a token or a `pt` value:
+A border is a thickness and a color, separated by a space. The thickness is a token or a length in `pt`, `mm` or `in`:
 
 ```
 "s #cccccc"          ← token thickness + hex color
 "1.5pt #333333"      ← pt thickness + hex color
+"0.4mm #333333"      ← mm thickness + hex color
 "m brand"            ← token thickness + color token
 "s cmyk(0 0 0 40)"   ← token thickness + any other form of a color
 ```

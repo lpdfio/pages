@@ -13,12 +13,12 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —       | Section title. Accepted, but not used: the PDF's outline takes its entries from [bookmarks](?p=doc/layout/bookmark) |
 | `type`        | string  | —       | `toc` makes the section the document's [table of contents](?p=doc/toc) |
-| `toc-indent-step` | token/pt | `12pt` | In a table of contents, the indent for each level below the first |
+| `toc-indent-step` | token/length | `12pt` | In a table of contents, the indent for each level below the first |
 | `page-start`  | whole number | — | The number of the section's first page, which starts a new run of pages: `1` restarts the count. 1 or more. See [Page numbers](#page-numbers) |
 | `page-format` | string  | the section before's | How the page numbers are written: `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman` or `upper-roman`. The first section's are decimal |
 | `page-prefix` | string  | the section before's | Text before the page numbers, such as `A-`. `""` takes it away |
 | `columns`     | whole number | 1 | Sets the flow in this many columns, from 1 to 12. See [Columns](#columns) |
-| `column-gap`  | token/pt | `l`    | The space between two columns, as `gap` takes it |
+| `column-gap`  | token/length | `l`    | The space between two columns, as `gap` takes it |
 | `column-rule` | border  | —       | A line in the middle of each gap, as `border` takes it: `0.5pt #cccccc` |
 | `column-fill` | string  | `auto`  | How the columns of the last page fill: `auto`, in order, or `balance`, levelled. CSS's default is `balance` |
 | `debug`       | boolean | false   | Render layout boxes for debugging |

@@ -4,32 +4,32 @@
         "description": "Install the Lpdf engine from npm, NuGet, Packagist, PyPI or Maven Central, then create a PDF from XML or code in Node.js, .NET, PHP, Python or Java."
     },
     "examples/admission-letter": {
-        "title": "Admission letter PDF in XML, Node.js, .NET, PHP, Python",
-        "description": "A one-page admission letter PDF on a university letterhead, with a crest drawn in a layer. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Admission letter PDF template in XML, for every Lpdf SDK",
+        "description": "A one-page admission letter PDF on a university letterhead, with a crest drawn in a layer. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/resume": {
-        "title": "Résumé PDF template in XML, Node.js, .NET, PHP and Python",
-        "description": "A one-page résumé PDF with colours and sizes named once as tokens, two columns and wrapping tags. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Résumé PDF template in XML, for every Lpdf SDK",
+        "description": "A one-page résumé PDF: colours and sizes named once as tokens, two columns and wrapping tags. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/invoice": {
-        "title": "Invoice PDF template in XML, Node.js, .NET, PHP and Python",
-        "description": "A two-page invoice PDF filled from JSON: a repeating table, totals, a QR code and page numbers. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Invoice PDF template in XML, for every Lpdf SDK",
+        "description": "An invoice PDF filled from JSON: a repeating table, totals, a QR code and page numbers. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/report": {
-        "title": "Report PDF template in XML, Node.js, .NET, PHP and Python",
-        "description": "A data-driven report PDF on data centers: tables across pages, charts and a tabloid world map. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Report PDF template in XML, for every Lpdf SDK",
+        "description": "A data-driven report PDF on data centers: tables across pages, charts and a world map. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/installment-contract": {
-        "title": "Installment contract PDF in XML, Node.js, .NET, PHP, Python",
-        "description": "A four-page installment contract PDF: boxed forms, leader lines and a rotated SAMPLE watermark. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Installment contract PDF template in XML, for every Lpdf SDK",
+        "description": "An installment contract PDF: boxed forms, leader lines and a rotated SAMPLE watermark. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/brochure": {
-        "title": "Brochure PDF template in XML, Node.js, .NET, PHP and Python",
-        "description": "A two-page landscape brochure PDF where layers are the design, with embedded fonts and a QR code. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Brochure PDF template in XML, for every Lpdf SDK",
+        "description": "A landscape brochure PDF where layers are the design, with embedded fonts and a QR code. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "examples/book": {
-        "title": "Book PDF template in XML, Node.js, .NET, PHP and Python",
-        "description": "A pocket book PDF of Alice's Adventures in Wonderland, all twelve chapters with plates. Get the XML and render it from Node.js, .NET, PHP or Python."
+        "title": "Book PDF template in XML, for every Lpdf SDK",
+        "description": "A pocket book PDF of Alice's Adventures in Wonderland, all twelve chapters with plates. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
     },
     "doc/section": {
         "description": "The section element in Lpdf XML: a run of pages with its own size, orientation and background that holds layers and one layout and paginates on its own."

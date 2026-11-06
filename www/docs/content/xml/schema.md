@@ -49,7 +49,7 @@ Each attribute has the type the schema gives it, and the engine checks every att
 
 A value that is not of its type is an error that names the element, the attribute and the type, such as `<grid> at line 12, col 9: cols must be a whole number from 1 to 12, not "x"`. So is an attribute the element doesn't have, which lists the ones it has: `<gradient> at line 4, col 7: unknown attribute 'agle' — expected name, type, from, to, angle`. The `data-*` attributes of [data binding](?p=data/binding) and the namespaced ones that point an editor at the schema, such as `xsi:noNamespaceSchemaLocation`, are left out of the check.
 
-In code, the attribute objects of each SDK take the same types: `bold: true`, a grid's `cols: 3`, `opacity: 0.5`, and `lineHeight: 1.5` or `'m'`. TypeScript and C# refuse a value of another type when they compile, and the engine refuses it when it renders for Python and plain JavaScript, with the same error as for the XML. PHP refuses it when the object is made, but in a file without `declare(strict_types=1)` it first converts what it can, so `bold: 'false'` becomes `true`.
+In code, the attribute objects of each SDK take the same types: `bold: true`, a grid's `cols: 3`, `opacity: 0.5`, and `lineHeight: 1.5` or `'m'`. TypeScript, C# and Java refuse a value of another type when they compile, and the engine refuses it when it renders for Python and plain JavaScript, with the same error as for the XML. PHP refuses it when the object is made, but in a file without `declare(strict_types=1)` it first converts what it can, so `bold: 'false'` becomes `true`.
 
 ## Page sizes
 

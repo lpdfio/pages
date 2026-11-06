@@ -124,6 +124,25 @@ await File.WriteAllBytesAsync("report.pdf", pdf);
 ```
 :::
 
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+import io.lpdf.RenderOptions;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+
+byte[] pdf = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))))
+    .render(xml, new RenderOptions().createdOn(Instant.now().toString()));
+
+Files.write(Path.of("report.pdf"), pdf);
+```
+
+Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/A refuses.
+:::
+
 A document built in code asks for PDF/A in its `output` too: `output: { pdfa: '2u' }` in Node.js, `DocumentOutput` in the other SDKs, where .NET names it `PdfA`.
 
 ## Errors

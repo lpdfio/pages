@@ -22,7 +22,7 @@ Some content belongs on screen and not on paper, or the other way round: a "Pay 
 |-----------|------|---------|-------------|
 | `ocg` | string | — | `print`: the element and everything in it are printed and not shown on screen. `screen`: shown on screen and not printed. Any other value is an error that names it |
 
-It goes on the elements that draw: `column`, `row`, `grid`, `frame`, `list`, `li`, `code`, `link`, `text`, `img`, `barcode`, `shape`, `divider`, `field`, a `table` with its `thead`, `tr` and `td`, a [`layer`](?p=doc/layer), and each element a layer draws. A `region`, a `markdown`, a `section` and the parts of a text (`span`, `code-span`, `fn`) take none: put it on the elements a region holds, or on the text a span is in. A document built in code sets it as it sets any other attribute: `ocg: 'print'` in Node.js and PHP, `Ocg = "print"` in .NET and `ocg="print"` in Python.
+It goes on the elements that draw: `column`, `row`, `grid`, `frame`, `list`, `li`, `code`, `link`, `text`, `img`, `barcode`, `shape`, `divider`, `field`, a `table` with its `thead`, `tr` and `td`, a [`layer`](?p=doc/layer), and each element a layer draws. A `region`, a `markdown`, a `section` and the parts of a text (`span`, `code-span`, `fn`) take none: put it on the elements a region holds, or on the text a span is in. A document built in code sets it as it sets any other attribute: `ocg: 'print'` in Node.js and PHP, `Ocg = "print"` in .NET, `ocg="print"` in Python and `ocg("print")` in Java.
 
 ## In a group
 

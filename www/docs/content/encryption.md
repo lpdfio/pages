@@ -119,13 +119,27 @@ await File.WriteAllBytesAsync("secret.pdf", pdf);
 ```
 :::
 
+::: sdk java
+
+```java
+import io.lpdf.L;
+import io.lpdf.RenderOptions;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+byte[] pdf = L.engine().render(xml, new RenderOptions().userPassword("open-sesame").ownerPassword("owner-secret"));
+
+Files.write(Path.of("secret.pdf"), pdf);
+```
+:::
+
 `xml` is a document whose `output` asks for encryption, as under *Create PDF* in [Installation](?p=install). A document built in code says it in its `output` too: `output: { encrypt: 'aes-256', allow: 'print' }` in Node.js, `DocumentOutput` in the other SDKs, with the constants `Cipher` and `Permission` for the values.
 
 ## Render without the passwords
 
 A render that cannot have the passwords, such as a preview, asks by name to skip the encryption, and gets the PDF unencrypted. Without it, a document that asks for encryption and gets no owner password is an error, so encryption is never skipped by omission.
 
-- In the SDKs, `skipEncryption: true` in Node.js and PHP, `skip_encryption=True` in Python, `SkipEncryption = true` in .NET, on the same options as the passwords.
+- In the SDKs, `skipEncryption: true` in Node.js and PHP, `skip_encryption=True` in Python, `SkipEncryption = true` in .NET, `skipEncryption(true)` in Java, on the same options as the passwords.
 - On the command line, `lpdf convert` and `lpdf benchmark` take `--skip-encryption`. They take no passwords: a password on the command line shows to anyone on the machine.
 - The VS Code preview and the playground on lpdf.io skip it and say so. In VS Code, **Export PDF** asks for the passwords.
 

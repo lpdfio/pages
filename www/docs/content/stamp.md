@@ -101,11 +101,36 @@ await File.WriteAllBytesAsync("contract-signed.pdf", signed);
 ```
 :::
 
-`stamp` blocks as `render` does: in Node.js it returns a promise and runs on the render worker, with the engine's `timeout` and `maxMemoryMb`; in .NET, PHP and Python it returns the bytes on the calling thread.
+::: sdk java
+
+```java
+import io.lpdf.L;
+import io.lpdf.StampAttr;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+var engine = L.engine().setLicenseKey(System.getenv("LPDF_LICENSE_KEY"));
+
+byte[] contract = Files.readAllBytes(Path.of("contract.pdf"));
+byte[] signature = Files.readAllBytes(Path.of("buyer-signature.png"));
+byte[] initials = Files.readAllBytes(Path.of("buyer-initials.png"));
+byte[] seal = Files.readAllBytes(Path.of("company-seal.png"));
+
+byte[] signed = engine.stamp(contract, List.of(
+    new StampAttr().image(signature).page("last").x("72pt").y("640pt").width("144pt").height("36pt").justify("end"),
+    new StampAttr().image(initials).page("1-2").anchor("bottom-right").x("-36pt").y("-36pt").width("60pt").height("24pt"),
+    new StampAttr().image(seal).page("each").anchor("top-right").x("-36pt").y("36pt").width("72pt").height("72pt").maxGrow(1.5)
+));
+Files.write(Path.of("contract-signed.pdf"), signed);
+```
+:::
+
+`stamp` blocks as `render` does: in Node.js it returns a promise and runs on the render worker, with the engine's `timeout` and `maxMemoryMb`; in .NET, PHP, Python and Java it returns the bytes on the calling thread.
 
 ## Options of a stamp
 
-The names are written in each language's case: `maxGrow` in Node.js and PHP, `MaxGrow` in .NET, `max_grow` in Python.
+The names are written in each language's case: `maxGrow` in Node.js, PHP and Java, `MaxGrow` in .NET, `max_grow` in Python.
 
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|

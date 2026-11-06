@@ -102,7 +102,7 @@ The invoice can carry more files: a delivery note, a timesheet, the same invoice
 </lpdf>
 ```
 
-A document built in code sets it in its `output`: `facturxStrict` in Node.js and PHP, `FacturXStrict` in .NET and `facturx_strict` in Python.
+A document built in code sets it in its `output`: `facturxStrict` in Node.js, PHP and Java, `FacturXStrict` in .NET and `facturx_strict` in Python.
 
 ## In code
 
@@ -166,6 +166,26 @@ var pdf = engine.Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.
 
 await File.WriteAllBytesAsync("invoice-2026-0412.pdf", pdf);
 ```
+:::
+
+::: sdk java
+
+```java
+import io.lpdf.EngineOptions;
+import io.lpdf.L;
+import io.lpdf.RenderOptions;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+
+byte[] pdf = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))))
+    .loadFile("factur-x.xml", Files.readAllBytes(Path.of("data/invoice-2026-0412.xml")))
+    .render(xml, new RenderOptions().createdOn(Instant.now().toString()));
+
+Files.write(Path.of("invoice-2026-0412.pdf"), pdf);
+```
+
+Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
 ## Errors

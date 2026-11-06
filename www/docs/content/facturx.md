@@ -160,12 +160,14 @@ Path('invoice-2026-0412.pdf').write_bytes(pdf)
 using Lpdf;
 using Lpdf.Engine;
 
-using var engine = L.Engine();
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 engine.LoadFile("factur-x.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
 var pdf = engine.Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
 
 await File.WriteAllBytesAsync("invoice-2026-0412.pdf", pdf);
 ```
+
+.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
 ::: sdk java

@@ -107,12 +107,14 @@ Path('brochure.pdf').write_bytes(pdf)
 using Lpdf;
 using Lpdf.Engine;
 
-var pdf = L.Engine()
+var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
     .LoadProfile("press", File.ReadAllBytes("profiles/printer-coated.icc"))
     .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
 
 await File.WriteAllBytesAsync("brochure.pdf", pdf);
 ```
+
+.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/X refuses.
 :::
 
 ::: sdk java
@@ -135,7 +137,7 @@ Files.write(Path.of("brochure.pdf"), pdf);
 Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/X refuses.
 :::
 
-In .NET a `src` is read through the engine's `SrcFallback`, as a font's is. A document built in code declares the profile in its assets and asks for PDF/X in its `output`: `assets: { profiles: [{ name: 'press', src }] }` and `output: { pdfx: '4', profile: 'press' }` in Node.js, `DocumentAssets` with `ProfileAttr` and `DocumentOutput` in the other SDKs, where .NET names it `PdfX`.
+A document built in code declares the profile in its assets and asks for PDF/X in its `output`: `assets: { profiles: [{ name: 'press', src }] }` and `output: { pdfx: '4', profile: 'press' }` in Node.js, `DocumentAssets` with `ProfileAttr` and `DocumentOutput` in the other SDKs, where .NET names it `PdfX`.
 
 ## Bleed
 

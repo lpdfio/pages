@@ -64,6 +64,12 @@ lpdf-demo {
 .lpdf-mode-cluster {
     display: flex;
     gap: 2px;
+    /* On a phone the tabs are wider than the header, so they scroll sideways in it instead of running off its edge.
+       The padding keeps the buttons' focus ring inside the scrolling box, which clips what is outside it. */
+    min-width: 0;
+    padding: 4px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
 }
 
 .lpdf-select {
@@ -204,6 +210,7 @@ lpdf-demo {
     font-family: inherit;
     transition: background .1s, color .1s;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .lpdf-mode-btn:hover:not(:disabled) {

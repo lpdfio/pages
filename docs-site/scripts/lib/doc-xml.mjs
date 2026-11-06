@@ -177,7 +177,8 @@ export function wrap(xml)
     if (!first) return { skip: 'not XML' };
     if (xml.includes('…')) return { skip: 'has an ellipsis' };
     if (first.tag === 'assets' || first.tag === 'tokens') return { skip: `starts with ${first.tag}` };
-    if (first.tag === 'PackageReference') return { skip: 'not lpdf XML' };
+    // A package reference of .NET's project file or of Maven's pom.xml.
+    if (first.tag === 'PackageReference' || first.tag === 'dependency') return { skip: 'not lpdf XML' };
     if (/<markdown-styles\b[^>]*\bsrc=/.test(xml)) return { skip: 'names a file of rules, which the check does not load' };
 
     const images = PLACEHOLDER_IMAGES.map(n => `<image name="${n}"/>`).join('');

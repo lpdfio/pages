@@ -87,13 +87,15 @@ ignored by git:
 - `?p=doc/layout/row` links become `/docs/doc/layout/row/`.
 - `::: sdk js ... :::` sections become Starlight tabs. Those pages become `.mdx`. Headings inside tabs move
   two levels down, so they stay out of "On this page".
-- Each XML block becomes tabs: XML and Node.js. The code is generated at build time by the engine's own
-  generator, the WASM build in `../www/assets/js/lpdf-demo` that the demo on the site runs in the browser. Only
-  Node.js is shown (`CODE_TABS` in the script): the generator's PHP, Python and .NET output mostly does not build
-  against the published SDKs, so it is left out until it does. A block stays XML only when the generator cannot
-  express it: an element it does not know (full documents, assets), data binding (it leaves TODO comments), text
-  over several lines (a broken string), several root elements, or a `link` or `field` (the SDKs name those
-  arguments differently). The sync lists these blocks every time it runs.
+- Each XML block becomes tabs: XML, then the same document built in code in Node.js, Python, PHP, .NET and Java
+  (`CODE_TABS` in the script). The code is generated at build time by the engine's own generator, the WASM build in
+  `../www/assets/js/lpdf-demo` that the demo on the site runs in the browser. The checks differ by language:
+  `npm run check` runs the JavaScript of every example with the JS SDK and fails when it renders another PDF than
+  the XML (*Checking the examples*). The Java was checked the same way once, when its tab was added: compiled with
+  `javac --release 17` against `io.lpdf:lpdf` 0.33.0 and rendered with it. Nothing checks the Python, PHP or .NET
+  code of the examples. A block stays XML only when the generator cannot express it in one of the languages: an
+  element it does not know (full documents, assets), data binding (it leaves TODO comments), or several root
+  elements. The sync lists these blocks every time it runs.
 - Standalone `---` lines are dropped, since the old docs page hid them.
 
 All tabs share one sync key, so the language picked in the header picker, in any code block or on the
@@ -136,10 +138,10 @@ from the example with the engine in `../www/assets/js/lpdf-demo`, on every `npm 
 - `src/components/site-title.astro`: replaces Starlight's site title with the lpdf.io header lockup: the
   mark at 24px, "Lpdf" in Radley (`src/fonts`), a "Docs" label and the code language picker.
 - `src/components/code-lang-select.astro`: the picker. It switches Starlight's synced tabs. A link can open
-  the docs in a language with `?sdk=js` (or `php`, `python`, `dotnet`, `xml`), as lpdf.io's footer does.
+  the docs in a language with `?sdk=js` (or `php`, `python`, `dotnet`, `java`, `xml`), as lpdf.io's footer does.
 - `src/components/lang-links.astro`: replaces Starlight's social links with the picked language's registry
   and GitHub repository, or only the core repository for XML. Registry marks in `src/icons` are from Simple
-  Icons (CC0).
+  Icons, unmodified: CC0, except Packagist's (MIT) and Apache Maven's (Apache-2.0), which stands for Maven Central.
 - `src/code-languages.ts`: the languages in picker order, with their repository and registry links.
 - `engine.json` and `scripts/build-info.mjs`: the stamp in the header, like `v0.22-r0930.3`. The first part is
   the core the docs describe: `engine.json` is written by the Engine refresh workflow, or by `make stamp-pages-docs`

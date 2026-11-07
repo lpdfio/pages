@@ -67,7 +67,7 @@ Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height,
 
 ## Units
 
-A length is a number and a unit: `pt` (a point, 1/72 in), `mm` or `in`. Every attribute that takes a length takes all three, and no other unit: `cm`, `px` and `em` stop the engine with an error that names the units. (`%` is a unit of a table's `cols`, not of a length.) Millimeters and inches are worked out to points, so `1in` is `72pt`. Write the unit on every length; only `margin` and `padding` also take a bare `0`.
+A length is a number and a unit: `pt` (a point, 1/72 in), `mm` or `in`. Every attribute that takes a length takes all three, and no other unit: `cm`, `px` and `em` stop the engine with an error that names the units. (`%` is a unit of a table's `cols`, not of a length.) Millimeters and inches are worked out to points, so `1in` is `72pt`. Write the unit on every length. The one exception is `0`, which needs none: `0`, `0pt`, `0mm` and `0in` are the same length.
 
 | Where | Accepts |
 |-------|---------|

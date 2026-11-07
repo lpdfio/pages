@@ -258,7 +258,7 @@ markdown line 5: the footnote [^2] has no definition; define it with [^2]: and i
 
 ## In code
 
-The builders have a `markdown` that holds `styles` and `content`, and the rules are `LMarkdown.h1()`, `LMarkdown.quote()` and so on, in the language's case. A builder has no data binding, so the text is a string the program passes in. In Python the rule of struck-through text is `LMarkdown.del_`, since `del` is a keyword; in Java it is `LMarkdown.del`, as `del` is no keyword there.
+The builders have a `markdown` that holds `styles` and `content`, and the rules are `LMarkdown.h1()`, `LMarkdown.quote()`, `LMarkdown.hr()` and so on, in the language's case. A builder has no data binding, so the text is a string the program passes in. In Python the rule of struck-through text is `LMarkdown.del_`, since `del` is a keyword; in Java it is `LMarkdown.del`, as `del` is no keyword there.
 
 ```js
 import { L, LMarkdown, NoAttr } from '@lpdfio/lpdf'

@@ -46,7 +46,7 @@ const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET'
 // Two checks stand behind the code. Each SDK's CI has the generator write the code of every fixture of core and of a
 // document for every attribute and every value of an enumeration of the schema (one value of the others), builds it
 // with the SDK, and fails when it renders another PDF than the XML (scripts/check-codegen-sdk.mjs in lpdfio/lpdf). It
-// leaves out what the generator cannot write, data binding and the markdown rule hr, and what the engine ignores. So a
+// leaves out what the generator cannot write, which is data binding, and what the engine ignores. So a
 // name an SDK lacks is found for nearly every attribute, not only where an example uses it. scripts/check-codegen.mjs
 // here runs the JavaScript of every XML example in these docs with the JS SDK and fails on the same terms, on every
 // `npm run check`: only JavaScript, but these very examples, whose elements combine in ways the corpus, one attribute

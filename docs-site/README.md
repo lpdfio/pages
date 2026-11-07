@@ -117,7 +117,7 @@ ignored by git:
   SDK's CI has the generator write the code of every fixture of core and of a document for every attribute and every
   value of an enumeration of the schema (one value of the others), builds it with the SDK and fails when it renders
   another PDF than the XML (`scripts/check-codegen-sdk.mjs` in `lpdfio/lpdf`). It leaves out what the generator cannot
-  write, data binding and the markdown rule `hr`, and what the engine ignores. So a name an SDK lacks is found for
+  write, which is data binding, and what the engine ignores. So a name an SDK lacks is found for
   nearly every attribute, not only where an example uses it. `npm run check` runs the JavaScript of every example here
   with the JS SDK and fails on the same terms (*Checking the examples*): only JavaScript, but these very examples,
   whose elements combine in ways the corpus, one attribute at a time, does not. A block stays XML only when the generator cannot express it in one of the languages: an

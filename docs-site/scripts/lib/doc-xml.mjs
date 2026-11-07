@@ -117,6 +117,18 @@ export function declaredFiles(xml)
         .filter(Boolean);
 }
 
+/**
+ * The names of the images `xml` declares with a src, which the engine draws only once they are loaded: an example
+ * that carries its own picture, such as the admission letter's crest. The check loads one pixel under each name.
+ */
+export function declaredImages(xml)
+{
+    return [...xml.matchAll(/<image\b[^>]*>/g)]
+        .filter(([tag]) => /\bsrc="/.test(tag))
+        .map(([tag]) => tag.match(/\bname="([^"]*)"/)?.[1])
+        .filter(Boolean);
+}
+
 /** The names of the fonts `xml` declares with a src, which the engine draws in only once they are loaded. */
 export function declaredFonts(xml)
 {

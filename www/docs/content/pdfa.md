@@ -84,21 +84,6 @@ L.engine()
 ```
 :::
 
-::: sdk php
-
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\RenderOptions;
-use Lpdf\L;
-
-$pdf = L::engine()->render($xml, new RenderOptions(createdOn: date('c')));
-
-file_put_contents('report.pdf', $pdf);
-```
-:::
-
 ::: sdk python
 
 ```python
@@ -110,21 +95,6 @@ pdf = L.engine().render(xml, RenderOptions(created_on=datetime.now(timezone.utc)
 
 Path('report.pdf').write_bytes(pdf)
 ```
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf;
-using Lpdf.Engine;
-
-var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
-    .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
-
-await File.WriteAllBytesAsync("report.pdf", pdf);
-```
-
-.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
 ::: sdk java
@@ -146,7 +116,37 @@ Files.write(Path.of("report.pdf"), pdf);
 Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
-A document built in code asks for PDF/A in its `output` too: `output: { pdfa: '2u' }` in Node.js, `DocumentOutput` in the other SDKs, where .NET names it `PdfA`.
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
+    .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
+
+await File.WriteAllBytesAsync("report.pdf", pdf);
+```
+
+C# reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\RenderOptions;
+use Lpdf\L;
+
+$pdf = L::engine()->render($xml, new RenderOptions(createdOn: date('c')));
+
+file_put_contents('report.pdf', $pdf);
+```
+:::
+
+A document built in code asks for PDF/A in its `output` too: `output: { pdfa: '2u' }` in JavaScript, `DocumentOutput` in the other SDKs, where C# names it `PdfA`.
 
 ## Errors
 

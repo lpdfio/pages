@@ -17,7 +17,7 @@
 import { promises as fs } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
+import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredImages, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const sdkDir = process.env.LPDF_SDK_DIR ? path.resolve(process.env.LPDF_SDK_DIR) : undefined;
 const { L, LMarkdown, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
@@ -46,6 +46,7 @@ for (const file of await walk())
             if (code.includes('TODO') || code.includes('L.element(')) { skipped.push(`${where}  (the generator cannot express it)`); continue; }
 
             for (const name of declaredFonts(wrapped.xml)) engine.loadFont(name, FONT);
+            for (const name of declaredImages(wrapped.xml)) engine.loadImage(name, PIXEL);
             for (const [key, bytes] of declaredFiles(wrapped.xml)) engine.loadFile(key, bytes);
             for (const key of declaredProfiles(wrapped.xml)) engine.loadProfile(key, PROFILE);
             // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.

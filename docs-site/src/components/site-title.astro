@@ -29,7 +29,7 @@ const detail = [
     </a>
     <a href={siteTitleHref} class="label">Docs</a>
     <CodeLangSelect />
-    {stamp && <span class="stamp" title={detail}>{stamp}</span>}
+    {stamp && <span class="stamp" title={detail}>{version}{revision && <span class="rev">{version && '-'}{revision}</span>}</span>}
 </div>
 
 <style>
@@ -84,6 +84,10 @@ const detail = [
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
         cursor: default;
+    }
+    /* The revision, the "-r1107.3" after the version, is very small: it is there for whoever looks for it. */
+    .rev {
+        font-size: 0.5rem;
     }
     /* Below 360px the label would push the picker under the search button, so it gives way. */
     @media (max-width: 22.49rem) {

@@ -10,16 +10,18 @@
  * The lpdf WASM and the viewer are loaded at runtime as external assets
  * co-located with this script in the lpdf-demo/ folder.
  *
- * The examples are the seven in examples/ of the lpdf repository, copied here by its
+ * The examples are those in examples/ of the lpdf repository, copied here by its
  * scripts/sync-examples.mjs: examples/index.json lists them, and each has a folder with its
- * document.xml, its document.json if it has data, and the fonts and images it names.
+ * document.xml, its document.json if it has data, its document-markdown.xml if it has a version written as Markdown, and
+ * the fonts and images it names.
  */
 
 import { LitElement, html, nothing } from 'lit';
 import { configureStore, createSlice } from '@reduxjs/toolkit';
-import { EditorView, lineNumbers } from '@codemirror/view';
-import { EditorState, Compartment } from '@codemirror/state';
-import { HighlightStyle, syntaxHighlighting, StreamLanguage } from '@codemirror/language';
+import { EditorView, lineNumbers, Decoration, ViewPlugin } from '@codemirror/view';
+import type { DecorationSet, ViewUpdate } from '@codemirror/view';
+import { EditorState, Compartment, RangeSetBuilder } from '@codemirror/state';
+import { HighlightStyle, syntaxHighlighting, StreamLanguage, syntaxTree } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
 import { xml as xmlLang } from '@codemirror/lang-xml';
 import { javascript as jsLang } from '@codemirror/lang-javascript';
@@ -34,15 +36,23 @@ import {
 
 // ── Mode list ────────────────────────────────────────────────────────────────
 const MODES = [
-    { id: 'js',     label: 'Node/JS',  icon: 'fa-brands fa-node-js' },
-    { id: 'dotnet', label: '.NET/C#',  icon: 'fa-solid fa-hashtag' },
-    { id: 'php',    label: 'PHP',      icon: 'fa-brands fa-php' },
-    { id: 'python', label: 'Python',   icon: 'fa-brands fa-python' },
-    { id: 'java',   label: 'Java',     icon: 'fa-brands fa-java' },
-    { id: 'xml',    label: 'XML',      icon: 'fa-solid fa-code' },
+    { id: 'xml',    label: 'XML',        icon: 'fa-solid fa-code' },
+    { id: 'js',     label: 'JavaScript', icon: 'fa-brands fa-node-js' },
+    { id: 'python', label: 'Python',     icon: 'fa-brands fa-python' },
+    { id: 'java',   label: 'Java',       icon: 'fa-brands fa-java' },
+    { id: 'dotnet', label: 'C#',         icon: 'fa-solid fa-hashtag' },
+    { id: 'php',    label: 'PHP',        icon: 'fa-brands fa-php' },
 ];
+/** The busy overlay stays up at least this long, in milliseconds, so that a change that is quick still shows its sign. */
+const BUSY_MIN_MS = 400;
+
 /** The tab that shows document.json, offered only for an example that has data. */
 const DATA_MODE = { id: 'json', label: 'JSON data', icon: 'fa-solid fa-database' };
+/**
+ * The tab that shows the example with its body written as Markdown, offered only for an example that has a version of
+ * it. It stands after XML, and the PDF beside it is the one that document makes.
+ */
+const MARKDOWN_MODE = { id: 'markdown', label: 'Markdown', icon: 'fa-brands fa-markdown' };
 
 // ── Example list ─────────────────────────────────────────────────────────────
 // Read from examples/index.json at boot, so a new example needs no change here.
@@ -54,6 +64,8 @@ interface ExampleEntry {
     xml: string;
     /** document.json, relative to examples/, or null for a document with no data. */
     data: string | null;
+    /** document-markdown.xml, relative to examples/, or null for a document with no version written as Markdown. */
+    markdown?: string | null;
 }
 let EXAMPLES: ExampleEntry[] = [];
 
@@ -95,12 +107,14 @@ const CM_BASE_THEME = EditorView.theme({
 
 const CM_DARK_THEME = EditorView.theme({
     '&':                                                        { background: '#1e1e1e', color: '#d4d4d4' },
+    '.lpdf-cdata-delim, .lpdf-cdata-delim *':                   { color: '#808080' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: '#264f78' },
     '.cm-gutters':                                              { background: '#1e1e1e', color: '#8a8a8a' },
 }, { dark: true });
 
 const CM_LIGHT_THEME = EditorView.theme({
     '&':                                                        { background: 'var(--bg-elev)', color: 'var(--text)' },
+    '.lpdf-cdata-delim, .lpdf-cdata-delim *':                   { color: '#555555' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': { background: '#add6ff' },
     '.cm-gutters':                                              { background: 'var(--bg-elev)', color: 'var(--text-subtle)' },
 });
@@ -110,6 +124,8 @@ const DARK_HIGHLIGHT = syntaxHighlighting(HighlightStyle.define([
     { tag: tags.controlKeyword,                  color: '#c586c0' },
     { tag: tags.definitionKeyword,               color: '#569cd6' },
     { tag: tags.string,                          color: '#ce9178' },
+    // A CDATA block, which is the Markdown of the Markdown tab: its own color, apart from the tags around it.
+    { tag: tags.special(tags.string),            color: '#c586c0' },
     { tag: tags.number,                          color: '#b5cea8' },
     { tag: tags.bool,                            color: '#569cd6' },
     { tag: tags.null,                            color: '#569cd6' },
@@ -134,6 +150,8 @@ const LIGHT_HIGHLIGHT = syntaxHighlighting(HighlightStyle.define([
     { tag: tags.controlKeyword,                  color: '#af00db' },
     { tag: tags.definitionKeyword,               color: '#0000ff' },
     { tag: tags.string,                          color: '#a31515' },
+    // A CDATA block, which is the Markdown of the Markdown tab: its own color, apart from the tags around it.
+    { tag: tags.special(tags.string),            color: '#af00db' },
     { tag: tags.number,                          color: '#098658' },
     { tag: tags.bool,                            color: '#0000ff' },
     { tag: tags.null,                            color: '#0000ff' },
@@ -152,6 +170,38 @@ const LIGHT_HIGHLIGHT = syntaxHighlighting(HighlightStyle.define([
     { tag: tags.processingInstruction,           color: '#0070c1' },
     { tag: tags.punctuation,                     color: '#555555' },
 ]));
+
+/**
+ * A CDATA block is one token, delimiters and content, and the content, the Markdown of the Markdown tab, has a color of its
+ * own. The two delimiters, `<![CDATA[` and `]]>`, are marked here so that the theme gives them the color of the tags'
+ * punctuation, as they are markup, and only the content keeps the color of the block.
+ */
+const CDATA_OPEN  = '<![CDATA['.length;
+const CDATA_CLOSE = ']]>'.length;
+const cdataDelimiterMark = Decoration.mark({ class: 'lpdf-cdata-delim' });
+
+function cdataDelimiters(view: EditorView): DecorationSet {
+    const builder = new RangeSetBuilder<Decoration>();
+    syntaxTree(view.state).iterate({
+        enter(node) {
+            if (node.name !== 'Cdata') return;
+            builder.add(node.from, node.from + CDATA_OPEN, cdataDelimiterMark);
+            // A block that is not closed yet has no closing delimiter to mark.
+            if (node.to - node.from >= CDATA_OPEN + CDATA_CLOSE && view.state.sliceDoc(node.to - CDATA_CLOSE, node.to) === ']]>') {
+                builder.add(node.to - CDATA_CLOSE, node.to, cdataDelimiterMark);
+            }
+        },
+    });
+    return builder.finish();
+}
+
+const cdataDelimiterPlugin = ViewPlugin.fromClass(class {
+    decorations: DecorationSet;
+    constructor(view: EditorView) { this.decorations = cdataDelimiters(view); }
+    update(update: ViewUpdate) {
+        if (update.docChanged || syntaxTree(update.startState) !== syntaxTree(update.state)) this.decorations = cdataDelimiters(update.view);
+    }
+}, { decorations: plugin => plugin.decorations });
 
 function langExtForMode(mode: string) {
     switch (mode) {
@@ -194,6 +244,7 @@ const editorSlice = createSlice({
 
 const renderSlice = createSlice({
     name: 'render',
+    // `status` is 'loading' from the choice of an example until its render starts, then 'rendering', then 'done' or 'error'.
     // `unencrypted`: the document asks for encryption, and the PDF shown is not encrypted, as the playground has no
     // passwords.
     initialState: { status: 'idle', error: '', byteSize: 0, unencrypted: false },
@@ -205,7 +256,7 @@ const renderSlice = createSlice({
             state.unencrypted = payload.unencrypted;
         },
         renderFailed: (state, { payload }: { payload: string }) => { state.status = 'error'; state.error = payload; },
-        renderReset:  state => { state.status = 'idle'; state.error = ''; state.byteSize = 0; state.unencrypted = false; },
+        renderLoading: state => { state.status = 'loading'; state.error = ''; state.byteSize = 0; state.unencrypted = false; },
     },
 });
 
@@ -231,7 +282,7 @@ type RootState = ReturnType<typeof store.getState>;
 
 const { engineLoaded, engineFailed }                           = engineSlice.actions;
 const { exampleSelected }                                      = editorSlice.actions;
-const { renderStarted, renderDone, renderFailed, renderReset } = renderSlice.actions;
+const { renderStarted, renderDone, renderFailed, renderLoading } = renderSlice.actions;
 const { modeSelected }                                         = modeSlice.actions;
 
 // ── Asset helpers ─────────────────────────────────────────────────────────────
@@ -315,17 +366,21 @@ class LpdfDemo extends LitElement {
     static properties = {
         _s: { state: true },
         _started: { state: true },
+        _busy: { state: true },
     };
 
     _s: RootState;
     _unsub: (() => void) | null        = null;
-    _debounce: ReturnType<typeof setTimeout> | null = null;
     _currentXml: string                = '';
     /** The address of the document being shown: its fonts and images are relative to it. */
     _currentBase: string               = '';
     /** The document's data, parsed, and as the file has it for the data tab. */
     _currentData: unknown              = null;
     _currentDataText: string           = '';
+    /** The version of the example written as Markdown, if it has one: a document of its own. */
+    _currentMarkdown: string           = '';
+    /** Counts the renders, so that a render that is overtaken, by a tab or an example chosen meanwhile, shows nothing. */
+    _renderSeq: number                 = 0;
     _viewerReady: boolean              = false;
     _pendingViewerMessage: { type: string; [key: string]: unknown } | null = null;
     _pendingText: string | null        = null;
@@ -336,6 +391,10 @@ class LpdfDemo extends LitElement {
     _themeObs: MutationObserver | null = null;
     /** Whether the demo has reached the viewport and started: until then there is no viewer and no engine. */
     _started: boolean                  = false;
+    /** Whether the busy overlay is up: a change is coming, and shows from the choice of an example to its PDF. */
+    _busy: boolean                     = false;
+    _busySince: number                 = 0;
+    _busyTimer: ReturnType<typeof setTimeout> | null = null;
     _viewObs: IntersectionObserver | null = null;
 
     constructor() {
@@ -356,9 +415,9 @@ class LpdfDemo extends LitElement {
         super.disconnectedCallback();
         this._unsub?.();
         window.removeEventListener('message', this._onViewerMessage);
-        if (this._debounce) clearTimeout(this._debounce);
         this._viewObs?.disconnect();
         this._viewObs = null;
+        if (this._busyTimer) clearTimeout(this._busyTimer);
         this._themeObs?.disconnect();
         this._cmView?.destroy();
         this._cmView = null;
@@ -393,6 +452,7 @@ class LpdfDemo extends LitElement {
                     EditorView.contentAttributes.of({ 'aria-label': 'Example source' }),
                     lineNumbers(),
                     this._langComp.of(xmlLang()),
+                    cdataDelimiterPlugin,
                     this._themeComp.of([dark ? CM_DARK_THEME : CM_LIGHT_THEME, dark ? DARK_HIGHLIGHT : LIGHT_HIGHLIGHT]),
                     CM_BASE_THEME,
                 ],
@@ -444,6 +504,7 @@ class LpdfDemo extends LitElement {
     /** Renders the viewer's iframe, which loads PDF.js, and boots the engine beside it. */
     _start() {
         this._started = true;
+        this._busyOn();
         this._boot();
     }
 
@@ -458,7 +519,9 @@ class LpdfDemo extends LitElement {
             // Store codegen on the instance so _generateCode can use it.
             (this as any)._codegen = codegen_wasm;
 
-            const index = await fetch(new URL('index.json', EXAMPLES_BASE));
+            // The list is asked again each time, for the browser to confirm its copy: a list kept from before a new
+            // site went up names examples that are no longer there.
+            const index = await fetch(new URL('index.json', EXAMPLES_BASE), { cache: 'no-cache' });
             if (!index.ok) throw new Error(`examples/index.json: ${index.status} ${index.statusText}`);
             EXAMPLES = (await index.json()).examples as ExampleEntry[];
             if (EXAMPLES.length === 0) throw new Error('examples/index.json lists no examples');
@@ -472,10 +535,16 @@ class LpdfDemo extends LitElement {
                 url.searchParams.delete('example');
                 history.replaceState(null, '', url);
             }
-            await this._loadExample(EXAMPLES.find(example => example.id === asked)?.id ?? EXAMPLES[0].id);
-            this._scheduleRender();
+            // The example that was open, or the one asked for, and when it is not there or cannot be loaded, the first.
+            try {
+                await this._loadExample(EXAMPLES.find(example => example.id === asked)?.id ?? EXAMPLES[0].id);
+            } catch {
+                await this._loadExample(EXAMPLES[0].id);
+            }
+            this._doRender();
         } catch (err: any) {
             store.dispatch(engineFailed(err.message));
+            this._busyOff();
         }
     }
 
@@ -501,14 +570,23 @@ class LpdfDemo extends LitElement {
             data     = JSON.parse(dataText);
         }
 
-        this._currentXml     = xml;
-        this._currentBase    = xmlUrl;
-        this._currentData    = data;
-        this._currentDataText = dataText;
+        // The version written as Markdown, if the example has one.
+        let markdownText = '';
+        if (example.markdown) {
+            const markdownRes = await fetch(new URL(example.markdown, EXAMPLES_BASE));
+            if (!markdownRes.ok) throw new Error(`${example.markdown}: ${markdownRes.status} ${markdownRes.statusText}`);
+            markdownText = await markdownRes.text();
+        }
 
-        // A tab for the data is offered only when the example has some; without it, show the XML.
+        this._currentXml      = xml;
+        this._currentBase     = xmlUrl;
+        this._currentData     = data;
+        this._currentDataText = dataText;
+        this._currentMarkdown = markdownText;
+
+        // A tab for the data, or for the Markdown, is offered only when the example has some; without it, show the XML.
         let { mode } = store.getState();
-        if (mode.selected === DATA_MODE.id && !example.data) {
+        if ((mode.selected === DATA_MODE.id && !example.data) || (mode.selected === MARKDOWN_MODE.id && !example.markdown)) {
             store.dispatch(modeSelected('xml'));
             mode = store.getState().mode;
         }
@@ -521,32 +599,57 @@ class LpdfDemo extends LitElement {
 
     // ── Render scheduling ─────────────────────────────────────────────────────
 
-    _scheduleRender() {
-        if (this._debounce) clearTimeout(this._debounce);
-        this._debounce = setTimeout(() => this._doRender(), 600);
+    /** Puts the overlay up: the content is about to change. */
+    _busyOn() {
+        if (this._busyTimer) { clearTimeout(this._busyTimer); this._busyTimer = null; }
+        this._busy      = true;
+        this._busySince = performance.now();
+    }
+
+    /** Takes the overlay down once the change is shown, but not before it has been up for BUSY_MIN_MS. */
+    _busyOff() {
+        if (this._busyTimer) clearTimeout(this._busyTimer);
+        const left = BUSY_MIN_MS - (performance.now() - this._busySince);
+        if (left <= 0) {
+            this._busy      = false;
+            this._busyTimer = null;
+            return;
+        }
+        this._busyTimer = setTimeout(() => { this._busy = false; this._busyTimer = null; }, left);
     }
 
     async _doRender() {
-        if (!lpdfEngine || !this._currentXml.trim()) return;
+        if (!lpdfEngine || !this._currentXml.trim()) { this._busyOff(); return; }
+        // The Markdown tab shows the PDF that its document makes; every other tab shows the one that the XML makes. Both
+        // name their files relative to the same folder.
+        const xml          = store.getState().mode.selected === MARKDOWN_MODE.id ? this._currentMarkdown : this._currentXml;
+        const base         = this._currentBase;
+        const data         = this._currentData;
+        const seq          = ++this._renderSeq;
         store.dispatch(renderStarted());
         this._postToViewer({ type: 'showLoading' });
         try {
-            await loadAssetsFromXml(this._currentXml, this._currentBase);
+            await loadAssetsFromXml(xml, base);
+            if (seq !== this._renderSeq) return;
             // The playground has no passwords: a document that asks for encryption is shown unencrypted, and says so.
             // Every render is dated, as a PDF/A, PDF/UA or PDF/X document carries its date and the engine has no clock.
             const options = {
-                ...(this._currentData != null ? { data: this._currentData } : {}),
+                ...(data != null ? { data } : {}),
                 skipEncryption: true,
                 createdOn: new Date().toISOString(),
             };
-            const bytes   = await lpdfEngine.render(this._currentXml, options);
+            const bytes   = await lpdfEngine.render(xml, options);
+            if (seq !== this._renderSeq) return;
             currentPdfBytes = bytes.slice();
-            store.dispatch(renderDone({ byteSize: currentPdfBytes.length, unencrypted: asksForEncryption(this._currentXml) }));
+            store.dispatch(renderDone({ byteSize: currentPdfBytes.length, unencrypted: asksForEncryption(xml) }));
             // A document that has not been shown before starts at the top, fitted to the width.
             this._postToViewer({ type: 'updatePdf', pdfBase64: bytesToBase64(currentPdfBytes), filename: 'document.pdf', zoom: 'fit' });
+            this._busyOff();
         } catch (err: any) {
+            if (seq !== this._renderSeq) return;
             store.dispatch(renderFailed(err.message));
             this._postToViewer({ type: 'showError', message: err.message });
+            this._busyOff();
         }
     }
 
@@ -598,27 +701,36 @@ class LpdfDemo extends LitElement {
     _textForMode(mode: string) {
         if (mode === 'xml')            return this._currentXml;
         if (mode === DATA_MODE.id)     return this._currentDataText;
+        if (mode === MARKDOWN_MODE.id) return this._currentMarkdown;
         return this._generateCode(this._currentXml, mode);
     }
 
     // ── Event handlers ────────────────────────────────────────────────────────
 
     _onModeChange(mode: string) {
+        const was = store.getState().mode.selected;
         store.dispatch(modeSelected(mode));
         this._setCmContent(this._textForMode(mode), mode);
+        // Going to or from the Markdown tab changes the document the PDF is made from: it is rendered at once.
+        if ((mode === MARKDOWN_MODE.id) !== (was === MARKDOWN_MODE.id)) {
+            this._busyOn();
+            this._doRender();
+        }
     }
 
     async _onExampleChange(e: Event) {
         const id = (e.target as HTMLSelectElement).value;
-        store.dispatch(renderReset());
+        this._busyOn();
+        store.dispatch(renderLoading());
         currentPdfBytes = null;
         try {
             await this._loadExample(id);
         } catch (err: any) {
             store.dispatch(renderFailed(`Failed to load: ${err.message}`));
+            this._busyOff();
             return;
         }
-        this._scheduleRender();
+        this._doRender();
     }
 
     _saveBytes(bytes: Uint8Array, filename: string) {
@@ -639,7 +751,7 @@ class LpdfDemo extends LitElement {
             return html`<span class="lpdf-spinner"></span><span class="lpdf-engine-label"></span>`;
         if (engine.status === 'error')
             return html`<span class="lpdf-engine-dot lpdf-dot-error"></span><span class="lpdf-engine-label"></span>`;
-        if (render.status === 'rendering')
+        if (render.status === 'rendering' || render.status === 'loading')
             return html`<span class="lpdf-spinner"></span><span class="lpdf-engine-label"></span>`;
         return html`<span class="lpdf-engine-dot lpdf-dot-ok"></span><span class="lpdf-engine-label"></span>`;
     }
@@ -649,9 +761,16 @@ class LpdfDemo extends LitElement {
     render() {
         const { engine, editor, mode, render } = this._s;
         const engineReady   = engine.status === 'ready';
+        const busy          = this._busy;
         const example       = EXAMPLES.find(candidate => candidate.id === editor.selectedId);
-        // The data tab is there only for an example that has data.
-        const modes         = example?.data ? [...MODES, DATA_MODE] : MODES;
+        // The Markdown tab, after XML, is there only for an example written as Markdown too, and the data tab, last, only
+        // for an example that has data.
+        const modes         = [
+            MODES[0],
+            ...(example?.markdown ? [MARKDOWN_MODE] : []),
+            ...MODES.slice(1),
+            ...(example?.data ? [DATA_MODE] : []),
+        ];
 
         return html`
             <div class="lpdf-shell">
@@ -688,6 +807,15 @@ class LpdfDemo extends LitElement {
 
                 <!-- ── Panes ── -->
                 <div class="lpdf-panes">
+
+                    <!-- A spinner over both panes while an example loads and renders, so that a change shows at once.
+                         It fades in after a moment, so a render that is quick shows no flash. -->
+                    ${busy ? html`
+                        <div class="lpdf-busy" role="status">
+                            <span class="lpdf-busy-spinner"></span>
+                            <span class="lpdf-busy-label">Rendering the example</span>
+                        </div>
+                    ` : nothing}
 
                     <!-- Left: editor pane -->
                     <div class="lpdf-editor-pane">

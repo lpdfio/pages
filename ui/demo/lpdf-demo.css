@@ -152,6 +152,7 @@ lpdf-demo {
     display: flex;
     flex: 1;
     min-height: 0;
+    position: relative;
 }
 
 /* ── Editor pane ────────────────────────────────────────────────────────────────────────────────── */
@@ -198,9 +199,11 @@ lpdf-demo {
     --lpdf-mode-active: #f68c36;
 }
 
+/* 12px, with 9px at the sides: the header stays 36px high, and the seven tabs of the admission letter still fit the editor
+   pane at 900px wide, where it is narrowest before the tabs scroll sideways. */
 .lpdf-mode-btn {
-    padding: 3px 10px;
-    font-size: 11px;
+    padding: 3px 9px;
+    font-size: 12px;
     font-weight: 500;
     border: none;
     border-radius: 3px;
@@ -359,4 +362,47 @@ lpdf-demo {
     .lpdf-preview-inner { min-height: 200px; }
 
     .lpdf-select { max-width: none; }
+}
+
+/* ── Busy overlay: a spinner over both panes while an example loads and renders ─
+   It sits over what is there, which shows through, and takes no clicks. It is the sign that the content is about to
+   change, so it is up at once, with a short fade, and the demo keeps it up for a moment even when the change is quick. */
+.lpdf-busy {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--bg-sunken) 55%, transparent);
+    pointer-events: none;
+    animation: lpdf-busy-in .12s ease-out both;
+}
+
+.lpdf-busy-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--brand);
+    border-radius: 50%;
+    animation: lpdf-spin .65s linear infinite;
+}
+
+/* The words are for a screen reader, which hears the overlay as a status. */
+.lpdf-busy-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@keyframes lpdf-busy-in {
+    from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lpdf-busy-spinner { animation-duration: 2s; }
 }

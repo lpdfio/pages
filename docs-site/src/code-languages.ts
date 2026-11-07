@@ -21,15 +21,9 @@ export const CODE_LANGUAGES: CodeLanguage[] = [
     { id: 'xml', label: 'XML', github: 'https://github.com/lpdfio/lpdf' },
     {
         id: 'js',
-        label: 'Node.js',
+        label: 'JavaScript',
         github: 'https://github.com/lpdfio/lpdf-js',
         registry: { name: 'npm', url: 'https://www.npmjs.com/package/@lpdfio/lpdf' },
-    },
-    {
-        id: 'php',
-        label: 'PHP',
-        github: 'https://github.com/lpdfio/lpdf-php',
-        registry: { name: 'Packagist', url: 'https://packagist.org/packages/lpdfio/lpdf' },
     },
     {
         id: 'python',
@@ -38,15 +32,21 @@ export const CODE_LANGUAGES: CodeLanguage[] = [
         registry: { name: 'PyPI', url: 'https://pypi.org/project/lpdfio-lpdf/' },
     },
     {
-        id: 'dotnet',
-        label: '.NET',
-        github: 'https://github.com/lpdfio/lpdf-dotnet',
-        registry: { name: 'NuGet', url: 'https://www.nuget.org/packages/Lpdfio.Lpdf' },
-    },
-    {
         id: 'java',
         label: 'Java',
         github: 'https://github.com/lpdfio/lpdf-java',
         registry: { name: 'Maven Central', url: 'https://central.sonatype.com/artifact/io.lpdf/lpdf' },
+    },
+    {
+        id: 'dotnet',
+        label: 'C#',
+        github: 'https://github.com/lpdfio/lpdf-dotnet',
+        registry: { name: 'NuGet', url: 'https://www.nuget.org/packages/Lpdfio.Lpdf' },
+    },
+    {
+        id: 'php',
+        label: 'PHP',
+        github: 'https://github.com/lpdfio/lpdf-php',
+        registry: { name: 'Packagist', url: 'https://packagist.org/packages/lpdfio/lpdf' },
     },
 ];

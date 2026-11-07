@@ -18,7 +18,7 @@ A layer reads single values, so `data-source` is not allowed on its elements: ev
 
 ## Passing data
 
-The data is a plain object (a dictionary in Python, an array or object in PHP, any object in .NET, maps, lists and records in Java) that the SDK sends to the engine as JSON. It is an option of the `render` call, and it applies only when you render XML.
+The data is a plain object (a dictionary in Python, maps, lists and records in Java, any object in C#, an array or object in PHP) that the SDK sends to the engine as JSON. It is an option of the `render` call, and it applies only when you render XML.
 
 ::: sdk js
 
@@ -38,24 +38,6 @@ const pdf = await engine.render(xml, {
 
 :::
 
-::: sdk php
-
-```php
-use Lpdf\Engine\RenderOptions;
-
-$pdf = $engine->render($xml, new RenderOptions(data: [
-    'invoice_number' => 'INV-2026-001',
-    'customer' => ['name' => 'Acme Inc', 'address' => '123 Main St'],
-    'items' => [
-        ['description' => 'Consulting', 'price' => '$1,200.00'],
-        ['description' => 'Support',    'price' => '$400.00'],
-    ],
-    'total' => '$1,600.00',
-]));
-```
-
-:::
-
 ::: sdk python
 
 ```python
@@ -70,26 +52,6 @@ pdf = engine.render(xml, RenderOptions(data={
     ],
     'total': '$1,600.00',
 }))
-```
-
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf.Engine;
-
-var data = new {
-    invoice_number = "INV-2026-001",
-    customer = new { name = "Acme Inc", address = "123 Main St" },
-    items = new[] {
-        new { description = "Consulting", price = "$1,200.00" },
-        new { description = "Support",    price = "$400.00" },
-    },
-    total = "$1,600.00",
-};
-
-var pdf = engine.Render(xml, new RenderOptions { Data = data });
 ```
 
 :::
@@ -113,6 +75,44 @@ byte[] pdf = engine.render(xml, new RenderOptions().data(Map.of(
 ```
 
 Data that is JSON text already, such as a file's or a request body's, goes to the engine as it is with `dataJson(…)` in place of `data(…)`.
+
+:::
+
+::: sdk dotnet
+
+```csharp
+using Lpdf.Engine;
+
+var data = new {
+    invoice_number = "INV-2026-001",
+    customer = new { name = "Acme Inc", address = "123 Main St" },
+    items = new[] {
+        new { description = "Consulting", price = "$1,200.00" },
+        new { description = "Support",    price = "$400.00" },
+    },
+    total = "$1,600.00",
+};
+
+var pdf = engine.Render(xml, new RenderOptions { Data = data });
+```
+
+:::
+
+::: sdk php
+
+```php
+use Lpdf\Engine\RenderOptions;
+
+$pdf = $engine->render($xml, new RenderOptions(data: [
+    'invoice_number' => 'INV-2026-001',
+    'customer' => ['name' => 'Acme Inc', 'address' => '123 Main St'],
+    'items' => [
+        ['description' => 'Consulting', 'price' => '$1,200.00'],
+        ['description' => 'Support',    'price' => '$400.00'],
+    ],
+    'total' => '$1,600.00',
+]));
+```
 
 :::
 

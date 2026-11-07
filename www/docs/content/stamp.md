@@ -31,31 +31,6 @@ await writeFile('contract-signed.pdf', signed)
 ```
 :::
 
-::: sdk php
-
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\StampAttr;
-use Lpdf\L;
-
-$engine = L::engine()->setLicenseKey(getenv('LPDF_LICENSE_KEY'));
-
-$contract = file_get_contents('contract.pdf');
-$signature = file_get_contents('buyer-signature.png');
-$initials = file_get_contents('buyer-initials.png');
-$seal = file_get_contents('company-seal.png');
-
-$signed = $engine->stamp($contract, [
-    new StampAttr(image: $signature, page: 'last', x: '72pt', y: '640pt', width: '144pt', height: '36pt', justify: 'end'),
-    new StampAttr(image: $initials, page: '1-2', anchor: 'bottom-right', x: '-36pt', y: '-36pt', width: '60pt', height: '24pt'),
-    new StampAttr(image: $seal, page: 'each', anchor: 'top-right', x: '-36pt', y: '36pt', width: '72pt', height: '72pt', maxGrow: 1.5),
-]);
-file_put_contents('contract-signed.pdf', $signed);
-```
-:::
-
 ::: sdk python
 
 ```python
@@ -76,28 +51,6 @@ signed = engine.stamp(contract, [
     StampAttr(image=seal, page='each', anchor='top-right', x='-36pt', y='36pt', width='72pt', height='72pt', max_grow=1.5),
 ])
 Path('contract-signed.pdf').write_bytes(signed)
-```
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf;
-using Lpdf.Engine;
-
-var engine = L.Engine().SetLicenseKey(Environment.GetEnvironmentVariable("LPDF_LICENSE_KEY")!);
-
-byte[] contract = await File.ReadAllBytesAsync("contract.pdf");
-byte[] signature = await File.ReadAllBytesAsync("buyer-signature.png");
-byte[] initials = await File.ReadAllBytesAsync("buyer-initials.png");
-byte[] seal = await File.ReadAllBytesAsync("company-seal.png");
-
-byte[] signed = engine.Stamp(contract, [
-    new StampAttr { Image = signature, Page = "last", X = "72pt", Y = "640pt", Width = "144pt", Height = "36pt", Justify = "end" },
-    new StampAttr { Image = initials, Page = "1-2", Anchor = "bottom-right", X = "-36pt", Y = "-36pt", Width = "60pt", Height = "24pt" },
-    new StampAttr { Image = seal, Page = "each", Anchor = "top-right", X = "-36pt", Y = "36pt", Width = "72pt", Height = "72pt", MaxGrow = 1.5 },
-]);
-await File.WriteAllBytesAsync("contract-signed.pdf", signed);
 ```
 :::
 
@@ -126,11 +79,58 @@ Files.write(Path.of("contract-signed.pdf"), signed);
 ```
 :::
 
-`stamp` blocks as `render` does: in Node.js it returns a promise and runs on the render worker, with the engine's `timeout` and `maxMemoryMb`; in .NET, PHP, Python and Java it returns the bytes on the calling thread.
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+var engine = L.Engine().SetLicenseKey(Environment.GetEnvironmentVariable("LPDF_LICENSE_KEY")!);
+
+byte[] contract = await File.ReadAllBytesAsync("contract.pdf");
+byte[] signature = await File.ReadAllBytesAsync("buyer-signature.png");
+byte[] initials = await File.ReadAllBytesAsync("buyer-initials.png");
+byte[] seal = await File.ReadAllBytesAsync("company-seal.png");
+
+byte[] signed = engine.Stamp(contract, [
+    new StampAttr { Image = signature, Page = "last", X = "72pt", Y = "640pt", Width = "144pt", Height = "36pt", Justify = "end" },
+    new StampAttr { Image = initials, Page = "1-2", Anchor = "bottom-right", X = "-36pt", Y = "-36pt", Width = "60pt", Height = "24pt" },
+    new StampAttr { Image = seal, Page = "each", Anchor = "top-right", X = "-36pt", Y = "36pt", Width = "72pt", Height = "72pt", MaxGrow = 1.5 },
+]);
+await File.WriteAllBytesAsync("contract-signed.pdf", signed);
+```
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\StampAttr;
+use Lpdf\L;
+
+$engine = L::engine()->setLicenseKey(getenv('LPDF_LICENSE_KEY'));
+
+$contract = file_get_contents('contract.pdf');
+$signature = file_get_contents('buyer-signature.png');
+$initials = file_get_contents('buyer-initials.png');
+$seal = file_get_contents('company-seal.png');
+
+$signed = $engine->stamp($contract, [
+    new StampAttr(image: $signature, page: 'last', x: '72pt', y: '640pt', width: '144pt', height: '36pt', justify: 'end'),
+    new StampAttr(image: $initials, page: '1-2', anchor: 'bottom-right', x: '-36pt', y: '-36pt', width: '60pt', height: '24pt'),
+    new StampAttr(image: $seal, page: 'each', anchor: 'top-right', x: '-36pt', y: '36pt', width: '72pt', height: '72pt', maxGrow: 1.5),
+]);
+file_put_contents('contract-signed.pdf', $signed);
+```
+:::
+
+`stamp` blocks as `render` does: in JavaScript it returns a promise and runs on the render worker, with the engine's `timeout` and `maxMemoryMb`; in Python, Java, C# and PHP it returns the bytes on the calling thread.
 
 ## Options of a stamp
 
-The names are written in each language's case: `maxGrow` in Node.js, PHP and Java, `MaxGrow` in .NET, `max_grow` in Python.
+The names are written in each language's case: `maxGrow` in JavaScript, Java and PHP, `max_grow` in Python, `MaxGrow` in C#.
 
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|

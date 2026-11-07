@@ -53,22 +53,6 @@ writeFileSync('invoice.pdf', pdf)
 ```
 :::
 
-::: sdk php
-
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use Lpdf\L;
-
-$pdf = L::engine()
-    ->loadFile('invoice.xml', file_get_contents('data/invoice-2026-0412.xml'))
-    ->render($xml);
-
-file_put_contents('invoice.pdf', $pdf);
-```
-:::
-
 ::: sdk python
 
 ```python
@@ -81,22 +65,6 @@ pdf = (L.engine()
 
 Path('invoice.pdf').write_bytes(pdf)
 ```
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf;
-using Lpdf.Engine;
-
-using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
-engine.LoadFile("invoice.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
-var pdf = engine.Render(xml);
-
-await File.WriteAllBytesAsync("invoice.pdf", pdf);
-```
-
-.NET reads a `src` only through the engine's `SrcFallback`, as it does an image's: here it reads `terms.pdf`. Without one, a file with a `src` that was not loaded is an error that says so.
 :::
 
 ::: sdk java
@@ -117,11 +85,43 @@ Files.write(Path.of("invoice.pdf"), pdf);
 Java reads a `src` only through the engine's `srcFallback`, as it does an image's: here it reads `terms.pdf`. Without one, a file with a `src` that was not loaded is an error that says so.
 :::
 
-A document built in code lists its files in `attachments`, a list of `FileAttr` with the attributes of `file`: `attachments: [{ name: 'invoice.xml', mime: 'text/xml', relationship: FileRelationship.Data }]` in Node.js, `Attachments` in .NET, `attachments(List.of(…))` on `DocumentAttr` in Java. `FileRelationship` holds the five relationships.
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
+engine.LoadFile("invoice.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
+var pdf = engine.Render(xml);
+
+await File.WriteAllBytesAsync("invoice.pdf", pdf);
+```
+
+C# reads a `src` only through the engine's `SrcFallback`, as it does an image's: here it reads `terms.pdf`. Without one, a file with a `src` that was not loaded is an error that says so.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\L;
+
+$pdf = L::engine()
+    ->loadFile('invoice.xml', file_get_contents('data/invoice-2026-0412.xml'))
+    ->render($xml);
+
+file_put_contents('invoice.pdf', $pdf);
+```
+:::
+
+A document built in code lists its files in `attachments`, a list of `FileAttr` with the attributes of `file`: `attachments: [{ name: 'invoice.xml', mime: 'text/xml', relationship: FileRelationship.Data }]` in JavaScript, `attachments(List.of(…))` on `DocumentAttr` in Java, `Attachments` in C#. `FileRelationship` holds the five relationships.
 
 ## Size and memory
 
-A file has no size limit of its own: its bytes count toward the render's [memory cap](?p=install#memory-limit), 1024 MB unless the engine sets another. In the .NET, PHP, Python and Java SDKs the bytes travel to the engine as base64 in a JSON request, so a large file costs several times its size in memory while it renders, and each copy counts toward the cap: the request, the bytes the engine decodes and the PDF that holds them. The SDK holds the request and the PDF sent back besides. Node.js hands the bytes to the engine directly, before the render, so only the PDF that holds them counts.
+A file has no size limit of its own: its bytes count toward the render's [memory cap](?p=install#memory-limit), 1024 MB unless the engine sets another. In the Python, Java, C# and PHP SDKs the bytes travel to the engine as base64 in a JSON request, so a large file costs several times its size in memory while it renders, and each copy counts toward the cap: the request, the bytes the engine decodes and the PDF that holds them. The SDK holds the request and the PDF sent back besides. JavaScript hands the bytes to the engine directly, before the render, so only the PDF that holds them counts.
 
 ## Encryption, PDF/A and PDF/X
 

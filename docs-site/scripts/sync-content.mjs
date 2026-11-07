@@ -39,9 +39,9 @@ const REFERENCE_SUFFIX = ' — Lpdf XML reference';
 
 // The sync key and labels are shared with src/components/code-lang-select.astro.
 const SYNC_KEY = 'lang';
-const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET', java: 'Java' };
+const SDK_LABELS = { js: 'JavaScript', python: 'Python', java: 'Java', dotnet: 'C#', php: 'PHP' };
 
-// The languages the generated code is shown in, in tab order: Node.js, Python, PHP, .NET and Java. The SDKs share
+// The languages the generated code is shown in, in tab order: JavaScript, Python, Java, C# and PHP. The SDKs share
 // one API: the attribute classes and constants of each follow lpdf.xsd, so the code reads alike in every language.
 // Two checks stand behind the code. Each SDK's CI has the generator write the code of every fixture of core and of a
 // document for every attribute and every value of an enumeration of the schema (one value of the others), builds it
@@ -51,13 +51,13 @@ const SDK_LABELS = { js: 'Node.js', php: 'PHP', python: 'Python', dotnet: '.NET'
 // here runs the JavaScript of every XML example in these docs with the JS SDK and fails on the same terms, on every
 // `npm run check`: only JavaScript, but these very examples, whose elements combine in ways the corpus, one attribute
 // at a time, does not. The generator's targets are js,
-// python, php, dotnet and java; the .NET code is highlighted as csharp.
+// python, java, dotnet and php; the C# code is highlighted as csharp.
 const CODE_TABS = [
     { target: 'js', lang: 'js' },
     { target: 'python', lang: 'python' },
-    { target: 'php', lang: 'php' },
-    { target: 'dotnet', lang: 'csharp' },
     { target: 'java', lang: 'java' },
+    { target: 'dotnet', lang: 'csharp' },
+    { target: 'php', lang: 'php' },
 ];
 
 let codegenLoad;

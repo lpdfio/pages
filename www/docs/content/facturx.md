@@ -102,7 +102,7 @@ The invoice can carry more files: a delivery note, a timesheet, the same invoice
 </lpdf>
 ```
 
-A document built in code sets it in its `output`: `facturxStrict` in Node.js, PHP and Java, `FacturXStrict` in .NET and `facturx_strict` in Python.
+A document built in code sets it in its `output`: `facturxStrict` in JavaScript, Java and PHP, `facturx_strict` in Python and `FacturXStrict` in C#.
 
 ## In code
 
@@ -122,23 +122,6 @@ writeFileSync('invoice-2026-0412.pdf', pdf)
 ```
 :::
 
-::: sdk php
-
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\RenderOptions;
-use Lpdf\L;
-
-$pdf = L::engine()
-    ->loadFile('factur-x.xml', file_get_contents('data/invoice-2026-0412.xml'))
-    ->render($xml, new RenderOptions(createdOn: date('c')));
-
-file_put_contents('invoice-2026-0412.pdf', $pdf);
-```
-:::
-
 ::: sdk python
 
 ```python
@@ -152,22 +135,6 @@ pdf = (L.engine()
 
 Path('invoice-2026-0412.pdf').write_bytes(pdf)
 ```
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf;
-using Lpdf.Engine;
-
-using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
-engine.LoadFile("factur-x.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
-var pdf = engine.Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
-
-await File.WriteAllBytesAsync("invoice-2026-0412.pdf", pdf);
-```
-
-.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
 :::
 
 ::: sdk java
@@ -188,6 +155,39 @@ Files.write(Path.of("invoice-2026-0412.pdf"), pdf);
 ```
 
 Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/A refuses.
+:::
+
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
+engine.LoadFile("factur-x.xml", await File.ReadAllBytesAsync("data/invoice-2026-0412.xml"));
+var pdf = engine.Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
+
+await File.WriteAllBytesAsync("invoice-2026-0412.pdf", pdf);
+```
+
+C# reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\RenderOptions;
+use Lpdf\L;
+
+$pdf = L::engine()
+    ->loadFile('factur-x.xml', file_get_contents('data/invoice-2026-0412.xml'))
+    ->render($xml, new RenderOptions(createdOn: date('c')));
+
+file_put_contents('invoice-2026-0412.pdf', $pdf);
+```
 :::
 
 ## Errors

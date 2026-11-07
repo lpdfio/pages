@@ -95,7 +95,7 @@ A table's header cells are those of its `thead`. A header in the first column of
 
 A PDF/UA file carries the date it was made, as a [PDF/A](?p=pdfa#the-date) file does, so the render gives it as `createdOn`: an ISO 8601 date, or date and time.
 
-A document built in code asks for PDF/UA in its `output` and gives its language in its `meta`: `output: { pdfua: '1' }` and `meta: { lang: 'en-US' }` in Node.js, `DocumentOutput` and `DocumentMeta` in the other SDKs, where .NET names it `PdfUa`. `alt` and `role` are on the attributes of the image, barcode, layer and text.
+A document built in code asks for PDF/UA in its `output` and gives its language in its `meta`: `output: { pdfua: '1' }` and `meta: { lang: 'en-US' }` in JavaScript, `DocumentOutput` and `DocumentMeta` in the other SDKs, where C# names it `PdfUa`. `alt` and `role` are on the attributes of the image, barcode, layer and text.
 
 ## Errors
 

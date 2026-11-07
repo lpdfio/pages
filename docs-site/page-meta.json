@@ -1,35 +1,35 @@
 {
     "install": {
-        "title": "Install Lpdf for Node.js, .NET, PHP, Python and Java",
-        "description": "Install the Lpdf engine from npm, NuGet, Packagist, PyPI or Maven Central, then create a PDF from XML or code in Node.js, .NET, PHP, Python or Java."
+        "title": "Install Lpdf for JavaScript, Python, Java, C# and PHP",
+        "description": "Install the Lpdf engine from npm, NuGet, Packagist, PyPI or Maven Central, then create a PDF from XML or code in JavaScript, Python, Java, C# or PHP."
     },
     "examples/admission-letter": {
         "title": "Admission letter PDF template in XML, for every Lpdf SDK",
-        "description": "A one-page admission letter PDF on a university letterhead, with a crest drawn in a layer. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "A one-page admission letter PDF on a university letterhead, with the crest loaded as an image. Get the XML and render it in JavaScript, Python, Java, C# or PHP."
     },
     "examples/resume": {
         "title": "Résumé PDF template in XML, for every Lpdf SDK",
-        "description": "A one-page résumé PDF: colours and sizes named once as tokens, two columns and wrapping tags. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "A one-page résumé PDF: colours and sizes named once as tokens, two columns and wrapping tags. Get the XML and render it in JavaScript, Python, Java, C# or PHP."
     },
     "examples/invoice": {
         "title": "Invoice PDF template in XML, for every Lpdf SDK",
-        "description": "An invoice PDF filled from JSON: a repeating table, totals, a QR code and page numbers. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "An invoice PDF filled from JSON: a repeating table, totals, a QR code and page numbers. Get the XML and render it from JavaScript, Python, Java, C# or PHP."
     },
     "examples/report": {
         "title": "Report PDF template in XML, for every Lpdf SDK",
-        "description": "A data-driven report PDF on data centers: tables across pages, charts and a world map. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "A data-driven report PDF on data centers: tables across pages, charts and a world map. Get the XML and render it from JavaScript, Python, Java, C# or PHP."
     },
     "examples/installment-contract": {
         "title": "Installment contract PDF template in XML, for every Lpdf SDK",
-        "description": "An installment contract PDF: boxed forms, leader lines and a rotated SAMPLE watermark. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "An installment contract PDF: boxed forms, leader lines and a rotated SAMPLE watermark. Get the XML and render it from JavaScript, Python, Java, C# or PHP."
     },
     "examples/brochure": {
         "title": "Brochure PDF template in XML, for every Lpdf SDK",
-        "description": "A landscape brochure PDF where layers are the design, with embedded fonts and a QR code. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "A landscape brochure PDF where layers are the design, with embedded fonts and a QR code. Get the XML and render it from JavaScript, Python, Java, C# or PHP."
     },
     "examples/book": {
         "title": "Book PDF template in XML, for every Lpdf SDK",
-        "description": "A pocket book PDF of Alice's Adventures in Wonderland, all twelve chapters with plates. Get the XML and render it from Node.js, .NET, PHP, Python or Java."
+        "description": "A pocket book PDF of Alice's Adventures in Wonderland, all twelve chapters with plates. Get the XML and render it from JavaScript, Python, Java, C# or PHP."
     },
     "doc/section": {
         "description": "The section element in Lpdf XML: a run of pages with its own size, orientation and background that holds layers and one layout and paginates on its own."
@@ -129,7 +129,7 @@
     },
     "encryption": {
         "title": "Encrypt a PDF with AES-256 and passwords in Lpdf",
-        "description": "Encrypt a PDF with AES-256: the document asks for it in its output element, and the passwords come with the render call in Node.js, .NET, PHP, Python or Java."
+        "description": "Encrypt a PDF with AES-256: the document asks for it in its output element, and the passwords come with the render call in JavaScript, Python, Java, C# or PHP."
     },
     "pdfa": {
         "title": "Create PDF/A-2 and PDF/A-3 files for archiving in Lpdf",
@@ -153,7 +153,7 @@
     },
     "attachments": {
         "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
-        "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a spreadsheet or terms, read from src or loaded in Node.js, .NET, PHP, Python or Java."
+        "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a spreadsheet or terms, read from src or loaded in JavaScript, Python, Java, C# or PHP."
     },
     "facturx": {
         "title": "Create Factur-X and ZUGFeRD e-invoices as PDF/A-3 in Lpdf",
@@ -161,6 +161,6 @@
     },
     "stamp": {
         "title": "Stamp images onto existing PDFs with Lpdf",
-        "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from Node.js, .NET, PHP, Python or Java, keeping its original bytes and encryption."
+        "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from JavaScript, Python, Java, C# or PHP, keeping its original bytes and encryption."
     }
 }

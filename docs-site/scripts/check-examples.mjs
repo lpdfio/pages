@@ -9,7 +9,7 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
+import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredImages, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const verbose = process.argv.includes('--verbose');
 
@@ -31,6 +31,7 @@ for (const file of await walk())
         const wrapped = wrap(fence.xml);
         if (wrapped.skip) { skipped.push(`${where}  (${wrapped.skip})`); continue; }
         for (const name of declaredFonts(wrapped.xml)) engine.load_font(name, FONT);
+        for (const name of declaredImages(wrapped.xml)) engine.load_image(name, PIXEL);
         for (const [key, bytes] of declaredFiles(wrapped.xml)) engine.load_file(key, bytes);
         for (const key of declaredProfiles(wrapped.xml)) engine.load_profile(key, PROFILE);
         try

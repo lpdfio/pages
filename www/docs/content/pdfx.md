@@ -69,23 +69,6 @@ writeFileSync('brochure.pdf', pdf)
 ```
 :::
 
-::: sdk php
-
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\RenderOptions;
-use Lpdf\L;
-
-$pdf = L::engine()
-    ->loadProfile('press', file_get_contents('profiles/printer-coated.icc'))
-    ->render($xml, new RenderOptions(createdOn: date('c')));
-
-file_put_contents('brochure.pdf', $pdf);
-```
-:::
-
 ::: sdk python
 
 ```python
@@ -99,22 +82,6 @@ pdf = (L.engine()
 
 Path('brochure.pdf').write_bytes(pdf)
 ```
-:::
-
-::: sdk dotnet
-
-```csharp
-using Lpdf;
-using Lpdf.Engine;
-
-var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
-    .LoadProfile("press", File.ReadAllBytes("profiles/printer-coated.icc"))
-    .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
-
-await File.WriteAllBytesAsync("brochure.pdf", pdf);
-```
-
-.NET reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/X refuses.
 :::
 
 ::: sdk java
@@ -137,7 +104,40 @@ Files.write(Path.of("brochure.pdf"), pdf);
 Java reads the font's `src` only through the engine's `srcFallback`: without it the font isn't embedded, which PDF/X refuses.
 :::
 
-A document built in code declares the profile in its assets and asks for PDF/X in its `output`: `assets: { profiles: [{ name: 'press', src }] }` and `output: { pdfx: '4', profile: 'press' }` in Node.js, `DocumentAssets` with `ProfileAttr` and `DocumentOutput` in the other SDKs, where .NET names it `PdfX`.
+::: sdk dotnet
+
+```csharp
+using Lpdf;
+using Lpdf.Engine;
+
+var pdf = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes })
+    .LoadProfile("press", File.ReadAllBytes("profiles/printer-coated.icc"))
+    .Render(xml, new RenderOptions { CreatedOn = DateTimeOffset.Now.ToString("o") });
+
+await File.WriteAllBytesAsync("brochure.pdf", pdf);
+```
+
+C# reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/X refuses.
+:::
+
+::: sdk php
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\RenderOptions;
+use Lpdf\L;
+
+$pdf = L::engine()
+    ->loadProfile('press', file_get_contents('profiles/printer-coated.icc'))
+    ->render($xml, new RenderOptions(createdOn: date('c')));
+
+file_put_contents('brochure.pdf', $pdf);
+```
+:::
+
+A document built in code declares the profile in its assets and asks for PDF/X in its `output`: `assets: { profiles: [{ name: 'press', src }] }` and `output: { pdfx: '4', profile: 'press' }` in JavaScript, `DocumentAssets` with `ProfileAttr` and `DocumentOutput` in the other SDKs, where C# names it `PdfX`.
 
 ## Bleed
 

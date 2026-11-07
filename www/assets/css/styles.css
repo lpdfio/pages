@@ -403,14 +403,21 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 /* Language name leads its row; the repo and package links sit under it, a step quieter. */
 .footer-sdk { font-size: 0.875rem; color: var(--text-muted); transition: color .15s; }
 .footer-sdk:hover { color: var(--brand); }
-/* These are a step smaller than the rows around them, which would leave them 19.5px high and a few pixels from the
-   package name above, so each is given 24px to tap. */
+/* The registry link is the size of the SDK name it follows, so each row is as tall as a Documentation link and the two
+   columns share a rhythm. */
+.footer-columns .footer-sdk-links { font-size: 0.875rem; }
 .footer-columns .footer-sdk-links a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 24px;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--text-subtle);
+}
+/* Said again here: the rule above is as specific as `.footer-links a:hover` and comes after it, so without this the
+   registry link would stay grey on hover. */
+.footer-columns .footer-sdk-links a:hover { color: var(--brand); }
+/* The slash between an SDK's name and its registry. */
+.footer-sdk-sep {
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+    user-select: none;
 }
 /* No rule above the copyright. The footer already has one — its own border-top — and a second
    inside a block that has no other dividers reads as two stacked footers rather than one. Space
@@ -480,19 +487,32 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 .format-point-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 4px; }
 .format-point-body  { font-size: 0.90625rem; color: var(--text-muted); line-height: 1.5; }
 
+/* The highlights: four in a row, then two, then one, never three. Relayout's grid fits as many columns as the width
+   allows, which gives three at some widths and leaves a row of two. The breakpoints are where a card's text is still wide
+   enough for its longest title to stay on one line: 40rem for two, and 75rem for four, where the container reaches its
+   full 1120px. */
+.highlights-grid { display: grid; grid-template-columns: 1fr; }
+@media (min-width: 40rem) { .highlights-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 75rem) { .highlights-grid { grid-template-columns: repeat(4, 1fr); } }
+
 /* ── Document-type cards ── */
 .doc-card {
     background: var(--bg-elev); border: 1px solid var(--border);
     border-radius: 12px; padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 0.625rem;
+    display: flex; flex-direction: column; gap: 0.5rem;
 }
 .doc-card-icon {
     width: 36px; height: 36px; background: var(--bg-sunken);
     border: 1px solid var(--border); border-radius: 8px;
     display: grid; place-items: center; color: var(--text);
+    margin-bottom: 0.5rem;
 }
-.doc-card-title { font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
-.doc-card-body  { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+.doc-card-title { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+.doc-card-body  { margin: 0; font-size: 0.9375rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+/* Medium weight and no underline: a link that differs from its sentence by colour alone is 2.3:1 from it, short of the 3:1
+   `link-in-text-block` asks for, and the medium weight is what keeps the audit at 100 (user, 2026-11-07). */
+.doc-card-body a { color: var(--text); font-weight: 500; text-decoration: none; transition: color .15s; }
+.doc-card-body a:hover { color: var(--brand); }
 
 /* ── Capability chips ── */
 .cap-chip {
@@ -541,22 +561,32 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
 }
 
 .sdk-item-name {
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     color: var(--text-muted);
     letter-spacing: .02em;
+}
+
+a.sdk-item-name {
+    text-decoration: none;
+    transition: color .15s;
+}
+
+a.sdk-item-name:hover {
+    color: var(--brand);
 }
 
 .sdk-item-links {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     color: var(--text-subtle);
 }
 
 .sdk-item-links a {
-    color: var(--text-subtle);
+    color: var(--text-muted);
+    font-weight: 500;
     text-decoration: none;
     transition: color .15s;
 }
@@ -576,6 +606,23 @@ footer { background: var(--bg-chrome); border-top: 1px solid var(--border); }
     background: var(--border);
     flex-shrink: 0;
     align-self: center;
+}
+
+.sdk-tooling {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text-subtle);
+}
+
+.sdk-tooling a {
+    color: var(--text-muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color .15s;
+}
+
+.sdk-tooling a:hover {
+    color: var(--brand);
 }
 
 /* ── Platform cards ── */

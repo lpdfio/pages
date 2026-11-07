@@ -26,10 +26,10 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `stripe`     | color   | —       | The background of every other row below the header, or `none` |
 | `head-border` | string | —       | The line under the header row: a thickness and a color like `border`, for example `xs line`, or `none`. See [Lines and stripes](#lines-and-stripes) |
 | `row-border` | string  | —       | The line under each row, in the same form, or `none`. Under the header, `head-border` takes its place when it is set |
-| `gap`        | token/pt | —      | Space between columns and between rows |
+| `gap`        | token/length | —      | Space between columns and between rows |
 | `padding`    | spacing | —       | Space between the table's edge and its content. This is not cell padding: set `padding` on each `td` |
 | `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
-| `width`      | token/pt | —      | Constrain table width |
+| `width`      | token/length | —      | Constrain table width |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `bulk`       | boolean  | `false` | `true` lays out the rows of its `tr` with `data-source` a page at a time, straight from the data, for tables of tens of thousands of rows. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -220,15 +220,15 @@ A table with `head-border` alone has the line under its header and none between 
 | Unit | Meaning |
 |------|---------|
 | `fr` | Fraction of remaining width (like CSS fr) |
-| `pt` | Fixed point width |
+| `pt`, `mm`, `in` | Fixed width, in points, millimeters or inches |
 | `%`  | Percentage of table width |
 | `auto` | The width the cells of the column need on one line |
 
-Mixing units is supported: `"2fr 80pt 20%"`. `auto` mixes with `pt` and `%`, and not with `fr`, which also shares what is left: `"auto 90pt"` is allowed and `"auto 1fr"` is an error that says so.
+Mixing units is supported: `"2fr 80pt 20%"`, `"1fr 40mm"`. Every column ends up a fixed width in points, worked out from the width of the table. `auto` mixes with lengths and `%`, and not with `fr`, which also shares what is left: `"auto 90pt"` is allowed and `"auto 1fr"` is an error that says so. A number with no unit is a share, so `"2 1"` is `"2fr 1fr"`. An entry that is none of these, such as `40cm`, is an error that names it.
 
 ### Columns the width of their cells
 
-An `auto` column takes the width its cells need to stay on one line, so a column of numbers is as narrow as its numbers and a column of names as wide as its longest name. The `auto` columns share what the `pt` and `%` columns leave:
+An `auto` column takes the width its cells need to stay on one line, so a column of numbers is as narrow as its numbers and a column of names as wide as its longest name. The `auto` columns share what the fixed and `%` columns leave:
 
 - when every `auto` column fits on one line, each takes that width, and the room that is left is shared in proportion to it;
 - when they do not fit, each keeps at least its longest word, and shares what is left in proportion to how much more it could use, so the columns of long text are the ones that wrap;

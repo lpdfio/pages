@@ -8,11 +8,11 @@ Text has one set of defaults wherever it is, in the flow and in a [layer](?p=doc
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `font-size` | token/pt | inherit, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
+| `font-size` | token/length | inherit, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
 | `font`      | string  | inherit, else the document's `font`, or `Helvetica` | Font name declared in `assets` |
 | `color`     | color   | the nearest box's, else `#1a1a1a` | Text color: a [color](?p=xml/schema#colors), such as `#333333` or `cmyk(0, 0, 0, 80)`, or a named token. A text that sets none takes the color of the nearest box that sets one, else the `text` color: a color named `text` in `tokens` changes the default. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
 | `align`     | string  | `left`  | `left` `center` `right` `justify`. Not inherited: on a box, `align` places the children |
-| `width`     | token/pt | —      | Constrain text block width |
+| `width`     | token/length | —      | Constrain text block width |
 | `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens`. See [Line height](#line-height) |
 | `max-lines` | integer | —       | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](#capping-a-text) |
 | `ellipsis`  | boolean | `false` | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |

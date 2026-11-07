@@ -6,12 +6,12 @@ A straight line between two points in a [layer](?p=doc/layer). All four coordina
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x1`           | signed pt | —       | **Required.** Start X |
-| `y1`           | signed pt | —       | **Required.** Start Y |
-| `x2`           | signed pt | —       | **Required.** End X |
-| `y2`           | signed pt | —       | **Required.** End Y |
+| `x1`           | signed length | —       | **Required.** Start X |
+| `y1`           | signed length | —       | **Required.** Start Y |
+| `x2`           | signed length | —       | **Required.** End X |
+| `y2`           | signed length | —       | **Required.** End Y |
 | `stroke`       | color     | —       | Line color |
-| `stroke-width` | pt        | —       | Line thickness |
+| `stroke-width` | length        | —       | Line thickness |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` (4pt dash, 2pt gap) |
 | `line-cap`     | string    | `butt`  | `butt` `round` `square` |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |

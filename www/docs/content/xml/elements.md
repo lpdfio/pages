@@ -59,8 +59,8 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 
 | Child | Description |
 |-------|-------------|
-| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as `pt` values. `height` is the row for the heights of boxes, tables, images, shapes and barcodes: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
-| `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not `pt` values: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
+| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as lengths in `pt`, `mm` or `in`. `height` is the row for the heights of boxes, tables, images, shapes and barcodes: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
+| `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not lengths: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
 | `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
 | `gradients` | Holds `gradient` elements |
@@ -120,14 +120,14 @@ One set of lines of a `ruling`, cut by a step or a count in each direction. A di
 
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `step`    | pt/mm/in | —      | The distance between two lines in both directions |
-| `step-x`  | pt/mm/in | —      | The distance between the lines that run down the page. Takes the place of `step` |
-| `step-y`  | pt/mm/in | —      | The distance between the lines that run across the page. Takes the place of `step` |
+| `step`    | length | —      | The distance between two lines in both directions |
+| `step-x`  | length | —      | The distance between the lines that run down the page. Takes the place of `step` |
+| `step-y`  | length | —      | The distance between the lines that run across the page. Takes the place of `step` |
 | `count`   | whole number | —  | Equal parts in both directions, from 1 to 100 |
 | `count-x` | whole number | —  | Equal columns, from 1 to 100. Takes the place of `count` |
 | `count-y` | whole number | —  | Equal rows, from 1 to 100. Takes the place of `count` |
 | `color`   | color   | `line-muted` | The color of the lines |
-| `thickness` | token/pt | `0.4pt` | A length or a name of the `border` row |
+| `thickness` | token/length | `0.4pt` | A length or a name of the `border` row |
 
 ### `meta`
 
@@ -178,9 +178,9 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 
 | Attribute     | Type    | Default    | Description |
 |---------------|---------|------------|-------------|
-| `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` |
+| `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` or `"210mm 297mm"` |
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
-| `bleed`       | pt/mm/in | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
+| `bleed`       | length | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
 | `background`  | color or `gradient:name` | — | Page background: a color, or a [gradient](?p=xml/schema#gradients) that spans the page |
 | `footnote-counter` | string | `section` | Where the numbers of the [footnotes](?p=doc/layout/footnote) start over: `page`, `section` or `document`. A section's own value overrides it |
@@ -194,18 +194,18 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 |---------------|---------|----------|-------------|
 | `size`        | string  | inherit  | Override page size for this section |
 | `orientation` | string  | inherit  | Override orientation |
-| `bleed`       | pt/mm/in | inherit | Override the bleed for this section's pages; `0mm` takes it away |
+| `bleed`       | length | inherit | Override the bleed for this section's pages; `0mm` takes it away |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
 | `ruling`      | string  | —        | The name of a [ruling](?p=xml/schema#rulings) of the tokens, whose lines are drawn on every page, under everything else and over the background |
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
 | `title`       | string  | —        | Section title. Accepted, but not used: the PDF's outline takes its entries from bookmarks |
 | `type`        | string  | —        | `toc`: the section is the document's [table of contents](?p=doc/toc), laid out last with the data `$toc`. One per document |
-| `toc-indent-step` | token/pt | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
+| `toc-indent-step` | token/length | `12pt` | In a table of contents, the left padding an entry gets for each level below the first |
 | `page-start`  | whole number | —   | The number of the section's first page, which starts a new run of pages: `1` restarts the count. 1 or more. Without it the pages count on from the section before. See [Page numbers](?p=doc/section#page-numbers) |
 | `page-format` | string  | the section before's | How the page numbers are written: `decimal`, `lower-alpha`, `upper-alpha`, `lower-roman` or `upper-roman`. Past z, letters repeat: aa, bb, cc |
 | `page-prefix` | string  | the section before's | Text before the page numbers, such as `A-`. `""` takes it away |
 | `columns`     | whole number | 1   | Sets the section's flow, a `layout` or a `markdown`, in this many columns, from 1 to 12: each fills like a small page, left to right, then the next page. See [Columns](?p=doc/section#columns) |
-| `column-gap`  | token/pt | `l`     | The space between two columns, as `gap` takes it. Ignored with one column |
+| `column-gap`  | token/length | `l`     | The space between two columns, as `gap` takes it. Ignored with one column |
 | `column-rule` | border  | —        | A line in the middle of each gap between two columns that hold something, as `border` takes it: `0.5pt #cccccc`. Ignored with one column |
 | `column-fill` | string  | `auto`   | How the columns of the last page fill: `auto`, in order like every other page, or `balance`, levelled. CSS's default is `balance`. Ignored with one column |
 | `debug`       | boolean | false    | Render layout boxes |
@@ -228,9 +228,9 @@ Markdown as the content of a section, in the place of a `layout`. It holds an op
 |-------------|----------|---------|-------------|
 | `margin`    | spacing  | `36pt`  | The space between the page edges and the Markdown, as the `margin` of a `layout` |
 | `font`      | string   | the document's | The font of the Markdown, which a rule can change |
-| `font-size` | token/pt | `m`     | The size of its text, which a rule can change |
+| `font-size` | token/length | `m`     | The size of its text, which a rule can change |
 | `color`     | color    | the `text` token | The color of its text, which a rule can change |
-| `gap`       | token/pt | `l`     | The space between blocks |
+| `gap`       | token/length | `l`     | The space between blocks |
 | `bookmarks` | integer  | `6`     | How many levels of headings are bookmarks, 0 to 6 |
 | `debug`     | boolean  | `false` | Draw the outline of each box |
 
@@ -262,19 +262,19 @@ Layout elements live inside `layout`. Every one except `region`, `span` and `boo
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `gap`       | token/pt| `0`     | Space between children. Not on `frame`, which has one child |
+| `gap`       | token/length| `0`     | Space between children. Not on `frame`, which has one child |
 | `padding`   | spacing | `0`     | Space inside the edge: `8pt`, a token, or one to four values like `"8pt 16pt"` |
-| `width`     | token/pt/`fill` | — | Fixed width, or `fill`: the full width, and in a `row` the width the other children leave. Not on `td`: the table's `cols` sets cell widths |
-| `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens`; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
+| `width`     | token/length/`fill` | — | Fixed width, or `fill`: the full width, and in a `row` the width the other children leave. Not on `td`: the table's `cols` sets cell widths |
+| `height`    | token/length/`fill`/`full` | — | A length fixes the height, as a length or a name from the `height` row of `tokens`; `fill` takes what is left after siblings; `full` takes all the height available. Any of them stops the box splitting across pages |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `background`| color or `gradient:name` | — | Background fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the box |
 | `border`    | BorderValue | —   | Border, written `"thickness color"` |
-| `radius`    | token/pt| `0`     | Corner radius |
+| `radius`    | token/length| `0`     | Corner radius |
 | `color`     | color   | inherit | Color of the text inside. A text that sets none takes the nearest box's, else the `text` color. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
 | `opacity`   | 0–1     | `1`     | How opaque the box and everything in it is, as one. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`    | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 | `font`      | string  | inherit | Font for the text inside |
-| `font-size` | token/pt| inherit | Font size for the text inside |
+| `font-size` | token/length| inherit | Font size for the text inside |
 | `debug`     | boolean | false   | Draw the box outlines |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
@@ -304,7 +304,7 @@ Equal columns, filled left to right.
 | Attribute | Type    | Default | Description |
 |-----------|---------|---------|-------------|
 | `cols`    | integer | `1`     | Number of columns (1–12) |
-| `col-width` | token/pt | —    | Minimum column width: fits as many columns as the width allows, at least one, stretched to fill the row (overrides `cols`). Tokens are grid sizes |
+| `col-width` | token/length | —    | Minimum column width: fits as many columns as the width allows, at least one, stretched to fill the row (overrides `cols`). Tokens are grid sizes |
 | `bulk`    | boolean | `false` | `true` lays out the cells of its child with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 
 ### `list`
@@ -319,7 +319,7 @@ A list of items, each marked with a bullet drawn as a shape or a number the engi
 | `start`    | integer  | `1`       | The number of a number list's first item |
 | `prefix`   | string   | —         | Text before each number of a number list |
 | `suffix`   | string   | `.`       | Text after each number of a number list |
-| `indent`   | token/pt | `24pt`    | The width of the marker's column: the words of an item start this far from the list's left edge, at every level |
+| `indent`   | token/length | `24pt`    | The width of the marker's column: the words of an item start this far from the list's left edge, at every level |
 | `bulk`     | boolean  | `false`   | `true` lays out the items of its `li` with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
@@ -338,7 +338,7 @@ Code, or any text whose spaces and lines matter, in a box. The text is kept as i
 | Attribute    | Type    | Default   | Description |
 |--------------|---------|-----------|-------------|
 | `font`       | string  | `Courier` | Font for the code |
-| `font-size`  | token/pt | inherit  | Font size for the code |
+| `font-size`  | token/length | inherit  | Font size for the code |
 | `color`      | color   | inherit   | Color of the code |
 | `padding`    | spacing | `m`       | Space between the edge of the box and the code |
 | `background` | color   | `#f3f4f6` | The tint of the box |
@@ -357,10 +357,10 @@ Paragraph or inline text.
 | Attribute    | Type    | Default   | Description |
 |--------------|---------|-----------|-------------|
 | `font`       | string  | inherit, else the document's `font`, or `Helvetica` | Font name |
-| `font-size`  | token/pt| inherit, else `m` (11pt) | Font size |
+| `font-size`  | token/length| inherit, else `m` (11pt) | Font size |
 | `color`      | color   | the nearest box's, else `#1a1a1a` | Text color. A text that sets none takes the color of the nearest box that sets one, else the `text` color: a color named `text` in `tokens` changes the default |
 | `align`      | string  | `left`    | `left` `center` `right` `justify`. Not inherited: on a box, `align` places the children |
-| `width`      | token/pt| —         | Constrain text block width |
+| `width`      | token/length| —         | Constrain text block width |
 | `line-height`| number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
 | `max-lines`  | integer | —         | The most lines drawn. Only whole lines are drawn, and the rest of the text is dropped. No cap by default: the text wraps whole. See [Capping a text](?p=doc/layout/text#capping-a-text) |
 | `ellipsis`   | boolean | `false`   | End the last line drawn in an ellipsis when `max-lines` drops text. With no `max-lines` it changes nothing |
@@ -417,7 +417,7 @@ Horizontal (or vertical) rule.
 |-------------|---------|--------------|-------------|
 | `direction` | string  | `horizontal` | `horizontal` or `vertical` |
 | `color`     | color   | `#000000`    | Line color |
-| `thickness` | token/pt| `1pt`        | Line thickness. Tokens are border sizes: `xs` 0.5pt up to `xxl` 4pt |
+| `thickness` | token/length| `1pt`        | Line thickness. Tokens are border sizes: `xs` 0.5pt up to `xxl` 4pt |
 | `debug`     | boolean | false        | Draw the box outline |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
@@ -429,12 +429,12 @@ Inline image.
 |--------------|---------|---------|-------------|
 | `name`       | string  | —       | **Required.** Asset name |
 | `alt`        | string  | —       | What the image shows, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a); `alt=""` marks it as decoration. A PDF/UA document needs it on each image outside a header or a footer; at level a without `pdfua`, an image without it is decoration. A document that is not tagged ignores it |
-| `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
-| `height`     | token/pt | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
+| `width`      | token/length/`fill` | — | Width, or `fill`: as wide as the room the image has. Without `height`, the height follows the image's proportions |
+| `height`     | token/length | —      | Height: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the image is never stretched. With `width="fill"`, a limit |
 | `padding`    | spacing | `0`     | Space around the picture, inside the box |
 | `background` | color   | —       | Background of the box around the picture |
 | `border`     | BorderValue | —   | Border, drawn on the edge of the box |
-| `radius`     | token/pt| `0`     | Corner radius: rounds the box, and clips the picture to rounded corners |
+| `radius`     | token/length| `0`     | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`      | boolean | false   | Draw the box outline |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -450,13 +450,13 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
 | `type`         | string    | —       | **Required.** `rect` `circle` `ellipse` |
-| `width`        | token/pt  | —       | Width of a `rect` or an `ellipse`, which need it |
-| `height`       | token/pt  | —       | Height of a `rect` or an `ellipse`, which need it: a length, or a name from the `height` row of `tokens` |
-| `r`            | pt        | —       | Radius of a `circle`, which needs it. Its box is the square of side `2r` |
-| `radius`       | token/pt  | —       | Corner radius of a `rect` |
+| `width`        | token/length  | —       | Width of a `rect` or an `ellipse`, which need it |
+| `height`       | token/length  | —       | Height of a `rect` or an `ellipse`, which need it: a length, or a name from the `height` row of `tokens` |
+| `r`            | length        | —       | Radius of a `circle`, which needs it. Its box is the square of side `2r` |
+| `radius`       | token/length  | —       | Corner radius of a `rect` |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the shape |
 | `stroke`       | color     | —       | Stroke color |
-| `stroke-width` | pt        | —       | Stroke width |
+| `stroke-width` | length        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 3"` |
 | `opacity`      | 0–1       | `1`     | How opaque the shape is |
 | `debug`        | boolean   | false   | Draw the box outline |
@@ -466,14 +466,14 @@ A rectangle, a circle or an ellipse in the flow, for a status dot, a color swatc
 
 | Attribute   | Type    | Default | Description |
 |-------------|---------|---------|-------------|
-| `cols`      | string  | —       | **Required.** Column widths, separated by spaces, in `fr`, `pt` or `%`: `"1fr 2fr"`, `"100pt 1fr"` |
+| `cols`      | string  | —       | **Required.** Column widths, separated by spaces, in `fr`, `pt`, `mm`, `in` or `%`, or `auto`: `"1fr 2fr"`, `"100pt 1fr"`, `"40mm 1fr"`. An entry that is none of these is an error |
 | `border`    | BorderValue | —   | Grid lines between and around the cells |
 | `stripe`    | color   | —       | Alternating row background |
-| `gap`       | token/pt| `0`     | Space between columns and between rows |
+| `gap`       | token/length| `0`     | Space between columns and between rows |
 | `padding`   | spacing | `0`     | Space between the table's edge and its content. Not cell padding: set it on each `td` |
 | `background`| color or `gradient:name` | — | Background behind the whole table. A gradient spans the table |
-| `width`     | token/pt| —       | Fixed width |
-| `height`    | token/pt/`fill`/`full` | — | A length fixes the height, as a `pt` value or a name from the `height` row of `tokens` |
+| `width`     | token/length| —       | Fixed width |
+| `height`    | token/length/`fill`/`full` | — | A length fixes the height, as a length or a name from the `height` row of `tokens` |
 | `paginate`  | string  | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false   | Draw the box outline |
 | `bulk`      | boolean | `false` | `true` lays out the rows of its `tr` with `data-source` a page at a time, straight from the data. See [Bulk Records](?p=data/bulk) |
@@ -509,8 +509,8 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 | `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
 | `data`      | string  | —         | **Required.** Barcode data payload |
 | `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer; at level a without `pdfua`, a barcode without it is decoration. A document that is not tagged ignores it |
-| `width`     | token/pt| —         | Width. Without `height`, the height follows the barcode's proportions |
-| `height`    | token/pt| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
+| `width`     | token/length| —         | Width. Without `height`, the height follows the barcode's proportions |
+| `height`    | token/length| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
 | `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
 | `hrt`       | boolean | false     | Human-readable text below Code128/EAN-13 |
 | `data-value`| string  | —         | Dot-path to a scalar value that replaces the data the barcode encodes |
@@ -561,8 +561,8 @@ PDF form field.
 | `readonly`   | boolean | false   | Prevent editing |
 | `max-len`    | integer | —       | Maximum text length |
 | `action-url` | URL     | —       | Submit URL (button) |
-| `width`      | token/pt| —       | Field width |
-| `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of `tokens` |
+| `width`      | token/length| —       | Field width |
+| `height`     | token/length | —      | Field height: a length, or a name from the `height` row of `tokens` |
 | `debug`      | boolean | false   | Draw the box outline |
 | `ocg` | string | — | `screen`: shown only on screen. `print` is an error: a field in print content could be filled nowhere. See [Print and screen content](?p=print-and-screen#links-and-form-fields) |
 
@@ -574,8 +574,8 @@ Pinned header or footer that repeats across pages. Only allowed directly inside 
 |-----------|--------|---------|-------------|
 | `pin`     | string | —       | **Required.** `top` or `bottom`, or `inset` for a block inside the section's columns. `left` and `right` pass validation but are not implemented yet |
 | `page`    | string | `each`  | `each` `first` `last` `odd` `even`, or numbers and ranges such as `2-last`. `odd` and `even` follow the number printed on the page, and the rest count the section's own pages: see [Odd and even pages](?p=doc/layout#odd-and-even-pages). An inset on `last` goes on the last page of the flow filled without it, and stays there if it pushes text on to a new page |
-| `top`     | pt/mm/in | —     | An inset only, and required with it: how far below the top of the columns it starts |
-| `height`  | pt/mm/in | —     | An inset only, and required with it: how tall it is. Content taller than it is clipped at its foot; an inset that reaches below the room the headers and footers leave is an error |
+| `top`     | length | —     | An inset only, and required with it: how far below the top of the columns it starts |
+| `height`  | length | —     | An inset only, and required with it: how tall it is. Content taller than it is clipped at its foot; an inset that reaches below the room the headers and footers leave is an error |
 | `col`     | whole number | 1 | An inset only: the column it starts in, from 1 |
 | `colspan` | whole number | 1 | An inset only: how many columns it covers. Past the section's `columns` is an error |
 | `debug`   | boolean | false  | Draw the region's outline |
@@ -599,7 +599,7 @@ Fixed content, in the order it is written among the section's layers and layout.
 | `transform` | string  | —       | `translate(x, y)`, `scale(s)`, `rotate(deg, cx, cy)` or `matrix(a, b, c, d, e, f)`, with plain numbers |
 | `clip`      | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page: what the layer draws outside it is cut off |
 | `font`      | string  | the document's `font`, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own |
-| `font-size` | token/pt| `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
+| `font-size` | token/length| `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
 | `color`     | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
 | `alt`       | string  | —       | In a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, which a reader skips with its text |
 | `data-if`   | string  | —       | Draw the layer only when the value at the path is truthy |
@@ -612,16 +612,16 @@ A layer cannot contain another layer.
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X of the left edge (or offset from anchor) |
-| `y`            | signed pt | —       | Y of the top edge (or offset from anchor) |
-| `width`        | pt        | —       | **Required.** Width |
-| `height`       | pt        | —       | **Required.** Height |
+| `x`            | signed length | —       | X of the left edge (or offset from anchor) |
+| `y`            | signed length | —       | Y of the top edge (or offset from anchor) |
+| `width`        | length        | —       | **Required.** Width |
+| `height`       | length        | —       | **Required.** Height |
 | `anchor`       | string    | —       | Reference point |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the rectangle |
 | `stroke`       | color     | —       | Border color |
-| `stroke-width` | pt        | `1pt`   | Border width |
+| `stroke-width` | length        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern: `"4 2"` |
-| `radius`       | pt        | —       | Corner radius |
+| `radius`       | length        | —       | Corner radius |
 | `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
@@ -629,13 +629,13 @@ A layer cannot contain another layer.
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X of the left edge of the circle's box, the square of side 2`r` around it (or offset from anchor) |
-| `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
-| `r`            | pt        | —       | **Required.** Radius |
+| `x`            | signed length | —       | X of the left edge of the circle's box, the square of side 2`r` around it (or offset from anchor) |
+| `y`            | signed length | —       | Y of the top edge of the circle's box (or offset from anchor) |
+| `r`            | length        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the circle's box |
 | `stroke`       | color     | —       | Border color |
-| `stroke-width` | pt        | `1pt`   | Border width |
+| `stroke-width` | length        | `1pt`   | Border width |
 | `stroke-dash`  | string    | —       | Dash pattern |
 | `shadow`       | string    | —       | A hard-edged shadow under the shape: `"x y color"`, with an optional opacity after the color |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -646,19 +646,19 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| `rx`      | pt   | **Required.** Horizontal radius |
-| `ry`      | pt   | **Required.** Vertical radius |
+| `rx`      | length   | **Required.** Horizontal radius |
+| `ry`      | length   | **Required.** Vertical radius |
 
 ### `line`
 
 | Attribute      | Type      | Default   | Description |
 |----------------|-----------|-----------|-------------|
-| `x1`           | signed pt | —         | **Required.** Start X |
-| `y1`           | signed pt | —         | **Required.** Start Y |
-| `x2`           | signed pt | —         | **Required.** End X |
-| `y2`           | signed pt | —         | **Required.** End Y |
+| `x1`           | signed length | —         | **Required.** Start X |
+| `y1`           | signed length | —         | **Required.** Start Y |
+| `x2`           | signed length | —         | **Required.** End X |
+| `y2`           | signed length | —         | **Required.** End Y |
 | `stroke`       | color     | `#000000` | Line color |
-| `stroke-width` | pt        | `1pt`     | Line thickness |
+| `stroke-width` | length        | `1pt`     | Line thickness |
 | `stroke-dash`  | string    | —         | Dash pattern: `"4 2"` |
 | `line-cap`     | string    | `butt`    | `butt` `round` `square` |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -671,7 +671,7 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the path's bounding box |
 | `stroke`       | color   | —         | Stroke color |
 | `fill-rule`    | string  | `nonzero` | `nonzero` `evenodd` |
-| `stroke-width` | pt      | `1pt`     | Stroke width |
+| `stroke-width` | length      | `1pt`     | Stroke width |
 | `stroke-dash`  | string  | —         | Dash pattern |
 | `line-cap`     | string  | `butt`    | `butt` `round` `square` |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -682,15 +682,15 @@ Text at a fixed place. It is the layout's `text`: `max-lines`, `ellipsis` and `l
 
 | Attribute     | Type      | Default     | Description |
 |---------------|-----------|-------------|-------------|
-| `x`           | signed pt | —           | X of the left edge of the box (or offset from anchor) |
-| `y`           | signed pt | —           | Y of the top edge of the box (or offset from anchor) |
+| `x`           | signed length | —           | X of the left edge of the box (or offset from anchor) |
+| `y`           | signed length | —           | Y of the top edge of the box (or offset from anchor) |
 | `anchor`      | string    | —           | Reference point |
-| `width`       | pt        | —           | Width of the box. Without it the text is one line at its natural width |
+| `width`       | length        | —           | Width of the box. Without it the text is one line at its natural width |
 | `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
 | `ellipsis`    | boolean   | `false`     | End the last line drawn in an ellipsis when the text does not fit |
 | `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
 | `font`        | string    | the layer's `font`, else the document's, or `Helvetica` | Font name |
-| `font-size`   | token/pt  | the layer's, else `m` (11pt) | Font size |
+| `font-size`   | token/length  | the layer's, else `m` (11pt) | Font size |
 | `bold`        | boolean   | `false`     | The bold face of a built-in font |
 | `color`       | color     | the layer's, else `#1a1a1a` | Text color. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |
@@ -704,11 +704,11 @@ An image at a fixed place. It needs `width` or `height`.
 | Attribute    | Type      | Default | Description |
 |--------------|-----------|---------|-------------|
 | `name`       | string    | —       | **Required.** Asset name |
-| `x`          | signed pt | —       | X of the left edge of the box (or offset from anchor) |
-| `y`          | signed pt | —       | Y of the top edge of the box (or offset from anchor) |
+| `x`          | signed length | —       | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed length | —       | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —       | Reference point |
-| `width`      | pt        | —       | Width. Without `height`, the height follows the image's proportions |
-| `height`     | pt        | —       | Height. With both, they are a maximum: the image is never stretched |
+| `width`      | length        | —       | Width. Without `height`, the height follows the image's proportions |
+| `height`     | length        | —       | Height. With both, they are a maximum: the image is never stretched |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 
 ### `barcode-at`
@@ -719,11 +719,11 @@ A barcode at a fixed place. It needs `width` or `height`.
 |--------------|-----------|-----------|-------------|
 | `type`       | string    | —         | **Required.** `qr` `code128` `ean13` |
 | `data`       | string    | —         | **Required.** Barcode data payload |
-| `x`          | signed pt | —         | X of the left edge of the box (or offset from anchor) |
-| `y`          | signed pt | —         | Y of the top edge of the box (or offset from anchor) |
+| `x`          | signed length | —         | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed length | —         | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —         | Reference point |
-| `width`      | pt        | —         | Width. Without `height`, the height follows the barcode's proportions |
-| `height`     | pt        | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
+| `width`      | length        | —         | Width. Without `height`, the height follows the barcode's proportions |
+| `height`     | length        | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
 | `ec`         | string    | `M`       | QR error correction: `L` `M` `Q` `H` |
 | `hrt`        | boolean   | `false`   | Human-readable text below Code128/EAN-13 |
 | `color`      | color     | `#000000` | Bar color |

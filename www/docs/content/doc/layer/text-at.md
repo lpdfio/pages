@@ -6,15 +6,15 @@
 
 | Attribute     | Type      | Default     | Description |
 |---------------|-----------|-------------|-------------|
-| `x`           | signed pt | —           | X of the left edge of the text's box (or offset from anchor) |
-| `y`           | signed pt | —           | Y of the top edge of the text's box (or offset from anchor) |
+| `x`           | signed length | —           | X of the left edge of the text's box (or offset from anchor) |
+| `y`           | signed length | —           | Y of the top edge of the text's box (or offset from anchor) |
 | `anchor`      | string    | —           | Reference point: when set, `x` and `y` are offsets, and the box's matching point is placed there |
-| `width`       | pt        | —           | Width of the box. See [Width and lines](#width-and-lines) |
+| `width`       | length        | —           | Width of the box. See [Width and lines](#width-and-lines) |
 | `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
 | `ellipsis`    | boolean   | `false`     | End the last line drawn in an ellipsis when the text does not fit |
 | `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size: a number above 0, or a name from the `line-height` row of `tokens` |
 | `font`        | string    | the layer's `font`, else the document's, or `Helvetica` | Font name: a built-in font or one declared in `assets` |
-| `font-size`   | token/pt  | the layer's, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
+| `font-size`   | token/length  | the layer's, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `14pt` |
 | `bold`        | boolean   | `false`     | The bold face of a built-in font |
 | `color`       | color     | the layer's, else `#1a1a1a` | Text color: a [color](?p=xml/schema#colors), such as `#333333` or `cmyk(0, 0, 0, 80)`, or a named token. A color named `text` in `tokens` changes the default |
 | `align`       | string    | `left`      | `left` `center` `right` `justify`, within `width` |

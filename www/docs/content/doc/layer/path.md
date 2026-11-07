@@ -10,7 +10,7 @@ Draws an arbitrary shape in a [layer](?p=doc/layer) using SVG path data. Support
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the path's bounding box |
 | `stroke`       | color   | —          | Stroke color |
 | `fill-rule`    | string  | `nonzero`  | `nonzero` or `evenodd` |
-| `stroke-width` | pt      | —          | Stroke width |
+| `stroke-width` | length      | —          | Stroke width |
 | `stroke-dash`  | string  | —          | Dash pattern |
 | `line-cap`     | string  | `butt`     | `butt` `round` `square` |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |

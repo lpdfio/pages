@@ -38,7 +38,7 @@ A [`bookmark`](?p=doc/layout/bookmark) as the section's first child comes before
 | `transform`   | string  | —       | Transform applied to everything in the layer. See [Transforms](#transforms) |
 | `clip`        | string  | —       | A rectangle, `x y w h`, in points from the top left corner of the page. What the layer draws outside it is cut off |
 | `font`        | string  | document's font, or `Helvetica` | The font of the `text-at` in the layer that sets none of its own. See [Text style](#text-style) |
-| `font-size`   | token/pt | `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
+| `font-size`   | token/length | `m` (11pt) | The size of the `text-at` in the layer that sets none of its own |
 | `color`       | color   | `#1a1a1a` | The color of the `text-at` in the layer that sets none of its own. Defaults to the `text` color |
 | `alt`         | string  | —       | In a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), what the layer shows: a screen reader reads it as one figure at the layer's place. Without it a layer is decoration, skipped with its text. A document that is not tagged ignores it |
 | `data-if`     | string  | —       | Draw the layer only when the value at the path is truthy. See [Data in a layer](#data-in-a-layer) |

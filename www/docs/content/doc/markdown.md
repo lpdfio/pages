@@ -25,9 +25,9 @@ A `markdown` holds an optional [`markdown-styles`](#styling), which says how eac
 |-------------|----------|---------|-------------|
 | `margin`    | spacing  | `36pt`  | The space between the page edges and the Markdown: one value for all four sides, or two to four in the order top, right, bottom, left. A [layer](?p=doc/layer) draws a header or a footer in it |
 | `font`      | string   | the document's | The font of the Markdown, which a rule can change |
-| `font-size` | token/pt | `m` (11pt) | The size of its text, which a rule can change |
+| `font-size` | token/length | `m` (11pt) | The size of its text, which a rule can change |
 | `color`     | color    | the `text` token | The color of its text, which a rule can change |
-| `gap`       | token/pt | `l` (14pt) | The space between blocks: headings, paragraphs, lists, code, quotes, tables and images |
+| `gap`       | token/length | `l` (14pt) | The space between blocks: headings, paragraphs, lists, code, quotes, tables and images |
 | `bookmarks` | integer  | `6`     | How many levels of headings are [bookmarks](#headings): `2` keeps the levels 1 and 2, `0` none |
 | `debug`     | boolean  | `false` | Draw the outline of each box |
 

@@ -26,10 +26,10 @@ Tabular data with explicit column widths, an optional repeating header, and auto
 | `stripe`     | color   | —       | The background of every other row below the header, or `none` |
 | `head-border` | string | —       | The line under the header row: a thickness and a color like `border`, for example `xs line`, or `none`. See [Lines and stripes](#lines-and-stripes) |
 | `row-border` | string  | —       | The line under each row, in the same form, or `none`. Under the header, `head-border` takes its place when it is set |
-| `gap`        | token/pt | —      | Space between columns and between rows |
+| `gap`        | token/length | —      | Space between columns and between rows |
 | `padding`    | spacing | —       | Space between the table's edge and its content. This is not cell padding: set `padding` on each `td` |
 | `background` | color or `gradient:name` | — | Background behind the whole table: a color, or a [gradient](?p=xml/schema#gradients) that spans the table |
-| `width`      | token/pt | —      | Constrain table width |
+| `width`      | token/length | —      | Constrain table width |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `bulk`       | boolean  | `false` | `true` lays out the rows of its `tr` with `data-source` a page at a time, straight from the data, for tables of tens of thousands of rows. See [Bulk Records](?p=data/bulk) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -220,7 +220,7 @@ A table with `head-border` alone has the line under its header and none between 
 | Unit | Meaning |
 |------|---------|
 | `fr` | Fraction of remaining width (like CSS fr) |
-| `pt`, `mm`, `in` | Fixed width, in points, millimetres or inches |
+| `pt`, `mm`, `in` | Fixed width, in points, millimeters or inches |
 | `%`  | Percentage of table width |
 | `auto` | The width the cells of the column need on one line |
 

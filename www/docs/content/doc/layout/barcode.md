@@ -9,8 +9,8 @@ Renders a QR code, Code 128 barcode, or EAN-13 barcode inline in the flow layout
 | `type`       | string  | —       | **Required.** `qr`, `code128`, or `ean13` |
 | `data`       | string  | —       | **Required.** Payload string to encode |
 | `alt`        | string  | —       | What the barcode is for, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer; at level a without `pdfua`, a barcode without it is decoration. A document that is not tagged ignores it |
-| `width`      | token/pt | —      | Width. Without `height`, the height follows the barcode's proportions |
-| `height`     | token/pt | —      | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the barcode's proportions |
+| `width`      | token/length | —      | Width. Without `height`, the height follows the barcode's proportions |
+| `height`     | token/length | —      | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the barcode's proportions |
 | `ec`         | string  | `M`     | QR error correction: `L` `M` `Q` `H` |
 | `hrt`        | boolean | false   | Show human-readable text below Code128/EAN-13. The digits take the bottom 12pt of the `height`, and the bars the rest |
 | `data-value` | string  | —       | Dot-path: the data the barcode encodes comes from the bound value |

@@ -9,11 +9,11 @@ The image must be declared in `assets` before use, with a `src` file path or byt
 | Attribute     | Type      | Default | Description |
 |---------------|-----------|---------|-------------|
 | `name`        | string    | —       | **Required.** Asset name declared in `assets` |
-| `x`           | signed pt | —       | X of the left edge of the image's box (or offset from anchor) |
-| `y`           | signed pt | —       | Y of the top edge of the image's box (or offset from anchor) |
+| `x`           | signed length | —       | X of the left edge of the image's box (or offset from anchor) |
+| `y`           | signed length | —       | Y of the top edge of the image's box (or offset from anchor) |
 | `anchor`      | string    | —       | Reference point: when set, `x` and `y` are offsets, and the box's matching point is placed there |
-| `width`       | pt        | —       | Width. At least one of `width` and `height` is required |
-| `height`      | pt        | —       | Height |
+| `width`       | length        | —       | Width. At least one of `width` and `height` is required |
+| `height`      | length        | —       | Height |
 | `data-if`     | string    | —       | Draw only when the value at the path is truthy |
 | `data-if-not` | string    | —       | Draw only when the value at the path is falsy |
 | `data-name` | string | — | Dot-path: picks the image from the data, among the assets declared in `assets`. See [Attributes from data](?p=data/binding#attributes-from-data) |

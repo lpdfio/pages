@@ -612,8 +612,8 @@ A layer cannot contain another layer.
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X of the left edge (or offset from anchor) |
-| `y`            | signed pt | —       | Y of the top edge (or offset from anchor) |
+| `x`            | signed length | —       | X of the left edge (or offset from anchor) |
+| `y`            | signed length | —       | Y of the top edge (or offset from anchor) |
 | `width`        | length        | —       | **Required.** Width |
 | `height`       | length        | —       | **Required.** Height |
 | `anchor`       | string    | —       | Reference point |
@@ -629,8 +629,8 @@ A layer cannot contain another layer.
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X of the left edge of the circle's box, the square of side 2`r` around it (or offset from anchor) |
-| `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
+| `x`            | signed length | —       | X of the left edge of the circle's box, the square of side 2`r` around it (or offset from anchor) |
+| `y`            | signed length | —       | Y of the top edge of the circle's box (or offset from anchor) |
 | `r`            | length        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the circle's box |
@@ -653,10 +653,10 @@ Takes the same attributes as `circle`, with `rx` and `ry` in place of `r`. Its b
 
 | Attribute      | Type      | Default   | Description |
 |----------------|-----------|-----------|-------------|
-| `x1`           | signed pt | —         | **Required.** Start X |
-| `y1`           | signed pt | —         | **Required.** Start Y |
-| `x2`           | signed pt | —         | **Required.** End X |
-| `y2`           | signed pt | —         | **Required.** End Y |
+| `x1`           | signed length | —         | **Required.** Start X |
+| `y1`           | signed length | —         | **Required.** Start Y |
+| `x2`           | signed length | —         | **Required.** End X |
+| `y2`           | signed length | —         | **Required.** End Y |
 | `stroke`       | color     | `#000000` | Line color |
 | `stroke-width` | length        | `1pt`     | Line thickness |
 | `stroke-dash`  | string    | —         | Dash pattern: `"4 2"` |
@@ -682,8 +682,8 @@ Text at a fixed place. It is the layout's `text`: `max-lines`, `ellipsis` and `l
 
 | Attribute     | Type      | Default     | Description |
 |---------------|-----------|-------------|-------------|
-| `x`           | signed pt | —           | X of the left edge of the box (or offset from anchor) |
-| `y`           | signed pt | —           | Y of the top edge of the box (or offset from anchor) |
+| `x`           | signed length | —           | X of the left edge of the box (or offset from anchor) |
+| `y`           | signed length | —           | Y of the top edge of the box (or offset from anchor) |
 | `anchor`      | string    | —           | Reference point |
 | `width`       | length        | —           | Width of the box. Without it the text is one line at its natural width |
 | `max-lines`   | integer   | `1`         | The most lines drawn. Above 1 it needs a `width` |
@@ -704,8 +704,8 @@ An image at a fixed place. It needs `width` or `height`.
 | Attribute    | Type      | Default | Description |
 |--------------|-----------|---------|-------------|
 | `name`       | string    | —       | **Required.** Asset name |
-| `x`          | signed pt | —       | X of the left edge of the box (or offset from anchor) |
-| `y`          | signed pt | —       | Y of the top edge of the box (or offset from anchor) |
+| `x`          | signed length | —       | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed length | —       | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —       | Reference point |
 | `width`      | length        | —       | Width. Without `height`, the height follows the image's proportions |
 | `height`     | length        | —       | Height. With both, they are a maximum: the image is never stretched |
@@ -719,8 +719,8 @@ A barcode at a fixed place. It needs `width` or `height`.
 |--------------|-----------|-----------|-------------|
 | `type`       | string    | —         | **Required.** `qr` `code128` `ean13` |
 | `data`       | string    | —         | **Required.** Barcode data payload |
-| `x`          | signed pt | —         | X of the left edge of the box (or offset from anchor) |
-| `y`          | signed pt | —         | Y of the top edge of the box (or offset from anchor) |
+| `x`          | signed length | —         | X of the left edge of the box (or offset from anchor) |
+| `y`          | signed length | —         | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —         | Reference point |
 | `width`      | length        | —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`     | length        | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |

@@ -17,8 +17,8 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 | `readonly`   | boolean | false   | Prevent editing |
 | `max-len`    | integer | —       | Maximum text length |
 | `action-url` | URL     | —       | Submit URL (button) |
-| `width`      | token/pt | —      | Field width |
-| `height`     | token/pt | —      | Field height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
+| `width`      | token/length | —      | Field width |
+| `height`     | token/length | —      | Field height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
 | `ocg` | string | — | `screen`: shown only on screen. `print` is an error: a field in print content could be filled nowhere. See [Print and screen content](?p=print-and-screen#links-and-form-fields) |
 
 ## Text form

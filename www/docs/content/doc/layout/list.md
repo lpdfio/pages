@@ -22,8 +22,8 @@ The words of an item go in a [`text`](?p=doc/layout/text). A long item wraps und
 | `start`      | integer  | `1`     | The number of a number list's first item |
 | `prefix`     | string   | —       | Text before each number: `(` |
 | `suffix`     | string   | `.`     | Text after each number: `)` |
-| `indent`     | token/pt | `24pt`  | The width of the marker's column. See [Indent](#indent) |
-| `gap`        | token/pt | —       | Space between the items |
+| `indent`     | token/length | `24pt`  | The width of the marker's column. See [Indent](#indent) |
+| `gap`        | token/length | —       | Space between the items |
 | `font`, `font-size`, `color` | | inherit | Set the text inside and the markers, as on a [box](?p=doc/layout/column) |
 | `padding`, `background`, `border`, `radius`, `opacity`, `shadow`, `width`, `height` | | | As on a [box](?p=doc/layout/column) |
 | `paginate`, `debug` | | | As on a box |

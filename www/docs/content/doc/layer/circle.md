@@ -6,13 +6,13 @@
 
 | Attribute      | Type      | Default | Description |
 |----------------|-----------|---------|-------------|
-| `x`            | signed pt | —       | X of the left edge of the circle's box (or offset from anchor) |
-| `y`            | signed pt | —       | Y of the top edge of the circle's box (or offset from anchor) |
-| `r`            | pt        | —       | **Required.** Radius |
+| `x`            | signed length | —       | X of the left edge of the circle's box (or offset from anchor) |
+| `y`            | signed length | —       | Y of the top edge of the circle's box (or offset from anchor) |
+| `r`            | length        | —       | **Required.** Radius |
 | `anchor`       | string    | —       | Reference point: when set, `x` and `y` are offsets, and the box's matching point is placed there |
 | `fill`         | color or `gradient:name` | — | Fill: a color, or a [gradient](?p=xml/schema#gradients) that spans the circle's box |
 | `stroke`       | color     | —       | Stroke color |
-| `stroke-width` | pt        | —       | Stroke width |
+| `stroke-width` | length        | —       | Stroke width |
 | `stroke-dash`  | string    | —       | Dash pattern |
 | `shadow`       | string    | —       | A hard-edged shadow under the circle: `"x y color"`, with an optional opacity after the color. See [Shadow](?p=doc/layout#shadow) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
@@ -23,8 +23,8 @@ Same as `circle` except `r` is replaced by:
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| `rx`      | pt   | **Required.** Horizontal radius |
-| `ry`      | pt   | **Required.** Vertical radius |
+| `rx`      | length   | **Required.** Horizontal radius |
+| `ry`      | length   | **Required.** Vertical radius |
 
 ## The box
 

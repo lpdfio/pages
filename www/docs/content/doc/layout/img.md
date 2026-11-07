@@ -28,12 +28,12 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 | `name`       | string  | —       | **Required.** Asset name declared in `assets` |
 | `data-name` | string | — | Dot-path: picks the image from the data, among the assets declared in `assets`. See [Attributes from data](?p=data/binding#attributes-from-data) |
 | `alt`        | string  | —       | What the image shows, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a); `alt=""` marks it as decoration. A PDF/UA document needs it on each image outside a header or a footer; at level a without `pdfua`, an image without it is decoration. A document that is not tagged ignores it |
-| `width`      | token/pt/`fill` | — | Width, or `fill`: as wide as the room the image has. See [Fill the slot](#fill-the-slot). Without `height`, the height follows the image's proportions |
-| `height`     | token/pt | —      | Height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the image's proportions. With `width="fill"`, a limit |
+| `width`      | token/length/`fill` | — | Width, or `fill`: as wide as the room the image has. See [Fill the slot](#fill-the-slot). Without `height`, the height follows the image's proportions |
+| `height`     | token/length | —      | Height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). Without `width`, the width follows the image's proportions. With `width="fill"`, a limit |
 | `padding`    | spacing | —       | Space around the picture, inside the box. See [Box around the picture](#box-around-the-picture) |
 | `background` | color   | —       | Background of the box around the picture |
 | `border`     | string  | —       | Border, drawn on the edge of the box |
-| `radius`     | token/pt | —      | Corner radius: rounds the box, and clips the picture to rounded corners |
+| `radius`     | token/length | —      | Corner radius: rounds the box, and clips the picture to rounded corners |
 | `paginate`   | string   | —      | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
 

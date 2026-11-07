@@ -8,11 +8,11 @@ A QR code, a Code 128 or an EAN-13 at a fixed place on the page, in a [layer](?p
 |---------------|-----------|-----------|-------------|
 | `type`        | string    | —         | **Required.** `qr`, `code128` or `ean13` |
 | `data`        | string    | —         | **Required.** Payload string to encode |
-| `x`           | signed pt | —         | X of the left edge of the barcode's box (or offset from anchor) |
-| `y`           | signed pt | —         | Y of the top edge of the barcode's box (or offset from anchor) |
+| `x`           | signed length | —         | X of the left edge of the barcode's box (or offset from anchor) |
+| `y`           | signed length | —         | Y of the top edge of the barcode's box (or offset from anchor) |
 | `anchor`      | string    | —         | Reference point: when set, `x` and `y` are offsets, and the box's matching point is placed there |
-| `width`       | pt        | —         | Width. At least one of `width` and `height` is required |
-| `height`      | pt        | —         | Height of the whole barcode, with the digits of `hrt` inside it |
+| `width`       | length        | —         | Width. At least one of `width` and `height` is required |
+| `height`      | length        | —         | Height of the whole barcode, with the digits of `hrt` inside it |
 | `ec`          | string    | `M`       | QR error correction: `L` `M` `Q` `H` |
 | `hrt`         | boolean   | `false`   | Show human-readable text below Code 128 and EAN-13 |
 | `color`       | color     | `#000000` | Barcode foreground color |

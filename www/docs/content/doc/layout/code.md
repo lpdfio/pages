@@ -32,16 +32,16 @@ if a < b && c {
 | Attribute    | Type     | Default | Description |
 |--------------|----------|---------|-------------|
 | `font`       | string   | `Courier` | Font name declared in `assets`. Use a monospace font, since columns line up only in one |
-| `font-size`  | token/pt | inherit, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `9pt` |
+| `font-size`  | token/length | inherit, else `m` (11pt) | `xs` `s` `m` `l` `xl` `xxl` or `9pt` |
 | `color`      | color    | the nearest box's, else `#1a1a1a` | Text color |
 | `padding`    | spacing  | `m` (8pt) | Space between the edge of the box and the code |
 | `background` | color    | `#f3f4f6` | The tint of the box. `gradient:name` also works |
 | `border`     | string   | —       | `1pt #c8ccd2`: a width and a color |
-| `radius`     | token/pt | —       | Rounded corners |
+| `radius`     | token/length | —       | Rounded corners |
 | `opacity`    | number   | `1`     | How opaque the box and the code in it are, from 0 to 1. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`     | string   | —       | A hard-edged shadow. See [Shadow](?p=doc/layout#shadow) |
-| `width`      | token/pt | fills the width | The width of the box |
-| `height`     | token/pt | the lines of the code | A height stops the box splitting across pages |
+| `width`      | token/length | fills the width | The width of the box |
+| `height`     | token/length | the lines of the code | A height stops the box splitting across pages |
 | `tab-size`   | integer  | `4`     | How many columns a tab fills to, 1 to 16. See [Tabs](#tabs) |
 | `line-height` | number or token | `1.2` (`m`) | The distance between lines, as a factor of the font size |
 | `widows`     | integer  | `2`     | The fewest lines, 1 to 10, that a split code may carry to the top of the next page |

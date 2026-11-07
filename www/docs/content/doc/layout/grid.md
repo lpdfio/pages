@@ -9,18 +9,18 @@ Use grid for uniform card layouts. For tabular data with column headers, use [`t
 | Attribute    | Type    | Default | Description |
 |--------------|---------|---------|-------------|
 | `cols`       | integer | 1       | Number of columns (1–12) |
-| `col-width`  | token/pt | —      | Minimum column width: the grid fits as many columns as the width allows, at least one, and stretches them to fill the row (overrides `cols`) |
-| `gap`        | token/pt | —      | Gap between cells |
-| `width`      | token/pt | —      | Constrain total width |
+| `col-width`  | token/length | —      | Minimum column width: the grid fits as many columns as the width allows, at least one, and stretches them to fill the row (overrides `cols`) |
+| `gap`        | token/length | —      | Gap between cells |
+| `width`      | token/length | —      | Constrain total width |
 | `padding`    | spacing | —       | Inner padding |
 | `background` | color or `gradient:name` | — | Background: a color, or a [gradient](?p=xml/schema#gradients) that spans the box |
 | `border`     | string  | —       | Border |
-| `radius`     | token/pt | —      | Corner radius |
+| `radius`     | token/length | —      | Corner radius |
 | `color`      | color   | inherit | Color of the text inside. A text that sets none takes the nearest box's. See [Text color in a box](?p=doc/layout#text-color-in-a-box) |
 | `opacity`    | 0–1     | `1`     | How opaque the box and everything in it is, as one. See [Opacity](?p=doc/layout#opacity) |
 | `shadow`     | string  | —       | A hard-edged shadow under the box: `"x y color"`, with an optional opacity. See [Shadow](?p=doc/layout#shadow) |
 | `font`       | string  | inherit | Font name |
-| `font-size`  | token/pt | inherit | Font size |
+| `font-size`  | token/length | inherit | Font size |
 | `paginate`   | string   | —       | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `bulk`       | boolean  | `false` | `true` lays out the cells of its child with `data-source` a page at a time, straight from the data, for sheets of tens of thousands of labels or cards. See [Bulk Records](?p=data/bulk) |
 | `data-source` | string | —       | Dot-path to array — repeats children per item |

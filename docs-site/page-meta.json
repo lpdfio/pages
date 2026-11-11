@@ -65,7 +65,7 @@
         "description": "The grid element in Lpdf XML: lay out children in a multi-column grid that wraps to new rows, by column count or minimum width, with items from data too."
     },
     "doc/layout/img": {
-        "description": "The img element in Lpdf XML: place an image declared in assets (PNG or JPEG) in the flow, by width, height or both, with rounded corners. It is never stretched."
+        "description": "The img element in Lpdf XML: place an image declared in assets in the flow, by width, height or both, with rounded corners. It is never stretched."
     },
     "doc/layout/shape": {
         "description": "The shape element in Lpdf XML: draw a rectangle, circle or ellipse in the flow, for a status dot, a color swatch or a progress bar. It takes room like an image."

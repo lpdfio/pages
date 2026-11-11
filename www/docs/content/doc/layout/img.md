@@ -4,7 +4,7 @@ Embeds an image asset declared in `assets`. The image is never stretched: with o
 
 ## Asset declaration
 
-Images must be declared in `assets` before use. The `src` attribute is the path of a PNG or JPEG file, which the SDK reads from the machine that renders the PDF. To supply the bytes yourself, call `loadImage` on the engine and leave `src` out (see [Installation](?p=install#images-and-fonts)). The name uses lowercase letters, digits and `-`.
+Images must be declared in `assets` before use. The `src` attribute is the path of the image file, which the SDK reads from the machine that renders the PDF. To supply the bytes yourself, call `loadImage` on the engine and leave `src` out (see [Installation](?p=install#images-and-fonts)). The name uses lowercase letters, digits and `-`.
 
 ```xml
 <lpdf version="1">
@@ -20,6 +20,20 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
   </document>
 </lpdf>
 ```
+
+## Formats
+
+An image is a JPEG, PNG, WebP, GIF, TIFF or BMP file. The engine tells the format from the file's bytes, whatever its name. Transparency is kept: an alpha channel, and a GIF's transparent color.
+
+A JPEG goes into the PDF as it is. The other formats go in as their pixels, compressed without loss, so a photo saved as a lossy WebP takes several times its file's size in the PDF: save it as a JPEG where the size of the PDF matters. Their pixels count toward the render's [memory limit](?p=install#memory-limit).
+
+An image draws one picture, and the engine reads the kinds of file below. The others are refused with an error that names the image and says how to save it instead:
+
+- **TIFF**: gray or RGB, with alpha or without, uncompressed or compressed with LZW, Deflate, PackBits or Group 4 fax. A TIFF in CMYK, a TIFF whose pixels are compressed as JPEG, a Group 3 fax and a TIFF with a color palette are refused. A TIFF of several pages is refused too; a thumbnail stored in it is not a page.
+- **GIF and WebP**: a still image. An animated one is refused.
+- **BMP**: palettes of 1, 4 and 8 bits, run-length encoded or not, and 16, 24 and 32 bits to a pixel, with alpha when the file has an alpha mask. A BMP that holds a JPEG or a PNG is refused: load that file instead.
+
+AVIF, HEIC and JPEG 2000 are refused.
 
 ## Attributes
 

@@ -154,7 +154,7 @@ A background or an image that should run to the edge of the cut page has to reac
 A press prints in its own inks, and the press profile says how. A PDF/X-4 file keeps each color in the space it was given in:
 
 - `cmyk()` colors stay CMYK, as the printer separates them.
-- RGB colors, `#hex`, `rgb()` and `hsl()`, and PNG and JPEG images are tied to the sRGB profile the engine carries, so the printer's tools convert them to the press the same way every time.
+- RGB colors, `#hex`, `rgb()` and `hsl()`, and RGB images, whatever their format, are tied to the sRGB profile the engine carries, so the printer's tools convert them to the press the same way every time.
 - Opacity, shadows and gradients are kept: PDF/X-4 allows transparency.
 
 ## What the file gets

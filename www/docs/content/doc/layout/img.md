@@ -30,7 +30,7 @@ A JPEG goes into the PDF as it is. The other formats go in as their pixels, comp
 An image draws one picture, and the engine reads the kinds of file below. The others are refused with an error that names the image and says how to save it instead:
 
 - **PNG**: gray, RGB and RGBA at 8 or 16 bits, and a palette at 8 bits. A PNG of gray with alpha, or of fewer than 8 bits, is refused.
-- **TIFF**: gray or RGB at 8 or 16 bits a sample, with alpha or without, and gray without alpha at 1, 2 or 4 bits, uncompressed or compressed with LZW, Deflate, PackBits or Group 4 fax. Samples of 32 bits, or of signed or floating-point numbers, a TIFF in CMYK, a TIFF whose pixels are compressed as JPEG, a Group 3 fax and a TIFF with a color palette are refused. A TIFF of several pages is refused too; a thumbnail stored in it is not a page.
+- **TIFF**: gray or RGB at 8 or 16 bits a sample, with alpha or without, and gray without alpha at 1, 2 or 4 bits, uncompressed or compressed with LZW, Deflate, PackBits or Group 4 fax. Samples of 32 bits, or of signed or floating-point numbers, a TIFF in CMYK, a TIFF whose pixels are compressed as JPEG, a Group 3 fax, a TIFF with a color palette and one that keeps each color in a plane of its own (Photoshop's "Per Channel" pixel order) are refused. A TIFF of several pages is refused too; a thumbnail stored in it is not a page.
 - **GIF and WebP**: a still image. An animated one is refused.
 - **BMP**: palettes of 1, 4 and 8 bits, run-length encoded or not, and 16, 24 and 32 bits to a pixel, with alpha when the file has an alpha mask. A BMP that holds a JPEG or a PNG is refused: load that file instead.
 

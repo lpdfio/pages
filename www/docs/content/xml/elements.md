@@ -36,7 +36,7 @@ A built-in font can also be used by its name without declaring it: `font="Courie
 | Attribute | Type   | Description |
 |-----------|--------|-------------|
 | `name`    | string | **Required.** Alias used in `img` elements. Same characters as a font `name` |
-| `src`     | path   | Path of a PNG or JPEG file, read by the SDK from the machine that renders. URLs and data URIs are not fetched |
+| `src`     | path   | Path of the image file (JPEG, PNG, WebP, GIF, TIFF or BMP: see [Formats](?p=doc/layout/img#formats)), read by the SDK from the machine that renders. URLs and data URIs are not fetched |
 | `ref`     | string | The key the image's bytes are registered under with `loadImage`. Defaults to `name` |
 
 An image needs either a readable `src` or bytes loaded with `loadImage`.

@@ -231,7 +231,7 @@ Mixing units is supported: `"2fr 80pt 20%"`, `"1fr 40mm"`. Every column ends up 
 An `auto` column takes the width its cells need to stay on one line, so a column of numbers is as narrow as its numbers and a column of names as wide as its longest name. The `auto` columns share what the fixed and `%` columns leave:
 
 - when every `auto` column fits on one line, each takes that width, and the room that is left is shared in proportion to it;
-- when they do not fit, each keeps at least its longest word, and shares what is left in proportion to how much more it could use, so the columns of long text are the ones that wrap;
+- when they do not fit, each keeps at least its longest word, or the widest piece of a word between its [soft hyphens](?p=doc/layout/text#breaking-a-word-at-a-soft-hyphen), with the hyphen, and shares what is left in proportion to how much more it could use, so the columns of long text are the ones that wrap;
 - when not even the longest words fit, the longest are cut down and a shorter column keeps its width, so a long name goes over two lines and a number never does.
 
 ```xml

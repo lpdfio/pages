@@ -41,7 +41,7 @@ export class LpdfEngine {
         wasm.lpdfengine_load_font(this.__wbg_ptr, ptr0, len0, ptr1, len1);
     }
     /**
-     * Register raw image bytes (JPEG or PNG) for an image name.
+     * Register raw image bytes (JPEG, PNG, WebP, GIF, TIFF or BMP) for an image name.
      * Call this for every image referenced by `<img name="…">` nodes.
      * @param {string} name
      * @param {Uint8Array} bytes

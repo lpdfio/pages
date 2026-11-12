@@ -48,7 +48,7 @@
         "description": "The layer element in Lpdf XML: shapes, text, images and barcodes at fixed positions on the page, for watermarks, stamps, page numbers and letterhead."
     },
     "doc/layout/barcode": {
-        "description": "The barcode element in Lpdf XML: put a QR code, Code 128 or EAN-13 barcode in the flow layout, with its size, error correction and human-readable text."
+        "description": "The barcode element in Lpdf XML: QR, Data Matrix, PDF417, Code 128, Code 39, EAN-13, EAN-8, UPC-A and GS1 barcodes in the flow layout, sized to fit."
     },
     "doc/layout/bookmark": {
         "description": "The bookmark element in Lpdf XML: add an entry to the PDF outline and a target for internal links. It draws nothing and can nest up to six levels deep."
@@ -99,7 +99,7 @@
         "description": "The text element in Lpdf XML: a flowing text block with wrapping, font size and color, alignment, justified copy, inline spans and widows and orphans control."
     },
     "doc/layer/barcode-at": {
-        "description": "The barcode-at element in Lpdf XML: put a QR code, Code 128 or EAN-13 barcode at a fixed place on the page in a layer, optionally filled from data."
+        "description": "The barcode-at element in Lpdf XML: a QR, Data Matrix, PDF417, Code 128, Code 39, EAN, UPC-A or GS1 barcode at a fixed place on the page in a layer."
     },
     "doc/layer/circle": {
         "description": "The circle and ellipse elements in Lpdf XML: draw a filled or hollow circle or ellipse at a fixed place in a layer, set by x and y or anchored to the page."

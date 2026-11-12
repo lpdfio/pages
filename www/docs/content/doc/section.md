@@ -134,7 +134,7 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 
 What ends a page in one column ends a column in several: [`paginate="break-before"`](?p=doc/layout#page-breaks) moves its element to the top of the next column, and `break-after` and `keep-next` act per column. A new page is a new section. A text splits between its lines from one column to the next, a table between its rows, with its header row at the top of each column it is in, and a node taller than an empty column is placed anyway and cut at its foot, as on a page. An image with `width="fill"` takes the column's width, and one with a fixed width wider than a column runs over the gap into the next. The notes of the footnotes go at the foot of the page, under all the columns, numbered in reading order, column by column.
 
-Lpdf doesn't hyphenate words, so justified text in a narrow column can show wide gaps between them: in columns under about forty characters, left-aligned text reads better.
+Lpdf doesn't hyphenate words on its own, so justified text in a narrow column can show wide gaps between them. Put [soft hyphens](?p=doc/layout/text#breaking-a-word-at-a-soft-hyphen) in its long words, where lines may break, or set columns under about forty characters left-aligned.
 
 ### Insets
 

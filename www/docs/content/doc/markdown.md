@@ -58,7 +58,7 @@ The Markdown is CommonMark, with tables, strikethrough and footnotes. Each part 
 | Markdown | Becomes | Note |
 |---|---|---|
 | `# … ######` | a [text](?p=doc/layout/text) for each of `h1` to `h6`, kept on a page with the block after it | Also a bookmark: see [Headings](#headings) |
-| a paragraph | a `text` | `widows` and `orphans` apply as on any text. A word or a run longer than a line breaks at the last character that fits, so nothing runs past the margin or out of a table cell |
+| a paragraph | a `text` | `widows` and `orphans` apply as on any text. A word breaks at its [soft hyphens](?p=doc/layout/text#breaking-a-word-at-a-soft-hyphen), written `&shy;`, and a styled run at them as at its spaces. A word or a run longer than a line breaks at the last character that fits where no soft hyphen does, so nothing runs past the margin or out of a table cell |
 | `*em*`, `**strong**`, `~~del~~` | a [span](?p=doc/layout/text#inline-spans-for-mixed-styling) | A built-in font gets its italic and bold face by itself. An embedded font names them: see [Styling](#styling) |
 | `` `code` `` | a `code-span` | The code font on a tint |
 | `[text](url)`, `[text](#id)` | a span with `href` | `#id` jumps to the heading whose text is that id: see [Headings](#headings) |

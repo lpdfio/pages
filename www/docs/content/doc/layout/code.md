@@ -67,7 +67,7 @@ A `span` in a `code` colors a stretch of it, and keeps its spaces. `font`, `colo
 
 ## Long lines wrap
 
-A line longer than the box wraps. It breaks at a space, and the next line starts at the left edge. A word with no space in it that is longer than a whole line, such as an address, breaks at the last character that fits and goes on in the next line, so nothing is cut off and nobody has to add line breaks. A short word that does not fit what is left of its line moves down whole.
+A line longer than the box wraps. It breaks at a space, and the next line starts at the left edge. A word with no space in it that is longer than a whole line, such as an address, breaks at the last character that fits and goes on in the next line, so nothing is cut off and nobody has to add line breaks. A soft hyphen in a code is not drawn, and the code never breaks at it. A short word that does not fit what is left of its line moves down whole.
 
 ```xml
 <code width="300pt">
@@ -132,4 +132,4 @@ A `code-span` inside a [`text`](?p=doc/layout/text) is the same look in a line: 
 <text>Run <code-span>cargo test</code-span> before you push, and open <code-span>README.md</code-span>. One has colors of its own: <code-span color="#ffffff" background="#1763cf">white on blue</code-span>.</text>
 ```
 
-Like a `span`, a `code-span` is not broken inside, so it goes to the next line whole, and a run longer than a whole line breaks at the last character that fits, so nothing runs past the box. White space in it collapses as in the text around it. A `code-span` is not allowed in a `code`, which keeps its own spaces.
+Like a `span`, a `code-span` is not broken inside, so it goes to the next line whole, and a run longer than a whole line breaks at the last character that fits, so nothing runs past the box. It never breaks at a soft hyphen, and draws none. White space in it collapses as in the text around it. A `code-span` is not allowed in a `code`, which keeps its own spaces.

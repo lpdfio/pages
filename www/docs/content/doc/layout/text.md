@@ -109,9 +109,25 @@ When a paragraph splits across pages, Lpdf keeps at least two of its lines on ea
 </text>
 ```
 
+## Breaking a word at a soft hyphen
+
+A soft hyphen is a mark inside a word where a line may break, the Unicode character U+00AD. XML has no named entity for it, so write it as `&#173;` or `&#xAD;`; in Markdown it is `&shy;`, and in JSON data and in a string of an SDK `\u00AD`. A word that doesn't fit what is left of its line breaks at its last soft hyphen that leaves room for a hyphen, and the line ends in the font's `-`. Where no line breaks at it, a soft hyphen is not drawn and takes no width. Lpdf doesn't hyphenate words on its own: it breaks only at the soft hyphens a text has.
+
+```xml
+<column width="130pt">
+  <text align="justify">The Donau&#xAD;dampf&#xAD;schiff&#xAD;fahrts&#xAD;gesell&#xAD;schaft runs its first boat at nine.</text>
+</column>
+```
+
+- A word wider than a whole line breaks at its soft hyphens, and is cut at the last character that fits only where they leave a piece wider than the line.
+- A styled run (`span`) breaks at a soft hyphen only when it is wider than a whole line; otherwise it goes to the next line whole, as it does at its spaces.
+- A `code` and a `code-span` never break at a soft hyphen, and draw none.
+- A font with no `-`, such as a font of symbols, never breaks at its soft hyphens.
+- The hyphen is marked in the PDF as the soft hyphen it stands for (`ActualText`), so a reader that reads the mark gives the word whole when the text is copied or searched.
+
 ## Capping a text
 
-A text wraps at the width it has and is never cut: a long name or address makes its line, and in a table its whole row, as tall as it needs. A word, or a styled run, wider than a whole line breaks at the last character that fits, so nothing runs past the box. `max-lines` caps it. Only whole lines are drawn, and the rest of the text is dropped. The lines it drops take no room, so a capped text is only as tall as the lines it keeps.
+A text wraps at the width it has and is never cut: a long name or address makes its line, and in a table its whole row, as tall as it needs. A word, or a styled run, wider than a whole line breaks at its [soft hyphens](#breaking-a-word-at-a-soft-hyphen), and at the last character that fits where it has none, so nothing runs past the box. `max-lines` caps it. Only whole lines are drawn, and the rest of the text is dropped. The lines it drops take no room, so a capped text is only as tall as the lines it keeps.
 
 `ellipsis="true"` ends the last line in dots when text was dropped, shortened to fit the width. Without it the text stops at the end of the last line. On its own, with no `max-lines`, `ellipsis` changes nothing: a text with no cap is never cut, and a word wider than the box is broken at the last character that fits, not cut.
 

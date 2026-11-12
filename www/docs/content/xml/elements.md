@@ -506,13 +506,16 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 
 | Attribute   | Type    | Default   | Description |
 |-------------|---------|-----------|-------------|
-| `type`      | string  | —         | **Required.** `qr` `code128` `ean13` |
+| `type`      | string  | —         | **Required.** `qr` `datamatrix` `pdf417` `code128` `code39` `ean13` `ean8` `upca` `gs1-128` `gs1-datamatrix`. See [Barcode](?p=doc/layout/barcode#types) |
 | `data`      | string  | —         | **Required.** Barcode data payload |
 | `alt`       | string  | —         | What the barcode is for, which a screen reader reads in a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#level-a), in place of its data: "QR code to pay this invoice". `alt=""` marks it as decoration. A PDF/UA document needs it on each barcode outside a header or a footer; at level a without `pdfua`, a barcode without it is decoration. A document that is not tagged ignores it |
 | `width`     | token/length| —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`    | token/length| —         | Height of the whole barcode, with the digits of `hrt` inside it: a length, or a name from the `height` row of `tokens`. With both, they are a maximum: the barcode is never stretched |
-| `ec`        | string  | `M`       | QR error correction: `L` `M` `Q` `H` |
-| `hrt`       | boolean | false     | Human-readable text below Code128/EAN-13 |
+| `ec`        | string  | —         | Error correction: `L` `M` `Q` `H` for a `qr` (`M` without it), `0` to `8` for a `pdf417` |
+| `hrt`       | boolean | false     | Human-readable text below a linear barcode: `code128` `code39` `ean13` `ean8` `upca` `gs1-128` |
+| `rows`      | integer | —         | Rows of a `pdf417` (3 to 90) or a Data Matrix (a size of the standard's) |
+| `columns`   | integer | —         | Columns of a `pdf417` (1 to 30 codewords) or a Data Matrix (a size of the standard's) |
+| `check`     | boolean | false     | The mod 43 check character of a `code39` |
 | `data-value`| string  | —         | Dot-path to a scalar value that replaces the data the barcode encodes |
 | `color`     | color   | `#000000` | Bar color |
 | `background`| color   | —         | Background color |
@@ -717,15 +720,18 @@ A barcode at a fixed place. It needs `width` or `height`.
 
 | Attribute    | Type      | Default   | Description |
 |--------------|-----------|-----------|-------------|
-| `type`       | string    | —         | **Required.** `qr` `code128` `ean13` |
+| `type`       | string    | —         | **Required.** `qr` `datamatrix` `pdf417` `code128` `code39` `ean13` `ean8` `upca` `gs1-128` `gs1-datamatrix` |
 | `data`       | string    | —         | **Required.** Barcode data payload |
 | `x`          | signed length | —         | X of the left edge of the box (or offset from anchor) |
 | `y`          | signed length | —         | Y of the top edge of the box (or offset from anchor) |
 | `anchor`     | string    | —         | Reference point |
 | `width`      | length        | —         | Width. Without `height`, the height follows the barcode's proportions |
 | `height`     | length        | —         | Height of the whole barcode, with the digits of `hrt` inside it. With both, they are a maximum: the barcode is never stretched |
-| `ec`         | string    | `M`       | QR error correction: `L` `M` `Q` `H` |
-| `hrt`        | boolean   | `false`   | Human-readable text below Code128/EAN-13 |
+| `ec`         | string    | —         | Error correction: `L` `M` `Q` `H` for a `qr` (`M` without it), `0` to `8` for a `pdf417` |
+| `hrt`        | boolean   | `false`   | Human-readable text below a linear barcode: `code128` `code39` `ean13` `ean8` `upca` `gs1-128` |
+| `rows`       | integer   | —         | Rows of a `pdf417` (3 to 90) or a Data Matrix (a size of the standard's) |
+| `columns`    | integer   | —         | Columns of a `pdf417` (1 to 30 codewords) or a Data Matrix (a size of the standard's) |
+| `check`      | boolean   | `false`   | The mod 43 check character of a `code39` |
 | `color`      | color     | `#000000` | Bar color |
 | `background` | color     | —         | Background color |
 | `data-value` | string    | —         | Dot-path to a value that replaces the data the barcode encodes |

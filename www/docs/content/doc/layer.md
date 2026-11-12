@@ -85,7 +85,7 @@ A `line` and a `path` have no box, and no anchor.
 | [`path`](?p=doc/layer/path) | SVG path data |
 | [`text-at`](?p=doc/layer/text-at) | Text at a position |
 | [`img-at`](?p=doc/layer/img-at) | Image at a position |
-| [`barcode-at`](?p=doc/layer/barcode-at) | QR code, Code 128 or EAN-13 at a position |
+| [`barcode-at`](?p=doc/layer/barcode-at) | A barcode at a position: QR code, Data Matrix, PDF417, Code 128, Code 39, EAN-13, EAN-8, UPC-A, GS1-128 |
 
 A stroke is centred on the outline of its shape, so half of `stroke-width` falls outside the box. A circle at `x="0pt"` with a 2pt stroke loses 1pt of it off the page.
 

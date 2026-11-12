@@ -141,7 +141,7 @@ A render that cannot have the passwords, such as a preview, asks by name to skip
 
 - In the SDKs, `skipEncryption: true` in JavaScript and PHP, `skip_encryption=True` in Python, `skipEncryption(true)` in Java, `SkipEncryption = true` in C#, on the same options as the passwords.
 - On the command line, `lpdf convert` and `lpdf benchmark` take `--skip-encryption`. They take no passwords: a password on the command line shows to anyone on the machine.
-- The VS Code preview and the playground on lpdf.io skip it and say so. In VS Code, **Export PDF** asks for the passwords.
+- The VS Code preview and the playground on lpdf.io skip it and say so. In VS Code, **Export PDF** asks for the passwords ([VS Code](?p=vscode#encrypted-export)).
 
 ## Errors
 

@@ -232,7 +232,7 @@ lpdf convert --input notes.md --template markdown-template.xml --output notes.pd
 </lpdf>
 ```
 
-In VS Code, **Lpdf: Preview PDF** on a `.md` file in the Explorer, or the button in the editor's title bar, shows it beside the file. **Lpdf: Link Markdown Styles...** offers a look to start from, Sans, Serif or Typewriter, which it writes beside the file as styles of its own and links, so that the preview shows it and the styles in the CodeLens open the file to edit, and links a file of styles you have. **Lpdf: Write Markdown Styles** writes the default ones beside it to start from. **Lpdf: Create Lpdf Document** writes a document like the one above, named after the file, and links it: the file is then set in that document, where the page size, the margin, a header and a footer are yours. The other way round, **Lpdf: Link Markdown File...** on a document with a `markdown` makes a `.md` file its body. The preview follows an edit of the Markdown, the document, the styles file and an image.
+In VS Code, **Lpdf: Preview PDF** on a `.md` file shows it as a PDF beside the file, and updates it when the Markdown, its document, its styles file or an image changes. The extension links a file of styles and a document like the one above to a `.md` file, with commands: see [VS Code](?p=vscode#markdown-to-pdf).
 
 ## How deep it nests
 

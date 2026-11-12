@@ -38,14 +38,14 @@ A `.md` file is set on an A4 page with a 54pt margin and the page number, with d
 
 **Lpdf: Create Lpdf Document** writes an Lpdf document named after the file, `notes.xml` for `notes.md`, beside it, links the two and opens the document as a tab in the editor of the `.md` file, so the preview stays where it is. The document is an Lpdf document with a `markdown` in a section, so the page size, the margin, a cover, a header or a footer is XML around the Markdown. It names the styles beside the `.md` file, if there are any, and from then on it is where the styles are named. **Lpdf: Unlink Lpdf Document** goes back to the default page.
 
-The link works from the document too. An Lpdf document with a `markdown` has **Link Markdown...** above its first line (**Lpdf: Link Markdown File...**), which makes a `.md` file its body: the preview and the export of the document are the Markdown set in it, and the front matter is its data. A `.md` file goes with one document, and a document with one `.md` file. **Lpdf: Unlink Markdown File** undoes it.
+The link works from the document too. An Lpdf document with a `markdown` has **Link Markdown...** above `<lpdf>` (**Lpdf: Link Markdown File...**), which makes a `.md` file its body: the preview and the export of the document are the Markdown set in it, and the front matter is its data. A `.md` file goes with one document, and a document with one `.md` file. **Lpdf: Unlink Markdown File** undoes it.
 
 - **Front matter.** A YAML block at the top of the file isn't drawn. Its `key: value` lines are data the document shows with `data-value`, as `<text-at data-value="title">` does.
 - **Images.** `![chart](img/chart.png)` is read relative to the `.md` file.
 
 ## Compare PDFs
 
-**Lpdf: Compare PDF with HEAD**, in the Explorer's menu on a `.pdf` file or the **...** menu of an open PDF's tab, opens the version in your last commit and your working copy side by side. The file needs a committed version in a git repository. A changed PDF clicked in the Source Control view offers to open this way instead of as a text diff; the `lpdf.promptPdfDiff` setting turns the offer off.
+**Lpdf: Compare PDF with HEAD**, in the Explorer's menu on a `.pdf` file or the **...** menu of an open PDF's tab, opens the version in your last commit and your working copy side by side. The file needs a committed version in a git repository. When you click a changed PDF in the Source Control view, Lpdf offers to open it this way instead of as a text diff; the `lpdf.promptPdfDiff` setting turns the offer off.
 
 **Lpdf: Compare PDF with branch...**, in the same menus, compares with a branch or a tag you pick: your default branch first, such as `main`, then your other branches, the remote branches and the tags. On a branch where the change is already committed, it shows what the change did against `main`. The left side and its column in the properties are labeled with the branch or tag.
 

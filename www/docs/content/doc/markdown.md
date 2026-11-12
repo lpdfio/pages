@@ -174,7 +174,7 @@ The engine reads no files: the SDK, the command line or the extension reads the 
 
 ### The defaults
 
-The defaults are rules like any other. Their colors are token names, so that a token file alone rebrands them, and the headings are one scale, 20, 15.5, 13, 12, 11 and 10pt for h1 to h6, against a paragraph of 11pt. The Serif and Typewriter looks of VS Code keep that scale with a paragraph of 12pt and 10pt. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and **Lpdf: Write Markdown Styles** in VS Code writes a copy beside a `.md` file to start from.
+The defaults are rules like any other. Their colors are token names, so that a token file alone rebrands them, and the headings are one scale, 20, 15.5, 13, 12, 11 and 10pt for h1 to h6, against a paragraph of 11pt. The Serif and Typewriter looks of VS Code keep that scale with a paragraph of 12pt and 10pt. The engine carries them, so a `markdown` with no styles renders the same in every SDK. `markdown-styles.xml` in the core's repository is the file, and in VS Code **Lpdf: Link Markdown Styles...** writes its Sans look, which is these defaults, beside a `.md` file to start from ([VS Code](?p=vscode#styles)).
 
 ## Images
 

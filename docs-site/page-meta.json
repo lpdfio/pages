@@ -1,4 +1,8 @@
 {
+    "vscode": {
+        "title": "Lpdf for VS Code: PDF viewer, Markdown to PDF and PDF diff",
+        "description": "Lpdf for VS Code views PDFs, previews and exports Markdown as PDF, compares a PDF with git, and edits Lpdf XML with completion and a live preview."
+    },
     "install": {
         "title": "Install Lpdf for JavaScript, Python, Java, C# and PHP",
         "description": "Install the Lpdf engine from npm, NuGet, Packagist, PyPI or Maven Central, then create a PDF from XML or code in JavaScript, Python, Java, C# or PHP."

@@ -48,6 +48,7 @@ export default defineConfig({
                     label: 'Getting Started',
                     items: [
                         { slug: 'install', label: 'Installation' },
+                        { slug: 'vscode', label: 'VS Code' },
                     ],
                 },
                 {

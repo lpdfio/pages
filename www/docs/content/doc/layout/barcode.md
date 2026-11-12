@@ -59,10 +59,10 @@ Without a size, a Code 128, Code 39 or GS1-128 is 1pt per module with bars 40pt 
 
 A Data Matrix and a PDF417 come in many shapes. Without `rows` and `columns`, a barcode with both sizes takes the shape that comes out largest in them, so a wide box gets a wide code.
 
-- A **PDF417** has 1 to 30 `columns` of codewords and 3 to 90 `rows`.
+- A **PDF417** has 1 to 30 `columns` of codewords and 3 to 90 `rows`, and holds 928 codewords at most.
 - A **Data Matrix** has one of the standard's sizes, in modules: the squares from 10×10 to 144×144, and the rectangles 8×18, 8×32, 12×26, 12×36, 16×36 and 16×48.
 
-`rows` and `columns` together fix the shape; one of them alone narrows the shapes the barcode chooses from. Data that needs more gets more: a PDF417 more rows, and more columns once it has 90 rows, and a Data Matrix the next size up. A number a type doesn't have, such as 2 rows of a PDF417 or 11 rows of a Data Matrix, is an error.
+`rows` and `columns` together fix the shape; one of them alone narrows the shapes the barcode chooses from. Data that needs more gets more: a PDF417 more rows, and more columns once it has 90 rows, and a Data Matrix the next size up. A number a type doesn't have, such as 2 rows of a PDF417 or 11 rows of a Data Matrix, is an error, and so is a PDF417 whose `rows` times `columns` is over 928. Data that doesn't fit in 928 codewords at the `rows` or `columns` given draws a gray box with a red border in place of the barcode.
 
 ```xml
 <barcode type="pdf417" data="Boarding pass LPDF 2026, seat 12A" columns="4" width="200pt"/>

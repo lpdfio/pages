@@ -120,7 +120,7 @@ A soft hyphen is a mark inside a word where a line may break, the Unicode charac
 ```
 
 - A word wider than a whole line breaks at its soft hyphens, and is cut at the last character that fits only where they leave a piece wider than the line.
-- A styled run (`span`) breaks at a soft hyphen only when it is wider than a whole line; otherwise it goes to the next line whole, as it does at its spaces.
+- A styled run (`span`) that stands as a word of its own breaks at a soft hyphen only when it is wider than a whole line; otherwise it goes to the next line whole, as it does at its spaces. A run with no space before it goes on in the word before it, and breaks with it: at its soft hyphens, and at one that ends the word before it.
 - A `code` and a `code-span` never break at a soft hyphen, and draw none.
 - A font with no `-`, such as a font of symbols, never breaks at its soft hyphens.
 - The hyphen is marked in the PDF as the soft hyphen it stands for (`ActualText`), so a reader that reads the mark gives the word whole when the text is copied or searched.

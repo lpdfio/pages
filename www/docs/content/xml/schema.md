@@ -165,7 +165,7 @@ A color is written in one of four forms, or as the name of a color in `tokens`:
 "brand 30%"             ← a tint of a spot color named in tokens
 ```
 
-Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`, the color of a `border` or a `shadow`, the `value` of a `color` in `tokens`, the colors of a gradient, and a value that `data-color` finds. A name that is not defined is an error.
+Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`, the color of a `border` or a `shadow`, the colors of a gradient, and a value that `data-color` finds. A name that is not defined is an error. The `value` of a `color` in `tokens` is one of the four written forms, not a name.
 
 - **Screen and print.** Hex, `rgb()` and `hsl()` are screen colors, in RGB, and `rgb()` and `hsl()` give the same PDF as their hex: `rgb(23, 99, 207)` and `hsl(215, 80%, 45%)` are both `#1763cf`. `hsl()` makes shades of one color easy: keep the hue and change the lightness. `cmyk()` is a print color: the PDF has it as the four inks, so a printer separates its plates without converting it from RGB, which shifts colors. Lpdf never converts between the two.
 - **Both in one document.** RGB and CMYK colors can sit side by side, on one page or in sections of their own: `color="#1763cf"` in a section for the screen and `color="cmyk(91, 61, 0, 19)"` in one for print. A gradient is the exception: its colors are all CMYK or all RGB (see [Gradients](#gradients)).

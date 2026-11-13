@@ -113,7 +113,7 @@ A color at a place along a `gradient`. A gradient takes two or more, in increasi
 | Attribute | Type    | Description |
 |-----------|---------|-------------|
 | `offset`  | percent | **Required.** Where the color is reached, from `0%` (the start) to `100%` (the end). Offsets must increase |
-| `color`   | color   | **Required.** Hex, `cmyk()`, `rgb()`, `hsl()` or a color name. A gradient's colors are never another gradient, and are all CMYK or all RGB |
+| `color`   | color   | **Required.** Hex, `cmyk()`, `rgb()`, `hsl()`, a color name, or a spot color or a tint of it. A gradient's colors are never another gradient, and are all CMYK, all RGB, or all tints of one spot color |
 
 ### `ruling`
 

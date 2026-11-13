@@ -7,7 +7,7 @@ lpdf documents are described in XML. Download the schema: [lpdf.xsd](https://lpd
 ```
 <lpdf version="1">
   <assets>           ← optional: fonts, images, color profiles
-  <tokens>           ← optional: custom scales, aliases, colors, gradients and rulings
+  <tokens>           ← optional: custom scales, aliases, colors, spot colors, gradients and rulings
   <document>         ← required
     <meta>           ← optional: title, author, subject, keywords, creator, lang
     <output>         ← optional: encryption, what a reader may do, PDF/A, PDF/UA, PDF/X
@@ -96,7 +96,7 @@ A token is a name for a length. Each attribute reads its own scale, so `m` is 8p
 
 `padding` and `margin` take one to four values, written like CSS, and each can be a token: `padding="m 24pt"` is 8pt top and bottom and 24pt left and right.
 
-To change a scale, or to name colors, gradients or rulings, add `tokens` before `document`. A scale row needs all six values:
+To change a scale, or to name colors, spot colors, gradients or rulings, add `tokens` before `document`. A scale row needs all six values:
 
 ```xml
 <lpdf version="1">
@@ -162,12 +162,14 @@ A color is written in one of four forms, or as the name of a color in `tokens`:
 "rgb(23, 99, 207)"      ← red, green and blue, each from 0 to 255
 "hsl(215, 80%, 45%)"    ← hue from 0 to 360, saturation and lightness from 0% to 100%
 "brand"                 ← a color named in tokens
+"brand 30%"             ← a tint of a spot color named in tokens
 ```
 
 Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`, the color of a `border` or a `shadow`, the `value` of a `color` in `tokens`, the colors of a gradient, and a value that `data-color` finds. A name that is not defined is an error.
 
 - **Screen and print.** Hex, `rgb()` and `hsl()` are screen colors, in RGB, and `rgb()` and `hsl()` give the same PDF as their hex: `rgb(23, 99, 207)` and `hsl(215, 80%, 45%)` are both `#1763cf`. `hsl()` makes shades of one color easy: keep the hue and change the lightness. `cmyk()` is a print color: the PDF has it as the four inks, so a printer separates its plates without converting it from RGB, which shifts colors. Lpdf never converts between the two.
 - **Both in one document.** RGB and CMYK colors can sit side by side, on one page or in sections of their own: `color="#1763cf"` in a section for the screen and `color="cmyk(91, 61, 0, 19)"` in one for print. A gradient is the exception: its colors are all CMYK or all RGB (see [Gradients](#gradients)).
+- **Inks of their own.** A brand color, a varnish or a die line that a printer prints from a plate of its own is a [spot color](#spot-colors).
 - **Commas or spaces.** The values are separated by commas or by spaces, as in CSS: `cmyk(0, 0, 0, 100)` and `cmyk(0 0 0 100)` are the same black. One color uses one or the other, so `rgb(23, 99 207)` is an error.
 - **No alpha.** A color is always solid: `rgba(23, 99, 207, 0.5)` and `rgb(23 99 207 / 50%)` are errors. Use `opacity` on a [layer](?p=doc/layer#opacity) or on a [box](?p=doc/layout#opacity), or the opacity of a `shadow`.
 - **Keep print colors opaque.** Whatever is faded, a layer or a box with an `opacity` below 1 or a shadow with an opacity, is blended in RGB: its `cmyk()` colors are still written as inks, but they are converted to RGB to blend them, and so at print too. Leave the colors meant for print at full opacity.
@@ -179,6 +181,61 @@ Each form goes wherever a color does: `color`, `background`, `fill` and `stroke`
 - a percentage in `rgb()`: `rgb(9%, 39%, 81%)`. Write 0 to 255
 - `hsl()` without its `%`: `hsl(215, 0.8, 0.45)` would be a near-black gray, so the `%` is required
 
+## Spot colors
+
+A spot color is an ink of its own, printed from a plate of its own: a brand color such as a Pantone, a varnish, or a die line that marks where the sheet is cut. Declare each in `spots` inside `tokens`, with the ink's name as the printer knows it and a color that stands in for it on a screen or a proof, and use its name wherever a color goes, solid or as a tint:
+
+```xml
+<lpdf version="1">
+  <tokens>
+    <spots>
+      <spot name="brand"   ink="PANTONE 1665 C" value="cmyk(0, 85, 100, 0)"/>
+      <spot name="varnish" ink="Varnish"        value="cmyk(0, 0, 0, 10)" overprint="true"/>
+      <spot name="die"     ink="Dieline"        value="#ff00ff"           overprint="true"/>
+    </spots>
+  </tokens>
+  <document size="a4">
+    <section>
+      <layout margin="48pt">
+        <column gap="m">
+          <text font-size="xl" color="brand">Printed in PANTONE 1665 C</text>
+          <row gap="s">
+            <column width="80pt" height="40pt" background="brand"/>
+            <column width="80pt" height="40pt" background="brand 50%"/>
+            <column width="80pt" height="40pt" background="brand 20%"/>
+          </row>
+          <column padding="l" background="cmyk(20, 0, 0, 0)" border="s die" radius="m">
+            <column height="40pt" background="varnish"/>
+          </column>
+        </column>
+      </layout>
+    </section>
+  </document>
+</lpdf>
+```
+
+| `spot` attribute | Description |
+|------------------|-------------|
+| `name`           | **Required.** The name a color gives: lowercase letters, digits and `-`, starting with a letter |
+| `ink`            | **Required.** The ink's name as the printer knows it, which names its plate, such as `PANTONE 1665 C`. Any text but `All`, `None`, `Cyan`, `Magenta`, `Yellow` and `Black`, which PDF keeps for every plate, no plate and the four process plates |
+| `value`          | **Required.** The color that stands in for the ink: hex, `cmyk()`, `rgb()` or `hsl()`, not a color name |
+| `overprint`      | `true` prints the ink on top of the inks under it. Default `false` |
+
+- **Where it goes.** Wherever a color does: `color`, `background`, `fill` and `stroke`, the color of a `border` or a `shadow`, the lines of a [ruling](#rulings), the colors of a gradient, and a value that `data-color` finds.
+- **Tints.** A percentage of the ink, after the name and a space: `background="brand 30%"`, from `0%` to `100%`, decimals allowed. `brand 100%` is `brand`. Only a spot color takes a tint: for a color of `colors`, write the lighter color itself.
+- **The plate.** The PDF draws a spot color in a Separation color space named after its ink, so the printer's tools print it from a plate of its own, and Acrobat's Output Preview lists it. The `value` is what a screen, a proof or a printer without the ink shows in its place: a `cmyk()` value keeps the stand-in in CMYK, any other form in RGB. Lpdf ships no ink library: the name and the stand-in are yours.
+- **Overprint.** An ink that overprints prints on top of the inks under it, instead of leaving them out where it sits. A varnish needs it, or the picture under it is not printed, and so does a die line, or the artwork has a white gap where the cutter runs. A screen doesn't show overprint: Acrobat's Overprint Preview and a press do.
+- **Gradients.** A gradient of a spot color runs between tints of that one ink: `from="brand" to="brand 10%"`. One that mixes a spot color with any other color, another spot color included, is an error that names both.
+- **Names.** A spot color can't share its name with a color the document's `colors` writes. It may take the name of a built-in color, such as `primary`, and is then used in its place.
+- **Standards.** A [PDF/X](?p=pdfx#colors) file keeps each ink as its plate, and a `cmyk()` value needs a CMYK press profile there. A [PDF/A](?p=pdfa) file takes spot colors whose `value` is an RGB color, which its sRGB output intent covers.
+
+**Each of these is an error that says what to change:**
+
+- a tint of a color that is not a spot color, such as `primary 30%`
+- a tint out of its range, such as `brand 130%`, or without its `%`, such as `brand 30`
+- a spot color declared twice, two spot colors with one ink, or an ink named `All`, `None`, `Cyan`, `Magenta`, `Yellow` or `Black`
+- a `value` that is a color name, or a malformed color
+
 ## Gradients
 
 A gradient is a named blend of colors. Define it once in `gradients` inside `tokens`, and use it as `gradient:name` where a background or a fill goes. It spans the box it fills.
@@ -187,7 +244,7 @@ A gradient is a named blend of colors. Define it once in `gradients` inside `tok
 |----------------------|-------------|
 | `name`               | **Required.** The name that follows `gradient:`: lowercase letters, digits and `-`, starting with a letter |
 | `type`               | **Required.** `linear` or `radial` |
-| `from`, `to`         | The first and the last color, for two colors: hex, `cmyk()`, `rgb()`, `hsl()` or a color name |
+| `from`, `to`         | The first and the last color, for two colors: hex, `cmyk()`, `rgb()`, `hsl()`, a color name, or a spot color or a tint of it |
 | `angle`              | The direction of a linear gradient, in degrees. Default `0` |
 
 For more than two colors, give `stop` children in place of `from` and `to`. Each has an `offset`, a percentage from `0%` to `100%`, and a `color`. The offsets must increase. The first color holds up to the first stop, and the last color after the last stop.
@@ -196,7 +253,7 @@ For more than two colors, give `stop` children in place of `from` and `to`. Each
 - **Angle.** `0` runs from the top to the bottom, `90` from the left to the right, and `180` from the bottom to the top. `45` runs from the top-left corner to the bottom-right. The line is as long as the box needs, so the first and last colors reach the corners.
 - **Radial.** A circle at the center of the box, out to its farthest corner: `from` is the center and `to` the edge.
 - **Colors.** Any [color](#colors) or a color name, never another gradient. A color name in a gradient is looked up after the `colors` are read, so the order in `tokens` does not matter.
-- **All CMYK or all RGB.** A PDF shading has one color space, so a gradient's colors are all `cmyk()`, or all hex, `rgb()` and `hsl()`. A gradient that mixes them is an error that names it, since converting one kind to the other would change the colors.
+- **All CMYK or all RGB.** A PDF shading has one color space, so a gradient's colors are all `cmyk()`, or all hex, `rgb()` and `hsl()`, or all tints of one [spot color](#spot-colors). A gradient that mixes them is an error that names it, since converting one kind to the other would change the colors.
 - **Pages.** A box that splits across pages gets its own gradient on each page. The `background` of a page or a section spans the page.
 - **Border, shadow and opacity.** A border is drawn flat over the gradient, and a shadow under it. A box's `opacity` fades the gradient with the rest.
 

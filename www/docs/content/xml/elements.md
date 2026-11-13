@@ -55,7 +55,7 @@ It has to be a printer profile, in gray, RGB or CMYK. The engine bundles no pres
 
 ### `tokens`
 
-Container for custom scales and colors, placed before `document`. See [Tokens](?p=xml/schema#tokens).
+Container for custom scales, colors and spot colors, placed before `document`. See [Tokens](?p=xml/schema#tokens).
 
 | Child | Description |
 |-------|-------------|
@@ -63,6 +63,7 @@ Container for custom scales and colors, placed before `document`. See [Tokens](?
 | `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not lengths: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
 | `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
+| `spots` | Holds `spot` elements |
 | `gradients` | Holds `gradient` elements |
 | `rulings` | Holds `ruling` elements |
 
@@ -82,6 +83,17 @@ A name of your own for a slot of the scale. An attribute that takes a slot (`xs`
 | `name`    | string | **Required.** Name to use in any color attribute. A color named `text` becomes the default text color |
 | `value`   | color  | **Required.** `#rgb`, `#rrggbb`, `cmyk()`, `rgb()` or `hsl()`. See [Colors](?p=xml/schema#colors) |
 
+### `spot`
+
+A spot color: an ink of its own, printed from a plate of its own, in `spots` inside `tokens`. A color attribute takes its name, solid, or a tint of it after a space: `background="brand 30%"`. See [Spot colors](?p=xml/schema#spot-colors).
+
+| Attribute   | Type    | Default | Description |
+|-------------|---------|---------|-------------|
+| `name`      | string  | —       | **Required.** The name a color attribute gives. Lowercase letters, digits and `-`, starting with a letter. Not a name of `colors` |
+| `ink`       | string  | —       | **Required.** The ink's name as the printer knows it, which names its plate, such as `PANTONE 1665 C`. Not `All`, `None`, `Cyan`, `Magenta`, `Yellow` or `Black` |
+| `value`     | color   | —       | **Required.** The color that stands in for the ink on a screen or a proof: `#rgb`, `#rrggbb`, `cmyk()`, `rgb()` or `hsl()`, not a color name |
+| `overprint` | boolean | `false` | Whether the ink prints on top of the inks under it, as a varnish or a die line does |
+
 ### `gradient`
 
 A named blend of colors, in `gradients` inside `tokens`. A `background` or a `fill` uses it as `gradient:name`, and the blend spans the box it fills. Give `from` and `to` for two colors, or `stop` children for more. See [Gradients](?p=xml/schema#gradients).
@@ -90,7 +102,7 @@ A named blend of colors, in `gradients` inside `tokens`. A `background` or a `fi
 |-----------|--------|----------|-------------|
 | `name`    | string | —        | **Required.** The name that follows `gradient:`. Lowercase letters, digits and `-`, starting with a letter |
 | `type`    | string | —        | **Required.** `linear` or `radial` |
-| `from`    | color  | —        | The first color: hex, `cmyk()`, `rgb()`, `hsl()` or a color name. Used with `to`, when there are no `stop` children. For a radial gradient it is the center |
+| `from`    | color  | —        | The first color: hex, `cmyk()`, `rgb()`, `hsl()`, a color name, or a spot color or a tint of it. Used with `to`, when there are no `stop` children. For a radial gradient it is the center |
 | `to`      | color  | —        | The last color. Used with `from`. For a radial gradient it is the edge |
 | `angle`   | number | `0`      | The direction of a linear gradient, in degrees: `0` runs from the top to the bottom, `90` from the left to the right, `180` from the bottom to the top. A radial gradient has no direction |
 

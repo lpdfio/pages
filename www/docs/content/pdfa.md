@@ -156,7 +156,7 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - a font declared in `assets` whose file was not loaded
 - a font whose license forbids embedding it
 - a character the font has no glyph for, which a reader would draw as an empty box
-- a CMYK color or gradient: the sRGB output intent covers RGB colors only
+- a CMYK color or gradient, or a [spot color](?p=xml/schema#spot-colors) whose `value` is `cmyk()`: the sRGB output intent covers RGB colors only
 - a form field, whose text is drawn in Helvetica
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file

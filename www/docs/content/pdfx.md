@@ -154,6 +154,7 @@ A background or an image that should run to the edge of the cut page has to reac
 A press prints in its own inks, and the press profile says how. A PDF/X-4 file keeps each color in the space it was given in:
 
 - `cmyk()` colors stay CMYK, as the printer separates them.
+- [Spot colors](?p=xml/schema#spot-colors) stay inks of their own, each printed from its own plate, with their tints and overprint. A spot color whose `value` is `cmyk()` stands in for its ink in CMYK.
 - RGB colors, `#hex`, `rgb()` and `hsl()`, and RGB images, whatever their format, are tied to the sRGB profile the engine carries, so the printer's tools convert them to the press the same way every time.
 - Opacity, shadows and gradients are kept: PDF/X-4 allows transparency.
 
@@ -186,7 +187,7 @@ Lpdf writes what PDF/X needs and repairs nothing of the document's own. Each of 
 - a font declared in `assets` whose file was not loaded, a font whose license forbids embedding it, and a character the font has no glyph for
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - a form field, which is something to click on the printed page
-- a CMYK color or gradient when the press profile is a gray or RGB one
+- a CMYK color or gradient, or a spot color whose `value` is `cmyk()`, when the press profile is a gray or RGB one
 - `encrypt` on the same `output`: PDF/X forbids encryption, so that the printer can open the file
 - `pdfa` on the same `output`: a PDF/A file keeps to the sRGB profile, and a PDF/X file to the press profile
 - [`attachments`](?p=attachments): a PDF/X file holds only what the press prints

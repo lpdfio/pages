@@ -23,7 +23,7 @@ Factur-X, called ZUGFeRD in Germany, is a hybrid e-invoice: a PDF/A-3 file whose
 </lpdf>
 ```
 
-Your software writes the XML, as it writes the pages, and Lpdf attaches it and makes the PDF the spec asks for. The render needs `createdOn`, as every [PDF/A](?p=pdfa) render does.
+Your software writes the XML, as it writes the pages, and Lpdf attaches it and makes the PDF the spec asks for. The render needs `createdOn`, as every [PDF/A](?p=pdfa) render does. An invoice is a PDF/A-3 file, so it goes with [PDF/UA](?p=pdfua) and fast web view, and not with PDF/X or encryption: see [What combines with what](?p=combinations).
 
 ## The file name is the switch
 

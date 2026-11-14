@@ -103,8 +103,11 @@ export default defineConfig({
                     items: [{ slug: 'data/binding', label: 'Data Binding' }],
                 },
                 {
-                    label: 'PDF output',
+                    label: 'Standards and print',
                     items: [
+                        { slug: 'standards', label: 'Overview' },
+                        { slug: 'combinations', label: 'Combinations' },
+                        { slug: 'color-and-print', label: 'Color and print' },
                         { slug: 'encryption', label: 'Encryption' },
                         { slug: 'pdfa', label: 'PDF/A' },
                         { slug: 'facturx', label: 'Factur-X e-invoices' },

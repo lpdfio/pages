@@ -23,7 +23,7 @@ It is an attribute of [`output`](?p=xml/elements#output), the element of `docume
 |-----------|------|---------|-------------|
 | `linearize` | boolean | `false` | Writes the PDF linearized, for fast web view. It changes nothing a viewer shows |
 
-It combines with every other attribute of `output`: a file can be [encrypted](?p=encryption), [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and linearized too.
+It combines with every other attribute of `output`: a file can be [encrypted](?p=encryption), [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua) or [PDF/X](?p=pdfx), and linearized too. [What combines with what](?p=combinations) has the whole table.
 
 A document built in code asks for it in its `output`, as a boolean: `output: { linearize: true }` in JavaScript, and `DocumentOutput` in the other SDKs, with `linearize=True` in Python, `new DocumentOutput().linearize(true)` in Java, `Linearize = true` in C# and `linearize: true` in PHP.
 

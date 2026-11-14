@@ -129,7 +129,7 @@ In an [encrypted](?p=encryption) document the files are encrypted with the rest,
 
 A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa="2a"`, `"2b"` or `"2u"` is an error. PDF/A-3, `pdfa="3a"`, `"3b"` or `"3u"`, carries files of any kind. In a PDF/A-3 document, a file named `factur-x.xml` makes the PDF a [Factur-X e-invoice](?p=facturx).
 
-A [PDF/X](?p=pdfx) file holds only what the press prints, so `attachments` with `pdfx` is an error.
+A [PDF/X](?p=pdfx) file holds only what the press prints, so `attachments` with `pdfx` is an error. [What combines with what](?p=combinations) has the other pairs.
 
 ## Errors
 

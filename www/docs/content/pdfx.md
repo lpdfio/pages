@@ -33,7 +33,7 @@ Both are attributes of [`output`](?p=xml/elements#output), the element of `docum
 | `pdfx` | `4` | — | Writes the PDF as PDF/X-4, which keeps RGB colors, images and transparency, tied to color profiles. Without it the PDF is a plain one |
 | `profile` | string | — | The [`profile`](?p=xml/elements#profile) of `assets` the file is made for: the ICC profile of the printing press |
 
-PDF/X-1a, which allows CMYK only and no transparency, is not written. A file can be PDF/X and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfx="4" profile="press" pdfua="1"/>`.
+PDF/X-1a, which allows CMYK only and no transparency, is not written. A file can be PDF/X and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfx="4" profile="press" pdfua="1"/>`. [What combines with what](?p=combinations) says which other settings go with PDF/X and which are refused.
 
 ## The press profile
 
@@ -151,7 +151,7 @@ A background or an image that should run to the edge of the cut page has to reac
 
 ## Colors
 
-A press prints in its own inks, and the press profile says how. A PDF/X-4 file keeps each color in the space it was given in:
+A press prints in its own inks, and the press profile says how. [Color and print](?p=color-and-print) says which form of color is for what. A PDF/X-4 file keeps each color in the space it was given in:
 
 - `cmyk()` colors stay CMYK, as the printer separates them.
 - [Spot colors](?p=xml/schema#spot-colors) stay inks of their own, each printed from its own plate, with their tints and overprint. A spot color whose `value` is `cmyk()` stands in for its ink in CMYK.

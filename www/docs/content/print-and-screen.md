@@ -57,6 +57,8 @@ With `pdfa` or `pdfua` on the [`output`](?p=xml/elements#output), everything sho
 
 A [PDF/X](?p=pdfx) file goes to a press, which prints what is on by default, and PDF/X-4 has no switching between screen and print. So with `pdfx`, the file is the print version: print content is on, and screen content stays in the file, off. A viewer shows the print version too, as a proof of what the press prints, and a reader can turn "Screen only" on in a layers panel, such as Acrobat's. With `pdfua` as well, everything shows, as in any PDF/UA file.
 
+For the rest of a job for a printer, the colors, the press profile and the bleed, see [Color and print](?p=color-and-print).
+
 ## Hidden is not removed
 
 Content in a hidden group is still in the file. A reader can select, search and copy it, and a viewer that ignores groups shows it. A group is for presentation, never a way to keep anything secret.

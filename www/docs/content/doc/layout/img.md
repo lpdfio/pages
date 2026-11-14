@@ -38,7 +38,7 @@ AVIF, HEIC and JPEG 2000 are refused.
 
 ## SVG
 
-An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded, so a file it can't draw is refused with an error that names the image, the tag and its line.
+An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded, so a file it can't draw is refused with an error that names the image, the tag and, where it can say, its line.
 
 ```xml
 <lpdf version="1">
@@ -55,7 +55,7 @@ An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes 
 </lpdf>
 ```
 
-**Size.** The picture is as large as the `width` and `height` of its root `svg` element, a pixel to the point, else its `viewBox`. An SVG with none of the three is as large as what it draws. `width` and `height` on the `<img>` size it as they do any image.
+**Size.** The picture is as large as the `width` and `height` of its root `svg` element, else its `viewBox`, in pixels, a pixel to the point as for any image. A length in another unit is converted at 96 pixels to the inch, and the size rounds up to whole pixels, so a root that says `width="100pt"` is 134 pixels wide and draws 134pt wide when the `<img>` gives no width. An SVG with none of the three is as large as what it draws. `width` and `height` on the `<img>` size it as they do any image.
 
 **Drawn:**
 
@@ -66,9 +66,9 @@ An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes 
 
 **Left out of the picture,** since a still picture shows none of it: `title`, `desc`, `metadata`, comments, `script`, the tags of drawing programs and animation. An SVG that only appears through its animation is drawn blank.
 
-**Refused,** with an error that names the tag and its line: `text` (convert the text to outlines), an `image` inside the SVG, `foreignObject`, a gradient, `mask`, `filter`, `pattern`, `mix-blend-mode`, a `clipPath` whose shapes have different `clip-rule` values, a `clip-path` on a shape of a `clipPath`, and any reference to another file or a URL: a `use` of another file, a `url()` outside the file, an `@import`. A gradient, mask, filter or pattern the SVG defines but never uses is no reason to refuse it.
+**Refused,** with an error that names the tag and, where it can say, its line: `text` (convert the text to outlines), an `image` inside the SVG, `foreignObject`, a gradient, `mask`, `filter`, `pattern`, `mix-blend-mode`, a `clipPath` whose shapes have different `clip-rule` values, a `clip-path` on a shape of a `clipPath`, and any reference to another file or a URL: a `use` of another file, a `url()` outside the file, an `@import`. A gradient, mask, filter or pattern the SVG defines but never uses is no reason to refuse it.
 
-**Limits.** An SVG that expands to more than 100,000 elements, once its `use`, marker and clip path references are followed, or has more than 1,000,000 path commands, or nests more than 100 levels, `use` included, is refused with an error that names the limit. A `use` that refers to itself is refused too.
+**Limits.** An SVG that expands to more than 100,000 elements, once its `use`, marker and clip path references are followed, or has more than 1,000,000 path commands, or nests more than 100 levels, `use` included, or is written with more than 400,000 XML nodes, text between the tags counted, is refused with an error that names the limit. A `use` that refers to itself is refused too.
 
 A picture in a PDF/A, PDF/X or PDF/UA file keeps the standard: in PDF/UA it is a figure with the `alt` of its `<img>`, which it needs, as any image does.
 

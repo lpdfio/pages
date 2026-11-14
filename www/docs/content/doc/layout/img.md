@@ -55,7 +55,7 @@ An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes 
 </lpdf>
 ```
 
-**Size.** The picture is as large as the `width` and `height` of its root `svg` element, else its `viewBox`, in pixels, a pixel to the point as for any image. A length in another unit is converted at 96 pixels to the inch, so a root that says `width="72pt"` is 96 pixels wide and draws 96pt wide when the `<img>` gives no width. An SVG with none of the three is as large as what it draws. `width` and `height` on the `<img>` size it as they do any image.
+**Size.** The picture is as large as the `width` and `height` of its root `svg` element, else its `viewBox`. A size in `pt`, `pc`, `in`, `mm` or `cm` is the size it says: a root that says `width="72pt"` draws 72pt wide, and `width="210mm"` draws 595.3pt, when the `<img>` gives no width. A size in pixels, or with no unit, is a pixel to the point, as for any image. When the two are in different units, the `width`'s unit is read for both, so the picture keeps its proportions; the `height`'s is read when the `width` is no length. An SVG with none of the three is as large as what it draws. `width` and `height` on the `<img>` size it as they do any image.
 
 **Drawn:**
 

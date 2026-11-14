@@ -37,6 +37,8 @@ A raster image draws one picture, and the engine reads the kinds of file below. 
 
 AVIF, HEIC and JPEG 2000 are refused.
 
+Every format goes in a PDF/A, PDF/UA or PDF/X file. [What combines with what](?p=combinations) has what each kind of file holds, and [Color and print](?p=color-and-print#the-press-profile) what a PDF/X file does with an RGB image.
+
 ## SVG
 
 An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded and refuses one it can't draw, when a document uses it, with an error that names the image, the tag and, where it can say, its line.

@@ -131,6 +131,18 @@
     "xml/schema": {
         "description": "The Lpdf XML schema: document structure, attribute types, page sizes, units, tokens, colors and the border value format, with a download link for lpdf.xsd."
     },
+    "standards": {
+        "title": "Which PDF standard to use: PDF/A, PDF/UA, PDF/X in Lpdf",
+        "description": "Which PDF standard fits which job in Lpdf: PDF/A, Factur-X, PDF/UA, PDF/X, encryption and fast web view, what turns each on, and where its page is."
+    },
+    "combinations": {
+        "title": "PDF/A, PDF/UA, PDF/X and encryption: what combines in Lpdf",
+        "description": "See which PDF settings go together in Lpdf: PDF/A, PDF/UA, PDF/X, encryption, fast web view and attachments, and what each kind of file holds or refuses."
+    },
+    "color-and-print": {
+        "title": "Color and print in Lpdf: RGB, CMYK, spot colors and bleed",
+        "description": "Write RGB, CMYK and spot colors in Lpdf, set a press profile and a bleed for a printer, and see which colors PDF/A, PDF/UA and PDF/X take or refuse."
+    },
     "encryption": {
         "title": "Encrypt a PDF with AES-256 and passwords in Lpdf",
         "description": "Encrypt a PDF with AES-256: the document asks for it in its output element, and the passwords come with the render call in JavaScript, Python, Java, C# or PHP."

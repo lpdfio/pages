@@ -26,7 +26,7 @@ Lpdf can encrypt a PDF with an open password, an owner password and permissions 
 | `pdfx` | `4` | — | Writes the PDF as [PDF/X](?p=pdfx), which forbids encryption: not with `encrypt` |
 | `linearize` | boolean | `false` | Writes the PDF [linearized](?p=fast-web-view), for fast web view: the file is encrypted first and linearized last |
 
-The files a document carries in its [`attachments`](?p=attachments) are encrypted with the rest, under the same passwords.
+The files a document carries in its [`attachments`](?p=attachments) are encrypted with the rest, under the same passwords. [What combines with what](?p=combinations) has every pair.
 
 The template is the only place that turns encryption on. Passwords given to the render of a document without `encrypt` are an error, so a file never goes out unencrypted while you believe it is locked.
 

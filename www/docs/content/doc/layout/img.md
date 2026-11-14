@@ -38,7 +38,7 @@ AVIF, HEIC and JPEG 2000 are refused.
 
 ## SVG
 
-An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded, so a file it can't draw is refused with an error that names the image, the tag and, where it can say, its line.
+An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded and refuses one it can't draw, when a document uses it, with an error that names the image, the tag and, where it can say, its line.
 
 ```xml
 <lpdf version="1">
@@ -66,7 +66,7 @@ An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes 
 
 **Left out of the picture,** since a still picture shows none of it: `title`, `desc`, `metadata`, comments, `script`, the tags of drawing programs and animation. An SVG that only appears through its animation is drawn blank.
 
-**Refused,** with an error that names the tag and, where it can say, its line: `text` (convert the text to outlines), an `image` inside the SVG, `foreignObject`, a gradient, `mask`, `filter`, `pattern`, `mix-blend-mode`, a `clipPath` whose shapes have different `clip-rule` values or overlap, a `clip-path` on a shape of a `clipPath`, and any reference to another file or a URL: a `use` of another file, an `feImage`, a `url()` outside the file, an `@import`, an entity that names a file. A gradient, mask, filter or pattern the SVG defines but never uses is no reason to refuse it.
+**Refused,** with an error that names the tag and, where it can say, its line: `text` (convert the text to outlines), an `image` inside the SVG, `foreignObject`, a gradient, `mask`, `filter`, `pattern`, `mix-blend-mode`, a `clipPath` whose shapes have different `clip-rule` values or whose bounding boxes overlap, a `clip-path` on a shape of a `clipPath`, and any reference to another file or a URL: a `use` of another file, an `feImage` that names anything but an element of the file, a `url()` outside the file, an `@import`, an entity that names a file, and a parameter entity. A gradient, mask, filter or pattern the SVG defines but never uses is no reason to refuse it.
 
 **Limits.** An SVG that expands to more than 100,000 elements, once its `use`, marker and clip path references are followed, or has more than 1,000,000 path commands, or nests more than 100 levels, `use` included, or is written with more than 400,000 XML nodes, text between the tags counted, or has entities that expand to more than 1,000,000 bytes, is refused with an error that names the limit. A `use` that refers to itself is refused too.
 

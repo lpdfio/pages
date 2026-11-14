@@ -23,11 +23,11 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
 
 ## Formats
 
-An image is a JPEG, PNG, WebP, GIF, TIFF or BMP file. The engine tells the format from the file's bytes, whatever its name. Transparency is kept: an alpha channel, and a GIF's transparent color.
+An image is a JPEG, PNG, WebP, GIF, TIFF, BMP or SVG file. The engine tells the format from the file's bytes, whatever its name. Transparency is kept: an alpha channel, and a GIF's transparent color. An SVG is drawn as vector: see [SVG](#svg).
 
-A JPEG goes into the PDF as it is. The other formats go in as their pixels, compressed without loss, so a photo saved as a lossy WebP takes several times its file's size in the PDF: save it as a JPEG where the size of the PDF matters. Their pixels count toward the render's [memory limit](?p=install#memory-limit).
+A JPEG goes into the PDF as it is. The other raster formats go in as their pixels, compressed without loss, so a photo saved as a lossy WebP takes several times its file's size in the PDF: save it as a JPEG where the size of the PDF matters. Their pixels count toward the render's [memory limit](?p=install#memory-limit).
 
-An image draws one picture, and the engine reads the kinds of file below. The others are refused with an error that names the image and says how to save it instead:
+A raster image draws one picture, and the engine reads the kinds of file below. The others are refused with an error that names the image and says how to save it instead:
 
 - **PNG**: gray, RGB and RGBA at 8 or 16 bits, and a palette at 8 bits. A PNG of gray with alpha, or of fewer than 8 bits, is refused.
 - **TIFF**: gray or RGB at 8 or 16 bits a sample, with alpha or without, and gray without alpha at 1, 2 or 4 bits, uncompressed or compressed with LZW, Deflate, PackBits or Group 4 fax. Samples of 32 bits, or of signed or floating-point numbers, a TIFF in CMYK, a TIFF whose pixels are compressed as JPEG, a Group 3 fax, a TIFF with a color palette, a gray TIFF with alpha that stores white as zero, and one that keeps each color in a plane of its own (Photoshop's "Per Channel" pixel order) are refused. A TIFF of several pages is refused too; a thumbnail stored in it is not a page.
@@ -35,6 +35,42 @@ An image draws one picture, and the engine reads the kinds of file below. The ot
 - **BMP**: palettes of 1, 4 and 8 bits, run-length encoded or not, and 16, 24 and 32 bits to a pixel, with alpha when the file has an alpha mask. A BMP that holds a JPEG or a PNG is refused: load that file instead.
 
 AVIF, HEIC and JPEG 2000 are refused.
+
+## SVG
+
+An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes and not pixels, and an SVG used again is written once. The engine reads each SVG when it is loaded, so a file it can't draw is refused with an error that names the image, the tag and its line.
+
+```xml
+<lpdf version="1">
+  <assets>
+    <image name="chart" src="chart.svg"/>
+  </assets>
+  <document size="letter">
+    <section>
+      <layout margin="48pt">
+        <img name="chart" width="300pt" alt="Sales by month"/>
+      </layout>
+    </section>
+  </document>
+</lpdf>
+```
+
+**Size.** The picture is as large as the `width` and `height` of its root `svg` element, a pixel to the point, else its `viewBox`. An SVG with none of the three is as large as what it draws. `width` and `height` on the `<img>` size it as they do any image.
+
+**Drawn:**
+
+- Shapes: `path`, `line`, `polyline`, `polygon`, `rect`, `circle` and `ellipse`, and a `marker` drawn at each vertex of its path.
+- Structure: `svg`, `g`, `defs`, `use` of an element of the same file, and `clipPath`, with `transform` on any element.
+- Painting: `fill`, `stroke`, `stroke-width`, `stroke-linecap`, `stroke-linejoin`, `stroke-miterlimit`, `stroke-dasharray`, `stroke-dashoffset`, `fill-rule`, `opacity`, `fill-opacity` and `stroke-opacity`, as attributes, in a `style` attribute or in a `<style>` block. The `opacity` of a group fades its shapes together.
+- Colors: `#rgb`, `#rrggbb`, `rgb()`, a color name, `none` and `currentColor`, which is the color of the text where the image sits: the `color` of the nearest box, else the `text` color of the [tokens](?p=xml/schema#tokens). The one picture is drawn in each place in that place's color. A `color` the SVG sets on its root element is kept.
+
+**Left out of the picture,** since a still picture shows none of it: `title`, `desc`, `metadata`, comments, `script`, the tags of drawing programs and animation. An SVG that only appears through its animation is drawn blank.
+
+**Refused,** with an error that names the tag and its line: `text` (convert the text to outlines), an `image` inside the SVG, `foreignObject`, a gradient, `mask`, `filter`, `pattern`, `mix-blend-mode`, a `clipPath` whose shapes have different `clip-rule` values, a `clip-path` on a shape of a `clipPath`, and any reference to another file or a URL: a `use` of another file, a `url()` outside the file, an `@import`. A gradient, mask, filter or pattern the SVG defines but never uses is no reason to refuse it.
+
+**Limits.** An SVG that expands to more than 100,000 elements, once its `use`, marker and clip path references are followed, or has more than 1,000,000 path commands, or nests more than 100 levels, `use` included, is refused with an error that names the limit. A `use` that refers to itself is refused too.
+
+A picture in a PDF/A, PDF/X or PDF/UA file keeps the standard: in PDF/UA it is a figure with the `alt` of its `<img>`, which it needs, as any image does.
 
 ## Attributes
 

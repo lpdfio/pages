@@ -1,6 +1,6 @@
 # Merging PDFs for print
 
-`merge` takes PDFs that Lpdf did not make and returns one PDF made for printing: several contracts from different sources, sent to the printer as one file. It takes the files as bytes, each with its name, and returns the merged file. Nothing is laid out. Each page is drawn as it looked, at its own size, and what is not on the printed page is left behind: forms, links and bookmarks are gone, and the file keeps the look of the pages.
+`merge` takes existing PDFs, from any source, and returns one PDF made for printing: several contracts from different tools, sent to the printer as one file. It takes the files as bytes, each with its name, and returns the merged file. Nothing is laid out. Each page is drawn as it looked, at its own size, and what is not on the printed page is left behind: forms, links and bookmarks are gone, and the file keeps the look of the pages.
 
 It is not a way to edit or read PDFs. The merged file is for the printer, not for the screen, where the originals are the better copy.
 
@@ -128,7 +128,7 @@ Each page of each file is drawn on a page of the merged file, in the order of th
 
 - **Size.** The page has the size it shows at: its crop box, turned by the turn the file gives it. A file with pages of mixed sizes prints with mixed sizes, and the paper is left to whoever prints.
 - **Content.** The page looks as it did: text, images, vectors and transparency are drawn from the file's own content, with its fonts. Nothing is converted or rendered to pixels.
-- **Annotations.** An annotation that prints is drawn from its stored appearance, over the page's content. It prints when its Print flag is set and its Hidden flag is not. A check box or a radio button draws the state it is in. Links and pop-ups draw nothing. The merged file holds no annotation, so a link does not work in it.
+- **Annotations.** An annotation that prints is drawn from its stored appearance, over the page's content. It prints when its Print flag is set and its Hidden flag is not. A check box or a radio button draws the state it is in. Links and pop-ups draw nothing. An annotation with no stored appearance is not drawn: the merge draws what the file stores and nothing of its own, so a highlight or a note that a viewer draws from its properties alone does not print. The merged file holds no annotation, so a link does not work in it.
 - **Form fields.** A field is drawn from the appearance the file stores for it, filled or empty, and the form itself is gone: the merged file has no fields to fill. A field that has a value but no stored appearance would print blank, so it is an error (below).
 - **Layers.** A file's layers, its optional content groups, are carried over. Each is on or off in the merged file as it prints in its file, so every viewer shows and prints what the original printed. A layer that does not print in its file does not show in the merged file either.
 - **Version.** The merged file's PDF version is the highest among the files'.
@@ -141,7 +141,7 @@ Printed on both sides of the sheet, a document with an odd number of pages ends 
 
 ## Files that are refused
 
-A merge never returns a silently wrong file. Each of these is an error, a message that names the file and says what to change, in the error each SDK throws for a render:
+A merge refuses a file it would print wrong, where it can tell. Each of these is an error, a message that names the file and says what to change, in the error each SDK throws for a render:
 
 | A file that | Error | To merge it |
 |-------------|-------|-------------|
@@ -150,6 +150,7 @@ A merge never returns a silently wrong file. Each of these is an error, a messag
 | Is signed | `contract-b.pdf: the file is signed, and a merge can't keep a signature, …` | Set `allowSigned`, which drops the signature |
 | Has a form field with a value and no stored appearance | `contract-b.pdf: page 2: the form field 'name' has a value but no stored appearance, so it would print blank: …` | Open the file in a PDF viewer and save it, which stores the appearance |
 | Can't be read, or isn't a PDF | `notes.txt: the file is not a PDF: it doesn't start with %PDF-` | Give the PDF |
+| Has no pages | `contract-b.pdf: the PDF has no pages` | Give a file with pages |
 
 A file that opens without a password but has an owner password is read as any other: the owner password only restricts what the file allows. An empty signature field is not a signature, and does not need `allowSigned`.
 
@@ -161,6 +162,10 @@ Like a render, a merge works without a license key. Each merged page gets the Lp
 
 ## Which PDFs it reads
 
-`merge` reads PDFs that make a page the way a viewer does. It is checked on files from these tools, in these PDF versions: Microsoft Word 2013, Adobe Acrobat Distiller 23, Adobe LiveCycle Designer ES 9.0 and Designer 6.5, Antenna House PDF Output Library 6.6, iText 7, Skia/PDF (Chrome's print to PDF), macOS Quartz and Lpdf, in PDF 1.3, 1.4, 1.6 and 1.7, with and without compressed object streams, with pages turned by `/Rotate`, cut by a crop box, of mixed sizes and inheriting their resources. Each result passes `qpdf --check`, and each page of it renders like the page it comes from.
+`merge` reads PDFs that make a page the way a viewer does. It is checked on files from these tools, in these PDF versions: Microsoft Word 2013, Adobe Acrobat Distiller 23, Adobe LiveCycle Designer ES 9.0 and Designer 6.5, Antenna House PDF Output Library 6.6, iText 7, Skia/PDF (Chrome's print to PDF), macOS Quartz and Lpdf, in PDF 1.3, 1.4, 1.6 and 1.7, with and without compressed object streams.
+
+It is also checked on files built for the structures those lack: pages turned by `/Rotate`, cut by a crop box and of mixed sizes, resources a page inherits or shares, content in several streams, annotations of each flag combination, form fields filled and empty, layers, owner passwords and a damaged cross-reference table.
+
+Each result passes `qpdf --check`, and each page of it renders like the page it comes from.
 
 A file that Lpdf's reader can't read is an error that names the file.

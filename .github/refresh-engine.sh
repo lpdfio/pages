@@ -6,6 +6,8 @@
 #   ui/demo, www/assets/js/lpdf-demo   lpdf-web.js and lpdf_bg.wasm, browser.js built with them, and the
 #                                      demo's examples
 #   www/schema, www/schema/1           schema/lpdf.xsd at the tag
+#   www/license                        THIRD_PARTY_LICENSES_ENGINE.txt, the licenses of the crates the engine
+#                                      links, which the license page links to
 #   docs-site/engine.json              the stamp the docs header shows
 #   www/docs/content/examples,         the example pages and their downloads
 #   docs-site/public/examples
@@ -43,7 +45,8 @@ mkdir -p "$engine"
 downloaded=
 for attempt in 1 2 3; do
     gh release download "$tag" --repo lpdfio/lpdf \
-        --pattern lpdf.js --pattern lpdf-web.js --pattern lpdf_bg.wasm --pattern SHA256SUMS \
+        --pattern lpdf.js --pattern lpdf-web.js --pattern lpdf_bg.wasm --pattern THIRD_PARTY_LICENSES_ENGINE.txt \
+        --pattern SHA256SUMS \
         --dir "$engine" --clobber && downloaded=1 && break
     echo "Attempt $attempt failed, retrying in 10s..."
     sleep 10
@@ -65,6 +68,18 @@ fi
 for dir in ui/demo www/assets/js/lpdf-demo; do
     cp "$engine/lpdf-web.js" "$engine/lpdf_bg.wasm" "$dir/"
 done
+
+# The licenses of the crates the engine links ask for their text to travel with the engine, which the demo serves
+# to every visitor. The license page links to the file. A release from before core attached it has none, and the
+# tree keeps the copy it has.
+licenses=THIRD_PARTY_LICENSES_ENGINE.txt
+if grep -q " $licenses\$" "$engine/SHA256SUMS"; then
+    grep " $licenses\$" "$engine/SHA256SUMS" > "$engine/licenses.sums"
+    (cd "$engine" && sha256 -c licenses.sums)
+    cp "$engine/$licenses" www/license/
+else
+    echo "::notice::$tag has no $licenses: the copy in www/license stays as it is."
+fi
 
 # lpdf-js `main`, built with the release's engine files in its wasm folder: tsc checks it against them, and
 # esbuild bundles dist/browser.js with their glue.

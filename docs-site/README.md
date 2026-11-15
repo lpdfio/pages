@@ -57,11 +57,12 @@ in git, so it never shows the copy; run `assemble-site.sh` and serve its output 
 
 The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js`, `lpdf_bg.wasm` and `browser.js` in
 `ui/demo` and `www/assets/js/lpdf-demo`, the schema in `www/schema`, the examples of the demo and the docs (core's
-`examples/`), and the stamp `docs-site/engine.json`. `.github/workflows/engine-refresh.yml` takes them from each core
+`examples/`), the stamp `docs-site/engine.json`, and `www/license/THIRD_PARTY_LICENSES_ENGINE.txt`, the licenses of
+the crates and toolchain parts the engine holds, which the license page links to. `.github/workflows/engine-refresh.yml` takes them from each core
 release candidate and release: core's `release.yml` sends `core-rc` and `core-release`, and the workflow runs
 `.github/refresh-engine.sh` and opens one PR, from the branch `engine-refresh`, which the releases after it update
-instead of opening another. `lpdf-web.js` and `lpdf_bg.wasm` are the release's own assets, checked against its
-`SHA256SUMS`. `browser.js` is lpdf-js's browser bundle, which the demo loads (`initLpdf`). It holds a copy of the wasm
+instead of opening another. `lpdf-web.js`, `lpdf_bg.wasm` and the licenses file are the release's own assets, checked against its
+`SHA256SUMS`; a release from before core attached the file leaves the committed copy as it is. `browser.js` is lpdf-js's browser bundle, which the demo loads (`initLpdf`). It holds a copy of the wasm
 glue, so it starts the wasm only when it was built with the `lpdf-web.js` of the same release. The refresh builds it
 from lpdf-js `main` with the release's engine files, as the deploy workflow builds the SDK the code tabs run with, and
 the PR names the lpdf-js commit it came from. So it follows `main` of the day, and the refresh fails when `main` doesn't

@@ -144,7 +144,7 @@ async function drawElements(rel, source, count)
         {
             const html = element.innerHTML.replace(/<!--[\s\S]*?-->/g, '');
             if (/Failed to load/.test(html)) throw new Error(`<${element.localName}> of ${rel} could not load: ${element.textContent.trim()}`);
-            if (element.localName === 'md-html' && !element.querySelector('h1')) throw new Error(`<md-html> of ${rel} drew no <h1>`);
+            if (element.localName === 'md-html' && !element.querySelector('h1, h2')) throw new Error(`<md-html> of ${rel} drew no heading`);
             // A tier's button is a link only while the tier can be bought; its name and price are always there.
             if (element.localName === 'tier-card' && !(element.querySelector('.tier-label')?.textContent.trim() && element.querySelector('.tier-price')?.textContent.trim()))
                 throw new Error(`<tier-card tier="${element.getAttribute('tier')}"> of ${rel} drew no name or price`);

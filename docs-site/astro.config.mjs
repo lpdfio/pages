@@ -117,6 +117,7 @@ export default defineConfig({
                         { slug: 'print-and-screen', label: 'Print and screen' },
                         { slug: 'attachments', label: 'Attachments' },
                         { slug: 'stamp', label: 'Stamping existing PDFs' },
+                        { slug: 'merge', label: 'Merging PDFs for print' },
                     ],
                 },
                 {

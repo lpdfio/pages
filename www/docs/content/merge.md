@@ -129,7 +129,7 @@ Each page of each file is drawn on a page of the merged file, in the order of th
 - **Size.** The page has the size it shows at: its crop box, turned by the turn the file gives it. A file with pages of mixed sizes prints with mixed sizes, and the paper is left to whoever prints.
 - **Content.** The page looks as it did: text, images, vectors and transparency are drawn from the file's own content, with its fonts. Nothing is converted or rendered to pixels.
 - **Annotations.** An annotation that prints is drawn from its stored appearance, over the page's content. It prints when its Print flag is set and its Hidden flag is not. A check box or a radio button draws the state it is in. Links and pop-ups draw nothing. An annotation with no stored appearance is not drawn: the merge draws what the file stores and nothing of its own, so a highlight or a note that a viewer draws from its properties alone does not print. The merged file holds no annotation, so a link does not work in it.
-- **Form fields.** A field is drawn from the appearance the file stores for it, filled or empty, and the form itself is gone: the merged file has no fields to fill. A field that has a value but no stored appearance would print blank, so it is an error (below).
+- **Form fields.** A field is drawn from the appearance the file stores for it, filled or empty, and the form itself is gone: the merged file has no fields to fill. A field that has a value but no stored appearance would print blank, so it is an error (below), and so is a field that has a value in a form that asks a viewer to redraw its fields: what the file stored may be out of date.
 - **Layers.** A file's layers, its optional content groups, are carried over. Each is on or off in the merged file as it prints in its file, so every viewer shows and prints what the original printed. A layer that does not print in its file does not show in the merged file either.
 - **Version.** The merged file's PDF version is the highest among the files'.
 
@@ -149,6 +149,7 @@ A merge refuses a file it would print wrong, where it can tell. Each of these is
 | Has an owner password that restricts printing or copying | `contract-b.pdf: the owner restricts printing or copying: set the allow-restricted option to merge it anyway` | Set `allowRestricted` |
 | Is signed | `contract-b.pdf: the file is signed, and a merge can't keep a signature, …` | Set `allowSigned`, which drops the signature |
 | Has a form field with a value and no stored appearance | `contract-b.pdf: page 2: the form field 'name' has a value but no stored appearance, so it would print blank: …` | Open the file in a PDF viewer and save it, which stores the appearance |
+| Has a form field with a value, in a form that asks a viewer to redraw its fields | `contract-b.pdf: page 2: the form field 'name' has a value, and the form asks a viewer to redraw its fields (NeedAppearances), so the stored appearance may be out of date and would print wrong: …` | Open the file in a PDF viewer and save it, which stores the appearance |
 | Can't be read, or isn't a PDF | `notes.txt: the file is not a PDF: it doesn't start with %PDF-` | Give the PDF |
 | Has no pages | `contract-b.pdf: the PDF has no pages` | Give a file with pages |
 

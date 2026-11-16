@@ -178,5 +178,9 @@
     "stamp": {
         "title": "Stamp images onto existing PDFs with Lpdf",
         "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from JavaScript, Python, Java, C# or PHP, keeping its original bytes and encryption."
+    },
+    "merge": {
+        "title": "Merge PDFs into one for printing with Lpdf",
+        "description": "Merge several PDFs from different sources into one made for printing, flattened as they look, with a blank side for double-sided printing, in five languages."
     }
 }

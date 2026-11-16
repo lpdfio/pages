@@ -82,6 +82,34 @@ export class LpdfEngine {
         wasm.lpdfengine_load_profile(this.__wbg_ptr, ptr0, len0, ptr1, len1);
     }
     /**
+     * Merge existing PDFs into one PDF made for printing. Each source page is drawn on a page of its own size, its
+     * annotations that print are flattened from their stored appearances, and its layers cross over as they print.
+     *
+     * `pdfs` holds the files' bytes one after the other, and `sources` is a JSON list that cuts them up: each entry
+     * has the file's `name`, which every error about it names, and its `length`. `options` is a JSON object of
+     * `allow-signed`, `allow-restricted` and `double-sided`, each off by default, or empty. Without a valid license
+     * key, each merged page gets the attribution line of a render in its top-right corner.
+     * @param {Uint8Array} pdfs
+     * @param {string} sources
+     * @param {string} options
+     * @returns {Uint8Array}
+     */
+    merge(pdfs, sources, options) {
+        const ptr0 = passArray8ToWasm0(pdfs, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(sources, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ptr2 = passStringToWasm0(options, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_merge(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v4 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v4;
+    }
+    /**
      * @param {string} license_key
      */
     constructor(license_key) {

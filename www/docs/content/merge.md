@@ -1,6 +1,6 @@
 # Merging PDFs for print
 
-`merge` takes existing PDFs, from any source, and returns one PDF made for printing: several contracts from different tools, sent to the printer as one file. It takes the files as bytes, each with its name, and returns the merged file. Nothing is laid out. Each page is drawn as it looked, at its own size, and what is not on the printed page is left behind: forms, links and bookmarks are gone, and the file keeps the look of the pages.
+`merge` takes existing PDFs and returns one PDF made for printing: several contracts from different tools, sent to the printer as one file. It takes the files as bytes, each with its name, and returns the merged file. Nothing is laid out. Each page is drawn as it looked, at its own size, and what is not on the printed page is left behind: forms, links and bookmarks are gone, and the file keeps the look of the pages.
 
 It is not a way to edit or read PDFs. The merged file is for the printer, not for the screen, where the originals are the better copy.
 
@@ -149,7 +149,7 @@ A merge refuses a file it would print wrong, where it can tell. Each of these is
 | Has an owner password that restricts printing or copying | `contract-b.pdf: the owner restricts printing or copying: set the allow-restricted option to merge it anyway` | Set `allowRestricted` |
 | Is signed | `contract-b.pdf: the file is signed, and a merge can't keep a signature, …` | Set `allowSigned`, which drops the signature |
 | Has a form field with a value and no stored appearance | `contract-b.pdf: page 2: the form field 'name' has a value but no stored appearance, so it would print blank: …` | Open the file in a PDF viewer and save it, which stores the appearance |
-| Has a form field with a value, in a form that asks a viewer to redraw its fields | `contract-b.pdf: page 2: the form field 'name' has a value, and the form asks a viewer to redraw its fields (NeedAppearances), so the stored appearance may be out of date and would print wrong: …` | Open the file in a PDF viewer and save it, which stores the appearance |
+| Has a form field with a value, in a form that asks a viewer to redraw its fields | `contract-b.pdf: page 2: the form field 'name' has a value, and the form asks a viewer to redraw its fields (NeedAppearances), so the stored appearance may be out of date and would print wrong: …` | Open the file in a PDF viewer and print it to a new PDF, which draws each field as the viewer shows it |
 | Can't be read, or isn't a PDF | `notes.txt: the file is not a PDF: it doesn't start with %PDF-` | Give the PDF |
 | Has no pages | `contract-b.pdf: the PDF has no pages` | Give a file with pages |
 

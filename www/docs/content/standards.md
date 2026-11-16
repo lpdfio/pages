@@ -50,7 +50,7 @@ The other areas, and the page that covers each:
 - **Graphics:** layers, shapes, shadows and ruled pages: [Layer](?p=doc/layer), [Shape](?p=doc/layout/shape) and [XML Schema, rulings](?p=xml/schema#rulings).
 - **Attachments:** files carried inside the PDF: [Attachments](?p=attachments).
 - **Stamping existing PDFs:** images drawn over the pages of a PDF Lpdf did not make: [Stamping existing PDFs](?p=stamp).
-- **Merging PDFs for print:** PDFs Lpdf did not make, merged into one made for printing: [Merging PDFs for print](?p=merge).
+- **Merging PDFs for print:** existing PDFs, merged into one made for printing: [Merging PDFs for print](?p=merge).
 - **Data binding:** filling a document from JSON, and records by the hundreds of thousands: [Data binding](?p=data/binding) and [Bulk records](?p=data/bulk).
 - **Bookmarks, page labels and metadata:** [Bookmark](?p=doc/layout/bookmark), [Section, page numbers](?p=doc/section#page-numbers) and [All elements, meta](?p=xml/elements#meta).
 - **Render limits:** time and memory: [Installation, time limit](?p=install#time-limit) and [memory limit](?p=install#memory-limit).

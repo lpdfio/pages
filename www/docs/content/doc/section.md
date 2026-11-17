@@ -134,7 +134,7 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 </document>
 ```
 
-A table wider than the page gets a page as wide as it needs, each column as wide as its cells on one line, where it would otherwise squeeze its columns until long words break:
+A table wider than the page gets a page as wide as it needs, each `auto` column as wide as its cells on one line, where it would otherwise squeeze its columns until long words break:
 
 ```xml
 <document size="a4">
@@ -189,7 +189,7 @@ A table wider than the page gets a page as wide as it needs, each column as wide
 - A [layer](?p=doc/layer)'s `anchor`, such as `center` or `bottom-right`, places against the grown page, and its plain `x` and `y` stay as written, from the top left.
 - The section's background and its [ruling](#ruled-and-squared-pages) cover the whole page.
 
-A page grows to 14,400pt (200in) at most in each size, the largest page PDF 1.7 recommends. Content that needs more is an error that names the limit and the section, with no page after it: `the page of section 1 would grow past 14,400 pt (200 in) in height, the largest page PDF 1.7 recommends`. `grow` doesn't work with [columns](#columns) or an [inset](#insets): a section with both is an error, `grow doesn't work with columns or an inset, in section 1`. Without `grow` a section paginates as it always does.
+A page grows to 14,400pt (200in) at most in each size, the largest page PDF 1.7 recommends. Content that needs more is an error that names the limit and the section, with no page after it: `the page of section 1 would grow past 14,400 pt (200 in) in height, the largest page PDF 1.7 recommends`. `grow` doesn't work with [columns](#columns) or an [inset](#insets): a section with both is an error, `grow doesn't work with columns or an inset, in section 1: take out grow, or set the section in one column with no region pinned inset`. Without `grow` a section paginates as it always does.
 
 ## Columns
 

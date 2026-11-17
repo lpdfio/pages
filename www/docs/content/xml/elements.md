@@ -190,7 +190,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 
 | Attribute     | Type    | Default    | Description |
 |---------------|---------|------------|-------------|
-| `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` or `"210mm 297mm"` |
+| `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` or `"210mm 297mm"`, each size 3pt at least |
 | `orientation` | string  | `portrait` | `portrait` `landscape` |
 | `bleed`       | length | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
@@ -204,7 +204,7 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 
 | Attribute     | Type    | Default  | Description |
 |---------------|---------|----------|-------------|
-| `size`        | string  | inherit  | Override page size for this section |
+| `size`        | string  | inherit  | Override page size for this section, each size 3pt at least. With `grow`, the starting size |
 | `orientation` | string  | inherit  | Override orientation |
 | `bleed`       | length | inherit | Override the bleed for this section's pages; `0mm` takes it away |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
@@ -220,6 +220,7 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 | `column-gap`  | token/length | `l`     | The space between two columns, as `gap` takes it. Ignored with one column |
 | `column-rule` | border  | —        | A line in the middle of each gap between two columns that hold something, as `border` takes it: `0.5pt #cccccc`. Ignored with one column |
 | `column-fill` | string  | `auto`   | How the columns of the last page fill: `auto`, in order like every other page, or `balance`, levelled. CSS's default is `balance`. Ignored with one column |
+| `grow`        | string  | —        | Lets the page grow to fit the content, where it would start a new page or squeeze it: `width`, `height` or `width height`. `size` is then the starting size. Up to 14,400pt (200in) in each size; an error with `columns` or an inset. See [A page that grows](?p=doc/section#a-page-that-grows) |
 | `debug`       | boolean | false    | Render layout boxes |
 
 A section can start with one `bookmark`, which marks its first page, followed by [layers](#layer-elements) and at most one `layout` or one [`markdown`](#markdown), painted in the order they are written. A layer before the layout is painted under it, and a layer after it is painted over it. A section with neither is one page.

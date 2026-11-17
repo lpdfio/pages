@@ -99,7 +99,7 @@ Each record, and each of the container's other children:
 
 A text in a bulk container without `max-lines` holds one line and ends in "…" when its value is longer, so a record's height is known before its words are laid out. Set `max-lines` to give a text more lines.
 
-The document has no table of contents and no reference to a bookmark, which lay the document out again until its page numbers settle, and is not tagged: no [`pdfua`](?p=pdfua), and no `pdfa` of [level a](?p=pdfa#level-a). A section with a bulk container in [columns](?p=doc/section#columns) fills them in order (`column-fill="auto"`, the default), not balanced.
+The document has no table of contents and no reference to a bookmark, which lay the document out again until its page numbers settle, and is not tagged: no [`pdfua`](?p=pdfua), and no `pdfa` of [level a](?p=pdfa#level-a). A section with a bulk container in [columns](?p=doc/section#columns) fills them in order (`column-fill="auto"`, the default), not balanced. In a section whose [page grows](?p=doc/section#a-page-that-grows), the page's size is measured over every record, so the engine holds all of them at once, as it does without `bulk`.
 
 Each rule names itself when it is broken, with the element that breaks it:
 

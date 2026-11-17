@@ -6,7 +6,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
-| `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"` |
+| `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"`, each size 3pt at least. With `grow`, the starting size |
 | `orientation` | string  | inherit | `portrait` or `landscape` |
 | `background`  | color   | inherit | Page background color |
 | `ruling`      | string  | —       | Draws a [ruling](?p=xml/schema#rulings) of the tokens on every page. See [Ruled and squared pages](#ruled-and-squared-pages) |
@@ -21,6 +21,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | `column-gap`  | token/length | `l`    | The space between two columns, as `gap` takes it |
 | `column-rule` | border  | —       | A line in the middle of each gap, as `border` takes it: `0.5pt #cccccc` |
 | `column-fill` | string  | `auto`  | How the columns of the last page fill: `auto`, in order, or `balance`, levelled. CSS's default is `balance` |
+| `grow`        | string  | —       | Lets the page grow to fit the content: `width`, `height` or `width height`. See [A page that grows](#a-page-that-grows) |
 | `debug`       | boolean | false   | Render layout boxes for debugging |
 
 All attributes are optional. The page settings inherit from `document` when not set.
@@ -102,6 +103,93 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
   </layout>
 </section>
 ```
+
+## A page that grows
+
+`grow` lets the section's page grow to fit its content, where it would start a new page or squeeze the content: `grow="height"`, `grow="width"` or `grow="width height"`. `size` is then the starting size, the smallest the page can be. A till receipt on an 80mm roll is one page as long as the order, from a short starting size, and the printer cuts the paper where the page ends:
+
+```xml
+<document>
+  <section size="80mm 40mm" grow="height">
+    <layout margin="4mm">
+      <text font-size="l" align="center">The Harbour Café</text>
+      <text font-size="s" align="center">12 Quay Street · 17 Nov 2026, 10:42</text>
+      <divider/>
+      <table cols="15pt auto 35pt" gap="xs">
+        <tr><td><text>2</text></td><td><text>Flat white</text></td><td><text align="right">7.00</text></td></tr>
+        <tr><td><text>1</text></td><td><text>Almond croissant</text></td><td><text align="right">4.20</text></td></tr>
+        <tr><td><text>1</text></td><td><text>Smoked salmon on rye, with capers and dill</text></td><td><text align="right">11.50</text></td></tr>
+        <tr><td><text>3</text></td><td><text>Sparkling water</text></td><td><text align="right">4.80</text></td></tr>
+      </table>
+      <divider/>
+      <row justify="between">
+        <text bold="true">Total</text>
+        <text bold="true">27.50</text>
+      </row>
+      <region pin="bottom">
+        <text font-size="s" align="center">Thank you, and see you soon</text>
+      </region>
+    </layout>
+  </section>
+</document>
+```
+
+A table wider than the page gets a page as wide as it needs, each `auto` column as wide as its cells on one line, where it would otherwise squeeze its columns until long words break:
+
+```xml
+<document size="a4">
+  <section grow="width">
+    <layout margin="36pt">
+      <text font-size="l">Delivery routes, week 47</text>
+      <divider/>
+      <table cols="auto auto auto auto 160pt" gap="s">
+        <thead>
+          <td><text bold="true">Route</text></td>
+          <td><text bold="true">Stops</text></td>
+          <td><text bold="true">Driver</text></td>
+          <td><text bold="true">Departs</text></td>
+          <td><text bold="true">Notes</text></td>
+        </thead>
+        <tr>
+          <td><text>North harbour, the fish market and the old lighthouse road</text></td>
+          <td><text>Quay Street, Rope Walk, Lantern Hill, Salt Lane</text></td>
+          <td><text>Agnes Mortensen</text></td>
+          <td><text>Monday 05:30</text></td>
+          <td><text>The market gate opens at six, so the first stop waits at the side entrance.</text></td>
+        </tr>
+        <tr>
+          <td><text>The inland villages by the river and the mill</text></td>
+          <td><text>Millbrook, Ferry Green, Upper Weir</text></td>
+          <td><text>Tomas Lindqvist</text></td>
+          <td><text>Tuesday 06:15</text></td>
+          <td><text>Cold boxes go first.</text></td>
+        </tr>
+      </table>
+    </layout>
+  </section>
+</document>
+```
+
+**In height**, the flow is one page, as tall as the content and the layout's margin, and never shorter than `size`: a short flow keeps the starting size. Its header, its footer and the notes of its [footnotes](?p=doc/layout/footnote) are on it, and a [page break](?p=doc/layout#page-breaks) in the flow starts no new page.
+
+**In width**, the page grows until the content fits without being squeezed:
+
+- A table's `auto` columns are each as wide as their cells on one line, as they are in a table that fits the page. Beside a `%` column, whose share comes first, a long cell can still wrap, between its words, while the `%` columns leave room.
+- A column with a width of its own, such as `160pt` above, keeps it, and its cells wrap inside it: the way to keep a column of long notes from going on one line.
+- `fr` and `%` columns, shares of the table, are measured as `auto` columns are for the growth, then take their share of the grown table, so a long cell can still wrap there, and a word longer than the share can break.
+- A `%` column is a share of the whole table, so the page grows until the columns with a width of their own fit beside it, with room for the longest words of the `auto` and `fr` columns together, which the `fr` columns split by their shares: `cols="400pt 50%"` makes a table at least 800pt wide. `%` columns that add up to the whole table leave the other columns no room, on any page. Close to the whole, beside a gap or another column, they need a page wider than the largest, which is an error: write equal columns as `1fr 1fr 1fr`, not `33.33%` each.
+- A box or an image of a fixed width wider than the page grows it too.
+- Paragraphs and code never widen the page: they wrap at its width.
+
+**On a page that grew**, what depends on the size of the page takes its final size:
+
+- A [region](?p=doc/layout#pinned-regions) pinned to the bottom, such as a footer, sits at the foot of the grown page, right under the content, and so do the notes of the footnotes. On a page the content didn't grow, both stay at the foot of the starting size.
+- `height="fill"` takes what is left of the page: to the foot of the starting size on a page the content didn't grow, and on a grown page nothing more than its content. `height="full"` is the room of the starting size. Neither grows the page by itself.
+- The flow is laid out at the final width, so a heading or a divider above a wide table spans the grown page.
+- A [layer](?p=doc/layer)'s `anchor`, such as `center` or `bottom-right`, places against the grown page, and its plain `x` and `y` stay as written, from the top left.
+- The section's background and its [ruling](#ruled-and-squared-pages) cover the whole page.
+
+A page grows to 14,400pt (200in) at most in each size, the largest page PDF 1.7 recommends. Content that needs more is an error that names the limit and the section, with no page after it: `the page of section 1 would grow past 14,400 pt (200 in) in height, the largest page PDF 1.7 recommends`. `grow` doesn't work with [columns](#columns) or an [inset](#insets): a section with both is an error, `grow doesn't work with columns or an inset, in section 1: take out grow, or set the section in one column with no region pinned inset`. Without `grow` a section paginates as it always does.
 
 ## Columns
 

@@ -76,7 +76,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 | `break-after` | Start the element that follows it on a new page |
 | `keep-next` | Keep the element on one page with the element that follows it: when that one doesn't fit and can't start on this page, both move to the next page. One that splits starts here: a table after its header and a row, a text after a few lines, and the element stays with that first part |
 
-`break-before`, `break-after` and `keep-next` only take effect on elements directly inside `layout`. Inside a `column` or any other box they are accepted and ignored. `no` works at any depth: a `column` with `paginate="no"` inside another column stays whole.
+`break-before`, `break-after` and `keep-next` only take effect on elements directly inside `layout`. Inside a `column` or any other box they are accepted and ignored. `no` works at any depth: a `column` with `paginate="no"` inside another column stays whole. In a section whose [page grows in height](?p=doc/section#a-page-that-grows), the flow is one page, so `break-before`, `break-after` and `keep-next` start no new page.
 
 ```xml
 <layout>

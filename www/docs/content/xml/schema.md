@@ -65,9 +65,11 @@ Set on `document`, and overridden per `section`, with `size`. Without one, a doc
 
 Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`. `orientation="landscape"` swaps the two.
 
+Each size is 3pt at least, the smallest page PDF 1.7 recommends. A smaller one is an error: `page size '80mm 0' is under 3pt high, the smallest page PDF 1.7 recommends`. A page as long as its content, such as a till receipt, is a section that [grows](?p=doc/section#a-page-that-grows), with `size` as its starting size.
+
 ## Units
 
-A length is a number and a unit: `pt` (a point, 1/72 in), `mm` or `in`. Every attribute that takes a length takes all three, and no other unit: `cm`, `px` and `em` stop the engine with an error that names the units. (`%` is a unit of a table's `cols`, not of a length.) Millimeters and inches are worked out to points, so `1in` is `72pt`. Write the unit on every length. The one exception is `0`, which needs none: `0`, `0pt`, `0mm` and `0in` are the same length.
+A length is a number and a unit: `pt` (a point, 1/72 in), `mm` or `in`. Every attribute that takes a length takes all three, and no other unit: `cm`, `px` and `em` stop the engine with an error that names the units. (`%` is a unit of a table's `cols`, not of a length.) Millimeters and inches are worked out to points, so `1in` is `72pt`. Write the unit on every length. The one exception is `0`, which needs none: `0`, `0pt`, `0mm` and `0in` are the same length. A page size takes no `0`: a page is 3pt at least.
 
 | Where | Accepts |
 |-------|---------|

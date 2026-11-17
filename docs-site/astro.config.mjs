@@ -19,13 +19,13 @@ export default defineConfig({
             description: 'Reference and guides for Lpdf: PDF as code on every platform.',
             favicon: '/favicon.ico',
             head: [
-                // The same Umami tracker the static pages of lpdf.io carry.
+                // The same visit counter the static pages of lpdf.io carry (www/assets/js/analytics.js).
                 {
                     tag: 'script',
                     attrs: {
                         defer: true,
-                        src: 'https://cloud.umami.is/script.js',
-                        'data-website-id': '59a27b01-7833-45ca-89a0-9c16906e45f1',
+                        src: '/assets/js/analytics.js',
+                        'data-client-id': '2151423c-e0ba-42a5-b86e-a0011373d5a8',
                     },
                 },
                 // Starlight gives a page no image, though its twitter:card asks for a large one, so a shared

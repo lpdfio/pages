@@ -174,10 +174,10 @@ A table wider than the page gets a page as wide as it needs, each `auto` column 
 
 **In width**, the page grows until the content fits without being squeezed:
 
-- A table's `auto` columns are each as wide as their cells on one line, as they are in a table that fits the page. Beside a `%` column, whose share comes first, a long cell can still wrap.
+- A table's `auto` columns are each as wide as their cells on one line, as they are in a table that fits the page. Beside a `%` column, whose share comes first, a long cell can still wrap, between its words.
 - A column with a width of its own, such as `160pt` above, keeps it, and its cells wrap inside it: the way to keep a column of long notes from going on one line.
-- `fr` and `%` columns, shares of the table, are measured as `auto` columns are for the growth, then take their share of the grown table, so a long cell can still wrap there.
-- A `%` column is a share of the whole table, so the page grows until the columns with a width of their own fit beside it, with room for the longest word of each `auto` and `fr` column: `cols="400pt 50%"` makes a table at least 800pt wide.
+- `fr` and `%` columns, shares of the table, are measured as `auto` columns are for the growth, then take their share of the grown table, so a long cell can still wrap there, and a word longer than the share can break.
+- A `%` column is a share of the whole table, so the page grows until the columns with a width of their own fit beside it, with room for the longest words of the `auto` and `fr` columns together, which the `fr` columns split by their shares: `cols="400pt 50%"` makes a table at least 800pt wide.
 - A box or an image of a fixed width wider than the page grows it too.
 - Paragraphs and code never widen the page: they wrap at its width.
 

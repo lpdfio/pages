@@ -25,7 +25,7 @@ export default defineConfig({
                     attrs: {
                         defer: true,
                         src: '/assets/js/analytics.js',
-                        'data-client-id': '2151423c-e0ba-42a5-b86e-a0011373d5a8',
+                        'data-client-id': '47c9883c-f384-4593-b013-a1f6bb166797',
                     },
                 },
                 // Starlight gives a page no image, though its twitter:card asks for a large one, so a shared

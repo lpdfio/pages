@@ -151,7 +151,7 @@ Rendered with no invoice, as the VS Code preview renders it, the template shows 
 
 ## The map
 
-A map says where each value sits in the XML. Lpdf's default map applies when the call is given none, and has the values EN 16931 numbers but a party's identifiers, what a line may hold several of, such as its notes, and an attached file's content, by names such as `seller.name`, `lines` and `totals.gross`: see [The default invoice map](?p=invoice-map). A team that wants other names, or only some, writes a map of its own and passes it as `invoiceMap`. A map given takes over whole: a name it doesn't have is not looked up in the default.
+A map says where each value sits in the XML. Lpdf's default map applies when the call is given none, and has the values EN 16931 numbers but the parties' identifiers BT-29, BT-46, BT-60 and BT-71, what a line may hold several of, such as its notes, and an attached file's content, by names such as `seller.name`, `lines` and `totals.gross`: see [The default invoice map](?p=invoice-map). A team that wants other names, or only some, writes a map of its own and passes it as `invoiceMap`. A map given takes over whole: a name it doesn't have is not looked up in the default.
 
 ```xml
 <cross-industry-invoice-map prefix="invoice">

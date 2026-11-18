@@ -9,7 +9,7 @@
     },
     "license-key": {
         "title": "Lpdf license key for JavaScript, Python, Java, C# and PHP",
-        "description": "Set an Lpdf license key with setLicenseKey in JavaScript, Python, Java, C# or PHP, or with initLpdf in the browser, and see what a PDF gets without one."
+        "description": "Set an Lpdf license key in JavaScript, Python, Java, C# or PHP or in the browser, check what the engine makes of it, and see what a PDF gets without one."
     },
     "examples/admission-letter": {
         "title": "Admission letter PDF template in XML, for every Lpdf SDK",

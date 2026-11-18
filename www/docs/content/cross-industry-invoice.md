@@ -268,7 +268,7 @@ $pdf = LCrossIndustryInvoice::generatePdf(L::engine(), $template, new GeneratePd
 
 ## The values in code
 
-`extractInvoiceData` gives the values as plain data, the same the template binds: a value is a field, a group an object, a list an array, all text. A value the invoice lacks is absent, and a list with no items is empty. Use it to build the document in code, to pick a template by the buyer's country or the invoice's type, or to name the output file. It takes the same `invoiceMap` and `format`, and needs no engine, so it reads under the default limits: 5 seconds and the default memory cap. In Node.js it runs on the calling thread, where a call can't be stopped, so the limit of 2,000,000 XML nodes bounds it instead of a timeout.
+`extractInvoiceData` gives the values as plain data, the same the template binds: a value is a field, a group an object, a list an array, all text. A value the invoice lacks is absent, and a list with no items is empty. Use it to build the document in code, to pick a template by the buyer's country or the invoice's type, or to name the output file. It takes the same `invoiceMap` and `format`, and needs no engine, so it reads under the default limits: 5 seconds and 1,024 MB. In JavaScript, where `LCrossIndustryInvoice` is in the Node.js package only, it runs on the calling thread, where a call can't be stopped, so the limit of 2,000,000 XML nodes bounds it instead of a timeout.
 
 ::: sdk js
 

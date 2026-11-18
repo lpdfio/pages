@@ -6,7 +6,7 @@ The XML is a Cross Industry Invoice, the format every Factur-X and ZUGFeRD invoi
 
 ## One call
 
-`generatePdf` takes the engine, the template and the invoice's XML. The engine carries the fonts, the license key and the limits: the invoice is read, and the PDF rendered, each within its timeout and memory cap. In JavaScript, `LCrossIndustryInvoice` is in the Node.js package, not the browser one.
+`generatePdf` takes the engine, the template and the invoice's XML. The engine carries the fonts, the license key and the limits: the invoice is read, and the PDF rendered, each within its timeout and memory cap. In JavaScript, `LCrossIndustryInvoice` comes from `@lpdfio/lpdf`, not from `@lpdfio/lpdf/browser`.
 
 ::: sdk js
 

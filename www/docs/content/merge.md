@@ -14,7 +14,7 @@ Give `merge` the files in the order they are to print. Each is a name, which eve
 import { readFile, writeFile } from 'node:fs/promises'
 import { L } from '@lpdfio/lpdf'
 
-const engine = L.engine().setLicenseKey(process.env.LPDF_LICENSE_KEY)
+const engine = L.engine()
 
 const merged = await engine.merge([
     { name: 'contract-a.pdf', pdf: await readFile('contract-a.pdf') },
@@ -28,11 +28,10 @@ await writeFile('contracts-to-print.pdf', merged)
 ::: sdk python
 
 ```python
-import os
 from pathlib import Path
 from lpdf import L, MergeOptions, MergeSource
 
-engine = L.engine().set_license_key(os.environ['LPDF_LICENSE_KEY'])
+engine = L.engine()
 
 merged = engine.merge(
     [MergeSource(name=name, pdf=Path(name).read_bytes())
@@ -53,7 +52,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-var engine = L.engine().setLicenseKey(System.getenv("LPDF_LICENSE_KEY"));
+var engine = L.engine();
 
 byte[] merged = engine.merge(
     List.of(
@@ -71,7 +70,7 @@ Files.write(Path.of("contracts-to-print.pdf"), merged);
 using Lpdf;
 using Lpdf.Engine;
 
-var engine = L.Engine().SetLicenseKey(Environment.GetEnvironmentVariable("LPDF_LICENSE_KEY")!);
+var engine = L.Engine();
 
 byte[] merged = engine.Merge(
     [
@@ -94,7 +93,7 @@ use Lpdf\Engine\MergeOptions;
 use Lpdf\Engine\MergeSource;
 use Lpdf\L;
 
-$engine = L::engine()->setLicenseKey(getenv('LPDF_LICENSE_KEY'));
+$engine = L::engine();
 
 $merged = $engine->merge(
     [
@@ -159,7 +158,7 @@ A merge with no files, or with more than 1,000, is an error too, and so is a mer
 
 ## Without a license key
 
-Like a render, a merge works without a license key. Each merged page gets the Lpdf attribution line, the mark and the name, once, in the page's top-right corner where a render puts its line, drawn over the page's content. The line has no link, since the merged file holds no annotation, and the blank sides `doubleSided` adds stay empty. A free Community key removes it.
+Like a render, a merge works without a license key. Each merged page gets the Lpdf attribution line, the mark and the name, once, in the page's top-right corner where a render puts its line, drawn over the page's content. The line has no link, since the merged file holds no annotation, and the blank sides `doubleSided` adds stay empty. A free Community key removes it, and [License key](?p=license-key) shows how to set one.
 
 ## Which PDFs it reads
 

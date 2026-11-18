@@ -140,11 +140,11 @@ The rest of the result is there once the key's signature has verified, so an exp
 |-------|-------|
 | `product` | The Codesense product the key was issued for |
 | `tier` | `community`, `professional` or `enterprise` |
-| `expires` | When the key stops validating, as an ISO 8601 date in UTC. A key with no date leaves it out |
+| `expires` | When the key stops validating, as an ISO 8601 date in UTC. A key with no date has none |
 | `license` | The license number, such as `L-7K3M9Q` |
 | `key` | Which key of the license it is: 1, 2, 3, in the order they were issued |
 
-JavaScript returns an object, Python a dict and PHP an array, each with these names as keys. Java returns a `LicenseCheck` with a method for each, such as `expires()`, and C# a `LicenseCheck` with a property for each, such as `Expires`. Both have `isLicensed()` (`IsLicensed` in C#), which is true for `licensed`.
+JavaScript returns an object, Python a dict and PHP an array, each with these names as keys, and a field the result lacks is left out. Java returns a `LicenseCheck` with a method for each, such as `expires()`, and C# a `LicenseCheck` with a property for each, such as `Expires`, and a field the result lacks is `null`. Both have `isLicensed()` (`IsLicensed` in C#), which is true for `licensed`.
 
 ## Get a key
 

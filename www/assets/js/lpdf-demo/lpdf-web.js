@@ -12,6 +12,35 @@ export class LpdfEngine {
         wasm.__wbg_lpdfengine_free(ptr, 0);
     }
     /**
+     * The read of `LCrossIndustryInvoice.generatePdf`: `extract_invoice_data`, under this engine's memory cap
+     * instead of the default, as the SDK reads the invoice on the engine's worker before it formats the values.
+     * @param {Uint8Array} invoice_xml
+     * @param {string | null} [invoice_map]
+     * @returns {string}
+     */
+    extract_invoice_data(invoice_xml, invoice_map) {
+        let deferred4_0;
+        let deferred4_1;
+        try {
+            const ptr0 = passArray8ToWasm0(invoice_xml, wasm.__wbindgen_malloc);
+            const len0 = WASM_VECTOR_LEN;
+            var ptr1 = isLikeNone(invoice_map) ? 0 : passStringToWasm0(invoice_map, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+            var len1 = WASM_VECTOR_LEN;
+            const ret = wasm.lpdfengine_extract_invoice_data(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+            var ptr3 = ret[0];
+            var len3 = ret[1];
+            if (ret[3]) {
+                ptr3 = 0; len3 = 0;
+                throw takeFromExternrefTable0(ret[2]);
+            }
+            deferred4_0 = ptr3;
+            deferred4_1 = len3;
+            return getStringFromWasm0(ptr3, len3);
+        } finally {
+            wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+        }
+    }
+    /**
      * Register the bytes of a file a document carries, for the `<file>` of its `<attachments>` whose `ref`, or with
      * no ref whose name, is `name`. The PDF carries them as they are.
      * @param {string} name
@@ -137,6 +166,62 @@ export class LpdfEngine {
         } finally {
             wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
         }
+    }
+    /**
+     * `LCrossIndustryInvoice.generatePdf` with a template: renders `xml` with the values of the invoice bound under
+     * the prefix of `invoice_map`, or of the default map, beside `json_data`, and makes the file a Factur-X invoice,
+     * PDF/A-3 with `invoice_xml` attached under the name its profile asks for.
+     *
+     * `invoice_data` is the JSON of the values `extract_invoice_data` read from `invoice_xml` with the same map,
+     * after the SDK applied the caller's `format` functions. The template's paths under the prefix are checked
+     * against the map first, so a name the map lacks is an error, not a blank. A PDF/A-3 file is not encrypted, so
+     * the call takes no passwords.
+     * @param {string} xml
+     * @param {string | null | undefined} json_data
+     * @param {Uint8Array} invoice_xml
+     * @param {string | null | undefined} invoice_map
+     * @param {string} invoice_data
+     * @returns {Uint8Array}
+     */
+    render_invoice_pdf(xml, json_data, invoice_xml, invoice_map, invoice_data) {
+        const ptr0 = passStringToWasm0(xml, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        var ptr1 = isLikeNone(json_data) ? 0 : passStringToWasm0(json_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        const ptr2 = passArray8ToWasm0(invoice_xml, wasm.__wbindgen_malloc);
+        const len2 = WASM_VECTOR_LEN;
+        var ptr3 = isLikeNone(invoice_map) ? 0 : passStringToWasm0(invoice_map, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len3 = WASM_VECTOR_LEN;
+        const ptr4 = passStringToWasm0(invoice_data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_render_invoice_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, ptr4, len4);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v6 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v6;
+    }
+    /**
+     * `LCrossIndustryInvoice.generatePdf` with a document built in code: renders the JSON kit tree `json` and makes
+     * the file a Factur-X invoice, PDF/A-3 with `invoice_xml` attached under the name its profile asks for. The
+     * document has no bindings, so it takes no map and no data.
+     * @param {string} json
+     * @param {Uint8Array} invoice_xml
+     * @returns {Uint8Array}
+     */
+    render_invoice_tree_pdf(json, invoice_xml) {
+        const ptr0 = passStringToWasm0(json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passArray8ToWasm0(invoice_xml, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.lpdfengine_render_invoice_tree_pdf(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v3;
     }
     /**
      * Render `xml` to binary PDF bytes.
@@ -411,6 +496,59 @@ export function codegen_wasm(xml, options_json) {
         const ptr1 = passStringToWasm0(options_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         const ret = wasm.codegen_wasm(ptr0, len0, ptr1, len1);
+        var ptr3 = ret[0];
+        var len3 = ret[1];
+        if (ret[3]) {
+            ptr3 = 0; len3 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred4_0 = ptr3;
+        deferred4_1 = len3;
+        return getStringFromWasm0(ptr3, len3);
+    } finally {
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
+}
+
+/**
+ * `LCrossIndustryInvoice.defaultInvoiceMap`: Lpdf's default invoice map, as XML text, the start of a team's own map.
+ * @returns {string}
+ */
+export function default_invoice_map() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.default_invoice_map();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * `LCrossIndustryInvoice.extractInvoiceData`: the values of `invoice_xml`, an EN 16931 Cross Industry Invoice, read
+ * through `invoice_map`, or Lpdf's default map without one, as the JSON
+ * `{ "data": …, "typed": [{ "at": ["lines", 0, "unit"], "type": "code", "name": "lines.unit" }, …] }`. The SDK
+ * applies the caller's `format` function of each type to the values `typed` lists.
+ *
+ * It uses no engine instance: it reads no fonts and no key, under the default memory cap. Returns an error for a map
+ * that is not one or doesn't fit the schema, an invoice that is not a Cross Industry Invoice or is MINIMUM or BASIC
+ * WL, and a required value the invoice lacks.
+ * @param {Uint8Array} invoice_xml
+ * @param {string | null} [invoice_map]
+ * @returns {string}
+ */
+export function extract_invoice_data(invoice_xml, invoice_map) {
+    let deferred4_0;
+    let deferred4_1;
+    try {
+        const ptr0 = passArray8ToWasm0(invoice_xml, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        var ptr1 = isLikeNone(invoice_map) ? 0 : passStringToWasm0(invoice_map, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        const ret = wasm.extract_invoice_data(ptr0, len0, ptr1, len1);
         var ptr3 = ret[0];
         var len3 = ret[1];
         if (ret[3]) {

@@ -12,7 +12,7 @@ A stamp is a PNG, the pages it goes on, and a box. One call takes any number of 
 import { readFile, writeFile } from 'node:fs/promises'
 import { L } from '@lpdfio/lpdf'
 
-const engine = L.engine().setLicenseKey(process.env.LPDF_LICENSE_KEY)
+const engine = L.engine()
 
 const contract = await readFile('contract.pdf')
 const signature = await readFile('buyer-signature.png')
@@ -34,11 +34,10 @@ await writeFile('contract-signed.pdf', signed)
 ::: sdk python
 
 ```python
-import os
 from pathlib import Path
 from lpdf import L, StampAttr
 
-engine = L.engine().set_license_key(os.environ['LPDF_LICENSE_KEY'])
+engine = L.engine()
 
 contract = Path('contract.pdf').read_bytes()
 signature = Path('buyer-signature.png').read_bytes()
@@ -63,7 +62,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-var engine = L.engine().setLicenseKey(System.getenv("LPDF_LICENSE_KEY"));
+var engine = L.engine();
 
 byte[] contract = Files.readAllBytes(Path.of("contract.pdf"));
 byte[] signature = Files.readAllBytes(Path.of("buyer-signature.png"));
@@ -85,7 +84,7 @@ Files.write(Path.of("contract-signed.pdf"), signed);
 using Lpdf;
 using Lpdf.Engine;
 
-var engine = L.Engine().SetLicenseKey(Environment.GetEnvironmentVariable("LPDF_LICENSE_KEY")!);
+var engine = L.Engine();
 
 byte[] contract = await File.ReadAllBytesAsync("contract.pdf");
 byte[] signature = await File.ReadAllBytesAsync("buyer-signature.png");
@@ -110,7 +109,7 @@ require_once 'vendor/autoload.php';
 use Lpdf\Engine\StampAttr;
 use Lpdf\L;
 
-$engine = L::engine()->setLicenseKey(getenv('LPDF_LICENSE_KEY'));
+$engine = L::engine();
 
 $contract = file_get_contents('contract.pdf');
 $signature = file_get_contents('buyer-signature.png');
@@ -177,7 +176,7 @@ A stamp is not a digital signature either. A drawn signature or a seal shows a m
 
 Like a render, a stamp works without a license key. Each page it draws on gets the Lpdf attribution line, the mark and the name, once, however many stamps the page has. It goes in the page's top-right corner, where a render puts its line, and is drawn over the stamps and the page's content. Pages without a stamp get none.
 
-It links to lpdf.io, except on a tagged PDF. A free Community key removes it.
+It links to lpdf.io, except on a tagged PDF. A free Community key removes it, and [License key](?p=license-key) shows how to set one.
 
 ## Errors
 

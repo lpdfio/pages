@@ -48,6 +48,7 @@ export default defineConfig({
                     label: 'Getting Started',
                     items: [
                         { slug: 'install', label: 'Installation' },
+                        { slug: 'license-key', label: 'License key' },
                         { slug: 'vscode', label: 'VS Code' },
                     ],
                 },

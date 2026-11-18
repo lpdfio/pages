@@ -172,6 +172,8 @@ function generateCode(xml, codegen)
 {
     // Several root elements come out as several statements with nothing between them.
     if (rootCount(xml) > 1) return { reason: 'several root elements' };
+    // A map of LCrossIndustryInvoice is a file of its own, which no builder writes.
+    if (/^\s*(<!--[\s\S]*?-->\s*)*<cross-industry-invoice-map\b/.test(xml)) return { reason: 'an invoice map, not a document' };
 
     const variants = [];
     for (const { target, lang } of CODE_TABS)

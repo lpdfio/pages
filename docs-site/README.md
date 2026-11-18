@@ -56,8 +56,9 @@ in git, so it never shows the copy; run `assemble-site.sh` and serve its output 
 ## The engine copy
 
 The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js`, `lpdf_bg.wasm` and `browser.js` in
-`ui/demo` and `www/assets/js/lpdf-demo`, the schema in `www/schema`, the examples of the demo and the docs (core's
-`examples/`), the stamp `docs-site/engine.json`, and `www/license/THIRD_PARTY_LICENSES_ENGINE.txt`, the licenses of
+`ui/demo` and `www/assets/js/lpdf-demo`, the schema and the default invoice map in `www/schema` with the page of the
+map's names (`www/docs/content/invoice-map.md`, which core's `sync-invoice-map` writes: do not edit it here), the
+examples of the demo and the docs (core's `examples/`), the stamp `docs-site/engine.json`, and `www/license/THIRD_PARTY_LICENSES_ENGINE.txt`, the licenses of
 the crates and toolchain parts the engine holds, which the license page links to. `.github/workflows/engine-refresh.yml` takes them from each core
 release candidate and release: core's `release.yml` sends `core-rc` and `core-release`, and the workflow runs
 `.github/refresh-engine.sh` and opens one PR, from the branch `engine-refresh`, which the releases after it update

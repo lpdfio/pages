@@ -5,7 +5,9 @@
 #
 #   ui/demo, www/assets/js/lpdf-demo   lpdf-web.js and lpdf_bg.wasm, browser.js built with them, and the
 #                                      demo's examples
-#   www/schema, www/schema/1           schema/lpdf.xsd at the tag
+#   www/schema, www/schema/1           schema/lpdf.xsd at the tag, and in www/schema the default invoice map of
+#                                      LCrossIndustryInvoice, src/core/assets/cross-industry-invoice-map.xml
+#   www/docs/content/invoice-map.md    the page of the map's names, written from it
 #   www/license                        THIRD_PARTY_LICENSES_ENGINE.txt, the licenses of the crates the engine
 #                                      links, which the license page links to
 #   docs-site/engine.json              the stamp the docs header shows
@@ -102,6 +104,12 @@ fi
 mkdir -p www/schema/1
 cp "$core/schema/lpdf.xsd" www/schema/lpdf.xsd
 cp "$core/schema/lpdf.xsd" www/schema/1/lpdf.xsd
+
+# Copies the default invoice map to www/schema and writes the docs page of its names. A release from before core had
+# the map has no script for it, and the tree keeps what it has.
+if [ -f "$core/scripts/sync-invoice-map.mjs" ]; then
+    node "$core/scripts/sync-invoice-map.mjs" --pages "$root"
+fi
 
 # Writes the demo's examples to ui/demo/examples, which the site serves from www/assets/js/lpdf-demo
 # as a copy, and the docs' example pages and downloads.

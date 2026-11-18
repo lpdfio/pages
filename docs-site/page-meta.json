@@ -183,6 +183,14 @@
         "title": "Stamp images onto existing PDFs with Lpdf",
         "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from JavaScript, Python, Java, C# or PHP, keeping its original bytes and encryption."
     },
+    "cross-industry-invoice": {
+        "title": "Factur-X and ZUGFeRD PDFs from the invoice XML with Lpdf",
+        "description": "Make a Factur-X or ZUGFeRD invoice PDF from its EN 16931 XML in one call: the values fill your template, the file is PDF/A-3, the XML attached."
+    },
+    "invoice-map": {
+        "title": "The default invoice map of LCrossIndustryInvoice in Lpdf",
+        "description": "Every name of Lpdf's default invoice map: the EN 16931 values of a Factur-X or ZUGFeRD invoice, with their BT numbers, types and the XML to download."
+    },
     "merge": {
         "title": "Merge PDFs into one for printing with Lpdf",
         "description": "Merge several PDFs from different sources into one made for printing, flattened as they look, with a blank side for double-sided printing, in five languages."

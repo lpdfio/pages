@@ -19,7 +19,7 @@
 // xrechnung.xml, with the XML of an invoice that names its profile, and each color profile it declares with the header of a printer
 // profile (PROFILE, `declaredProfiles`), which a PDF/X example names as its press profile. A
 // snippet that is not meant to run is skipped: one that starts with assets or tokens, one with an ellipsis in it,
-// one that names a file of Markdown rules with a src, and one that is not XML for the engine at all.
+// one that names a file of Markdown rules with a src, an invoice map, and one that is not XML for the engine at all.
 //
 // LPDF_ENGINE_DIR names another folder with lpdf-web.js and lpdf_bg.wasm, to check an engine that is not in the tree
 // yet, such as the dist/web of a core checkout.
@@ -191,6 +191,8 @@ export function wrap(xml)
     if (first.tag === 'assets' || first.tag === 'tokens') return { skip: `starts with ${first.tag}` };
     // A package reference of .NET's project file or of Maven's pom.xml.
     if (first.tag === 'PackageReference' || first.tag === 'dependency') return { skip: 'not lpdf XML' };
+    // A map of LCrossIndustryInvoice, which the SDKs read, not the engine's render.
+    if (first.tag === 'cross-industry-invoice-map') return { skip: 'an invoice map, not a document' };
     if (/<markdown-styles\b[^>]*\bsrc=/.test(xml)) return { skip: 'names a file of rules, which the check does not load' };
 
     const images = PLACEHOLDER_IMAGES.map(n => `<image name="${n}"/>`).join('');

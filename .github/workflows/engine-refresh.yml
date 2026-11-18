@@ -153,6 +153,7 @@ jobs:
           - `lpdf-web.js` and `lpdf_bg.wasm` of the release, in `ui/demo` and `www/assets/js/lpdf-demo`
           - `browser.js` there, the demo's browser bundle: it holds a copy of the wasm glue, so it is built from lpdf-js `main` (commit [`@SDK@`](https://github.com/lpdfio/lpdf-js/commit/@SDK@)) with the release's engine files
           - `lpdf.xsd` at the tag, in `www/schema` and `www/schema/1`
+          - the default invoice map of `LCrossIndustryInvoice` at the tag, in `www/schema`, and the docs page of its names, as core's `sync-invoice-map` writes them
           - `THIRD_PARTY_LICENSES_ENGINE.txt`, the licenses of the crates the engine links, in `www/license`: the license page links to it
           - `docs-site/engine.json`, the stamp the docs header shows
           - the examples, as core's `sync-examples` writes them: the demo's, and the docs' example pages and downloads

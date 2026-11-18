@@ -250,6 +250,24 @@ To skip some items, put the condition on an element inside the loop. There it re
 </column>
 ```
 
+## Values under a prefix
+
+A path may start with a prefix and a colon, `invoice:seller.name`, to read data that is bound under that prefix beside yours. [LCrossIndustryInvoice](?p=cross-industry-invoice) binds the values of an invoice that way, under the prefix its map names, so a template shows which values come from the invoice, and your data keeps all its keys. A path without a prefix reads your data, and inside a loop the current item.
+
+```xml
+<column gap="xs">
+  <text data-value="invoice:seller.name">Seller</text>
+  <table cols="1fr">
+    <tr data-source="invoice:lines">
+      <td><text data-value="name">Item</text></td>
+    </tr>
+  </table>
+  <text data-if="note" data-value="note">A note</text>
+</column>
+```
+
+When nothing is bound under a prefix, as in a render that has no invoice, the element stays as the document wrote it, with its own text, whatever the attribute: a `data-source` shows its element once, unbound, and a `data-if` keeps its element. A plain render with your data shows a template's `invoice:` placeholders that way, and so does a render with no data at all, such as the VS Code preview.
+
 ## `$toc` — the table of contents
 
 In a section with `type="toc"`, the data also holds `$toc`: one item per bookmark, with its `label`, `level` and `page`, the number its page prints. The engine adds it, so it is there even when you pass no data. See [Table of Contents](?p=doc/toc).

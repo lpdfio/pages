@@ -112,7 +112,7 @@ export default defineConfig({
                         { slug: 'encryption', label: 'Encryption' },
                         { slug: 'pdfa', label: 'PDF/A' },
                         { slug: 'facturx', label: 'Factur-X e-invoices' },
-                        { slug: 'cross-industry-invoice', label: 'Factur-X from the invoice XML' },
+                        { slug: 'cross-industry-invoice', label: 'Factur-X / ZUGFeRD from the invoice XML' },
                         { slug: 'invoice-map', label: 'The default invoice map' },
                         { slug: 'pdfua', label: 'PDF/UA' },
                         { slug: 'pdfx', label: 'PDF/X' },

@@ -178,7 +178,7 @@ A map says where each value sits in the XML. Lpdf's default map applies when the
 - `required="true"` stops the call with an error that names the entry when the invoice lacks it. On a list, it asks for one item.
 - `type` is `date`, `amount` or `code`: the value's normal form, and the `format` function that writes it (*Formatting values*).
 
-A path is the elements from the place of the entry around it, in the spelling of XPath, with the prefixes `rsm:`, `ram:`, `udt:` and `qdt:` whatever the invoice calls them. It may end with an attribute, `@unitCode`, and test one element in `[ ]` on an attribute or on the text of a child element, against fixed text, `[@schemeID='VA']`, `[ram:TypeCode='VAT']`, or against another value of the same group, `[@currencyID=ram:InvoiceCurrencyCode]`. That last form tells the VAT total in the invoice's currency from the one in the tax currency, which are both `TaxTotalAmount`. A path finds a value and never computes one, and anything else is an error.
+A path is the elements from the place of the entry around it, in the spelling of XPath, with the prefixes `rsm:`, `ram:`, `udt:` and `qdt:` whatever the invoice calls them. It may end with an attribute, `@unitCode`, and test one element in `[ ]` on an attribute or on the text of a child element, against fixed text, `[@schemeID='VA']`, `[ram:TypeCode='VAT']`, or against the text of another element of the group, `[@currencyID=ram:InvoiceCurrencyCode]`, read from the group's own element. That last form tells the VAT total in the invoice's currency from the one in the tax currency, which are both `TaxTotalAmount`. A path finds a value and never computes one, and anything else is an error.
 
 Lpdf never guesses which of several to take. Each path is checked against FeRD's schema of the EXTENDED profile, which every profile is a subset of, before the invoice is read: a name the schema doesn't have at that place is an error that lists what it has there, and so is a `<value>` whose path may find several and that no `[ ]` narrows.
 
@@ -301,6 +301,8 @@ print(invoice_data['seller']['name'], invoice_data['totals']['gross'])
 ::: sdk java
 
 ```java
+import io.lpdf.ExtractInvoiceDataOptions;
+
 Map<String, Object> invoiceData = LCrossIndustryInvoice.extractInvoiceData(invoiceXml, new ExtractInvoiceDataOptions().format(format));
 var seller = (Map<String, Object>) invoiceData.get("seller");
 ```
@@ -317,6 +319,8 @@ var sellerName = invoiceData["seller"]!["name"]!.GetValue<string>();
 ::: sdk php
 
 ```php
+use Lpdf\Engine\ExtractInvoiceDataOptions;
+
 $invoiceData = LCrossIndustryInvoice::extractInvoiceData($invoiceXml, new ExtractInvoiceDataOptions(format: $format));
 echo $invoiceData['seller']['name'];
 ```
@@ -332,8 +336,8 @@ A document built in code has no bindings, so `generatePdf` takes only the invoic
 
 Lpdf checks what reading the invoice needs, and not the invoice's content: its sums, its codes and its business rules are for a validator. Each of these stops the call with an error that says what is wrong:
 
-- **The map**: XML that is not a map, an entry or attribute it doesn't have, two entries with one name, a list inside a list, a path outside the form above or with a prefix other than `rsm:`, `ram:`, `udt:` and `qdt:`, a name the EXTENDED schema doesn't have at that place, a `<value>` whose path may find several, and a `type` of `date` on what is not a date.
+- **The map**: XML that is not a map, an entry or attribute it doesn't have, two entries with one name, a group or a list inside a list, a path outside the form above or with a prefix other than `rsm:`, `ram:`, `udt:` and `qdt:`, a name the EXTENDED schema doesn't have at that place, a `<value>` whose path may find several, a test on a child element that may repeat, and a `type` of `date` on what is not a date.
 - **The template**: a path under the map's prefix whose name the map lacks, such as `invoice:sellr.name`, and a prefix the map doesn't name. With a plain key, such a typo would print nothing.
 - **The invoice**: XML that is not UTF-8 or not well-formed, a DTD, more than 2,000,000 nodes, a root other than `rsm:CrossIndustryInvoice`, a profile Lpdf doesn't know, a value the map marks `required` that it lacks, a value that finds several, and a date that is not one.
 - **MINIMUM and BASIC WL** are refused. Their XML is only a booking aid: the PDF is the legal invoice, and the lines it shows are not in the XML, so it can't be made from it. For those, fill the pages yourself and attach the XML (see [Factur-X e-invoices](?p=facturx)).
-- **The file**: a PDF/A level other than 3a, 3b or 3u, `encrypt` or `pdfx` in the document, and a document that declares `factur-x.xml` or `xrechnung.xml` itself. What any PDF/A file refuses applies too, such as text in a built-in font: see [PDF/A](?p=pdfa#errors).
+- **The file**: a PDF/A level other than 3a, 3b or 3u, `encrypt` or `pdfx` in the document, and a document that declares `factur-x.xml` or `xrechnung.xml` itself. What any PDF/A file refuses applies too, such as text in a built-in font: see [PDF/A](?p=pdfa#errors). When the template sets no level, that error starts with `generatePdf makes the invoice a PDF/A-3b file:`.

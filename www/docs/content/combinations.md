@@ -24,7 +24,7 @@ The settings are [PDF/A](?p=pdfa), [PDF/UA](?p=pdfua), [PDF/X](?p=pdfx), [encryp
 | Encryption and attachments | Yes: the files are encrypted too |
 | Fast web view and attachments | Yes |
 
-Yes means the two settings go on one `output`, as in `<output pdfa="2u" pdfua="1"/>`. A [Factur-X invoice](?p=facturx) is a PDF/A-3 file, so it combines as PDF/A-3 does: with PDF/UA and fast web view, and with neither PDF/X nor encryption.
+Yes means the two settings go on one `output`, as in `<output pdfa="2u" pdfua="1"/>`. A [Factur-X invoice](?p=factur-x-zugferd) is a PDF/A-3 file, so it combines as PDF/A-3 does: with PDF/UA and fast web view, and with neither PDF/X nor encryption.
 
 Each refusal stops the render with an error that names both settings and says which to remove:
 

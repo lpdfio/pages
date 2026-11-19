@@ -252,7 +252,7 @@ To skip some items, put the condition on an element inside the loop. There it re
 
 ## Values under a prefix
 
-A path may start with a prefix and a colon, `invoice:seller.name`, to read data that is bound under that prefix beside yours. [LCrossIndustryInvoice](?p=cross-industry-invoice) binds the values of an invoice that way, under the prefix its map names, so a template shows which values come from the invoice, and your data keeps all its keys. A path without a prefix reads your data, and inside a loop the current item.
+A path may start with a prefix and a colon, `invoice:seller.name`, to read data that is bound under that prefix beside yours. [LCrossIndustryInvoice](?p=factur-x-zugferd#from-the-invoice-xml) binds the values of an invoice that way, under the prefix its map names, so a template shows which values come from the invoice, and your data keeps all its keys. A path without a prefix reads your data, and inside a loop the current item.
 
 ```xml
 <column gap="xs">

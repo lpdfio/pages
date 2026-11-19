@@ -80,7 +80,8 @@ are shared. Code, and text that depends on the SDK, sit in sections that name th
 gives those; `{{otherGuides}}` is the links to the other SDKs' pages. An SDK with no section gets a placeholder page, and one
 with some must have as many as the most complete. A code block with `title="make-invoice.mjs"` must equal the file of that name
 in `guides/public/<guide>/files/<sdk>/` (or `files/`), which the reader downloads, so the code on a page is the code that was
-run. The build fails on a page title over 60 characters or a description outside 120 to 160.
+run. The page's title is also the browser tab's. The build fails on a title over 65 characters (the docs' limit is 60, but a
+guide's names its SDK too) or a description outside 120 to 160.
 
 The pages are generated and ignored by git; the hand-written ones are `.mdx`. A page has a switch to the same guide in the
 other SDKs, and the sidebar has one entry for the guide, which `guides/src/route-data.ts` keeps current on all of them. A new

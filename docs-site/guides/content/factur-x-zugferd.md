@@ -1,7 +1,6 @@
 ---
 title: "Create a Factur-X / ZUGFeRD invoice PDF from its XML in {{language}}"
 description: "Turn the XML your accounting software writes into a Factur-X / ZUGFeRD PDF/A-3 invoice in {{language}} with Lpdf: one template, one call, then a check."
-pageTitle: "Make a Factur-X PDF from invoice XML in {{language}}"
 ---
 
 A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice twice: as pages people read, and as XML that accounting software reads. France and Germany accept it as an electronic invoice. Your accounting software, or an e-invoice library, already writes the XML. This guide turns that XML into the Factur-X PDF with [Lpdf](https://lpdf.io/): a template for the look, and one call.

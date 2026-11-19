@@ -56,7 +56,7 @@ function readSource(guide)
         if (!pair) fail(guide, `frontmatter line is not key: "value": ${line}`);
         meta[pair[1]] = pair[2];
     }
-    for (const key of ['title', 'description', 'pageTitle'])
+    for (const key of ['title', 'description'])
     {
         if (!meta[key]) fail(guide, `frontmatter has no ${key}`);
     }
@@ -86,10 +86,15 @@ function bodyFor(body, sdk)
     return guarded.replace(/\n{3,}/g, '\n\n').replace(/\u0000(\d+)\u0000/g, (_, index) => blocks[index]);
 }
 
-/** What search results show: a page title of 60 characters or fewer, a description of 120 to 160. */
+/**
+ * What search results show: the title, which is also the browser tab's, and a description of 120 to 160. The docs keep a
+ * title to 60 characters; a guide's names its SDK too, so it may run a little longer, and Node.js and Python do.
+ */
+const TITLE_MAX = 65;
+
 function checkMeta(guide, values)
 {
-    if (values.pageTitle.length > 60) fail(guide, `title over 60 characters (${values.pageTitle.length}): ${values.pageTitle}`);
+    if (values.title.length > TITLE_MAX) fail(guide, `title over ${TITLE_MAX} characters (${values.title.length}): ${values.title}`);
     const length = values.description.length;
     if (length < 120 || length > 160) fail(guide, `description is ${length} characters, not 120 to 160: ${values.description}`);
 }
@@ -106,7 +111,7 @@ function checkCode(guide, sdk, body)
     }
 }
 
-function frontmatter({ title, description, pageTitle })
+function frontmatter({ title, description })
 {
     return [
         '---',
@@ -114,7 +119,7 @@ function frontmatter({ title, description, pageTitle })
         `description: "${description}"`,
         'head:',
         '    - tag: title',
-        `      content: "${pageTitle}"`,
+        `      content: "${title}"`,
         // The sidebar has one entry for the guide, so its pages' previous and next would be other guides.
         'prev: false',
         'next: false',

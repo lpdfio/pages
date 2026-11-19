@@ -4,7 +4,7 @@
 // the install step, sit in sections that name their SDK:
 //
 //     ::: sdk js
-//     ...only the Node.js page has this...
+//     ...only the JavaScript page has this...
 //     :::
 //
 // The ids are the ones the docs use (docs-site/scripts/sync-content.mjs). `{{language}}` in the text is the SDK's name,
@@ -25,13 +25,17 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** The SDKs, in the order the docs list them (docs-site/src/code-languages.ts), which the guides' switch and links follow. `id` is the section id, `slug` the page's folder name. */
+/**
+ * The SDKs, in the order the docs list them (docs-site/src/code-languages.ts), which the guides' switch and links follow. `id` is
+ * the section id, `slug` the page's folder name, `repo` and `registry` where the code and the package are (the links of lpdf.io's
+ * front page).
+ */
 const SDKS = [
-    { id: 'js', slug: 'node', language: 'Node.js', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
-    { id: 'python', slug: 'python', language: 'Python', names: { createdOn: 'created_on', invoiceMap: 'invoice_map', generatePdf: 'generate_pdf' } },
-    { id: 'java', slug: 'java', language: 'Java', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
-    { id: 'dotnet', slug: 'dotnet', language: '.NET', names: { createdOn: 'CreatedOn', invoiceMap: 'InvoiceMap', generatePdf: 'GeneratePdf' } },
-    { id: 'php', slug: 'php', language: 'PHP', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
+    { id: 'js', slug: 'javascript', language: 'JavaScript', repo: 'https://github.com/lpdfio/lpdf-js', registry: { name: 'npm', url: 'https://www.npmjs.com/package/@lpdfio/lpdf' }, names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
+    { id: 'python', slug: 'python', language: 'Python', repo: 'https://github.com/lpdfio/lpdf-python', registry: { name: 'PyPI', url: 'https://pypi.org/project/lpdfio-lpdf/' }, names: { createdOn: 'created_on', invoiceMap: 'invoice_map', generatePdf: 'generate_pdf' } },
+    { id: 'java', slug: 'java', language: 'Java', repo: 'https://github.com/lpdfio/lpdf-java', registry: { name: 'Maven Central', url: 'https://central.sonatype.com/artifact/io.lpdf/lpdf' }, names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
+    { id: 'dotnet', slug: 'csharp', language: 'C#', repo: 'https://github.com/lpdfio/lpdf-dotnet', registry: { name: 'NuGet', url: 'https://www.nuget.org/packages/Lpdfio.Lpdf' }, names: { createdOn: 'CreatedOn', invoiceMap: 'InvoiceMap', generatePdf: 'GeneratePdf' } },
+    { id: 'php', slug: 'php', language: 'PHP', repo: 'https://github.com/lpdfio/lpdf-php', registry: { name: 'Packagist', url: 'https://packagist.org/packages/lpdfio/lpdf' }, names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
 ];
 
 const SDK_SECTION = /^::: sdk (\w+)\n([\s\S]*?)^:::[ \t]*$\n?/gm;
@@ -88,9 +92,9 @@ function bodyFor(body, sdk)
 
 /**
  * What search results show: the title, which is also the browser tab's, and a description of 120 to 160. The docs keep a
- * title to 60 characters; a guide's names its SDK too, so it may run a little longer, and Node.js and Python do.
+ * title to 60 characters; a guide's names its SDK too, so it may run a little longer: JavaScript's runs to 66.
  */
-const TITLE_MAX = 65;
+const TITLE_MAX = 66;
 
 function checkMeta(guide, values)
 {
@@ -120,9 +124,6 @@ function frontmatter({ title, description })
         'head:',
         '    - tag: title',
         `      content: "${title}"`,
-        // The sidebar has one entry for the guide, so its pages' previous and next would be other guides.
-        'prev: false',
-        'next: false',
         '---',
         '',
     ].join('\n');
@@ -138,6 +139,24 @@ function languageSwitch(current, written)
         return `<span aria-disabled="true" title="Not written yet">${sdk.language}</span>`;
     });
     return `<nav class="guide-languages not-content" aria-label="The language of this guide">\n<span>Language</span>\n${items.join('\n')}\n</nav>\n\n`;
+}
+
+/** The VS Code extension's two listings: Microsoft's marketplace, and Open VSX, which VS Code's forks (VSCodium, Cursor) read. */
+const EXTENSION = {
+    marketplace: 'https://marketplace.visualstudio.com/items?itemName=lpdfio.lpdf',
+    openVsx: 'https://open-vsx.org/extension/lpdfio/lpdf',
+};
+
+/**
+ * Two lines under the switch, which depend on the language the reader chose: where this SDK's code and package are, and its
+ * documentation (the docs take the language as `?sdk=<id>`) with the extension.
+ */
+function sourceLinks(sdk)
+{
+    const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    const source = `<div class="guide-source not-content">\n<span>Source</span>\n${link(sdk.repo, 'GitHub')}\n${link(sdk.registry.url, sdk.registry.name)}\n</div>\n\n`;
+    const more = `<div class="guide-more not-content">\n<span>More</span>\n<a href="/docs/?sdk=${sdk.id}">Documentation</a>\n${link(EXTENSION.marketplace, 'VS Code Marketplace')}\n${link(EXTENSION.openVsx, 'Open VSX')}\n</div>\n\n`;
+    return source + more;
 }
 
 const NOTE = '<!-- Generated from content/<guide>.md by scripts/build-guides.mjs. Edit the source, not this page. -->\n\n';
@@ -179,7 +198,7 @@ function build(guide)
         }
         if (/\{\{\w+\}\}/.test(page)) fail(guide, `${sdk.slug}: an unreplaced {{…}} is left`);
 
-        writeFileSync(join(ROOT, 'src/content/docs', guide, `${sdk.slug}.md`), frontmatter(values) + NOTE.replace('<guide>', guide) + languageSwitch(sdk, written) + page);
+        writeFileSync(join(ROOT, 'src/content/docs', guide, `${sdk.slug}.md`), frontmatter(values) + NOTE.replace('<guide>', guide) + languageSwitch(sdk, written) + sourceLinks(sdk) + page);
         console.log(`${guide}/${sdk.slug}: ${isWritten ? `${page.split('\n').length} lines` : 'placeholder'}`);
     }
 }

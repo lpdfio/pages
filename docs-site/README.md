@@ -73,7 +73,7 @@ A guide is one Markdown file in `guides/content/`, and each SDK gets a page from
 are shared. Code, and text that depends on the SDK, sit in sections that name their SDK, with the ids the docs use:
 
     ::: sdk js
-    ...only the Node.js page has this...
+    ...only the JavaScript page has this...
     :::
 
 `{{language}}`, `{{createdOn}}`, `{{invoiceMap}}` and `{{generatePdf}}` in the text are the SDK's own name and the names it
@@ -84,9 +84,9 @@ run. The page's title is also the browser tab's. The build fails on a title over
 guide's names its SDK too) or a description outside 120 to 160.
 
 The pages are generated and ignored by git; the hand-written ones are `.mdx`. A page has a switch to the same guide in the
-other SDKs, and the sidebar has one entry for the guide, which `guides/src/route-data.ts` keeps current on all of them. A new
-guide is a source file in `guides/content`, its files in `guides/public`, and one line in the sidebar of
-`guides/astro.config.mjs`.
+other SDKs, then a "Source" line with that SDK's GitHub repository and package page, and a "More" line with its documentation and the VS Code extension's two listings. The guides have no sidebar
+(`guides/src/route-data.ts` hides it): a reader arrives by a link, and the header's "Guides" goes to the index. A new guide is
+a source file in `guides/content` and its files in `guides/public`; link to it from the index, `guides/src/content/docs/index.mdx`.
 
 The deploy builds it after the docs (`npm run build:guides`), and `assemble-site.sh` puts it at `/guides`. Its sitemap,
 `/guides/sitemap-index.xml`, is not in the `robots.txt` that `set-stage.sh` writes for prod.

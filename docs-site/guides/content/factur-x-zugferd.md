@@ -66,46 +66,54 @@ A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice 
 :::
 
 - The invoice's XML: an EN 16931 invoice in the Cross Industry Invoice format, the XML every Factur-X and ZUGFeRD invoice carries, of the profile BASIC, EN 16931, EXTENDED or XRECHNUNG. This guide uses a sample, [in/invoice-2026-0412.xml](../files/in/invoice-2026-0412.xml). No XML yet? A library writes it, such as Mustang for Java, horstoeko/zugferd for PHP or ZUGFeRD-csharp for .NET.
-- A font file to embed, since a PDF/A file embeds every font it uses. This guide uses [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3), free under the SIL Open Font License, saved as `fonts/SourceSans3-Regular.otf`
+- A font file to embed, since a PDF/A file embeds every font it uses. This guide uses [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3), free under the SIL Open Font License. It is in the downloads: save [SourceSans3-Regular.otf](../files/fonts/SourceSans3-Regular.otf) as `fonts/SourceSans3-Regular.otf`, and keep its license, [OFL-SourceSans3.txt](../files/fonts/OFL-SourceSans3.txt), beside it
+- A logo for the header: PNG, JPEG, SVG and other image files work. This guide uses [logo.png](../files/logo.png), made up for the sample seller, saved as `logo.png`
 
 ## 1. Write the template
 
 The template, [invoice-template.xml](../files/invoice-template.xml), says how the invoice looks. This is the page it makes from the sample invoice:
 
-![The invoice page the template makes from the sample XML: the seller and the buyer, two lines, the VAT and the total, and a note.](/guides/factur-x-zugferd/files/invoice-2026-0412.png)
+![The invoice page the template makes from the sample XML: the logo, the seller and the buyer, two lines, the VAT and the total, and a note.](/guides/factur-x-zugferd/files/invoice-2026-0412.png)
 
 Each `data-value="invoice:…"` takes a value from the invoice's XML, by the names of Lpdf's default map: `invoice:seller.name`, `invoice:totals.gross`. The `tr` with `data-source="invoice:lines"` repeats for each line, and inside it a name without the prefix is the line's own, `name` or `net`. The row with `data-if="invoice:totals.vatInTaxCurrency"` shows only on an invoice that has a tax currency. `note` has no prefix: it comes from your own data, since the XML has no such line.
+
+The logo is declared in `assets`, as the font is, and the `img` at the top of the header places it: 130pt wide, and as high as its proportions make it.
 
 ```xml title="invoice-template.xml"
 <lpdf version="1">
   <assets>
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="a4" font="body">
     <meta title="Invoice" author="Northwind Paper SAS" lang="en"/>
     <section>
       <layout margin="48pt">
         <column gap="l">
-          <row align="end">
-            <column width="fill" gap="xs">
-              <text font-size="20pt" data-value="invoice:seller.name">Seller</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:seller.street">Street</text>
-              <row gap="xs">
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.postcode">00000</text>
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.city">City</text>
-              </row>
-              <row gap="xs">
-                <text font-size="9pt" color="#5b6475">VAT</text>
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.vatId">Number</text>
-              </row>
+          <row align="center">
+            <column width="fill">
+              <img name="logo" width="130pt"/>
             </column>
             <row gap="xs">
-              <text font-size="16pt" color="#1763cf" data-value="invoice:typeCode">Invoice</text>
-              <text font-size="16pt" color="#1763cf" data-value="invoice:number">0000</text>
+              <text font-size="20pt" color="#0f4c5c" data-value="invoice:typeCode">Invoice</text>
+              <text font-size="20pt" color="#0f4c5c" data-value="invoice:number">0000</text>
             </row>
           </row>
           <divider color="#dde3ed" thickness="0.5pt"/>
           <row gap="l">
+            <column width="fill" gap="xs">
+              <text font-size="9pt" color="#5b6475">From</text>
+              <text data-value="invoice:seller.name">Seller</text>
+              <text data-value="invoice:seller.street">Street</text>
+              <row gap="xs">
+                <text data-value="invoice:seller.postcode">00000</text>
+                <text data-value="invoice:seller.city">City</text>
+              </row>
+              <row gap="xs">
+                <text>VAT</text>
+                <text data-value="invoice:seller.vatId">Number</text>
+              </row>
+            </column>
             <column width="fill" gap="xs">
               <text font-size="9pt" color="#5b6475">Billed to</text>
               <text data-value="invoice:buyer.name">Buyer</text>
@@ -123,54 +131,58 @@ Each `data-value="invoice:…"` takes a value from the invoice's XML, by the nam
               </row>
             </column>
           </row>
-          <table cols="4fr 1fr 1fr 1fr 1fr 1fr">
+          <table cols="4fr 1fr 1fr 1fr 1fr 1fr" head-border="xs line" row-border="xs line-muted">
             <thead>
-              <td><text font-size="9pt" color="#5b6475">Item</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Qty</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Unit</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Price</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">VAT %</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Amount</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475">Item</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Qty</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Unit</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Price</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">VAT %</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Amount</text></td>
             </thead>
             <tr data-source="invoice:lines">
-              <td><text data-value="name">Item</text></td>
-              <td><text align="right" data-value="quantity">1</text></td>
-              <td><text align="right" data-value="unit">pcs</text></td>
-              <td><text align="right" data-value="unitPrice">0.00</text></td>
-              <td><text align="right" data-value="vatRate">0</text></td>
-              <td><text align="right" data-value="net">0.00</text></td>
+              <td padding="xs 0"><text data-value="name">Item</text></td>
+              <td padding="xs 0"><text align="right" data-value="quantity">1</text></td>
+              <td padding="xs 0"><text align="right" data-value="unit">pcs</text></td>
+              <td padding="xs 0"><text align="right" data-value="unitPrice">0.00</text></td>
+              <td padding="xs 0"><text align="right" data-value="vatRate">0</text></td>
+              <td padding="xs 0"><text align="right" data-value="net">0.00</text></td>
             </tr>
           </table>
-          <divider color="#dde3ed" thickness="0.5pt"/>
-          <table cols="1fr 1fr 1fr">
-            <thead>
-              <td><text font-size="9pt" color="#5b6475">VAT rate (%)</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Basis</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">VAT</text></td>
-            </thead>
-            <tr data-source="invoice:taxes">
-              <td><text data-value="rate">0</text></td>
-              <td><text align="right" data-value="basis">0.00</text></td>
-              <td><text align="right" data-value="amount">0.00</text></td>
-            </tr>
-          </table>
-          <column gap="xs" align="end">
-            <row gap="xs">
-              <text>VAT</text>
-              <text data-value="invoice:totals.vat">0.00</text>
-              <text data-value="invoice:totals.currency">EUR</text>
-            </row>
-            <row gap="xs" data-if="invoice:totals.vatInTaxCurrency">
-              <text font-size="9pt" color="#5b6475">VAT in</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:totals.taxCurrency">EUR</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:totals.vatInTaxCurrency">0.00</text>
-            </row>
-            <row gap="xs">
-              <text font-size="14pt">Total</text>
-              <text font-size="14pt" data-value="invoice:totals.gross">0.00</text>
-              <text font-size="14pt" data-value="invoice:totals.currency">EUR</text>
-            </row>
-          </column>
+          <row justify="end">
+            <column width="220pt" gap="s">
+              <table cols="1fr 1fr 1fr">
+                <thead>
+                  <td><text font-size="9pt" color="#5b6475">VAT %</text></td>
+                  <td><text font-size="9pt" color="#5b6475" align="right">Basis</text></td>
+                  <td><text font-size="9pt" color="#5b6475" align="right">VAT</text></td>
+                </thead>
+                <tr data-source="invoice:taxes">
+                  <td><text data-value="rate">0</text></td>
+                  <td><text align="right" data-value="basis">0.00</text></td>
+                  <td><text align="right" data-value="amount">0.00</text></td>
+                </tr>
+              </table>
+              <divider color="#dde3ed" thickness="0.5pt"/>
+              <column gap="xs">
+                <row gap="xs" justify="end">
+                  <text>VAT</text>
+                  <text data-value="invoice:totals.vat">0.00</text>
+                  <text data-value="invoice:totals.currency">EUR</text>
+                </row>
+                <row gap="xs" justify="end" data-if="invoice:totals.vatInTaxCurrency">
+                  <text font-size="9pt" color="#5b6475">VAT in</text>
+                  <text font-size="9pt" color="#5b6475" data-value="invoice:totals.taxCurrency">EUR</text>
+                  <text font-size="9pt" color="#5b6475" data-value="invoice:totals.vatInTaxCurrency">0.00</text>
+                </row>
+                <row gap="xs" justify="end">
+                  <text font-size="14pt">Total</text>
+                  <text font-size="14pt" data-value="invoice:totals.gross">0.00</text>
+                  <text font-size="14pt" data-value="invoice:totals.currency">EUR</text>
+                </row>
+              </column>
+            </column>
+          </row>
           <text data-if="note" data-value="note" font-size="9pt" color="#5b6475">A note</text>
         </column>
       </layout>
@@ -186,7 +198,7 @@ The template has nothing of Factur-X in it: no PDF/A level and no attachment. Th
 The script reads the XML and makes the PDF in one call. `format` writes the values for the page: the invoice has dates as `2026-10-31`, amounts as `69.60` and codes such as `H87` for pieces, and the functions turn them into the words your customers read. `data` carries what the XML lacks, here the note. A PDF/A file carries the date it was made, so the call gets it as `{{createdOn}}`.
 
 ::: sdk js
-The script, [make-invoice.mjs](../files/node/make-invoice.mjs):
+The script, [make-invoice.mjs](../files/javascript/make-invoice.mjs):
 
 ```javascript title="make-invoice.mjs"
 import { L, LCrossIndustryInvoice } from '@lpdfio/lpdf'
@@ -308,7 +320,7 @@ public class MakeInvoice {
             .amount((value, entryName) -> amountFormat.format(new BigDecimal(value)))
             .code((value, entryName) -> codeNames.getOrDefault(entryName, Map.of()).getOrDefault(value, value));
 
-        // Java reads the template's font file, a `src`, only through the engine.
+        // Java reads the template's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         byte[] pdf = LCrossIndustryInvoice.generatePdf(engine, Files.readString(Path.of("invoice-template.xml")),
@@ -333,7 +345,7 @@ mvn -q compile exec:java -Dexec.mainClass=MakeInvoice
 :::
 
 ::: sdk dotnet
-The script, [MakeInvoice.cs](../files/dotnet/MakeInvoice.cs):
+The script, [MakeInvoice.cs](../files/csharp/MakeInvoice.cs):
 
 ```csharp title="MakeInvoice.cs"
 #:package Lpdfio.Lpdf@0.36.0
@@ -360,7 +372,7 @@ var format = new InvoiceFormat
     Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
 };
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 var pdf = LCrossIndustryInvoice.GeneratePdf(engine, File.ReadAllText("invoice-template.xml"), new()
 {
@@ -430,28 +442,6 @@ php make-invoice.php
 
 For a folder of invoices, call it once for each XML, with the same template. A second template, for another look or another language, is another file: the code stays the same.
 
-Without a license key each page carries a small Lpdf line in its top-right corner. A license key removes it: see [Pricing](https://lpdf.io/pricing/).
-
-::: sdk js
-Set the key with `L.engine().setLicenseKey(key)` before the first call.
-:::
-
-::: sdk python
-Set the key with `L.engine().set_license_key(key)` before the first call.
-:::
-
-::: sdk java
-Set the key with `.setLicenseKey(key)` on the engine, `L.engine(options).setLicenseKey(key)`, before the first call.
-:::
-
-::: sdk dotnet
-Set the key with `engine.SetLicenseKey(key)` before the first call.
-:::
-
-::: sdk php
-Set the key with `L::engine()->setLicenseKey($key)` before the first call.
-:::
-
 ## 3. The same page in code
 
 A template is a file a designer can change without code. If you prefer code, build the same page with the `L` builders: the call that makes the PDF is the same, and you give it a document in place of the template.
@@ -459,7 +449,7 @@ A template is a file a designer can change without code. If you prefer code, bui
 Builders have no binding attributes, so the values come from code. The invoice's values are read from the XML as plain data, a list is a loop over an array, and an optional line is an `if`. The note is a variable here, where the template took it as `data`.
 
 ::: sdk js
-The script, [make-invoice-code.mjs](../files/node/make-invoice-code.mjs):
+The script, [make-invoice-code.mjs](../files/javascript/make-invoice-code.mjs):
 
 ```javascript title="make-invoice-code.mjs"
 import { L, NoAttr, LCrossIndustryInvoice } from '@lpdfio/lpdf'
@@ -488,29 +478,36 @@ const { seller, buyer, totals } = invoice
 const muted      = { fontSize: '9pt', color: '#5b6475' }
 const mutedRight = { fontSize: '9pt', color: '#5b6475', align: 'right' }
 const right      = { align: 'right' }
-const title      = { fontSize: '16pt', color: '#1763cf' }
+const title      = { fontSize: '20pt', color: '#0f4c5c' }
 const total      = { fontSize: '14pt' }
+const cell       = { padding: 'xs 0' }
+const endRow     = { gap: 'xs', justify: 'end' }
 
 const doc = L.document({
     size: 'a4',
     font: 'body',
-    assets: { fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }] },
+    assets: {
+        fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }],
+        images: [{ name: 'logo', src: 'logo.png' }],
+    },
     meta: { title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en' },
 }, [
     L.section(NoAttr, [
         L.layout({ margin: '48pt' }, [
             L.column({ gap: 'l' }, [
-                L.row({ align: 'end' }, [
-                    L.column({ width: 'fill', gap: 'xs' }, [
-                        L.text({ fontSize: '20pt' }, [seller.name]),
-                        L.text(muted, [seller.street]),
-                        L.row({ gap: 'xs' }, [L.text(muted, [seller.postcode]), L.text(muted, [seller.city])]),
-                        L.row({ gap: 'xs' }, [L.text(muted, ['VAT']), L.text(muted, [seller.vatId])]),
-                    ]),
+                L.row({ align: 'center' }, [
+                    L.column({ width: 'fill' }, [L.img({ name: 'logo', width: '130pt' })]),
                     L.row({ gap: 'xs' }, [L.text(title, [invoice.typeCode]), L.text(title, [invoice.number])]),
                 ]),
                 L.divider({ color: '#dde3ed', thickness: '0.5pt' }),
                 L.row({ gap: 'l' }, [
+                    L.column({ width: 'fill', gap: 'xs' }, [
+                        L.text(muted, ['From']),
+                        L.text(NoAttr, [seller.name]),
+                        L.text(NoAttr, [seller.street]),
+                        L.row({ gap: 'xs' }, [L.text(NoAttr, [seller.postcode]), L.text(NoAttr, [seller.city])]),
+                        L.row({ gap: 'xs' }, [L.text(NoAttr, ['VAT']), L.text(NoAttr, [seller.vatId])]),
+                    ]),
                     L.column({ width: 'fill', gap: 'xs' }, [
                         L.text(muted, ['Billed to']),
                         L.text(NoAttr, [buyer.name]),
@@ -524,46 +521,50 @@ const doc = L.document({
                         ...invoice.paymentTerms.map((term) => L.text(NoAttr, [term.due])),
                     ]),
                 ]),
-                L.table({ cols: '4fr 1fr 1fr 1fr 1fr 1fr' }, [
+                L.table({ cols: '4fr 1fr 1fr 1fr 1fr 1fr', headBorder: 'xs line', rowBorder: 'xs line-muted' }, [
                     L.thead(NoAttr, [
-                        L.td(NoAttr, [L.text(muted, ['Item'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['Qty'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['Unit'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['Price'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['VAT %'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['Amount'])]),
+                        L.td(cell, [L.text(muted, ['Item'])]),
+                        L.td(cell, [L.text(mutedRight, ['Qty'])]),
+                        L.td(cell, [L.text(mutedRight, ['Unit'])]),
+                        L.td(cell, [L.text(mutedRight, ['Price'])]),
+                        L.td(cell, [L.text(mutedRight, ['VAT %'])]),
+                        L.td(cell, [L.text(mutedRight, ['Amount'])]),
                     ]),
                     ...invoice.lines.map((line) => L.tr(NoAttr, [
-                        L.td(NoAttr, [L.text(NoAttr, [line.name])]),
-                        L.td(NoAttr, [L.text(right, [line.quantity])]),
-                        L.td(NoAttr, [L.text(right, [line.unit])]),
-                        L.td(NoAttr, [L.text(right, [line.unitPrice])]),
-                        L.td(NoAttr, [L.text(right, [line.vatRate])]),
-                        L.td(NoAttr, [L.text(right, [line.net])]),
+                        L.td(cell, [L.text(NoAttr, [line.name])]),
+                        L.td(cell, [L.text(right, [line.quantity])]),
+                        L.td(cell, [L.text(right, [line.unit])]),
+                        L.td(cell, [L.text(right, [line.unitPrice])]),
+                        L.td(cell, [L.text(right, [line.vatRate])]),
+                        L.td(cell, [L.text(right, [line.net])]),
                     ])),
                 ]),
-                L.divider({ color: '#dde3ed', thickness: '0.5pt' }),
-                L.table({ cols: '1fr 1fr 1fr' }, [
-                    L.thead(NoAttr, [
-                        L.td(NoAttr, [L.text(muted, ['VAT rate (%)'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['Basis'])]),
-                        L.td(NoAttr, [L.text(mutedRight, ['VAT'])]),
+                L.row({ justify: 'end' }, [
+                    L.column({ width: '220pt', gap: 's' }, [
+                        L.table({ cols: '1fr 1fr 1fr' }, [
+                            L.thead(NoAttr, [
+                                L.td(NoAttr, [L.text(muted, ['VAT %'])]),
+                                L.td(NoAttr, [L.text(mutedRight, ['Basis'])]),
+                                L.td(NoAttr, [L.text(mutedRight, ['VAT'])]),
+                            ]),
+                            ...invoice.taxes.map((tax) => L.tr(NoAttr, [
+                                L.td(NoAttr, [L.text(NoAttr, [tax.rate])]),
+                                L.td(NoAttr, [L.text(right, [tax.basis])]),
+                                L.td(NoAttr, [L.text(right, [tax.amount])]),
+                            ])),
+                        ]),
+                        L.divider({ color: '#dde3ed', thickness: '0.5pt' }),
+                        L.column({ gap: 'xs' }, [
+                            L.row(endRow, [L.text(NoAttr, ['VAT']), L.text(NoAttr, [totals.vat]), L.text(NoAttr, [totals.currency])]),
+                            // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                            ...(totals.vatInTaxCurrency ? [L.row(endRow, [
+                                L.text(muted, ['VAT in']),
+                                L.text(muted, [totals.taxCurrency]),
+                                L.text(muted, [totals.vatInTaxCurrency]),
+                            ])] : []),
+                            L.row(endRow, [L.text(total, ['Total']), L.text(total, [totals.gross]), L.text(total, [totals.currency])]),
+                        ]),
                     ]),
-                    ...invoice.taxes.map((tax) => L.tr(NoAttr, [
-                        L.td(NoAttr, [L.text(NoAttr, [tax.rate])]),
-                        L.td(NoAttr, [L.text(right, [tax.basis])]),
-                        L.td(NoAttr, [L.text(right, [tax.amount])]),
-                    ])),
-                ]),
-                L.column({ gap: 'xs', align: 'end' }, [
-                    L.row({ gap: 'xs' }, [L.text(NoAttr, ['VAT']), L.text(NoAttr, [totals.vat]), L.text(NoAttr, [totals.currency])]),
-                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                    ...(totals.vatInTaxCurrency ? [L.row({ gap: 'xs' }, [
-                        L.text(muted, ['VAT in']),
-                        L.text(muted, [totals.taxCurrency]),
-                        L.text(muted, [totals.vatInTaxCurrency]),
-                    ])] : []),
-                    L.row({ gap: 'xs' }, [L.text(total, ['Total']), L.text(total, [totals.gross]), L.text(total, [totals.currency])]),
                 ]),
                 ...(note ? [L.text(muted, [note])] : []),
             ]),
@@ -590,6 +591,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `seller.name` |
 | A list | `<tr data-source="invoice:lines">` | `invoice.lines.map((line) => L.tr(…))` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(totals.vatInTaxCurrency ? [L.row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img({ name: 'logo', width: '130pt' })`, with `images: [{ name: 'logo', src: 'logo.png' }]` in `assets` |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -609,6 +611,8 @@ from lpdf import (
     DocumentAttr,
     DocumentMeta,
     FontAttr,
+    ImageAttr,
+    ImgAttr,
     InvoiceFormat,
     L,
     LayoutAttr,
@@ -616,6 +620,7 @@ from lpdf import (
     NoAttr,
     RowAttr,
     TableAttr,
+    TdAttr,
     TextAttr,
 )
 
@@ -644,31 +649,25 @@ seller, buyer, totals = invoice["seller"], invoice["buyer"], invoice["totals"]
 muted = TextAttr(font_size="9pt", color="#5b6475")
 muted_right = TextAttr(font_size="9pt", color="#5b6475", align="right")
 right = TextAttr(align="right")
-title = TextAttr(font_size="16pt", color="#1763cf")
+title = TextAttr(font_size="20pt", color="#0f4c5c")
 total = TextAttr(font_size="14pt")
+cell = TdAttr(padding="xs 0")
+end_row = RowAttr(gap="xs", justify="end")
 
 doc = L.document(DocumentAttr(
     size="a4",
     font="body",
-    assets=DocumentAssets(fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")]),
+    assets=DocumentAssets(
+        fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")],
+        images=[ImageAttr(name="logo", src="logo.png")],
+    ),
     meta=DocumentMeta(title="Invoice", author="Northwind Paper SAS", lang="en"),
 ), [
     L.section(NoAttr, [
         L.layout(LayoutAttr(margin="48pt"), [
             L.column(ColumnAttr(gap="l"), [
-                L.row(RowAttr(align="end"), [
-                    L.column(ColumnAttr(width="fill", gap="xs"), [
-                        L.text(TextAttr(font_size="20pt"), [seller["name"]]),
-                        L.text(muted, [seller["street"]]),
-                        L.row(RowAttr(gap="xs"), [
-                            L.text(muted, [seller["postcode"]]),
-                            L.text(muted, [seller["city"]]),
-                        ]),
-                        L.row(RowAttr(gap="xs"), [
-                            L.text(muted, ["VAT"]),
-                            L.text(muted, [seller["vatId"]]),
-                        ]),
-                    ]),
+                L.row(RowAttr(align="center"), [
+                    L.column(ColumnAttr(width="fill"), [L.img(ImgAttr(name="logo", width="130pt"))]),
                     L.row(RowAttr(gap="xs"), [
                         L.text(title, [invoice["typeCode"]]),
                         L.text(title, [invoice["number"]]),
@@ -676,6 +675,19 @@ doc = L.document(DocumentAttr(
                 ]),
                 L.divider(DividerAttr(color="#dde3ed", thickness="0.5pt")),
                 L.row(RowAttr(gap="l"), [
+                    L.column(ColumnAttr(width="fill", gap="xs"), [
+                        L.text(muted, ["From"]),
+                        L.text(NoAttr, [seller["name"]]),
+                        L.text(NoAttr, [seller["street"]]),
+                        L.row(RowAttr(gap="xs"), [
+                            L.text(NoAttr, [seller["postcode"]]),
+                            L.text(NoAttr, [seller["city"]]),
+                        ]),
+                        L.row(RowAttr(gap="xs"), [
+                            L.text(NoAttr, ["VAT"]),
+                            L.text(NoAttr, [seller["vatId"]]),
+                        ]),
+                    ]),
                     L.column(ColumnAttr(width="fill", gap="xs"), [
                         L.text(muted, ["Billed to"]),
                         L.text(NoAttr, [buyer["name"]]),
@@ -692,53 +704,57 @@ doc = L.document(DocumentAttr(
                         *[L.text(NoAttr, [term["due"]]) for term in invoice["paymentTerms"]],
                     ]),
                 ]),
-                L.table(TableAttr(cols="4fr 1fr 1fr 1fr 1fr 1fr"), [
+                L.table(TableAttr(cols="4fr 1fr 1fr 1fr 1fr 1fr", head_border="xs line", row_border="xs line-muted"), [
                     L.thead(NoAttr, [
-                        L.td(NoAttr, [L.text(muted, ["Item"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["Qty"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["Unit"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["Price"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["VAT %"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["Amount"])]),
+                        L.td(cell, [L.text(muted, ["Item"])]),
+                        L.td(cell, [L.text(muted_right, ["Qty"])]),
+                        L.td(cell, [L.text(muted_right, ["Unit"])]),
+                        L.td(cell, [L.text(muted_right, ["Price"])]),
+                        L.td(cell, [L.text(muted_right, ["VAT %"])]),
+                        L.td(cell, [L.text(muted_right, ["Amount"])]),
                     ]),
                     *[L.tr(NoAttr, [
-                        L.td(NoAttr, [L.text(NoAttr, [line["name"]])]),
-                        L.td(NoAttr, [L.text(right, [line["quantity"]])]),
-                        L.td(NoAttr, [L.text(right, [line["unit"]])]),
-                        L.td(NoAttr, [L.text(right, [line["unitPrice"]])]),
-                        L.td(NoAttr, [L.text(right, [line["vatRate"]])]),
-                        L.td(NoAttr, [L.text(right, [line["net"]])]),
+                        L.td(cell, [L.text(NoAttr, [line["name"]])]),
+                        L.td(cell, [L.text(right, [line["quantity"]])]),
+                        L.td(cell, [L.text(right, [line["unit"]])]),
+                        L.td(cell, [L.text(right, [line["unitPrice"]])]),
+                        L.td(cell, [L.text(right, [line["vatRate"]])]),
+                        L.td(cell, [L.text(right, [line["net"]])]),
                     ]) for line in invoice["lines"]],
                 ]),
-                L.divider(DividerAttr(color="#dde3ed", thickness="0.5pt")),
-                L.table(TableAttr(cols="1fr 1fr 1fr"), [
-                    L.thead(NoAttr, [
-                        L.td(NoAttr, [L.text(muted, ["VAT rate (%)"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["Basis"])]),
-                        L.td(NoAttr, [L.text(muted_right, ["VAT"])]),
-                    ]),
-                    *[L.tr(NoAttr, [
-                        L.td(NoAttr, [L.text(NoAttr, [tax["rate"]])]),
-                        L.td(NoAttr, [L.text(right, [tax["basis"]])]),
-                        L.td(NoAttr, [L.text(right, [tax["amount"]])]),
-                    ]) for tax in invoice["taxes"]],
-                ]),
-                L.column(ColumnAttr(gap="xs", align="end"), [
-                    L.row(RowAttr(gap="xs"), [
-                        L.text(NoAttr, ["VAT"]),
-                        L.text(NoAttr, [totals["vat"]]),
-                        L.text(NoAttr, [totals["currency"]]),
-                    ]),
-                    # An optional line is an if: the VAT in the tax currency, when there is one.
-                    *([L.row(RowAttr(gap="xs"), [
-                        L.text(muted, ["VAT in"]),
-                        L.text(muted, [totals["taxCurrency"]]),
-                        L.text(muted, [totals["vatInTaxCurrency"]]),
-                    ])] if "vatInTaxCurrency" in totals else []),
-                    L.row(RowAttr(gap="xs"), [
-                        L.text(total, ["Total"]),
-                        L.text(total, [totals["gross"]]),
-                        L.text(total, [totals["currency"]]),
+                L.row(RowAttr(justify="end"), [
+                    L.column(ColumnAttr(width="220pt", gap="s"), [
+                        L.table(TableAttr(cols="1fr 1fr 1fr"), [
+                            L.thead(NoAttr, [
+                                L.td(NoAttr, [L.text(muted, ["VAT %"])]),
+                                L.td(NoAttr, [L.text(muted_right, ["Basis"])]),
+                                L.td(NoAttr, [L.text(muted_right, ["VAT"])]),
+                            ]),
+                            *[L.tr(NoAttr, [
+                                L.td(NoAttr, [L.text(NoAttr, [tax["rate"]])]),
+                                L.td(NoAttr, [L.text(right, [tax["basis"]])]),
+                                L.td(NoAttr, [L.text(right, [tax["amount"]])]),
+                            ]) for tax in invoice["taxes"]],
+                        ]),
+                        L.divider(DividerAttr(color="#dde3ed", thickness="0.5pt")),
+                        L.column(ColumnAttr(gap="xs"), [
+                            L.row(end_row, [
+                                L.text(NoAttr, ["VAT"]),
+                                L.text(NoAttr, [totals["vat"]]),
+                                L.text(NoAttr, [totals["currency"]]),
+                            ]),
+                            # An optional line is an if: the VAT in the tax currency, when there is one.
+                            *([L.row(end_row, [
+                                L.text(muted, ["VAT in"]),
+                                L.text(muted, [totals["taxCurrency"]]),
+                                L.text(muted, [totals["vatInTaxCurrency"]]),
+                            ])] if "vatInTaxCurrency" in totals else []),
+                            L.row(end_row, [
+                                L.text(total, ["Total"]),
+                                L.text(total, [totals["gross"]]),
+                                L.text(total, [totals["currency"]]),
+                            ]),
+                        ]),
                     ]),
                 ]),
                 *([L.text(muted, [note])] if note else []),
@@ -768,6 +784,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `seller["name"]` |
 | A list | `<tr data-source="invoice:lines">` | `[L.tr(…) for line in invoice["lines"]]` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `*([L.row(…)] if "vatInTaxCurrency" in totals else [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img(ImgAttr(name="logo", width="130pt"))`, with `images=[ImageAttr(name="logo", src="logo.png")]` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -787,6 +804,8 @@ import io.lpdf.EngineOptions;
 import io.lpdf.ExtractInvoiceDataOptions;
 import io.lpdf.FontAttr;
 import io.lpdf.GeneratePdfOptions;
+import io.lpdf.ImageAttr;
+import io.lpdf.ImgAttr;
 import io.lpdf.InvoiceFormat;
 import io.lpdf.L;
 import io.lpdf.LCrossIndustryInvoice;
@@ -794,6 +813,7 @@ import io.lpdf.LayoutAttr;
 import io.lpdf.Node;
 import io.lpdf.RowAttr;
 import io.lpdf.TableAttr;
+import io.lpdf.TdAttr;
 import io.lpdf.TextAttr;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -842,30 +862,36 @@ public class MakeInvoiceCode {
         var muted = new TextAttr().fontSize("9pt").color("#5b6475");
         var mutedRight = new TextAttr().fontSize("9pt").color("#5b6475").align("right");
         var right = new TextAttr().align("right");
-        var title = new TextAttr().fontSize("16pt").color("#1763cf");
+        var title = new TextAttr().fontSize("20pt").color("#0f4c5c");
         var total = new TextAttr().fontSize("14pt");
+        var cell = new TdAttr().padding("xs 0");
+        var endRow = new RowAttr().gap("xs").justify("end");
 
         var doc = L.document(
             new DocumentAttr()
                 .size("a4")
                 .font("body")
-                .assets(new DocumentAssets().fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf"))))
+                .assets(new DocumentAssets()
+                    .fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf")))
+                    .images(List.of(new ImageAttr().name("logo").src("logo.png"))))
                 .meta(new DocumentMeta().title("Invoice").author("Northwind Paper SAS").lang("en")),
             List.of(
                 L.section(NoAttr, List.of(
                     L.layout(new LayoutAttr().margin("48pt"), List.of(
                         L.column(new ColumnAttr().gap("l"), nodes(
-                            L.row(new RowAttr().align("end"), List.of(
-                                L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
-                                    L.text(new TextAttr().fontSize("20pt"), List.of(seller.get("name"))),
-                                    L.text(muted, List.of(seller.get("street"))),
-                                    L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of(seller.get("postcode"))), L.text(muted, List.of(seller.get("city"))))),
-                                    L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of("VAT")), L.text(muted, List.of(seller.get("vatId")))))
-                                )),
+                            L.row(new RowAttr().align("center"), List.of(
+                                L.column(new ColumnAttr().width("fill"), List.of(L.img(new ImgAttr().name("logo").width("130pt")))),
                                 L.row(new RowAttr().gap("xs"), List.of(L.text(title, List.of(invoice.get("typeCode"))), L.text(title, List.of(invoice.get("number")))))
                             )),
                             L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
                             L.row(new RowAttr().gap("l"), List.of(
+                                L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
+                                    L.text(muted, List.of("From")),
+                                    L.text(NoAttr, List.of(seller.get("name"))),
+                                    L.text(NoAttr, List.of(seller.get("street"))),
+                                    L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of(seller.get("postcode"))), L.text(NoAttr, List.of(seller.get("city"))))),
+                                    L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(seller.get("vatId")))))
+                                )),
                                 L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
                                     L.text(muted, List.of("Billed to")),
                                     L.text(NoAttr, List.of(buyer.get("name"))),
@@ -879,46 +905,50 @@ public class MakeInvoiceCode {
                                     paymentTerms.stream().map(term -> L.text(NoAttr, List.of(term.get("due")))).toList()
                                 ))
                             )),
-                            L.table(new TableAttr().cols("4fr 1fr 1fr 1fr 1fr 1fr"), nodes(
+                            L.table(new TableAttr().cols("4fr 1fr 1fr 1fr 1fr 1fr").headBorder("xs line").rowBorder("xs line-muted"), nodes(
                                 L.thead(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(muted, List.of("Item")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Qty")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Unit")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Price")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT %")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Amount"))))
+                                    L.td(cell, List.of(L.text(muted, List.of("Item")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Qty")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Unit")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Price")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("VAT %")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Amount"))))
                                 )),
                                 lines.stream().map(line -> L.tr(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(NoAttr, List.of(line.get("name"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("quantity"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("unit"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("unitPrice"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("vatRate"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("net")))))
+                                    L.td(cell, List.of(L.text(NoAttr, List.of(line.get("name"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("quantity"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("unit"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("unitPrice"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("vatRate"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("net")))))
                                 ))).toList()
                             )),
-                            L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
-                            L.table(new TableAttr().cols("1fr 1fr 1fr"), nodes(
-                                L.thead(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(muted, List.of("VAT rate (%)")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Basis")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT"))))
-                                )),
-                                taxes.stream().map(tax -> L.tr(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(NoAttr, List.of(tax.get("rate"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(tax.get("basis"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(tax.get("amount")))))
-                                ))).toList()
-                            )),
-                            L.column(new ColumnAttr().gap("xs").align("end"), nodes(
-                                L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(totals.get("vat"))), L.text(NoAttr, List.of(totals.get("currency"))))),
-                                // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                                totals.containsKey("vatInTaxCurrency") ? List.of(L.row(new RowAttr().gap("xs"), List.of(
-                                    L.text(muted, List.of("VAT in")),
-                                    L.text(muted, List.of(totals.get("taxCurrency"))),
-                                    L.text(muted, List.of(totals.get("vatInTaxCurrency")))
-                                ))) : List.of(),
-                                L.row(new RowAttr().gap("xs"), List.of(L.text(total, List.of("Total")), L.text(total, List.of(totals.get("gross"))), L.text(total, List.of(totals.get("currency")))))
+                            L.row(new RowAttr().justify("end"), List.of(
+                                L.column(new ColumnAttr().width("220pt").gap("s"), List.of(
+                                    L.table(new TableAttr().cols("1fr 1fr 1fr"), nodes(
+                                        L.thead(NoAttr, List.of(
+                                            L.td(NoAttr, List.of(L.text(muted, List.of("VAT %")))),
+                                            L.td(NoAttr, List.of(L.text(mutedRight, List.of("Basis")))),
+                                            L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT"))))
+                                        )),
+                                        taxes.stream().map(tax -> L.tr(NoAttr, List.of(
+                                            L.td(NoAttr, List.of(L.text(NoAttr, List.of(tax.get("rate"))))),
+                                            L.td(NoAttr, List.of(L.text(right, List.of(tax.get("basis"))))),
+                                            L.td(NoAttr, List.of(L.text(right, List.of(tax.get("amount")))))
+                                        ))).toList()
+                                    )),
+                                    L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
+                                    L.column(new ColumnAttr().gap("xs"), nodes(
+                                        L.row(endRow, List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(totals.get("vat"))), L.text(NoAttr, List.of(totals.get("currency"))))),
+                                        // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                                        totals.containsKey("vatInTaxCurrency") ? List.of(L.row(endRow, List.of(
+                                            L.text(muted, List.of("VAT in")),
+                                            L.text(muted, List.of(totals.get("taxCurrency"))),
+                                            L.text(muted, List.of(totals.get("vatInTaxCurrency")))
+                                        ))) : List.of(),
+                                        L.row(endRow, List.of(L.text(total, List.of("Total")), L.text(total, List.of(totals.get("gross"))), L.text(total, List.of(totals.get("currency")))))
+                                    ))
+                                ))
                             )),
                             note.isEmpty() ? List.of() : List.of(L.text(muted, List.of(note)))
                         ))
@@ -926,7 +956,7 @@ public class MakeInvoiceCode {
                 ))
             ));
 
-        // Java reads the document's font file, a `src`, only through the engine.
+        // Java reads the document's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
@@ -966,12 +996,13 @@ Java has no spread, so the script's own `nodes(…)` joins single nodes and list
 | An invoice value | `data-value="invoice:seller.name"` | `seller.get("name")` |
 | A list | `<tr data-source="invoice:lines">` | `lines.stream().map(line -> L.tr(…)).toList()` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `totals.containsKey("vatInTaxCurrency") ? List.of(L.row(…)) : List.of()` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img(new ImgAttr().name("logo").width("130pt"))`, with `.images(List.of(new ImageAttr().name("logo").src("logo.png")))` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
 
 ::: sdk dotnet
-The script, [MakeInvoiceCode.cs](../files/dotnet/MakeInvoiceCode.cs):
+The script, [MakeInvoiceCode.cs](../files/csharp/MakeInvoiceCode.cs):
 
 ```csharp title="MakeInvoiceCode.cs"
 #:package Lpdfio.Lpdf@0.36.0
@@ -1016,30 +1047,36 @@ IEnumerable<JsonNode?> Items(JsonNode? group, string name) => group?[name]?.AsAr
 var muted = new TextAttr { FontSize = "9pt", Color = "#5b6475" };
 var mutedRight = new TextAttr { FontSize = "9pt", Color = "#5b6475", Align = "right" };
 var right = new TextAttr { Align = "right" };
-var title = new TextAttr { FontSize = "16pt", Color = "#1763cf" };
+var title = new TextAttr { FontSize = "20pt", Color = "#0f4c5c" };
 var total = new TextAttr { FontSize = "14pt" };
+var cell = new TdAttr { Padding = "xs 0" };
+var endRow = new RowAttr { Gap = "xs", Justify = "end" };
 
 var doc = L.Document(new()
 {
     Size = "a4",
     Font = "body",
-    Assets = new(Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }]),
+    Assets = new(
+        Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }],
+        Images: [new() { Name = "logo", Src = "logo.png" }]),
     Meta = new(Title: "Invoice", Author: "Northwind Paper SAS", Lang: "en"),
 }, [
     L.Section(NoAttr, [
         L.Layout(new() { Margin = "48pt" }, [
             L.Column(new() { Gap = "l" }, [
-                L.Row(new() { Align = "end" }, [
-                    L.Column(new() { Width = "fill", Gap = "xs" }, [
-                        L.Text(new() { FontSize = "20pt" }, [Value(seller, "name")]),
-                        L.Text(muted, [Value(seller, "street")]),
-                        L.Row(new() { Gap = "xs" }, [L.Text(muted, [Value(seller, "postcode")]), L.Text(muted, [Value(seller, "city")])]),
-                        L.Row(new() { Gap = "xs" }, [L.Text(muted, ["VAT"]), L.Text(muted, [Value(seller, "vatId")])]),
-                    ]),
+                L.Row(new() { Align = "center" }, [
+                    L.Column(new() { Width = "fill" }, [L.Img(new() { Name = "logo", Width = "130pt" })]),
                     L.Row(new() { Gap = "xs" }, [L.Text(title, [Value(invoice, "typeCode")]), L.Text(title, [Value(invoice, "number")])]),
                 ]),
                 L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
                 L.Row(new() { Gap = "l" }, [
+                    L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Text(muted, ["From"]),
+                        L.Text(NoAttr, [Value(seller, "name")]),
+                        L.Text(NoAttr, [Value(seller, "street")]),
+                        L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, [Value(seller, "postcode")]), L.Text(NoAttr, [Value(seller, "city")])]),
+                        L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, ["VAT"]), L.Text(NoAttr, [Value(seller, "vatId")])]),
+                    ]),
                     L.Column(new() { Width = "fill", Gap = "xs" }, [
                         L.Text(muted, ["Billed to"]),
                         L.Text(NoAttr, [Value(buyer, "name")]),
@@ -1053,46 +1090,50 @@ var doc = L.Document(new()
                         .. Items(invoice, "paymentTerms").Select(term => L.Text(NoAttr, [Value(term, "due")])),
                     ]),
                 ]),
-                L.Table(new() { Cols = "4fr 1fr 1fr 1fr 1fr 1fr" }, [
+                L.Table(new() { Cols = "4fr 1fr 1fr 1fr 1fr 1fr", HeadBorder = "xs line", RowBorder = "xs line-muted" }, [
                     L.Thead(NoAttr, [
-                        L.Td(NoAttr, [L.Text(muted, ["Item"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Qty"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Unit"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Price"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT %"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Amount"])]),
+                        L.Td(cell, [L.Text(muted, ["Item"])]),
+                        L.Td(cell, [L.Text(mutedRight, ["Qty"])]),
+                        L.Td(cell, [L.Text(mutedRight, ["Unit"])]),
+                        L.Td(cell, [L.Text(mutedRight, ["Price"])]),
+                        L.Td(cell, [L.Text(mutedRight, ["VAT %"])]),
+                        L.Td(cell, [L.Text(mutedRight, ["Amount"])]),
                     ]),
                     .. Items(invoice, "lines").Select(line => L.Tr(NoAttr, [
-                        L.Td(NoAttr, [L.Text(NoAttr, [Value(line, "name")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "quantity")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "unit")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "unitPrice")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "vatRate")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "net")])]),
+                        L.Td(cell, [L.Text(NoAttr, [Value(line, "name")])]),
+                        L.Td(cell, [L.Text(right, [Value(line, "quantity")])]),
+                        L.Td(cell, [L.Text(right, [Value(line, "unit")])]),
+                        L.Td(cell, [L.Text(right, [Value(line, "unitPrice")])]),
+                        L.Td(cell, [L.Text(right, [Value(line, "vatRate")])]),
+                        L.Td(cell, [L.Text(right, [Value(line, "net")])]),
                     ])),
                 ]),
-                L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
-                L.Table(new() { Cols = "1fr 1fr 1fr" }, [
-                    L.Thead(NoAttr, [
-                        L.Td(NoAttr, [L.Text(muted, ["VAT rate (%)"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Basis"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT"])]),
+                L.Row(new() { Justify = "end" }, [
+                    L.Column(new() { Width = "220pt", Gap = "s" }, [
+                        L.Table(new() { Cols = "1fr 1fr 1fr" }, [
+                            L.Thead(NoAttr, [
+                                L.Td(NoAttr, [L.Text(muted, ["VAT %"])]),
+                                L.Td(NoAttr, [L.Text(mutedRight, ["Basis"])]),
+                                L.Td(NoAttr, [L.Text(mutedRight, ["VAT"])]),
+                            ]),
+                            .. Items(invoice, "taxes").Select(tax => L.Tr(NoAttr, [
+                                L.Td(NoAttr, [L.Text(NoAttr, [Value(tax, "rate")])]),
+                                L.Td(NoAttr, [L.Text(right, [Value(tax, "basis")])]),
+                                L.Td(NoAttr, [L.Text(right, [Value(tax, "amount")])]),
+                            ])),
+                        ]),
+                        L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
+                        L.Column(new() { Gap = "xs" }, [
+                            L.Row(endRow, [L.Text(NoAttr, ["VAT"]), L.Text(NoAttr, [Value(totals, "vat")]), L.Text(NoAttr, [Value(totals, "currency")])]),
+                            // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                            .. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(endRow, [
+                                L.Text(muted, ["VAT in"]),
+                                L.Text(muted, [Value(totals, "taxCurrency")]),
+                                L.Text(muted, [Value(totals, "vatInTaxCurrency")]),
+                            ])] : []),
+                            L.Row(endRow, [L.Text(total, ["Total"]), L.Text(total, [Value(totals, "gross")]), L.Text(total, [Value(totals, "currency")])]),
+                        ]),
                     ]),
-                    .. Items(invoice, "taxes").Select(tax => L.Tr(NoAttr, [
-                        L.Td(NoAttr, [L.Text(NoAttr, [Value(tax, "rate")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(tax, "basis")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(tax, "amount")])]),
-                    ])),
-                ]),
-                L.Column(new() { Gap = "xs", Align = "end" }, [
-                    L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, ["VAT"]), L.Text(NoAttr, [Value(totals, "vat")]), L.Text(NoAttr, [Value(totals, "currency")])]),
-                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                    .. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(new() { Gap = "xs" }, [
-                        L.Text(muted, ["VAT in"]),
-                        L.Text(muted, [Value(totals, "taxCurrency")]),
-                        L.Text(muted, [Value(totals, "vatInTaxCurrency")]),
-                    ])] : []),
-                    L.Row(new() { Gap = "xs" }, [L.Text(total, ["Total"]), L.Text(total, [Value(totals, "gross")]), L.Text(total, [Value(totals, "currency")])]),
                 ]),
                 .. (note != "" ? (Node[])[L.Text(muted, [note])] : []),
             ]),
@@ -1100,7 +1141,7 @@ var doc = L.Document(new()
     ]),
 ]);
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 
 // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
@@ -1124,6 +1165,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `Value(seller, "name")` |
 | A list | `<tr data-source="invoice:lines">` | `.. Items(invoice, "lines").Select(line => L.Tr(…))` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `.. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.Img(new() { Name = "logo", Width = "130pt" })`, with `Images: [new() { Name = "logo", Src = "logo.png" }]` in the assets |
 | The note | `Data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -1145,13 +1187,16 @@ use Lpdf\Kit\DocumentAssets;
 use Lpdf\Kit\DocumentAttr;
 use Lpdf\Kit\DocumentMeta;
 use Lpdf\Kit\FontAttr;
+use Lpdf\Kit\ImageAttr;
 use Lpdf\Kit\LayoutAttr;
 use Lpdf\L;
 use Lpdf\LCrossIndustryInvoice;
 use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\DividerAttr;
+use Lpdf\Layout\ImgAttr;
 use Lpdf\Layout\RowAttr;
 use Lpdf\Layout\TableAttr;
+use Lpdf\Layout\TdAttr;
 use Lpdf\Layout\TextAttr;
 use const Lpdf\NoAttr;
 
@@ -1178,29 +1223,36 @@ $note = 'Payable within 30 days, by bank transfer.';
 $muted      = new TextAttr(fontSize: '9pt', color: '#5b6475');
 $mutedRight = new TextAttr(fontSize: '9pt', color: '#5b6475', align: 'right');
 $right      = new TextAttr(align: 'right');
-$title      = new TextAttr(fontSize: '16pt', color: '#1763cf');
+$title      = new TextAttr(fontSize: '20pt', color: '#0f4c5c');
 $total      = new TextAttr(fontSize: '14pt');
+$cell       = new TdAttr(padding: 'xs 0');
+$endRow     = new RowAttr(gap: 'xs', justify: 'end');
 
 $doc = L::document(new DocumentAttr(
     size: 'a4',
     font: 'body',
-    assets: new DocumentAssets(fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')]),
+    assets: new DocumentAssets(
+        fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')],
+        images: [new ImageAttr(name: 'logo', src: 'logo.png')],
+    ),
     meta: new DocumentMeta(title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en'),
 ), [
     L::section(NoAttr, [
         L::layout(new LayoutAttr(margin: '48pt'), [
             L::column(new ColumnAttr(gap: 'l'), [
-                L::row(new RowAttr(align: 'end'), [
-                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
-                        L::text(new TextAttr(fontSize: '20pt'), [$seller['name']]),
-                        L::text($muted, [$seller['street']]),
-                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, [$seller['postcode']]), L::text($muted, [$seller['city']])]),
-                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, ['VAT']), L::text($muted, [$seller['vatId']])]),
-                    ]),
+                L::row(new RowAttr(align: 'center'), [
+                    L::column(new ColumnAttr(width: 'fill'), [L::img(new ImgAttr(name: 'logo', width: '130pt'))]),
                     L::row(new RowAttr(gap: 'xs'), [L::text($title, [$invoice['typeCode']]), L::text($title, [$invoice['number']])]),
                 ]),
                 L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
                 L::row(new RowAttr(gap: 'l'), [
+                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::text($muted, ['From']),
+                        L::text(NoAttr, [$seller['name']]),
+                        L::text(NoAttr, [$seller['street']]),
+                        L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, [$seller['postcode']]), L::text(NoAttr, [$seller['city']])]),
+                        L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, ['VAT']), L::text(NoAttr, [$seller['vatId']])]),
+                    ]),
                     L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
                         L::text($muted, ['Billed to']),
                         L::text(NoAttr, [$buyer['name']]),
@@ -1214,46 +1266,50 @@ $doc = L::document(new DocumentAttr(
                         ...array_map(fn (array $term) => L::text(NoAttr, [$term['due']]), $invoice['paymentTerms']),
                     ]),
                 ]),
-                L::table(new TableAttr(cols: '4fr 1fr 1fr 1fr 1fr 1fr'), [
+                L::table(new TableAttr(cols: '4fr 1fr 1fr 1fr 1fr 1fr', headBorder: 'xs line', rowBorder: 'xs line-muted'), [
                     L::thead(NoAttr, [
-                        L::td(NoAttr, [L::text($muted, ['Item'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Qty'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Unit'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Price'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['VAT %'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Amount'])]),
+                        L::td($cell, [L::text($muted, ['Item'])]),
+                        L::td($cell, [L::text($mutedRight, ['Qty'])]),
+                        L::td($cell, [L::text($mutedRight, ['Unit'])]),
+                        L::td($cell, [L::text($mutedRight, ['Price'])]),
+                        L::td($cell, [L::text($mutedRight, ['VAT %'])]),
+                        L::td($cell, [L::text($mutedRight, ['Amount'])]),
                     ]),
                     ...array_map(fn (array $line) => L::tr(NoAttr, [
-                        L::td(NoAttr, [L::text(NoAttr, [$line['name']])]),
-                        L::td(NoAttr, [L::text($right, [$line['quantity']])]),
-                        L::td(NoAttr, [L::text($right, [$line['unit']])]),
-                        L::td(NoAttr, [L::text($right, [$line['unitPrice']])]),
-                        L::td(NoAttr, [L::text($right, [$line['vatRate']])]),
-                        L::td(NoAttr, [L::text($right, [$line['net']])]),
+                        L::td($cell, [L::text(NoAttr, [$line['name']])]),
+                        L::td($cell, [L::text($right, [$line['quantity']])]),
+                        L::td($cell, [L::text($right, [$line['unit']])]),
+                        L::td($cell, [L::text($right, [$line['unitPrice']])]),
+                        L::td($cell, [L::text($right, [$line['vatRate']])]),
+                        L::td($cell, [L::text($right, [$line['net']])]),
                     ]), $invoice['lines']),
                 ]),
-                L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
-                L::table(new TableAttr(cols: '1fr 1fr 1fr'), [
-                    L::thead(NoAttr, [
-                        L::td(NoAttr, [L::text($muted, ['VAT rate (%)'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Basis'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['VAT'])]),
+                L::row(new RowAttr(justify: 'end'), [
+                    L::column(new ColumnAttr(width: '220pt', gap: 's'), [
+                        L::table(new TableAttr(cols: '1fr 1fr 1fr'), [
+                            L::thead(NoAttr, [
+                                L::td(NoAttr, [L::text($muted, ['VAT %'])]),
+                                L::td(NoAttr, [L::text($mutedRight, ['Basis'])]),
+                                L::td(NoAttr, [L::text($mutedRight, ['VAT'])]),
+                            ]),
+                            ...array_map(fn (array $tax) => L::tr(NoAttr, [
+                                L::td(NoAttr, [L::text(NoAttr, [$tax['rate']])]),
+                                L::td(NoAttr, [L::text($right, [$tax['basis']])]),
+                                L::td(NoAttr, [L::text($right, [$tax['amount']])]),
+                            ]), $invoice['taxes']),
+                        ]),
+                        L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
+                        L::column(new ColumnAttr(gap: 'xs'), [
+                            L::row($endRow, [L::text(NoAttr, ['VAT']), L::text(NoAttr, [$totals['vat']]), L::text(NoAttr, [$totals['currency']])]),
+                            // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                            ...(isset($totals['vatInTaxCurrency']) ? [L::row($endRow, [
+                                L::text($muted, ['VAT in']),
+                                L::text($muted, [$totals['taxCurrency']]),
+                                L::text($muted, [$totals['vatInTaxCurrency']]),
+                            ])] : []),
+                            L::row($endRow, [L::text($total, ['Total']), L::text($total, [$totals['gross']]), L::text($total, [$totals['currency']])]),
+                        ]),
                     ]),
-                    ...array_map(fn (array $tax) => L::tr(NoAttr, [
-                        L::td(NoAttr, [L::text(NoAttr, [$tax['rate']])]),
-                        L::td(NoAttr, [L::text($right, [$tax['basis']])]),
-                        L::td(NoAttr, [L::text($right, [$tax['amount']])]),
-                    ]), $invoice['taxes']),
-                ]),
-                L::column(new ColumnAttr(gap: 'xs', align: 'end'), [
-                    L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, ['VAT']), L::text(NoAttr, [$totals['vat']]), L::text(NoAttr, [$totals['currency']])]),
-                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                    ...(isset($totals['vatInTaxCurrency']) ? [L::row(new RowAttr(gap: 'xs'), [
-                        L::text($muted, ['VAT in']),
-                        L::text($muted, [$totals['taxCurrency']]),
-                        L::text($muted, [$totals['vatInTaxCurrency']]),
-                    ])] : []),
-                    L::row(new RowAttr(gap: 'xs'), [L::text($total, ['Total']), L::text($total, [$totals['gross']]), L::text($total, [$totals['currency']])]),
                 ]),
                 ...($note !== '' ? [L::text($muted, [$note])] : []),
             ]),
@@ -1280,13 +1336,16 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `$seller['name']` |
 | A list | `<tr data-source="invoice:lines">` | `array_map(fn (array $line) => L::tr(…), $invoice['lines'])` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(isset($totals['vatInTaxCurrency']) ? [L::row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L::img(new ImgAttr(name: 'logo', width: '130pt'))`, with `images: [new ImageAttr(name: 'logo', src: 'logo.png')]` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
 
 ## Check the result
 
-Open `invoice-2026-0412.pdf` in a PDF reader and look at its attachments: `factur-x.xml` is there.
+Open `invoice-2026-0412.pdf` in Adobe Acrobat. A bar at the top says the file claims compliance with the PDF/A standard, and **View > Show/Hide > Navigation Panes > Standards** shows PDF/A-3B. **View > Show/Hide > Navigation Panes > Attachments** lists `factur-x.xml`. Other PDF readers list the attachments too.
+
+Acrobat's Standards panel says "not yet verified": it reads what the file says about itself, and does not check it. Acrobat Pro's Preflight tool can check the PDF/A; the checker below checks that and the XML as well.
 
 The [Mustang CLI](https://www.mustangproject.org/commandline/), an open-source Factur-X checker, checks the whole file: the PDF/A-3, the Factur-X metadata, and the XML against the rules of EN 16931. It needs Java 11 or later, and the file you download carries its version in its name, such as `Mustang-CLI-2.26.0.jar`.
 
@@ -1297,7 +1356,7 @@ java -jar Mustang-CLI.jar --action validate --source invoice-2026-0412.pdf
 It prints a report in XML. For this guide's file, with Mustang CLI 2.26.0, the parts that matter are:
 
 ```xml
-<pdf>ValidationResult [flavour=3b, totalAssertions=1945, assertions=[], isCompliant=true]
+<pdf>ValidationResult [flavour=3b, totalAssertions=2085, assertions=[], isCompliant=true]
   <summary status="valid"/>
 </pdf>
 <xml>
@@ -1312,7 +1371,7 @@ The PDF is valid PDF/A-3b and the XML is a valid EN 16931 invoice. The warnings 
 
 ## What Lpdf does, and what is yours
 
-Lpdf reads the XML, fills the template, embeds the font, writes the file as PDF/A-3, attaches the XML, and writes the Factur-X metadata that names its profile. The pages come from the XML, so the two can't disagree.
+Lpdf reads the XML, fills the template, places the logo, embeds the font, writes the file as PDF/A-3, attaches the XML, and writes the Factur-X metadata that names its profile. The pages come from the XML, so the two can't disagree.
 
 The XML's content is yours. Lpdf checks what reading it needs, and not its sums, its codes or the rules of EN 16931: check the XML your software writes with the Mustang CLI, or with the KoSIT validator, before you rely on it.
 
@@ -1348,6 +1407,7 @@ Each error says what is wrong. The ones a first invoice usually meets:
 |---|---|
 | `the invoice's profile is MINIMUM` or `BASIC WL` | Those profiles' XML is only a booking aid, without the lines the PDF shows, so the PDF can't be made from it. Ask your software for BASIC, EN 16931 or EXTENDED |
 | `data-value="invoice:sellr.name": 'sellr' is not in the map` | A name in the template that the map doesn't have: the error lists the names it has there |
+| `image 'logo' declared in <assets> but not loaded via loadImage()` | The image's file was not found: check the image's `src`, which is read from the folder you run in |
 | `generatePdf makes the invoice a PDF/A-3b file: the text "…" is in Helvetica` | Declare a font in `<assets>` and set it with `font` on the document. When the error names your font and says its file was not loaded, check the font's `src`: it is read from the folder you run in |
 
 ::: sdk js

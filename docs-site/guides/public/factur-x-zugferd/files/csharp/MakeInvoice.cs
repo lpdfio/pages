@@ -22,7 +22,7 @@ var format = new InvoiceFormat
     Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
 };
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 var pdf = LCrossIndustryInvoice.GeneratePdf(engine, File.ReadAllText("invoice-template.xml"), new()
 {

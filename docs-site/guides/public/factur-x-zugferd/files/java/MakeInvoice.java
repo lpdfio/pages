@@ -32,7 +32,7 @@ public class MakeInvoice {
             .amount((value, entryName) -> amountFormat.format(new BigDecimal(value)))
             .code((value, entryName) -> codeNames.getOrDefault(entryName, Map.of()).getOrDefault(value, value));
 
-        // Java reads the template's font file, a `src`, only through the engine.
+        // Java reads the template's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         byte[] pdf = LCrossIndustryInvoice.generatePdf(engine, Files.readString(Path.of("invoice-template.xml")),

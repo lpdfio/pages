@@ -1430,11 +1430,11 @@ Leaving out `CreatedOn` does not compile, since it is a `required` member of `Ge
 Leaving out `createdOn` is an `ArgumentCountError`, since `GeneratePdfOptions` requires it: pass it, as step 2 does. The engine's own errors reach PHP with `lpdf render error: ` before the message.
 :::
 
-All of them are listed under [Factur-X / ZUGFeRD from the invoice XML, what it checks](https://lpdf.io/docs/cross-industry-invoice/#what-it-checks).
+All of them are listed under [Factur-X / ZUGFeRD, what it checks](https://lpdf.io/docs/factur-x-zugferd/#what-it-checks).
 
 ## Next
 
-- [Factur-X / ZUGFeRD from the invoice XML](https://lpdf.io/docs/cross-industry-invoice/): the map, the format functions, a document built in code
-- [Factur-X e-invoices](https://lpdf.io/docs/facturx/): attaching an XML you fill the pages for yourself, `facturx-strict`
+- [Factur-X / ZUGFeRD, from the invoice XML](https://lpdf.io/docs/factur-x-zugferd/#from-the-invoice-xml): the map, the format functions, a document built in code
+- [Factur-X / ZUGFeRD, attach the XML yourself](https://lpdf.io/docs/factur-x-zugferd/#attach-the-xml-yourself): an XML you fill the pages for yourself, `facturx-strict`
 - [PDF/A](https://lpdf.io/docs/pdfa/): the levels, and what a PDF/A file can't hold
 - This guide in {{otherGuides}}

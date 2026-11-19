@@ -148,15 +148,14 @@ const EXTENSION = {
 };
 
 /**
- * Two lines under the switch, which depend on the language the reader chose: where this SDK's code and package are, and its
- * documentation (the docs take the language as `?sdk=<id>`) with the extension.
+ * One line under the switch. The first three links depend on the language the reader chose: where this SDK's code and
+ * package are, and its documentation (the docs take the language as `?sdk=<id>`). The extension's two listings are the same
+ * for every SDK.
  */
 function sourceLinks(sdk)
 {
     const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
-    const source = `<div class="guide-source not-content">\n<span>Source</span>\n${link(sdk.repo, 'GitHub')}\n${link(sdk.registry.url, sdk.registry.name)}\n</div>\n\n`;
-    const more = `<div class="guide-more not-content">\n<span>More</span>\n<a href="/docs/?sdk=${sdk.id}">Documentation</a>\n${link(EXTENSION.marketplace, 'VS Code Marketplace')}\n${link(EXTENSION.openVsx, 'Open VSX')}\n</div>\n\n`;
-    return source + more;
+    return `<div class="guide-links not-content">\n<span>Links</span>\n${link(sdk.repo, 'GitHub')}\n${link(sdk.registry.url, sdk.registry.name)}\n<a href="/docs/?sdk=${sdk.id}">Documentation</a>\n${link(EXTENSION.marketplace, 'VS Code Marketplace')}\n${link(EXTENSION.openVsx, 'Open VSX')}\n</div>\n\n`;
 }
 
 const NOTE = '<!-- Generated from content/<guide>.md by scripts/build-guides.mjs. Edit the source, not this page. -->\n\n';

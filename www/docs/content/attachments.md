@@ -30,7 +30,7 @@ A PDF can carry files inside it: the XML of an invoice for the software that boo
 | `src` | path | — | Where the SDK reads the file from, when it was not loaded on the engine |
 | `ref` | string | the name | The key the file was loaded on the engine under, when that is not its name |
 | `mime` | string | `application/octet-stream` | The type of the file, such as `text/xml`, `application/pdf` or `text/csv`: a type and a subtype. Without it a reader knows only that it is a file |
-| `relationship` | `source` `data` `alternative` `supplement` `unspecified` | `unspecified` | How the file relates to the document: the file it was made from, the data its pages show, the same content in another form, or more than the pages show. The XML of a [Factur-X invoice](?p=facturx) gets the one its profile asks for |
+| `relationship` | `source` `data` `alternative` `supplement` `unspecified` | `unspecified` | How the file relates to the document: the file it was made from, the data its pages show, the same content in another form, or more than the pages show. The XML of a [Factur-X invoice](?p=factur-x-zugferd) gets the one its profile asks for |
 | `description` | string | — | A line about the file, which a reader shows beside its name |
 
 The files belong to the whole document. A file pinned to a spot on a page, or tied to one image or table, is not written.
@@ -127,7 +127,7 @@ A file has no size limit of its own: its bytes count toward the render's [memory
 
 In an [encrypted](?p=encryption) document the files are encrypted with the rest, under the same passwords.
 
-A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa="2a"`, `"2b"` or `"2u"` is an error. PDF/A-3, `pdfa="3a"`, `"3b"` or `"3u"`, carries files of any kind. In a PDF/A-3 document, a file named `factur-x.xml` makes the PDF a [Factur-X e-invoice](?p=facturx).
+A [PDF/A-2](?p=pdfa) file can carry only files that are PDF/A themselves, which the engine can't check, so `attachments` with `pdfa="2a"`, `"2b"` or `"2u"` is an error. PDF/A-3, `pdfa="3a"`, `"3b"` or `"3u"`, carries files of any kind. In a PDF/A-3 document, a file named `factur-x.xml` makes the PDF a [Factur-X e-invoice](?p=factur-x-zugferd).
 
 A [PDF/X](?p=pdfx) file holds only what the press prints, so `attachments` with `pdfx` is an error. [What combines with what](?p=combinations) has the other pairs.
 
@@ -142,4 +142,4 @@ Each of these stops the render with an error that says what to change:
 - a file without a name
 - a file over 2 GB
 - `attachments` in a document whose `output` asks for `pdfa="2a"`, `pdfa="2b"`, `pdfa="2u"` or `pdfx`
-- a file named `factur-x.xml` or `xrechnung.xml` in a document that is not PDF/A-3: see [Factur-X](?p=facturx#errors)
+- a file named `factur-x.xml` or `xrechnung.xml` in a document that is not PDF/A-3: see [Factur-X / ZUGFeRD](?p=factur-x-zugferd#errors)

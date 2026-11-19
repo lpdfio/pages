@@ -28,7 +28,7 @@ PDF/A (ISO 19005) is the PDF that archives, courts, public bodies and banks ask 
 |-----------|------|---------|-------------|
 | `pdfa` | `2a` `2b` `2u` `3a` `3b` `3u` | — | Writes the PDF as PDF/A-2b, which keeps the look of every page, or PDF/A-2u, which also maps all text to Unicode so it can be searched and copied, or PDF/A-2a, which also tags the file with the structure a screen reader reads, or the same levels of part 3, PDF/A-3b, PDF/A-3u and PDF/A-3a, which also carry [attachments](?p=attachments) of any kind. Without it the PDF is a plain one |
 
-Parts 2 and 3 of the standard allow transparency, so opacity, shadows and gradients are kept. Part 3 is part 2 with files of any kind attached, such as the XML of an e-invoice: a PDF/A-3 file that carries `factur-x.xml` is a [Factur-X e-invoice](?p=facturx). A file can be PDF/A and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfa="2u" pdfua="1"/>`, or at [level a](#level-a), `<output pdfa="2a" pdfua="1"/>`. [What combines with what](?p=combinations) says which other settings go with PDF/A and which are refused, and [Standards and print](?p=standards) which standard fits which job.
+Parts 2 and 3 of the standard allow transparency, so opacity, shadows and gradients are kept. Part 3 is part 2 with files of any kind attached, such as the XML of an e-invoice: a PDF/A-3 file that carries `factur-x.xml` is a [Factur-X e-invoice](?p=factur-x-zugferd). A file can be PDF/A and [PDF/UA](?p=pdfua), the tagged PDF a screen reader reads, at once: `<output pdfa="2u" pdfua="1"/>`, or at [level a](#level-a), `<output pdfa="2a" pdfua="1"/>`. [What combines with what](?p=combinations) says which other settings go with PDF/A and which are refused, and [Standards and print](?p=standards) which standard fits which job.
 
 ## What the file gets
 
@@ -162,7 +162,7 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file
 - `pdfx` on the same `output`: a PDF/A file keeps to the sRGB profile, and a [PDF/X](?p=pdfx) file to the press profile
 - [`attachments`](?p=attachments) with `2a`, `2b` or `2u`: a PDF/A-2 file can carry only files that are PDF/A themselves, which the engine can't check. Write `3a`, `3b` or `3u` to carry files
-- an attachment named `factur-x.xml` or `xrechnung.xml` with `2a`, `2b` or `2u`: it makes the file a [Factur-X invoice](?p=facturx), which is PDF/A-3
+- an attachment named `factur-x.xml` or `xrechnung.xml` with `2a`, `2b` or `2u`: it makes the file a [Factur-X invoice](?p=factur-x-zugferd), which is PDF/A-3
 - at level a, a `lang` on `meta` that is not a language tag: give one such as `en`, `en-US` or `de-CH`
 - at level a, a character of Unicode's private use area, such as an icon font's symbol: see [Level a](#level-a)
 - a render without `createdOn`, or with one that is not a date

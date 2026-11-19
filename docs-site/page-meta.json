@@ -175,17 +175,13 @@
         "title": "Attach files to a PDF: XML, spreadsheets and terms in Lpdf",
         "description": "Embed files in a PDF with the attachments element: an e-invoice's XML, a spreadsheet or terms, read from src or loaded in JavaScript, Python, Java, C# or PHP."
     },
-    "facturx": {
-        "title": "Create Factur-X and ZUGFeRD e-invoices as PDF/A-3 in Lpdf",
-        "description": "Write a Factur-X or ZUGFeRD e-invoice: a PDF/A-3 that carries factur-x.xml, with its profile read from BT-24 and the XMP metadata the spec asks for."
-    },
     "stamp": {
         "title": "Stamp images onto existing PDFs with Lpdf",
         "description": "Draw a signature, a seal or a PAID stamp onto a PDF Lpdf did not make, from JavaScript, Python, Java, C# or PHP, keeping its original bytes and encryption."
     },
-    "cross-industry-invoice": {
-        "title": "Factur-X and ZUGFeRD PDFs from the invoice XML with Lpdf",
-        "description": "Make a Factur-X or ZUGFeRD invoice PDF from its EN 16931 XML in one call: the values fill your template, the file is PDF/A-3, the XML attached."
+    "factur-x-zugferd": {
+        "title": "Create Factur-X and ZUGFeRD e-invoices as PDF/A-3 in Lpdf",
+        "description": "Make a Factur-X or ZUGFeRD e-invoice from its EN 16931 XML in one call, or attach factur-x.xml to a PDF/A-3 you build, in JavaScript, Python, Java, C# or PHP."
     },
     "invoice-map": {
         "title": "The default invoice map of LCrossIndustryInvoice in Lpdf",

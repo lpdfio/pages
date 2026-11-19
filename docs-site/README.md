@@ -66,6 +66,9 @@ Starlight: a second install would load Starlight twice for the components it tak
 | `npm run build:guides` | Writes the pages, then builds the static site into `guides/dist/`, with its search index and a sitemap |
 | `npm run preview:guides` | Serves `guides/dist/` at http://localhost:4322/guides/ |
 
+**On lpdf.local.** The Caddyfile in `_local` serves `guides/dist` at http://lpdf.local/guides, beside the docs. Run
+`npm run build:guides`, then reload; it is 404 until that has run.
+
 A guide is one Markdown file in `guides/content/`, and each SDK gets a page from it (`scripts/build-guides.mjs`). The words
 are shared. Code, and text that depends on the SDK, sit in sections that name their SDK, with the ids the docs use:
 

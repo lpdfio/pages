@@ -8,27 +8,30 @@
     <section>
       <layout margin="48pt">
         <column gap="l">
-          <row align="end">
-            <column width="fill" gap="xs">
+          <row align="center">
+            <column width="fill">
               <img name="logo" width="130pt"/>
-              <text font-size="20pt" data-value="invoice:seller.name">Seller</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:seller.street">Street</text>
-              <row gap="xs">
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.postcode">00000</text>
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.city">City</text>
-              </row>
-              <row gap="xs">
-                <text font-size="9pt" color="#5b6475">VAT</text>
-                <text font-size="9pt" color="#5b6475" data-value="invoice:seller.vatId">Number</text>
-              </row>
             </column>
             <row gap="xs">
-              <text font-size="16pt" color="#1763cf" data-value="invoice:typeCode">Invoice</text>
-              <text font-size="16pt" color="#1763cf" data-value="invoice:number">0000</text>
+              <text font-size="20pt" color="#0f4c5c" data-value="invoice:typeCode">Invoice</text>
+              <text font-size="20pt" color="#0f4c5c" data-value="invoice:number">0000</text>
             </row>
           </row>
           <divider color="#dde3ed" thickness="0.5pt"/>
           <row gap="l">
+            <column width="fill" gap="xs">
+              <text font-size="9pt" color="#5b6475">From</text>
+              <text data-value="invoice:seller.name">Seller</text>
+              <text data-value="invoice:seller.street">Street</text>
+              <row gap="xs">
+                <text data-value="invoice:seller.postcode">00000</text>
+                <text data-value="invoice:seller.city">City</text>
+              </row>
+              <row gap="xs">
+                <text>VAT</text>
+                <text data-value="invoice:seller.vatId">Number</text>
+              </row>
+            </column>
             <column width="fill" gap="xs">
               <text font-size="9pt" color="#5b6475">Billed to</text>
               <text data-value="invoice:buyer.name">Buyer</text>
@@ -46,54 +49,58 @@
               </row>
             </column>
           </row>
-          <table cols="4fr 1fr 1fr 1fr 1fr 1fr">
+          <table cols="4fr 1fr 1fr 1fr 1fr 1fr" head-border="xs line" row-border="xs line-muted">
             <thead>
-              <td><text font-size="9pt" color="#5b6475">Item</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Qty</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Unit</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Price</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">VAT %</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Amount</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475">Item</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Qty</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Unit</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Price</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">VAT %</text></td>
+              <td padding="xs 0"><text font-size="9pt" color="#5b6475" align="right">Amount</text></td>
             </thead>
             <tr data-source="invoice:lines">
-              <td><text data-value="name">Item</text></td>
-              <td><text align="right" data-value="quantity">1</text></td>
-              <td><text align="right" data-value="unit">pcs</text></td>
-              <td><text align="right" data-value="unitPrice">0.00</text></td>
-              <td><text align="right" data-value="vatRate">0</text></td>
-              <td><text align="right" data-value="net">0.00</text></td>
+              <td padding="xs 0"><text data-value="name">Item</text></td>
+              <td padding="xs 0"><text align="right" data-value="quantity">1</text></td>
+              <td padding="xs 0"><text align="right" data-value="unit">pcs</text></td>
+              <td padding="xs 0"><text align="right" data-value="unitPrice">0.00</text></td>
+              <td padding="xs 0"><text align="right" data-value="vatRate">0</text></td>
+              <td padding="xs 0"><text align="right" data-value="net">0.00</text></td>
             </tr>
           </table>
-          <divider color="#dde3ed" thickness="0.5pt"/>
-          <table cols="1fr 1fr 1fr">
-            <thead>
-              <td><text font-size="9pt" color="#5b6475">VAT rate (%)</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">Basis</text></td>
-              <td><text font-size="9pt" color="#5b6475" align="right">VAT</text></td>
-            </thead>
-            <tr data-source="invoice:taxes">
-              <td><text data-value="rate">0</text></td>
-              <td><text align="right" data-value="basis">0.00</text></td>
-              <td><text align="right" data-value="amount">0.00</text></td>
-            </tr>
-          </table>
-          <column gap="xs" align="end">
-            <row gap="xs">
-              <text>VAT</text>
-              <text data-value="invoice:totals.vat">0.00</text>
-              <text data-value="invoice:totals.currency">EUR</text>
-            </row>
-            <row gap="xs" data-if="invoice:totals.vatInTaxCurrency">
-              <text font-size="9pt" color="#5b6475">VAT in</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:totals.taxCurrency">EUR</text>
-              <text font-size="9pt" color="#5b6475" data-value="invoice:totals.vatInTaxCurrency">0.00</text>
-            </row>
-            <row gap="xs">
-              <text font-size="14pt">Total</text>
-              <text font-size="14pt" data-value="invoice:totals.gross">0.00</text>
-              <text font-size="14pt" data-value="invoice:totals.currency">EUR</text>
-            </row>
-          </column>
+          <row justify="end">
+            <column width="220pt" gap="s">
+              <table cols="1fr 1fr 1fr">
+                <thead>
+                  <td><text font-size="9pt" color="#5b6475">VAT %</text></td>
+                  <td><text font-size="9pt" color="#5b6475" align="right">Basis</text></td>
+                  <td><text font-size="9pt" color="#5b6475" align="right">VAT</text></td>
+                </thead>
+                <tr data-source="invoice:taxes">
+                  <td><text data-value="rate">0</text></td>
+                  <td><text align="right" data-value="basis">0.00</text></td>
+                  <td><text align="right" data-value="amount">0.00</text></td>
+                </tr>
+              </table>
+              <divider color="#dde3ed" thickness="0.5pt"/>
+              <column gap="xs">
+                <row gap="xs" justify="end">
+                  <text>VAT</text>
+                  <text data-value="invoice:totals.vat">0.00</text>
+                  <text data-value="invoice:totals.currency">EUR</text>
+                </row>
+                <row gap="xs" justify="end" data-if="invoice:totals.vatInTaxCurrency">
+                  <text font-size="9pt" color="#5b6475">VAT in</text>
+                  <text font-size="9pt" color="#5b6475" data-value="invoice:totals.taxCurrency">EUR</text>
+                  <text font-size="9pt" color="#5b6475" data-value="invoice:totals.vatInTaxCurrency">0.00</text>
+                </row>
+                <row gap="xs" justify="end">
+                  <text font-size="14pt">Total</text>
+                  <text font-size="14pt" data-value="invoice:totals.gross">0.00</text>
+                  <text font-size="14pt" data-value="invoice:totals.currency">EUR</text>
+                </row>
+              </column>
+            </column>
+          </row>
           <text data-if="note" data-value="note" font-size="9pt" color="#5b6475">A note</text>
         </column>
       </layout>

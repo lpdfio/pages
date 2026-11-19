@@ -5,11 +5,14 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
-    margin-block: 0 1.5rem;
+    margin-block: 0 0.75rem;
     font-size: var(--sl-text-sm);
 }
 
-.guide-languages > :first-child {
+.guide-languages > :first-child,
+.guide-source > :first-child,
+.guide-more > :first-child {
+    min-inline-size: 4.5rem;
     margin-inline-end: 0.25rem;
     color: var(--sl-color-gray-3);
 }
@@ -44,4 +47,44 @@
 /* An SDK whose guide is not written yet. */
 .guide-languages [aria-disabled] {
     color: var(--sl-color-gray-3);
+}
+
+/* Where this SDK's code and package are, and its documentation and the extension, under the switch: plain links, since
+   they leave the guide. The second line ends the block, so it has the space below. */
+.guide-source,
+.guide-more {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-block: 0 0.75rem;
+    font-size: var(--sl-text-sm);
+}
+
+.guide-more {
+    margin-block-end: 1.5rem;
+}
+
+.guide-source a,
+.guide-more a {
+    color: var(--sl-color-gray-2);
+    text-underline-offset: 0.2em;
+}
+
+.guide-source a:hover,
+.guide-more a:hover {
+    color: var(--sl-color-white);
+}
+
+/* With no sidebar the text would run the full width of the page, which is too long a line to read: a column of
+   about 90 characters, and Starlight puts it in the middle. */
+/* Starlight sets a page without a sidebar to 67.5rem with `html:not([data-has-sidebar])`, so this must outweigh it. */
+:root:not([data-has-sidebar]) {
+    --sl-content-width: 46rem;
+}
+
+/* The first link starts where the first language button's edge does. */
+.guide-source > :first-child,
+.guide-more > :first-child {
+    margin-inline-end: -0.25rem;
 }

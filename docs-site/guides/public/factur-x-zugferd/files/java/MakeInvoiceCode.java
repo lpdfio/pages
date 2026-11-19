@@ -18,6 +18,7 @@ import io.lpdf.LayoutAttr;
 import io.lpdf.Node;
 import io.lpdf.RowAttr;
 import io.lpdf.TableAttr;
+import io.lpdf.TdAttr;
 import io.lpdf.TextAttr;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -66,8 +67,10 @@ public class MakeInvoiceCode {
         var muted = new TextAttr().fontSize("9pt").color("#5b6475");
         var mutedRight = new TextAttr().fontSize("9pt").color("#5b6475").align("right");
         var right = new TextAttr().align("right");
-        var title = new TextAttr().fontSize("16pt").color("#1763cf");
+        var title = new TextAttr().fontSize("20pt").color("#0f4c5c");
         var total = new TextAttr().fontSize("14pt");
+        var cell = new TdAttr().padding("xs 0");
+        var endRow = new RowAttr().gap("xs").justify("end");
 
         var doc = L.document(
             new DocumentAttr()
@@ -81,18 +84,19 @@ public class MakeInvoiceCode {
                 L.section(NoAttr, List.of(
                     L.layout(new LayoutAttr().margin("48pt"), List.of(
                         L.column(new ColumnAttr().gap("l"), nodes(
-                            L.row(new RowAttr().align("end"), List.of(
-                                L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
-                                    L.img(new ImgAttr().name("logo").width("130pt")),
-                                    L.text(new TextAttr().fontSize("20pt"), List.of(seller.get("name"))),
-                                    L.text(muted, List.of(seller.get("street"))),
-                                    L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of(seller.get("postcode"))), L.text(muted, List.of(seller.get("city"))))),
-                                    L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of("VAT")), L.text(muted, List.of(seller.get("vatId")))))
-                                )),
+                            L.row(new RowAttr().align("center"), List.of(
+                                L.column(new ColumnAttr().width("fill"), List.of(L.img(new ImgAttr().name("logo").width("130pt")))),
                                 L.row(new RowAttr().gap("xs"), List.of(L.text(title, List.of(invoice.get("typeCode"))), L.text(title, List.of(invoice.get("number")))))
                             )),
                             L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
                             L.row(new RowAttr().gap("l"), List.of(
+                                L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
+                                    L.text(muted, List.of("From")),
+                                    L.text(NoAttr, List.of(seller.get("name"))),
+                                    L.text(NoAttr, List.of(seller.get("street"))),
+                                    L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of(seller.get("postcode"))), L.text(NoAttr, List.of(seller.get("city"))))),
+                                    L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(seller.get("vatId")))))
+                                )),
                                 L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
                                     L.text(muted, List.of("Billed to")),
                                     L.text(NoAttr, List.of(buyer.get("name"))),
@@ -106,46 +110,50 @@ public class MakeInvoiceCode {
                                     paymentTerms.stream().map(term -> L.text(NoAttr, List.of(term.get("due")))).toList()
                                 ))
                             )),
-                            L.table(new TableAttr().cols("4fr 1fr 1fr 1fr 1fr 1fr"), nodes(
+                            L.table(new TableAttr().cols("4fr 1fr 1fr 1fr 1fr 1fr").headBorder("xs line").rowBorder("xs line-muted"), nodes(
                                 L.thead(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(muted, List.of("Item")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Qty")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Unit")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Price")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT %")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Amount"))))
+                                    L.td(cell, List.of(L.text(muted, List.of("Item")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Qty")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Unit")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Price")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("VAT %")))),
+                                    L.td(cell, List.of(L.text(mutedRight, List.of("Amount"))))
                                 )),
                                 lines.stream().map(line -> L.tr(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(NoAttr, List.of(line.get("name"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("quantity"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("unit"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("unitPrice"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("vatRate"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(line.get("net")))))
+                                    L.td(cell, List.of(L.text(NoAttr, List.of(line.get("name"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("quantity"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("unit"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("unitPrice"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("vatRate"))))),
+                                    L.td(cell, List.of(L.text(right, List.of(line.get("net")))))
                                 ))).toList()
                             )),
-                            L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
-                            L.table(new TableAttr().cols("1fr 1fr 1fr"), nodes(
-                                L.thead(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(muted, List.of("VAT rate (%)")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("Basis")))),
-                                    L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT"))))
-                                )),
-                                taxes.stream().map(tax -> L.tr(NoAttr, List.of(
-                                    L.td(NoAttr, List.of(L.text(NoAttr, List.of(tax.get("rate"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(tax.get("basis"))))),
-                                    L.td(NoAttr, List.of(L.text(right, List.of(tax.get("amount")))))
-                                ))).toList()
-                            )),
-                            L.column(new ColumnAttr().gap("xs").align("end"), nodes(
-                                L.row(new RowAttr().gap("xs"), List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(totals.get("vat"))), L.text(NoAttr, List.of(totals.get("currency"))))),
-                                // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                                totals.containsKey("vatInTaxCurrency") ? List.of(L.row(new RowAttr().gap("xs"), List.of(
-                                    L.text(muted, List.of("VAT in")),
-                                    L.text(muted, List.of(totals.get("taxCurrency"))),
-                                    L.text(muted, List.of(totals.get("vatInTaxCurrency")))
-                                ))) : List.of(),
-                                L.row(new RowAttr().gap("xs"), List.of(L.text(total, List.of("Total")), L.text(total, List.of(totals.get("gross"))), L.text(total, List.of(totals.get("currency")))))
+                            L.row(new RowAttr().justify("end"), List.of(
+                                L.column(new ColumnAttr().width("220pt").gap("s"), List.of(
+                                    L.table(new TableAttr().cols("1fr 1fr 1fr"), nodes(
+                                        L.thead(NoAttr, List.of(
+                                            L.td(NoAttr, List.of(L.text(muted, List.of("VAT %")))),
+                                            L.td(NoAttr, List.of(L.text(mutedRight, List.of("Basis")))),
+                                            L.td(NoAttr, List.of(L.text(mutedRight, List.of("VAT"))))
+                                        )),
+                                        taxes.stream().map(tax -> L.tr(NoAttr, List.of(
+                                            L.td(NoAttr, List.of(L.text(NoAttr, List.of(tax.get("rate"))))),
+                                            L.td(NoAttr, List.of(L.text(right, List.of(tax.get("basis"))))),
+                                            L.td(NoAttr, List.of(L.text(right, List.of(tax.get("amount")))))
+                                        ))).toList()
+                                    )),
+                                    L.divider(new DividerAttr().color("#dde3ed").thickness("0.5pt")),
+                                    L.column(new ColumnAttr().gap("xs"), nodes(
+                                        L.row(endRow, List.of(L.text(NoAttr, List.of("VAT")), L.text(NoAttr, List.of(totals.get("vat"))), L.text(NoAttr, List.of(totals.get("currency"))))),
+                                        // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                                        totals.containsKey("vatInTaxCurrency") ? List.of(L.row(endRow, List.of(
+                                            L.text(muted, List.of("VAT in")),
+                                            L.text(muted, List.of(totals.get("taxCurrency"))),
+                                            L.text(muted, List.of(totals.get("vatInTaxCurrency")))
+                                        ))) : List.of(),
+                                        L.row(endRow, List.of(L.text(total, List.of("Total")), L.text(total, List.of(totals.get("gross"))), L.text(total, List.of(totals.get("currency")))))
+                                    ))
+                                ))
                             )),
                             note.isEmpty() ? List.of() : List.of(L.text(muted, List.of(note)))
                         ))

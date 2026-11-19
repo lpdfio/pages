@@ -38,13 +38,12 @@ export default defineConfig({
                 ThemeSelect: '../src/components/theme-toggle.astro',
             },
             customCss: ['../src/styles/lpdf.css', './src/styles/guides.css'],
-            // A guide has a page for each SDK and one entry here, which opens the Node.js page. Each page has a switch to
-            // the same guide in the other SDKs (scripts/build-guides.mjs), and src/route-data.ts keeps the entry current
-            // on all of them. A new guide is one line.
+            // A guide has a page for each SDK and no sidebar: a reader comes by a link, and a switch under the title (written
+            // by scripts/build-guides.mjs) goes to the same guide in another SDK. src/route-data.ts hides the sidebar. With no
+            // sidebar there is no order of pages, so no previous and next links either.
             routeMiddleware: './src/route-data.ts',
-            sidebar: [
-                { slug: 'factur-x-zugferd/node', label: 'Create a Factur-X / ZUGFeRD invoice PDF from its XML' },
-            ],
+            sidebar: [],
+            pagination: false,
         }),
     ],
     // The header, theme and styles are the docs site's, one folder up.

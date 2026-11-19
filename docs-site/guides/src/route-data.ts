@@ -1,17 +1,12 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 
 /**
- * A guide has a page for each SDK but one entry in the sidebar, which links to one of them. Starlight marks an entry as
- * the current one only on the page it links to, so on the Python page the guide would show as no entry at all. A page
- * and its guide share a folder (`factur-x-zugferd/python`), so the entry that links into that folder is the current one.
+ * The guides have no sidebar. A reader comes to a guide by a link, from a post or from the docs, and the switch under the
+ * title goes to the same guide in another SDK; the guides' index is behind the name in the header. With a few guides the
+ * sidebar would be a list of pages one click from the one open. A site with many guides would want it back: delete this
+ * file, its `routeMiddleware` line in astro.config.mjs, and give `sidebar` its entries.
  */
 export const onRequest = defineRouteMiddleware((context) =>
 {
-    const { starlightRoute } = context.locals;
-    const guide = starlightRoute.id.split('/')[0];
-
-    for (const entry of starlightRoute.sidebar)
-    {
-        if (entry.type === 'link' && entry.href.split('/').includes(guide)) entry.isCurrent = true;
-    }
+    context.locals.starlightRoute.hasSidebar = false;
 });

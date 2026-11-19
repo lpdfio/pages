@@ -38,21 +38,6 @@ A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice 
   Or `pip install -r requirements.txt`, with [requirements.txt](../files/python/requirements.txt), which pins 0.36.0.
 :::
 
-::: sdk php
-- PHP 8.2 or later, with the DOM extension (`ext-dom`; on Debian and Ubuntu it is the `php-xml` package), and [Composer](https://getcomposer.org/)
-- A way for Lpdf to run its engine, which the package picks itself: PHP's FFI extension (`ext-ffi`), on Linux with glibc 2.17 or newer, or the [`wasmtime`](https://wasmtime.dev) program on your `PATH`, everywhere else, such as macOS and Windows
-- Lpdf 0.36 or later:
-
-  ```sh
-  composer require lpdfio/lpdf
-  ```
-:::
-
-::: sdk dotnet
-- The .NET 10 SDK or later, which runs a single `.cs` file with `dotnet run`. The Lpdf package itself needs .NET 8 or later.
-- Lpdf 0.36 or later. Each script names it on its first line, `#:package Lpdfio.Lpdf@0.36.0`, and `dotnet run` fetches it from NuGet: there is nothing to install.
-:::
-
 ::: sdk java
 - Java 17 or later, and [Maven](https://maven.apache.org/)
 - Lpdf 0.36 or later, which Maven fetches from Maven Central on the first run. Save [pom.xml](../files/java/pom.xml) in your folder: it sets up both scripts, and holds this dependency:
@@ -63,6 +48,21 @@ A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice 
       <artifactId>lpdf</artifactId>
       <version>0.36.0</version>
   </dependency>
+  ```
+:::
+
+::: sdk dotnet
+- The .NET 10 SDK or later, which runs a single `.cs` file with `dotnet run`. The Lpdf package itself needs .NET 8 or later.
+- Lpdf 0.36 or later. Each script names it on its first line, `#:package Lpdfio.Lpdf@0.36.0`, and `dotnet run` fetches it from NuGet: there is nothing to install.
+:::
+
+::: sdk php
+- PHP 8.2 or later, with the DOM extension (`ext-dom`; on Debian and Ubuntu it is the `php-xml` package), and [Composer](https://getcomposer.org/)
+- A way for Lpdf to run its engine, which the package picks itself: PHP's FFI extension (`ext-ffi`), on Linux with glibc 2.17 or newer, or the [`wasmtime`](https://wasmtime.dev) program on your `PATH`, everywhere else, such as macOS and Windows
+- Lpdf 0.36 or later:
+
+  ```sh
+  composer require lpdfio/lpdf
   ```
 :::
 
@@ -271,102 +271,6 @@ python make_invoice.py
 ```
 :::
 
-::: sdk php
-The script, [make-invoice.php](../files/php/make-invoice.php):
-
-```php title="make-invoice.php"
-<?php
-
-declare(strict_types=1);
-
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\GeneratePdfOptions;
-use Lpdf\Engine\InvoiceFormat;
-use Lpdf\L;
-use Lpdf\LCrossIndustryInvoice;
-
-// The invoice's XML, as your accounting software wrote it. Any file name works.
-$invoiceXml = file_get_contents('in/invoice-2026-0412.xml');
-
-// How values are written on the page: the language's own formatters, and the words for the codes.
-$codeNames = [
-    'typeCode'   => [380 => 'Invoice', 381 => 'Credit note'],
-    'lines.unit' => ['H87' => 'pcs', 'KGM' => 'kg'],
-];
-$format = new InvoiceFormat(
-    date: fn (string $value): string => (new DateTimeImmutable($value))->format('j F Y'),
-    amount: fn (string $value): string => number_format((float) $value, 2),
-    code: fn (string $value, string $entryName): string => $codeNames[$entryName][$value] ?? $value,
-);
-
-$pdf = LCrossIndustryInvoice::generatePdf(L::engine(), file_get_contents('invoice-template.xml'), new GeneratePdfOptions(
-    invoiceXml: $invoiceXml,
-    format: $format,
-    data: ['note' => 'Payable within 30 days, by bank transfer.'],
-    createdOn: date('c'),
-));
-
-file_put_contents('invoice-2026-0412.pdf', $pdf);
-```
-
-Run it:
-
-```sh
-php make-invoice.php
-```
-:::
-
-::: sdk dotnet
-The script, [MakeInvoice.cs](../files/dotnet/MakeInvoice.cs):
-
-```csharp title="MakeInvoice.cs"
-#:package Lpdfio.Lpdf@0.36.0
-#:property PublishAot=false
-
-using System.Globalization;
-using Lpdf;
-using Lpdf.Engine;
-
-// The invoice's XML, as your accounting software wrote it. Any file name works.
-var invoiceXml = File.ReadAllBytes("in/invoice-2026-0412.xml");
-
-// How values are written on the page: the language's own formatters, and the words for the codes.
-var british = CultureInfo.GetCultureInfo("en-GB");
-var codeNames = new Dictionary<string, Dictionary<string, string>>
-{
-    ["typeCode"] = new() { ["380"] = "Invoice", ["381"] = "Credit note" },
-    ["lines.unit"] = new() { ["H87"] = "pcs", ["KGM"] = "kg" },
-};
-var format = new InvoiceFormat
-{
-    Date = (value, _) => DateOnly.Parse(value, CultureInfo.InvariantCulture).ToString("d MMMM yyyy", british),
-    Amount = (value, _) => decimal.Parse(value, CultureInfo.InvariantCulture).ToString("N2", british),
-    Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
-};
-
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
-using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
-var pdf = LCrossIndustryInvoice.GeneratePdf(engine, File.ReadAllText("invoice-template.xml"), new()
-{
-    InvoiceXml = invoiceXml,
-    Format = format,
-    Data = new { note = "Payable within 30 days, by bank transfer." },
-    CreatedOn = DateTimeOffset.Now.ToString("o"),
-});
-
-File.WriteAllBytes("invoice-2026-0412.pdf", pdf);
-```
-
-The first two lines are for `dotnet run`. `#:package` fetches Lpdf. `#:property PublishAot=false` switches off the native AOT (ahead-of-time compilation) setup that .NET 10 gives a single file: Lpdf turns your document and data into JSON through reflection, which native AOT does not allow. C# reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
-
-Run it:
-
-```sh
-dotnet run MakeInvoice.cs
-```
-:::
-
 ::: sdk java
 The script, [MakeInvoice.java](../files/java/MakeInvoice.java):
 
@@ -429,6 +333,102 @@ mvn -q compile exec:java -Dexec.mainClass=MakeInvoice
 `-q` keeps Maven's own messages out, so a run that works prints nothing. When Lpdf stops with an error, Maven shows its message at the end of the `[ERROR] Failed to execute goal …` line.
 :::
 
+::: sdk dotnet
+The script, [MakeInvoice.cs](../files/dotnet/MakeInvoice.cs):
+
+```csharp title="MakeInvoice.cs"
+#:package Lpdfio.Lpdf@0.36.0
+#:property PublishAot=false
+
+using System.Globalization;
+using Lpdf;
+using Lpdf.Engine;
+
+// The invoice's XML, as your accounting software wrote it. Any file name works.
+var invoiceXml = File.ReadAllBytes("in/invoice-2026-0412.xml");
+
+// How values are written on the page: the language's own formatters, and the words for the codes.
+var british = CultureInfo.GetCultureInfo("en-GB");
+var codeNames = new Dictionary<string, Dictionary<string, string>>
+{
+    ["typeCode"] = new() { ["380"] = "Invoice", ["381"] = "Credit note" },
+    ["lines.unit"] = new() { ["H87"] = "pcs", ["KGM"] = "kg" },
+};
+var format = new InvoiceFormat
+{
+    Date = (value, _) => DateOnly.Parse(value, CultureInfo.InvariantCulture).ToString("d MMMM yyyy", british),
+    Amount = (value, _) => decimal.Parse(value, CultureInfo.InvariantCulture).ToString("N2", british),
+    Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
+};
+
+// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
+var pdf = LCrossIndustryInvoice.GeneratePdf(engine, File.ReadAllText("invoice-template.xml"), new()
+{
+    InvoiceXml = invoiceXml,
+    Format = format,
+    Data = new { note = "Payable within 30 days, by bank transfer." },
+    CreatedOn = DateTimeOffset.Now.ToString("o"),
+});
+
+File.WriteAllBytes("invoice-2026-0412.pdf", pdf);
+```
+
+The first two lines are for `dotnet run`. `#:package` fetches Lpdf. `#:property PublishAot=false` switches off the native AOT (ahead-of-time compilation) setup that .NET 10 gives a single file: Lpdf turns your document and data into JSON through reflection, which native AOT does not allow. C# reads the font's `src` only through the engine's `SrcFallback`: without it the font isn't embedded, which PDF/A refuses.
+
+Run it:
+
+```sh
+dotnet run MakeInvoice.cs
+```
+:::
+
+::: sdk php
+The script, [make-invoice.php](../files/php/make-invoice.php):
+
+```php title="make-invoice.php"
+<?php
+
+declare(strict_types=1);
+
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\GeneratePdfOptions;
+use Lpdf\Engine\InvoiceFormat;
+use Lpdf\L;
+use Lpdf\LCrossIndustryInvoice;
+
+// The invoice's XML, as your accounting software wrote it. Any file name works.
+$invoiceXml = file_get_contents('in/invoice-2026-0412.xml');
+
+// How values are written on the page: the language's own formatters, and the words for the codes.
+$codeNames = [
+    'typeCode'   => [380 => 'Invoice', 381 => 'Credit note'],
+    'lines.unit' => ['H87' => 'pcs', 'KGM' => 'kg'],
+];
+$format = new InvoiceFormat(
+    date: fn (string $value): string => (new DateTimeImmutable($value))->format('j F Y'),
+    amount: fn (string $value): string => number_format((float) $value, 2),
+    code: fn (string $value, string $entryName): string => $codeNames[$entryName][$value] ?? $value,
+);
+
+$pdf = LCrossIndustryInvoice::generatePdf(L::engine(), file_get_contents('invoice-template.xml'), new GeneratePdfOptions(
+    invoiceXml: $invoiceXml,
+    format: $format,
+    data: ['note' => 'Payable within 30 days, by bank transfer.'],
+    createdOn: date('c'),
+));
+
+file_put_contents('invoice-2026-0412.pdf', $pdf);
+```
+
+Run it:
+
+```sh
+php make-invoice.php
+```
+:::
+
 For a folder of invoices, call it once for each XML, with the same template. A second template, for another look or another language, is another file: the code stays the same.
 
 Without a license key each page carries a small Lpdf line in its top-right corner. A license key removes it: see [Pricing](https://lpdf.io/pricing/).
@@ -441,16 +441,16 @@ Set the key with `L.engine().setLicenseKey(key)` before the first call.
 Set the key with `L.engine().set_license_key(key)` before the first call.
 :::
 
-::: sdk php
-Set the key with `L::engine()->setLicenseKey($key)` before the first call.
+::: sdk java
+Set the key with `.setLicenseKey(key)` on the engine, `L.engine(options).setLicenseKey(key)`, before the first call.
 :::
 
 ::: sdk dotnet
 Set the key with `engine.SetLicenseKey(key)` before the first call.
 :::
 
-::: sdk java
-Set the key with `.setLicenseKey(key)` on the engine, `L.engine(options).setLicenseKey(key)`, before the first call.
+::: sdk php
+Set the key with `L::engine()->setLicenseKey($key)` before the first call.
 :::
 
 ## 3. The same page in code
@@ -773,320 +773,6 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | The look | an XML file | code |
 :::
 
-::: sdk php
-The script, [make-invoice-code.php](../files/php/make-invoice-code.php):
-
-```php title="make-invoice-code.php"
-<?php
-
-declare(strict_types=1);
-
-require_once 'vendor/autoload.php';
-
-use Lpdf\Engine\ExtractInvoiceDataOptions;
-use Lpdf\Engine\GeneratePdfOptions;
-use Lpdf\Engine\InvoiceFormat;
-use Lpdf\Kit\DocumentAssets;
-use Lpdf\Kit\DocumentAttr;
-use Lpdf\Kit\DocumentMeta;
-use Lpdf\Kit\FontAttr;
-use Lpdf\Kit\LayoutAttr;
-use Lpdf\L;
-use Lpdf\LCrossIndustryInvoice;
-use Lpdf\Layout\ColumnAttr;
-use Lpdf\Layout\DividerAttr;
-use Lpdf\Layout\RowAttr;
-use Lpdf\Layout\TableAttr;
-use Lpdf\Layout\TextAttr;
-use const Lpdf\NoAttr;
-
-// The invoice's XML, as your accounting software wrote it. Any file name works.
-$invoiceXml = file_get_contents('in/invoice-2026-0412.xml');
-
-// How values are written on the page: the language's own formatters, and the words for the codes.
-$codeNames = [
-    'typeCode'   => [380 => 'Invoice', 381 => 'Credit note'],
-    'lines.unit' => ['H87' => 'pcs', 'KGM' => 'kg'],
-];
-$format = new InvoiceFormat(
-    date: fn (string $value): string => (new DateTimeImmutable($value))->format('j F Y'),
-    amount: fn (string $value): string => number_format((float) $value, 2),
-    code: fn (string $value, string $entryName): string => $codeNames[$entryName][$value] ?? $value,
-);
-
-// The invoice's values as plain data, read from the XML. The note is not in the XML, so it is yours.
-$invoice = LCrossIndustryInvoice::extractInvoiceData($invoiceXml, new ExtractInvoiceDataOptions(format: $format));
-$note = 'Payable within 30 days, by bank transfer.';
-['seller' => $seller, 'buyer' => $buyer, 'totals' => $totals] = $invoice;
-
-// Attributes used more than once.
-$muted      = new TextAttr(fontSize: '9pt', color: '#5b6475');
-$mutedRight = new TextAttr(fontSize: '9pt', color: '#5b6475', align: 'right');
-$right      = new TextAttr(align: 'right');
-$title      = new TextAttr(fontSize: '16pt', color: '#1763cf');
-$total      = new TextAttr(fontSize: '14pt');
-
-$doc = L::document(new DocumentAttr(
-    size: 'a4',
-    font: 'body',
-    assets: new DocumentAssets(fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')]),
-    meta: new DocumentMeta(title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en'),
-), [
-    L::section(NoAttr, [
-        L::layout(new LayoutAttr(margin: '48pt'), [
-            L::column(new ColumnAttr(gap: 'l'), [
-                L::row(new RowAttr(align: 'end'), [
-                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
-                        L::text(new TextAttr(fontSize: '20pt'), [$seller['name']]),
-                        L::text($muted, [$seller['street']]),
-                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, [$seller['postcode']]), L::text($muted, [$seller['city']])]),
-                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, ['VAT']), L::text($muted, [$seller['vatId']])]),
-                    ]),
-                    L::row(new RowAttr(gap: 'xs'), [L::text($title, [$invoice['typeCode']]), L::text($title, [$invoice['number']])]),
-                ]),
-                L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
-                L::row(new RowAttr(gap: 'l'), [
-                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
-                        L::text($muted, ['Billed to']),
-                        L::text(NoAttr, [$buyer['name']]),
-                        L::text(NoAttr, [$buyer['street']]),
-                        L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, [$buyer['postcode']]), L::text(NoAttr, [$buyer['city']])]),
-                    ]),
-                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
-                        L::text($muted, ['Issued · Due']),
-                        L::text(NoAttr, [$invoice['issued']]),
-                        // A list is a map over an array: one line for each payment term.
-                        ...array_map(fn (array $term) => L::text(NoAttr, [$term['due']]), $invoice['paymentTerms']),
-                    ]),
-                ]),
-                L::table(new TableAttr(cols: '4fr 1fr 1fr 1fr 1fr 1fr'), [
-                    L::thead(NoAttr, [
-                        L::td(NoAttr, [L::text($muted, ['Item'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Qty'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Unit'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Price'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['VAT %'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Amount'])]),
-                    ]),
-                    ...array_map(fn (array $line) => L::tr(NoAttr, [
-                        L::td(NoAttr, [L::text(NoAttr, [$line['name']])]),
-                        L::td(NoAttr, [L::text($right, [$line['quantity']])]),
-                        L::td(NoAttr, [L::text($right, [$line['unit']])]),
-                        L::td(NoAttr, [L::text($right, [$line['unitPrice']])]),
-                        L::td(NoAttr, [L::text($right, [$line['vatRate']])]),
-                        L::td(NoAttr, [L::text($right, [$line['net']])]),
-                    ]), $invoice['lines']),
-                ]),
-                L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
-                L::table(new TableAttr(cols: '1fr 1fr 1fr'), [
-                    L::thead(NoAttr, [
-                        L::td(NoAttr, [L::text($muted, ['VAT rate (%)'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['Basis'])]),
-                        L::td(NoAttr, [L::text($mutedRight, ['VAT'])]),
-                    ]),
-                    ...array_map(fn (array $tax) => L::tr(NoAttr, [
-                        L::td(NoAttr, [L::text(NoAttr, [$tax['rate']])]),
-                        L::td(NoAttr, [L::text($right, [$tax['basis']])]),
-                        L::td(NoAttr, [L::text($right, [$tax['amount']])]),
-                    ]), $invoice['taxes']),
-                ]),
-                L::column(new ColumnAttr(gap: 'xs', align: 'end'), [
-                    L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, ['VAT']), L::text(NoAttr, [$totals['vat']]), L::text(NoAttr, [$totals['currency']])]),
-                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                    ...(isset($totals['vatInTaxCurrency']) ? [L::row(new RowAttr(gap: 'xs'), [
-                        L::text($muted, ['VAT in']),
-                        L::text($muted, [$totals['taxCurrency']]),
-                        L::text($muted, [$totals['vatInTaxCurrency']]),
-                    ])] : []),
-                    L::row(new RowAttr(gap: 'xs'), [L::text($total, ['Total']), L::text($total, [$totals['gross']]), L::text($total, [$totals['currency']])]),
-                ]),
-                ...($note !== '' ? [L::text($muted, [$note])] : []),
-            ]),
-        ]),
-    ]),
-]);
-
-// Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
-$pdf = LCrossIndustryInvoice::generatePdf(L::engine(), $doc, new GeneratePdfOptions(invoiceXml: $invoiceXml, createdOn: date('c')));
-
-file_put_contents('invoice-2026-0412-code.pdf', $pdf);
-```
-
-Run it:
-
-```sh
-php make-invoice-code.php
-```
-
-It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's file.
-
-| In the page | Template | Builders |
-|---|---|---|
-| An invoice value | `data-value="invoice:seller.name"` | `$seller['name']` |
-| A list | `<tr data-source="invoice:lines">` | `array_map(fn (array $line) => L::tr(…), $invoice['lines'])` |
-| An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(isset($totals['vatInTaxCurrency']) ? [L::row(…)] : [])` |
-| The note | `data` of the call | a variable |
-| The look | an XML file | code |
-:::
-
-::: sdk dotnet
-The script, [MakeInvoiceCode.cs](../files/dotnet/MakeInvoiceCode.cs):
-
-```csharp title="MakeInvoiceCode.cs"
-#:package Lpdfio.Lpdf@0.36.0
-#:property PublishAot=false
-
-using System.Globalization;
-using System.Text.Json.Nodes;
-using Lpdf;
-using Lpdf.Engine;
-using Lpdf.Layout;
-using static Lpdf.L;
-
-// The invoice's XML, as your accounting software wrote it. Any file name works.
-var invoiceXml = File.ReadAllBytes("in/invoice-2026-0412.xml");
-
-// How values are written on the page: the language's own formatters, and the words for the codes.
-var british = CultureInfo.GetCultureInfo("en-GB");
-var codeNames = new Dictionary<string, Dictionary<string, string>>
-{
-    ["typeCode"] = new() { ["380"] = "Invoice", ["381"] = "Credit note" },
-    ["lines.unit"] = new() { ["H87"] = "pcs", ["KGM"] = "kg" },
-};
-var format = new InvoiceFormat
-{
-    Date = (value, _) => DateOnly.Parse(value, CultureInfo.InvariantCulture).ToString("d MMMM yyyy", british),
-    Amount = (value, _) => decimal.Parse(value, CultureInfo.InvariantCulture).ToString("N2", british),
-    Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
-};
-
-// The invoice's values as plain data, read from the XML. The note is not in the XML, so it is yours.
-var invoice = LCrossIndustryInvoice.ExtractInvoiceData(invoiceXml, new() { Format = format });
-var note = "Payable within 30 days, by bank transfer.";
-var seller = invoice["seller"];
-var buyer = invoice["buyer"];
-var totals = invoice["totals"];
-
-// A value is text, a group an object, a list an array. One the invoice lacks is "", or an empty list.
-string Value(JsonNode? group, string name) => group?[name]?.GetValue<string>() ?? "";
-IEnumerable<JsonNode?> Items(JsonNode? group, string name) => group?[name]?.AsArray() ?? [];
-
-// Attributes used more than once.
-var muted = new TextAttr { FontSize = "9pt", Color = "#5b6475" };
-var mutedRight = new TextAttr { FontSize = "9pt", Color = "#5b6475", Align = "right" };
-var right = new TextAttr { Align = "right" };
-var title = new TextAttr { FontSize = "16pt", Color = "#1763cf" };
-var total = new TextAttr { FontSize = "14pt" };
-
-var doc = L.Document(new()
-{
-    Size = "a4",
-    Font = "body",
-    Assets = new(Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }]),
-    Meta = new(Title: "Invoice", Author: "Northwind Paper SAS", Lang: "en"),
-}, [
-    L.Section(NoAttr, [
-        L.Layout(new() { Margin = "48pt" }, [
-            L.Column(new() { Gap = "l" }, [
-                L.Row(new() { Align = "end" }, [
-                    L.Column(new() { Width = "fill", Gap = "xs" }, [
-                        L.Text(new() { FontSize = "20pt" }, [Value(seller, "name")]),
-                        L.Text(muted, [Value(seller, "street")]),
-                        L.Row(new() { Gap = "xs" }, [L.Text(muted, [Value(seller, "postcode")]), L.Text(muted, [Value(seller, "city")])]),
-                        L.Row(new() { Gap = "xs" }, [L.Text(muted, ["VAT"]), L.Text(muted, [Value(seller, "vatId")])]),
-                    ]),
-                    L.Row(new() { Gap = "xs" }, [L.Text(title, [Value(invoice, "typeCode")]), L.Text(title, [Value(invoice, "number")])]),
-                ]),
-                L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
-                L.Row(new() { Gap = "l" }, [
-                    L.Column(new() { Width = "fill", Gap = "xs" }, [
-                        L.Text(muted, ["Billed to"]),
-                        L.Text(NoAttr, [Value(buyer, "name")]),
-                        L.Text(NoAttr, [Value(buyer, "street")]),
-                        L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, [Value(buyer, "postcode")]), L.Text(NoAttr, [Value(buyer, "city")])]),
-                    ]),
-                    L.Column(new() { Width = "fill", Gap = "xs" }, [
-                        L.Text(muted, ["Issued · Due"]),
-                        L.Text(NoAttr, [Value(invoice, "issued")]),
-                        // A list is a Select over an array: one line for each payment term.
-                        .. Items(invoice, "paymentTerms").Select(term => L.Text(NoAttr, [Value(term, "due")])),
-                    ]),
-                ]),
-                L.Table(new() { Cols = "4fr 1fr 1fr 1fr 1fr 1fr" }, [
-                    L.Thead(NoAttr, [
-                        L.Td(NoAttr, [L.Text(muted, ["Item"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Qty"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Unit"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Price"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT %"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Amount"])]),
-                    ]),
-                    .. Items(invoice, "lines").Select(line => L.Tr(NoAttr, [
-                        L.Td(NoAttr, [L.Text(NoAttr, [Value(line, "name")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "quantity")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "unit")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "unitPrice")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "vatRate")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(line, "net")])]),
-                    ])),
-                ]),
-                L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
-                L.Table(new() { Cols = "1fr 1fr 1fr" }, [
-                    L.Thead(NoAttr, [
-                        L.Td(NoAttr, [L.Text(muted, ["VAT rate (%)"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["Basis"])]),
-                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT"])]),
-                    ]),
-                    .. Items(invoice, "taxes").Select(tax => L.Tr(NoAttr, [
-                        L.Td(NoAttr, [L.Text(NoAttr, [Value(tax, "rate")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(tax, "basis")])]),
-                        L.Td(NoAttr, [L.Text(right, [Value(tax, "amount")])]),
-                    ])),
-                ]),
-                L.Column(new() { Gap = "xs", Align = "end" }, [
-                    L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, ["VAT"]), L.Text(NoAttr, [Value(totals, "vat")]), L.Text(NoAttr, [Value(totals, "currency")])]),
-                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
-                    .. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(new() { Gap = "xs" }, [
-                        L.Text(muted, ["VAT in"]),
-                        L.Text(muted, [Value(totals, "taxCurrency")]),
-                        L.Text(muted, [Value(totals, "vatInTaxCurrency")]),
-                    ])] : []),
-                    L.Row(new() { Gap = "xs" }, [L.Text(total, ["Total"]), L.Text(total, [Value(totals, "gross")]), L.Text(total, [Value(totals, "currency")])]),
-                ]),
-                .. (note != "" ? (Node[])[L.Text(muted, [note])] : []),
-            ]),
-        ]),
-    ]),
-]);
-
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
-using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
-
-// Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
-var pdf = LCrossIndustryInvoice.GeneratePdf(engine, doc, new() { InvoiceXml = invoiceXml, CreatedOn = DateTimeOffset.Now.ToString("o") });
-
-File.WriteAllBytes("invoice-2026-0412-code.pdf", pdf);
-```
-
-`ExtractInvoiceData` returns a `JsonObject`. `Value` and `Items`, two small functions in the script, read a value or a list from it.
-
-Run it:
-
-```sh
-dotnet run MakeInvoiceCode.cs
-```
-
-It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's file.
-
-| In the page | Template | Builders |
-|---|---|---|
-| An invoice value | `data-value="invoice:seller.name"` | `Value(seller, "name")` |
-| A list | `<tr data-source="invoice:lines">` | `.. Items(invoice, "lines").Select(line => L.Tr(…))` |
-| An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `.. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(…)] : [])` |
-| The note | `Data` of the call | a variable |
-| The look | an XML file | code |
-:::
-
 ::: sdk java
 The script, [MakeInvoiceCode.java](../files/java/MakeInvoiceCode.java):
 
@@ -1285,6 +971,320 @@ Java has no spread, so the script's own `nodes(…)` joins single nodes and list
 | The look | an XML file | code |
 :::
 
+::: sdk dotnet
+The script, [MakeInvoiceCode.cs](../files/dotnet/MakeInvoiceCode.cs):
+
+```csharp title="MakeInvoiceCode.cs"
+#:package Lpdfio.Lpdf@0.36.0
+#:property PublishAot=false
+
+using System.Globalization;
+using System.Text.Json.Nodes;
+using Lpdf;
+using Lpdf.Engine;
+using Lpdf.Layout;
+using static Lpdf.L;
+
+// The invoice's XML, as your accounting software wrote it. Any file name works.
+var invoiceXml = File.ReadAllBytes("in/invoice-2026-0412.xml");
+
+// How values are written on the page: the language's own formatters, and the words for the codes.
+var british = CultureInfo.GetCultureInfo("en-GB");
+var codeNames = new Dictionary<string, Dictionary<string, string>>
+{
+    ["typeCode"] = new() { ["380"] = "Invoice", ["381"] = "Credit note" },
+    ["lines.unit"] = new() { ["H87"] = "pcs", ["KGM"] = "kg" },
+};
+var format = new InvoiceFormat
+{
+    Date = (value, _) => DateOnly.Parse(value, CultureInfo.InvariantCulture).ToString("d MMMM yyyy", british),
+    Amount = (value, _) => decimal.Parse(value, CultureInfo.InvariantCulture).ToString("N2", british),
+    Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
+};
+
+// The invoice's values as plain data, read from the XML. The note is not in the XML, so it is yours.
+var invoice = LCrossIndustryInvoice.ExtractInvoiceData(invoiceXml, new() { Format = format });
+var note = "Payable within 30 days, by bank transfer.";
+var seller = invoice["seller"];
+var buyer = invoice["buyer"];
+var totals = invoice["totals"];
+
+// A value is text, a group an object, a list an array. One the invoice lacks is "", or an empty list.
+string Value(JsonNode? group, string name) => group?[name]?.GetValue<string>() ?? "";
+IEnumerable<JsonNode?> Items(JsonNode? group, string name) => group?[name]?.AsArray() ?? [];
+
+// Attributes used more than once.
+var muted = new TextAttr { FontSize = "9pt", Color = "#5b6475" };
+var mutedRight = new TextAttr { FontSize = "9pt", Color = "#5b6475", Align = "right" };
+var right = new TextAttr { Align = "right" };
+var title = new TextAttr { FontSize = "16pt", Color = "#1763cf" };
+var total = new TextAttr { FontSize = "14pt" };
+
+var doc = L.Document(new()
+{
+    Size = "a4",
+    Font = "body",
+    Assets = new(Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }]),
+    Meta = new(Title: "Invoice", Author: "Northwind Paper SAS", Lang: "en"),
+}, [
+    L.Section(NoAttr, [
+        L.Layout(new() { Margin = "48pt" }, [
+            L.Column(new() { Gap = "l" }, [
+                L.Row(new() { Align = "end" }, [
+                    L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Text(new() { FontSize = "20pt" }, [Value(seller, "name")]),
+                        L.Text(muted, [Value(seller, "street")]),
+                        L.Row(new() { Gap = "xs" }, [L.Text(muted, [Value(seller, "postcode")]), L.Text(muted, [Value(seller, "city")])]),
+                        L.Row(new() { Gap = "xs" }, [L.Text(muted, ["VAT"]), L.Text(muted, [Value(seller, "vatId")])]),
+                    ]),
+                    L.Row(new() { Gap = "xs" }, [L.Text(title, [Value(invoice, "typeCode")]), L.Text(title, [Value(invoice, "number")])]),
+                ]),
+                L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
+                L.Row(new() { Gap = "l" }, [
+                    L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Text(muted, ["Billed to"]),
+                        L.Text(NoAttr, [Value(buyer, "name")]),
+                        L.Text(NoAttr, [Value(buyer, "street")]),
+                        L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, [Value(buyer, "postcode")]), L.Text(NoAttr, [Value(buyer, "city")])]),
+                    ]),
+                    L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Text(muted, ["Issued · Due"]),
+                        L.Text(NoAttr, [Value(invoice, "issued")]),
+                        // A list is a Select over an array: one line for each payment term.
+                        .. Items(invoice, "paymentTerms").Select(term => L.Text(NoAttr, [Value(term, "due")])),
+                    ]),
+                ]),
+                L.Table(new() { Cols = "4fr 1fr 1fr 1fr 1fr 1fr" }, [
+                    L.Thead(NoAttr, [
+                        L.Td(NoAttr, [L.Text(muted, ["Item"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["Qty"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["Unit"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["Price"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT %"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["Amount"])]),
+                    ]),
+                    .. Items(invoice, "lines").Select(line => L.Tr(NoAttr, [
+                        L.Td(NoAttr, [L.Text(NoAttr, [Value(line, "name")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(line, "quantity")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(line, "unit")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(line, "unitPrice")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(line, "vatRate")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(line, "net")])]),
+                    ])),
+                ]),
+                L.Divider(new() { Color = "#dde3ed", Thickness = "0.5pt" }),
+                L.Table(new() { Cols = "1fr 1fr 1fr" }, [
+                    L.Thead(NoAttr, [
+                        L.Td(NoAttr, [L.Text(muted, ["VAT rate (%)"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["Basis"])]),
+                        L.Td(NoAttr, [L.Text(mutedRight, ["VAT"])]),
+                    ]),
+                    .. Items(invoice, "taxes").Select(tax => L.Tr(NoAttr, [
+                        L.Td(NoAttr, [L.Text(NoAttr, [Value(tax, "rate")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(tax, "basis")])]),
+                        L.Td(NoAttr, [L.Text(right, [Value(tax, "amount")])]),
+                    ])),
+                ]),
+                L.Column(new() { Gap = "xs", Align = "end" }, [
+                    L.Row(new() { Gap = "xs" }, [L.Text(NoAttr, ["VAT"]), L.Text(NoAttr, [Value(totals, "vat")]), L.Text(NoAttr, [Value(totals, "currency")])]),
+                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                    .. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(new() { Gap = "xs" }, [
+                        L.Text(muted, ["VAT in"]),
+                        L.Text(muted, [Value(totals, "taxCurrency")]),
+                        L.Text(muted, [Value(totals, "vatInTaxCurrency")]),
+                    ])] : []),
+                    L.Row(new() { Gap = "xs" }, [L.Text(total, ["Total"]), L.Text(total, [Value(totals, "gross")]), L.Text(total, [Value(totals, "currency")])]),
+                ]),
+                .. (note != "" ? (Node[])[L.Text(muted, [note])] : []),
+            ]),
+        ]),
+    ]),
+]);
+
+// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
+
+// Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
+var pdf = LCrossIndustryInvoice.GeneratePdf(engine, doc, new() { InvoiceXml = invoiceXml, CreatedOn = DateTimeOffset.Now.ToString("o") });
+
+File.WriteAllBytes("invoice-2026-0412-code.pdf", pdf);
+```
+
+`ExtractInvoiceData` returns a `JsonObject`. `Value` and `Items`, two small functions in the script, read a value or a list from it.
+
+Run it:
+
+```sh
+dotnet run MakeInvoiceCode.cs
+```
+
+It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's file.
+
+| In the page | Template | Builders |
+|---|---|---|
+| An invoice value | `data-value="invoice:seller.name"` | `Value(seller, "name")` |
+| A list | `<tr data-source="invoice:lines">` | `.. Items(invoice, "lines").Select(line => L.Tr(…))` |
+| An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `.. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(…)] : [])` |
+| The note | `Data` of the call | a variable |
+| The look | an XML file | code |
+:::
+
+::: sdk php
+The script, [make-invoice-code.php](../files/php/make-invoice-code.php):
+
+```php title="make-invoice-code.php"
+<?php
+
+declare(strict_types=1);
+
+require_once 'vendor/autoload.php';
+
+use Lpdf\Engine\ExtractInvoiceDataOptions;
+use Lpdf\Engine\GeneratePdfOptions;
+use Lpdf\Engine\InvoiceFormat;
+use Lpdf\Kit\DocumentAssets;
+use Lpdf\Kit\DocumentAttr;
+use Lpdf\Kit\DocumentMeta;
+use Lpdf\Kit\FontAttr;
+use Lpdf\Kit\LayoutAttr;
+use Lpdf\L;
+use Lpdf\LCrossIndustryInvoice;
+use Lpdf\Layout\ColumnAttr;
+use Lpdf\Layout\DividerAttr;
+use Lpdf\Layout\RowAttr;
+use Lpdf\Layout\TableAttr;
+use Lpdf\Layout\TextAttr;
+use const Lpdf\NoAttr;
+
+// The invoice's XML, as your accounting software wrote it. Any file name works.
+$invoiceXml = file_get_contents('in/invoice-2026-0412.xml');
+
+// How values are written on the page: the language's own formatters, and the words for the codes.
+$codeNames = [
+    'typeCode'   => [380 => 'Invoice', 381 => 'Credit note'],
+    'lines.unit' => ['H87' => 'pcs', 'KGM' => 'kg'],
+];
+$format = new InvoiceFormat(
+    date: fn (string $value): string => (new DateTimeImmutable($value))->format('j F Y'),
+    amount: fn (string $value): string => number_format((float) $value, 2),
+    code: fn (string $value, string $entryName): string => $codeNames[$entryName][$value] ?? $value,
+);
+
+// The invoice's values as plain data, read from the XML. The note is not in the XML, so it is yours.
+$invoice = LCrossIndustryInvoice::extractInvoiceData($invoiceXml, new ExtractInvoiceDataOptions(format: $format));
+$note = 'Payable within 30 days, by bank transfer.';
+['seller' => $seller, 'buyer' => $buyer, 'totals' => $totals] = $invoice;
+
+// Attributes used more than once.
+$muted      = new TextAttr(fontSize: '9pt', color: '#5b6475');
+$mutedRight = new TextAttr(fontSize: '9pt', color: '#5b6475', align: 'right');
+$right      = new TextAttr(align: 'right');
+$title      = new TextAttr(fontSize: '16pt', color: '#1763cf');
+$total      = new TextAttr(fontSize: '14pt');
+
+$doc = L::document(new DocumentAttr(
+    size: 'a4',
+    font: 'body',
+    assets: new DocumentAssets(fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')]),
+    meta: new DocumentMeta(title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en'),
+), [
+    L::section(NoAttr, [
+        L::layout(new LayoutAttr(margin: '48pt'), [
+            L::column(new ColumnAttr(gap: 'l'), [
+                L::row(new RowAttr(align: 'end'), [
+                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::text(new TextAttr(fontSize: '20pt'), [$seller['name']]),
+                        L::text($muted, [$seller['street']]),
+                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, [$seller['postcode']]), L::text($muted, [$seller['city']])]),
+                        L::row(new RowAttr(gap: 'xs'), [L::text($muted, ['VAT']), L::text($muted, [$seller['vatId']])]),
+                    ]),
+                    L::row(new RowAttr(gap: 'xs'), [L::text($title, [$invoice['typeCode']]), L::text($title, [$invoice['number']])]),
+                ]),
+                L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
+                L::row(new RowAttr(gap: 'l'), [
+                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::text($muted, ['Billed to']),
+                        L::text(NoAttr, [$buyer['name']]),
+                        L::text(NoAttr, [$buyer['street']]),
+                        L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, [$buyer['postcode']]), L::text(NoAttr, [$buyer['city']])]),
+                    ]),
+                    L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::text($muted, ['Issued · Due']),
+                        L::text(NoAttr, [$invoice['issued']]),
+                        // A list is a map over an array: one line for each payment term.
+                        ...array_map(fn (array $term) => L::text(NoAttr, [$term['due']]), $invoice['paymentTerms']),
+                    ]),
+                ]),
+                L::table(new TableAttr(cols: '4fr 1fr 1fr 1fr 1fr 1fr'), [
+                    L::thead(NoAttr, [
+                        L::td(NoAttr, [L::text($muted, ['Item'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['Qty'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['Unit'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['Price'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['VAT %'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['Amount'])]),
+                    ]),
+                    ...array_map(fn (array $line) => L::tr(NoAttr, [
+                        L::td(NoAttr, [L::text(NoAttr, [$line['name']])]),
+                        L::td(NoAttr, [L::text($right, [$line['quantity']])]),
+                        L::td(NoAttr, [L::text($right, [$line['unit']])]),
+                        L::td(NoAttr, [L::text($right, [$line['unitPrice']])]),
+                        L::td(NoAttr, [L::text($right, [$line['vatRate']])]),
+                        L::td(NoAttr, [L::text($right, [$line['net']])]),
+                    ]), $invoice['lines']),
+                ]),
+                L::divider(new DividerAttr(color: '#dde3ed', thickness: '0.5pt')),
+                L::table(new TableAttr(cols: '1fr 1fr 1fr'), [
+                    L::thead(NoAttr, [
+                        L::td(NoAttr, [L::text($muted, ['VAT rate (%)'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['Basis'])]),
+                        L::td(NoAttr, [L::text($mutedRight, ['VAT'])]),
+                    ]),
+                    ...array_map(fn (array $tax) => L::tr(NoAttr, [
+                        L::td(NoAttr, [L::text(NoAttr, [$tax['rate']])]),
+                        L::td(NoAttr, [L::text($right, [$tax['basis']])]),
+                        L::td(NoAttr, [L::text($right, [$tax['amount']])]),
+                    ]), $invoice['taxes']),
+                ]),
+                L::column(new ColumnAttr(gap: 'xs', align: 'end'), [
+                    L::row(new RowAttr(gap: 'xs'), [L::text(NoAttr, ['VAT']), L::text(NoAttr, [$totals['vat']]), L::text(NoAttr, [$totals['currency']])]),
+                    // An optional line is an if: the VAT in the tax currency, when the invoice has one.
+                    ...(isset($totals['vatInTaxCurrency']) ? [L::row(new RowAttr(gap: 'xs'), [
+                        L::text($muted, ['VAT in']),
+                        L::text($muted, [$totals['taxCurrency']]),
+                        L::text($muted, [$totals['vatInTaxCurrency']]),
+                    ])] : []),
+                    L::row(new RowAttr(gap: 'xs'), [L::text($total, ['Total']), L::text($total, [$totals['gross']]), L::text($total, [$totals['currency']])]),
+                ]),
+                ...($note !== '' ? [L::text($muted, [$note])] : []),
+            ]),
+        ]),
+    ]),
+]);
+
+// Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
+$pdf = LCrossIndustryInvoice::generatePdf(L::engine(), $doc, new GeneratePdfOptions(invoiceXml: $invoiceXml, createdOn: date('c')));
+
+file_put_contents('invoice-2026-0412-code.pdf', $pdf);
+```
+
+Run it:
+
+```sh
+php make-invoice-code.php
+```
+
+It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's file.
+
+| In the page | Template | Builders |
+|---|---|---|
+| An invoice value | `data-value="invoice:seller.name"` | `$seller['name']` |
+| A list | `<tr data-source="invoice:lines">` | `array_map(fn (array $line) => L::tr(…), $invoice['lines'])` |
+| An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(isset($totals['vatInTaxCurrency']) ? [L::row(…)] : [])` |
+| The note | `data` of the call | a variable |
+| The look | an XML file | code |
+:::
+
 ## Check the result
 
 Open `invoice-2026-0412.pdf` in a PDF reader and look at its attachments: `factur-x.xml` is there.
@@ -1329,16 +1329,16 @@ Start from `LCrossIndustryInvoice.defaultInvoiceMap()`. The values themselves, a
 Start from `LCrossIndustryInvoice.default_invoice_map()`, and pass your map as `invoice_map`. The values themselves, as plain data, are what `LCrossIndustryInvoice.extract_invoice_data(invoice_xml, format=invoice_format)` returns, for a document built in code, as in step 3, or to name the output file.
 :::
 
-::: sdk php
-Start from `LCrossIndustryInvoice::defaultInvoiceMap()`. The values themselves, as plain data, are what `LCrossIndustryInvoice::extractInvoiceData($invoiceXml, new ExtractInvoiceDataOptions(format: $format))` returns, for a document built in code, as in step 3, or to name the output file.
+::: sdk java
+Start from `LCrossIndustryInvoice.defaultInvoiceMap()`, and pass your map as `invoiceMap` in `GeneratePdfOptions`. The values themselves, as plain data, are what `LCrossIndustryInvoice.extractInvoiceData(invoiceXml, new ExtractInvoiceDataOptions().format(format))` returns, as maps and lists, for a document built in code, as in step 3, or to name the output file.
 :::
 
 ::: sdk dotnet
 Start from `LCrossIndustryInvoice.DefaultInvoiceMap()`, which gives the map as XML text, and pass your map as `InvoiceMap` in the call's options. The values themselves, as plain data, are what `LCrossIndustryInvoice.ExtractInvoiceData(invoiceXml, new() { Format = format })` returns, for a document built in code, as in step 3, or to name the output file.
 :::
 
-::: sdk java
-Start from `LCrossIndustryInvoice.defaultInvoiceMap()`, and pass your map as `invoiceMap` in `GeneratePdfOptions`. The values themselves, as plain data, are what `LCrossIndustryInvoice.extractInvoiceData(invoiceXml, new ExtractInvoiceDataOptions().format(format))` returns, as maps and lists, for a document built in code, as in step 3, or to name the output file.
+::: sdk php
+Start from `LCrossIndustryInvoice::defaultInvoiceMap()`. The values themselves, as plain data, are what `LCrossIndustryInvoice::extractInvoiceData($invoiceXml, new ExtractInvoiceDataOptions(format: $format))` returns, for a document built in code, as in step 3, or to name the output file.
 :::
 
 ## When it fails
@@ -1359,16 +1359,16 @@ Leaving out `createdOn` stops the call with `generatePdf needs createdOn, which 
 Leaving out `created_on` is a `TypeError` before the engine runs: pass it, as step 2 does. The engine's own errors reach Python as an `EngineException`, whose message starts with `lpdf render error: `.
 :::
 
-::: sdk php
-Leaving out `createdOn` is an `ArgumentCountError`, since `GeneratePdfOptions` requires it: pass it, as step 2 does. The engine's own errors reach PHP with `lpdf render error: ` before the message.
+::: sdk java
+Leaving out `createdOn` stops the call with `generatePdf needs createdOn, which PDF/A requires`: pass it, as step 2 does.
 :::
 
 ::: sdk dotnet
 Leaving out `CreatedOn` does not compile, since it is a `required` member of `GeneratePdfOptions`: set it, as step 2 does.
 :::
 
-::: sdk java
-Leaving out `createdOn` stops the call with `generatePdf needs createdOn, which PDF/A requires`: pass it, as step 2 does.
+::: sdk php
+Leaving out `createdOn` is an `ArgumentCountError`, since `GeneratePdfOptions` requires it: pass it, as step 2 does. The engine's own errors reach PHP with `lpdf render error: ` before the message.
 :::
 
 All of them are listed under [Factur-X / ZUGFeRD from the invoice XML, what it checks](https://lpdf.io/docs/cross-industry-invoice/#what-it-checks).

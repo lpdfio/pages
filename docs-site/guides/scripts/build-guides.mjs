@@ -25,13 +25,13 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** The SDKs, in the order the guides list them. `id` is the section id, `slug` the page's folder name. */
+/** The SDKs, in the order the docs list them (docs-site/src/code-languages.ts), which the guides' switch and links follow. `id` is the section id, `slug` the page's folder name. */
 const SDKS = [
     { id: 'js', slug: 'node', language: 'Node.js', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
     { id: 'python', slug: 'python', language: 'Python', names: { createdOn: 'created_on', invoiceMap: 'invoice_map', generatePdf: 'generate_pdf' } },
-    { id: 'php', slug: 'php', language: 'PHP', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
-    { id: 'dotnet', slug: 'dotnet', language: '.NET', names: { createdOn: 'CreatedOn', invoiceMap: 'InvoiceMap', generatePdf: 'GeneratePdf' } },
     { id: 'java', slug: 'java', language: 'Java', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
+    { id: 'dotnet', slug: 'dotnet', language: '.NET', names: { createdOn: 'CreatedOn', invoiceMap: 'InvoiceMap', generatePdf: 'GeneratePdf' } },
+    { id: 'php', slug: 'php', language: 'PHP', names: { createdOn: 'createdOn', invoiceMap: 'invoiceMap', generatePdf: 'generatePdf' } },
 ];
 
 const SDK_SECTION = /^::: sdk (\w+)\n([\s\S]*?)^:::[ \t]*$\n?/gm;

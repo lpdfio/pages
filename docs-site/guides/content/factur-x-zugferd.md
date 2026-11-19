@@ -67,19 +67,23 @@ A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice 
 
 - The invoice's XML: an EN 16931 invoice in the Cross Industry Invoice format, the XML every Factur-X and ZUGFeRD invoice carries, of the profile BASIC, EN 16931, EXTENDED or XRECHNUNG. This guide uses a sample, [in/invoice-2026-0412.xml](../files/in/invoice-2026-0412.xml). No XML yet? A library writes it, such as Mustang for Java, horstoeko/zugferd for PHP or ZUGFeRD-csharp for .NET.
 - A font file to embed, since a PDF/A file embeds every font it uses. This guide uses [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3), free under the SIL Open Font License, saved as `fonts/SourceSans3-Regular.otf`
+- A logo for the header: PNG, JPEG, SVG and other image files work. This guide uses [logo.png](../files/logo.png), made up for the sample seller, saved as `logo.png`
 
 ## 1. Write the template
 
 The template, [invoice-template.xml](../files/invoice-template.xml), says how the invoice looks. This is the page it makes from the sample invoice:
 
-![The invoice page the template makes from the sample XML: the seller and the buyer, two lines, the VAT and the total, and a note.](/guides/factur-x-zugferd/files/invoice-2026-0412.png)
+![The invoice page the template makes from the sample XML: the logo, the seller and the buyer, two lines, the VAT and the total, and a note.](/guides/factur-x-zugferd/files/invoice-2026-0412.png)
 
 Each `data-value="invoice:…"` takes a value from the invoice's XML, by the names of Lpdf's default map: `invoice:seller.name`, `invoice:totals.gross`. The `tr` with `data-source="invoice:lines"` repeats for each line, and inside it a name without the prefix is the line's own, `name` or `net`. The row with `data-if="invoice:totals.vatInTaxCurrency"` shows only on an invoice that has a tax currency. `note` has no prefix: it comes from your own data, since the XML has no such line.
+
+The logo is declared in `assets`, as the font is, and the `img` at the top of the header places it: 130pt wide, and as high as its proportions make it.
 
 ```xml title="invoice-template.xml"
 <lpdf version="1">
   <assets>
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="a4" font="body">
     <meta title="Invoice" author="Northwind Paper SAS" lang="en"/>
@@ -88,6 +92,7 @@ Each `data-value="invoice:…"` takes a value from the invoice's XML, by the nam
         <column gap="l">
           <row align="end">
             <column width="fill" gap="xs">
+              <img name="logo" width="130pt"/>
               <text font-size="20pt" data-value="invoice:seller.name">Seller</text>
               <text font-size="9pt" color="#5b6475" data-value="invoice:seller.street">Street</text>
               <row gap="xs">
@@ -308,7 +313,7 @@ public class MakeInvoice {
             .amount((value, entryName) -> amountFormat.format(new BigDecimal(value)))
             .code((value, entryName) -> codeNames.getOrDefault(entryName, Map.of()).getOrDefault(value, value));
 
-        // Java reads the template's font file, a `src`, only through the engine.
+        // Java reads the template's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         byte[] pdf = LCrossIndustryInvoice.generatePdf(engine, Files.readString(Path.of("invoice-template.xml")),
@@ -360,7 +365,7 @@ var format = new InvoiceFormat
     Code = (value, entryName) => codeNames.GetValueOrDefault(entryName)?.GetValueOrDefault(value) ?? value,
 };
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 var pdf = LCrossIndustryInvoice.GeneratePdf(engine, File.ReadAllText("invoice-template.xml"), new()
 {
@@ -430,28 +435,6 @@ php make-invoice.php
 
 For a folder of invoices, call it once for each XML, with the same template. A second template, for another look or another language, is another file: the code stays the same.
 
-Without a license key each page carries a small Lpdf line in its top-right corner. A license key removes it: see [Pricing](https://lpdf.io/pricing/).
-
-::: sdk js
-Set the key with `L.engine().setLicenseKey(key)` before the first call.
-:::
-
-::: sdk python
-Set the key with `L.engine().set_license_key(key)` before the first call.
-:::
-
-::: sdk java
-Set the key with `.setLicenseKey(key)` on the engine, `L.engine(options).setLicenseKey(key)`, before the first call.
-:::
-
-::: sdk dotnet
-Set the key with `engine.SetLicenseKey(key)` before the first call.
-:::
-
-::: sdk php
-Set the key with `L::engine()->setLicenseKey($key)` before the first call.
-:::
-
 ## 3. The same page in code
 
 A template is a file a designer can change without code. If you prefer code, build the same page with the `L` builders: the call that makes the PDF is the same, and you give it a document in place of the template.
@@ -494,7 +477,10 @@ const total      = { fontSize: '14pt' }
 const doc = L.document({
     size: 'a4',
     font: 'body',
-    assets: { fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }] },
+    assets: {
+        fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }],
+        images: [{ name: 'logo', src: 'logo.png' }],
+    },
     meta: { title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en' },
 }, [
     L.section(NoAttr, [
@@ -502,6 +488,7 @@ const doc = L.document({
             L.column({ gap: 'l' }, [
                 L.row({ align: 'end' }, [
                     L.column({ width: 'fill', gap: 'xs' }, [
+                        L.img({ name: 'logo', width: '130pt' }),
                         L.text({ fontSize: '20pt' }, [seller.name]),
                         L.text(muted, [seller.street]),
                         L.row({ gap: 'xs' }, [L.text(muted, [seller.postcode]), L.text(muted, [seller.city])]),
@@ -590,6 +577,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `seller.name` |
 | A list | `<tr data-source="invoice:lines">` | `invoice.lines.map((line) => L.tr(…))` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(totals.vatInTaxCurrency ? [L.row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img({ name: 'logo', width: '130pt' })`, with `images: [{ name: 'logo', src: 'logo.png' }]` in `assets` |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -609,6 +597,8 @@ from lpdf import (
     DocumentAttr,
     DocumentMeta,
     FontAttr,
+    ImageAttr,
+    ImgAttr,
     InvoiceFormat,
     L,
     LayoutAttr,
@@ -650,7 +640,10 @@ total = TextAttr(font_size="14pt")
 doc = L.document(DocumentAttr(
     size="a4",
     font="body",
-    assets=DocumentAssets(fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")]),
+    assets=DocumentAssets(
+        fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")],
+        images=[ImageAttr(name="logo", src="logo.png")],
+    ),
     meta=DocumentMeta(title="Invoice", author="Northwind Paper SAS", lang="en"),
 ), [
     L.section(NoAttr, [
@@ -658,6 +651,7 @@ doc = L.document(DocumentAttr(
             L.column(ColumnAttr(gap="l"), [
                 L.row(RowAttr(align="end"), [
                     L.column(ColumnAttr(width="fill", gap="xs"), [
+                        L.img(ImgAttr(name="logo", width="130pt")),
                         L.text(TextAttr(font_size="20pt"), [seller["name"]]),
                         L.text(muted, [seller["street"]]),
                         L.row(RowAttr(gap="xs"), [
@@ -768,6 +762,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `seller["name"]` |
 | A list | `<tr data-source="invoice:lines">` | `[L.tr(…) for line in invoice["lines"]]` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `*([L.row(…)] if "vatInTaxCurrency" in totals else [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img(ImgAttr(name="logo", width="130pt"))`, with `images=[ImageAttr(name="logo", src="logo.png")]` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -787,6 +782,8 @@ import io.lpdf.EngineOptions;
 import io.lpdf.ExtractInvoiceDataOptions;
 import io.lpdf.FontAttr;
 import io.lpdf.GeneratePdfOptions;
+import io.lpdf.ImageAttr;
+import io.lpdf.ImgAttr;
 import io.lpdf.InvoiceFormat;
 import io.lpdf.L;
 import io.lpdf.LCrossIndustryInvoice;
@@ -849,7 +846,9 @@ public class MakeInvoiceCode {
             new DocumentAttr()
                 .size("a4")
                 .font("body")
-                .assets(new DocumentAssets().fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf"))))
+                .assets(new DocumentAssets()
+                    .fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf")))
+                    .images(List.of(new ImageAttr().name("logo").src("logo.png"))))
                 .meta(new DocumentMeta().title("Invoice").author("Northwind Paper SAS").lang("en")),
             List.of(
                 L.section(NoAttr, List.of(
@@ -857,6 +856,7 @@ public class MakeInvoiceCode {
                         L.column(new ColumnAttr().gap("l"), nodes(
                             L.row(new RowAttr().align("end"), List.of(
                                 L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
+                                    L.img(new ImgAttr().name("logo").width("130pt")),
                                     L.text(new TextAttr().fontSize("20pt"), List.of(seller.get("name"))),
                                     L.text(muted, List.of(seller.get("street"))),
                                     L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of(seller.get("postcode"))), L.text(muted, List.of(seller.get("city"))))),
@@ -926,7 +926,7 @@ public class MakeInvoiceCode {
                 ))
             ));
 
-        // Java reads the document's font file, a `src`, only through the engine.
+        // Java reads the document's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
@@ -966,6 +966,7 @@ Java has no spread, so the script's own `nodes(…)` joins single nodes and list
 | An invoice value | `data-value="invoice:seller.name"` | `seller.get("name")` |
 | A list | `<tr data-source="invoice:lines">` | `lines.stream().map(line -> L.tr(…)).toList()` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `totals.containsKey("vatInTaxCurrency") ? List.of(L.row(…)) : List.of()` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.img(new ImgAttr().name("logo").width("130pt"))`, with `.images(List.of(new ImageAttr().name("logo").src("logo.png")))` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -1023,7 +1024,9 @@ var doc = L.Document(new()
 {
     Size = "a4",
     Font = "body",
-    Assets = new(Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }]),
+    Assets = new(
+        Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }],
+        Images: [new() { Name = "logo", Src = "logo.png" }]),
     Meta = new(Title: "Invoice", Author: "Northwind Paper SAS", Lang: "en"),
 }, [
     L.Section(NoAttr, [
@@ -1031,6 +1034,7 @@ var doc = L.Document(new()
             L.Column(new() { Gap = "l" }, [
                 L.Row(new() { Align = "end" }, [
                     L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Img(new() { Name = "logo", Width = "130pt" }),
                         L.Text(new() { FontSize = "20pt" }, [Value(seller, "name")]),
                         L.Text(muted, [Value(seller, "street")]),
                         L.Row(new() { Gap = "xs" }, [L.Text(muted, [Value(seller, "postcode")]), L.Text(muted, [Value(seller, "city")])]),
@@ -1100,7 +1104,7 @@ var doc = L.Document(new()
     ]),
 ]);
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 
 // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.
@@ -1124,6 +1128,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `Value(seller, "name")` |
 | A list | `<tr data-source="invoice:lines">` | `.. Items(invoice, "lines").Select(line => L.Tr(…))` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `.. (Value(totals, "vatInTaxCurrency") != "" ? (Node[])[L.Row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L.Img(new() { Name = "logo", Width = "130pt" })`, with `Images: [new() { Name = "logo", Src = "logo.png" }]` in the assets |
 | The note | `Data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -1145,11 +1150,13 @@ use Lpdf\Kit\DocumentAssets;
 use Lpdf\Kit\DocumentAttr;
 use Lpdf\Kit\DocumentMeta;
 use Lpdf\Kit\FontAttr;
+use Lpdf\Kit\ImageAttr;
 use Lpdf\Kit\LayoutAttr;
 use Lpdf\L;
 use Lpdf\LCrossIndustryInvoice;
 use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\DividerAttr;
+use Lpdf\Layout\ImgAttr;
 use Lpdf\Layout\RowAttr;
 use Lpdf\Layout\TableAttr;
 use Lpdf\Layout\TextAttr;
@@ -1184,7 +1191,10 @@ $total      = new TextAttr(fontSize: '14pt');
 $doc = L::document(new DocumentAttr(
     size: 'a4',
     font: 'body',
-    assets: new DocumentAssets(fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')]),
+    assets: new DocumentAssets(
+        fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')],
+        images: [new ImageAttr(name: 'logo', src: 'logo.png')],
+    ),
     meta: new DocumentMeta(title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en'),
 ), [
     L::section(NoAttr, [
@@ -1192,6 +1202,7 @@ $doc = L::document(new DocumentAttr(
             L::column(new ColumnAttr(gap: 'l'), [
                 L::row(new RowAttr(align: 'end'), [
                     L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::img(new ImgAttr(name: 'logo', width: '130pt')),
                         L::text(new TextAttr(fontSize: '20pt'), [$seller['name']]),
                         L::text($muted, [$seller['street']]),
                         L::row(new RowAttr(gap: 'xs'), [L::text($muted, [$seller['postcode']]), L::text($muted, [$seller['city']])]),
@@ -1280,6 +1291,7 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 | An invoice value | `data-value="invoice:seller.name"` | `$seller['name']` |
 | A list | `<tr data-source="invoice:lines">` | `array_map(fn (array $line) => L::tr(…), $invoice['lines'])` |
 | An optional line | `data-if="invoice:totals.vatInTaxCurrency"` | `...(isset($totals['vatInTaxCurrency']) ? [L::row(…)] : [])` |
+| The logo | `<img name="logo" width="130pt"/>`, with `<image name="logo" src="logo.png"/>` in `<assets>` | `L::img(new ImgAttr(name: 'logo', width: '130pt'))`, with `images: [new ImageAttr(name: 'logo', src: 'logo.png')]` in the assets |
 | The note | `data` of the call | a variable |
 | The look | an XML file | code |
 :::
@@ -1297,7 +1309,7 @@ java -jar Mustang-CLI.jar --action validate --source invoice-2026-0412.pdf
 It prints a report in XML. For this guide's file, with Mustang CLI 2.26.0, the parts that matter are:
 
 ```xml
-<pdf>ValidationResult [flavour=3b, totalAssertions=1945, assertions=[], isCompliant=true]
+<pdf>ValidationResult [flavour=3b, totalAssertions=2012, assertions=[], isCompliant=true]
   <summary status="valid"/>
 </pdf>
 <xml>
@@ -1312,7 +1324,7 @@ The PDF is valid PDF/A-3b and the XML is a valid EN 16931 invoice. The warnings 
 
 ## What Lpdf does, and what is yours
 
-Lpdf reads the XML, fills the template, embeds the font, writes the file as PDF/A-3, attaches the XML, and writes the Factur-X metadata that names its profile. The pages come from the XML, so the two can't disagree.
+Lpdf reads the XML, fills the template, places the logo, embeds the font, writes the file as PDF/A-3, attaches the XML, and writes the Factur-X metadata that names its profile. The pages come from the XML, so the two can't disagree.
 
 The XML's content is yours. Lpdf checks what reading it needs, and not its sums, its codes or the rules of EN 16931: check the XML your software writes with the Mustang CLI, or with the KoSIT validator, before you rely on it.
 
@@ -1348,6 +1360,7 @@ Each error says what is wrong. The ones a first invoice usually meets:
 |---|---|
 | `the invoice's profile is MINIMUM` or `BASIC WL` | Those profiles' XML is only a booking aid, without the lines the PDF shows, so the PDF can't be made from it. Ask your software for BASIC, EN 16931 or EXTENDED |
 | `data-value="invoice:sellr.name": 'sellr' is not in the map` | A name in the template that the map doesn't have: the error lists the names it has there |
+| `image 'logo' declared in <assets> but not loaded via loadImage()` | The image's file was not found: check the image's `src`, which is read from the folder you run in |
 | `generatePdf makes the invoice a PDF/A-3b file: the text "…" is in Helvetica` | Declare a font in `<assets>` and set it with `font` on the document. When the error names your font and says its file was not loaded, check the font's `src`: it is read from the folder you run in |
 
 ::: sdk js

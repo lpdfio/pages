@@ -9,6 +9,8 @@ from lpdf import (
     DocumentAttr,
     DocumentMeta,
     FontAttr,
+    ImageAttr,
+    ImgAttr,
     InvoiceFormat,
     L,
     LayoutAttr,
@@ -50,7 +52,10 @@ total = TextAttr(font_size="14pt")
 doc = L.document(DocumentAttr(
     size="a4",
     font="body",
-    assets=DocumentAssets(fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")]),
+    assets=DocumentAssets(
+        fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")],
+        images=[ImageAttr(name="logo", src="logo.png")],
+    ),
     meta=DocumentMeta(title="Invoice", author="Northwind Paper SAS", lang="en"),
 ), [
     L.section(NoAttr, [
@@ -58,6 +63,7 @@ doc = L.document(DocumentAttr(
             L.column(ColumnAttr(gap="l"), [
                 L.row(RowAttr(align="end"), [
                     L.column(ColumnAttr(width="fill", gap="xs"), [
+                        L.img(ImgAttr(name="logo", width="130pt")),
                         L.text(TextAttr(font_size="20pt"), [seller["name"]]),
                         L.text(muted, [seller["street"]]),
                         L.row(RowAttr(gap="xs"), [

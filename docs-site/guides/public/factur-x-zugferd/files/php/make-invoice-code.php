@@ -11,11 +11,13 @@ use Lpdf\Kit\DocumentAssets;
 use Lpdf\Kit\DocumentAttr;
 use Lpdf\Kit\DocumentMeta;
 use Lpdf\Kit\FontAttr;
+use Lpdf\Kit\ImageAttr;
 use Lpdf\Kit\LayoutAttr;
 use Lpdf\L;
 use Lpdf\LCrossIndustryInvoice;
 use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\DividerAttr;
+use Lpdf\Layout\ImgAttr;
 use Lpdf\Layout\RowAttr;
 use Lpdf\Layout\TableAttr;
 use Lpdf\Layout\TextAttr;
@@ -50,7 +52,10 @@ $total      = new TextAttr(fontSize: '14pt');
 $doc = L::document(new DocumentAttr(
     size: 'a4',
     font: 'body',
-    assets: new DocumentAssets(fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')]),
+    assets: new DocumentAssets(
+        fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')],
+        images: [new ImageAttr(name: 'logo', src: 'logo.png')],
+    ),
     meta: new DocumentMeta(title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en'),
 ), [
     L::section(NoAttr, [
@@ -58,6 +63,7 @@ $doc = L::document(new DocumentAttr(
             L::column(new ColumnAttr(gap: 'l'), [
                 L::row(new RowAttr(align: 'end'), [
                     L::column(new ColumnAttr(width: 'fill', gap: 'xs'), [
+                        L::img(new ImgAttr(name: 'logo', width: '130pt')),
                         L::text(new TextAttr(fontSize: '20pt'), [$seller['name']]),
                         L::text($muted, [$seller['street']]),
                         L::row(new RowAttr(gap: 'xs'), [L::text($muted, [$seller['postcode']]), L::text($muted, [$seller['city']])]),

@@ -47,7 +47,9 @@ var doc = L.Document(new()
 {
     Size = "a4",
     Font = "body",
-    Assets = new(Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }]),
+    Assets = new(
+        Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }],
+        Images: [new() { Name = "logo", Src = "logo.png" }]),
     Meta = new(Title: "Invoice", Author: "Northwind Paper SAS", Lang: "en"),
 }, [
     L.Section(NoAttr, [
@@ -55,6 +57,7 @@ var doc = L.Document(new()
             L.Column(new() { Gap = "l" }, [
                 L.Row(new() { Align = "end" }, [
                     L.Column(new() { Width = "fill", Gap = "xs" }, [
+                        L.Img(new() { Name = "logo", Width = "130pt" }),
                         L.Text(new() { FontSize = "20pt" }, [Value(seller, "name")]),
                         L.Text(muted, [Value(seller, "street")]),
                         L.Row(new() { Gap = "xs" }, [L.Text(muted, [Value(seller, "postcode")]), L.Text(muted, [Value(seller, "city")])]),
@@ -124,7 +127,7 @@ var doc = L.Document(new()
     ]),
 ]);
 
-// The engine reads the font's src through SrcFallback, which here reads the file from disk.
+// The engine reads the font's and the image's src through SrcFallback, which here reads the file from disk.
 using var engine = L.Engine(new EngineOptions { SrcFallback = File.ReadAllBytes });
 
 // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.

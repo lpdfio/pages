@@ -9,6 +9,8 @@ import io.lpdf.EngineOptions;
 import io.lpdf.ExtractInvoiceDataOptions;
 import io.lpdf.FontAttr;
 import io.lpdf.GeneratePdfOptions;
+import io.lpdf.ImageAttr;
+import io.lpdf.ImgAttr;
 import io.lpdf.InvoiceFormat;
 import io.lpdf.L;
 import io.lpdf.LCrossIndustryInvoice;
@@ -71,7 +73,9 @@ public class MakeInvoiceCode {
             new DocumentAttr()
                 .size("a4")
                 .font("body")
-                .assets(new DocumentAssets().fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf"))))
+                .assets(new DocumentAssets()
+                    .fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf")))
+                    .images(List.of(new ImageAttr().name("logo").src("logo.png"))))
                 .meta(new DocumentMeta().title("Invoice").author("Northwind Paper SAS").lang("en")),
             List.of(
                 L.section(NoAttr, List.of(
@@ -79,6 +83,7 @@ public class MakeInvoiceCode {
                         L.column(new ColumnAttr().gap("l"), nodes(
                             L.row(new RowAttr().align("end"), List.of(
                                 L.column(new ColumnAttr().width("fill").gap("xs"), List.of(
+                                    L.img(new ImgAttr().name("logo").width("130pt")),
                                     L.text(new TextAttr().fontSize("20pt"), List.of(seller.get("name"))),
                                     L.text(muted, List.of(seller.get("street"))),
                                     L.row(new RowAttr().gap("xs"), List.of(L.text(muted, List.of(seller.get("postcode"))), L.text(muted, List.of(seller.get("city"))))),
@@ -148,7 +153,7 @@ public class MakeInvoiceCode {
                 ))
             ));
 
-        // Java reads the document's font file, a `src`, only through the engine.
+        // Java reads the document's font and image files, each a `src`, only through the engine.
         var engine = L.engine(new EngineOptions().srcFallback(src -> Files.readAllBytes(Path.of(src))));
 
         // Same call as the template's: it makes the file PDF/A-3 and attaches the XML.

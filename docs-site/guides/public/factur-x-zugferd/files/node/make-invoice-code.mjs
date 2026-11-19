@@ -30,7 +30,10 @@ const total      = { fontSize: '14pt' }
 const doc = L.document({
     size: 'a4',
     font: 'body',
-    assets: { fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }] },
+    assets: {
+        fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }],
+        images: [{ name: 'logo', src: 'logo.png' }],
+    },
     meta: { title: 'Invoice', author: 'Northwind Paper SAS', lang: 'en' },
 }, [
     L.section(NoAttr, [
@@ -38,6 +41,7 @@ const doc = L.document({
             L.column({ gap: 'l' }, [
                 L.row({ align: 'end' }, [
                     L.column({ width: 'fill', gap: 'xs' }, [
+                        L.img({ name: 'logo', width: '130pt' }),
                         L.text({ fontSize: '20pt' }, [seller.name]),
                         L.text(muted, [seller.street]),
                         L.row({ gap: 'xs' }, [L.text(muted, [seller.postcode]), L.text(muted, [seller.city])]),

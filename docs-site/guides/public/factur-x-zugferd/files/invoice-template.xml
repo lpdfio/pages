@@ -1,6 +1,7 @@
 <lpdf version="1">
   <assets>
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
+    <image name="logo" src="logo.png"/>
   </assets>
   <document size="a4" font="body">
     <meta title="Invoice" author="Northwind Paper SAS" lang="en"/>
@@ -9,6 +10,7 @@
         <column gap="l">
           <row align="end">
             <column width="fill" gap="xs">
+              <img name="logo" width="130pt"/>
               <text font-size="20pt" data-value="invoice:seller.name">Seller</text>
               <text font-size="9pt" color="#5b6475" data-value="invoice:seller.street">Street</text>
               <row gap="xs">

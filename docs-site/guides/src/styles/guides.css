@@ -10,8 +10,7 @@
 }
 
 .guide-languages > :first-child,
-.guide-source > :first-child,
-.guide-more > :first-child {
+.guide-links > :first-child {
     min-inline-size: 4.5rem;
     margin-inline-end: 0.25rem;
     color: var(--sl-color-gray-3);
@@ -49,30 +48,23 @@
     color: var(--sl-color-gray-3);
 }
 
-/* Where this SDK's code and package are, and its documentation and the extension, under the switch: plain links, since
-   they leave the guide. The second line ends the block, so it has the space below. */
-.guide-source,
-.guide-more {
+/* Where this SDK's code, package and documentation are, and the extension, under the switch: plain links, since they
+   leave the guide. This line ends the block, so it has the space below. */
+.guide-links {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 1rem;
-    margin-block: 0 0.75rem;
+    margin-block: 0 1.5rem;
     font-size: var(--sl-text-sm);
 }
 
-.guide-more {
-    margin-block-end: 1.5rem;
-}
-
-.guide-source a,
-.guide-more a {
+.guide-links a {
     color: var(--sl-color-gray-2);
     text-underline-offset: 0.2em;
 }
 
-.guide-source a:hover,
-.guide-more a:hover {
+.guide-links a:hover {
     color: var(--sl-color-white);
 }
 
@@ -84,7 +76,6 @@
 }
 
 /* The first link starts where the first language button's edge does. */
-.guide-source > :first-child,
-.guide-more > :first-child {
+.guide-links > :first-child {
     margin-inline-end: -0.25rem;
 }

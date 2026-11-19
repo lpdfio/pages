@@ -84,7 +84,7 @@ run. The page's title is also the browser tab's. The build fails on a title over
 guide's names its SDK too) or a description outside 120 to 160.
 
 The pages are generated and ignored by git; the hand-written ones are `.mdx`. A page has a switch to the same guide in the
-other SDKs, then a "Source" line with that SDK's GitHub repository and package page, and a "More" line with its documentation and the VS Code extension's two listings. The guides have no sidebar
+other SDKs, then a "Links" line with that SDK's GitHub repository, package page and documentation, and the VS Code extension's two listings. The guides have no sidebar
 (`guides/src/route-data.ts` hides it): a reader arrives by a link, and the header's "Guides" goes to the index. A new guide is
 a source file in `guides/content` and its files in `guides/public`; link to it from the index, `guides/src/content/docs/index.mdx`.
 

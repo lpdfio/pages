@@ -8,7 +8,11 @@
         "dev": "node scripts/dev.mjs",
         "build": "node scripts/sync-content.mjs && node scripts/render-examples.mjs && node scripts/build-info.mjs && astro build",
         "check": "node scripts/check-examples.mjs && node scripts/check-codegen.mjs && node scripts/check-page-meta.mjs",
-        "preview": "astro preview"
+        "preview": "astro preview",
+        "sync:guides": "node guides/scripts/build-guides.mjs",
+        "dev:guides": "node guides/scripts/build-guides.mjs && astro dev --root guides --port 4322",
+        "build:guides": "node guides/scripts/build-guides.mjs && astro build --root guides",
+        "preview:guides": "astro preview --root guides --port 4322"
     },
     "dependencies": {
         "@astrojs/starlight": "^0.42.4",

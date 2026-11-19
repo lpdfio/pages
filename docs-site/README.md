@@ -53,6 +53,44 @@ once its markdown is drawn, in `data-prerendered-src` on its script tag, and the
 `__PORTAL_URL__` until `.github/set-stage.sh` sets them, as the bundle's do. `lpdf.local` serves the pages as they are
 in git, so it never shows the copy; run `assemble-site.sh` and serve its output to look at it.
 
+## Guides
+
+The guides, served at lpdf.io/guides, are a second Starlight site in `guides/`. The docs are reference, laid out by
+feature, and a guide is laid out by goal ("create a Factur-X invoice PDF from its XML"), so it has a site of its own, with
+the docs' header, theme and styles. It lives in this folder so that both sites use this one install of Astro and
+Starlight: a second install would load Starlight twice for the components it takes from the docs.
+
+| Command | What it does |
+|---|---|
+| `npm run dev:guides` | Dev server at http://localhost:4322/guides/. It writes the pages first; after a change to a guide in `guides/content`, run `npm run sync:guides` |
+| `npm run build:guides` | Writes the pages, then builds the static site into `guides/dist/`, with its search index and a sitemap |
+| `npm run preview:guides` | Serves `guides/dist/` at http://localhost:4322/guides/ |
+
+**On lpdf.local.** The Caddyfile in `_local` serves `guides/dist` at http://lpdf.local/guides, beside the docs. Run
+`npm run build:guides`, then reload; it is 404 until that has run.
+
+A guide is one Markdown file in `guides/content/`, and each SDK gets a page from it (`scripts/build-guides.mjs`). The words
+are shared. Code, and text that depends on the SDK, sit in sections that name their SDK, with the ids the docs use:
+
+    ::: sdk js
+    ...only the Node.js page has this...
+    :::
+
+`{{language}}`, `{{createdOn}}`, `{{invoiceMap}}` and `{{generatePdf}}` in the text are the SDK's own name and the names it
+gives those; `{{otherGuides}}` is the links to the other SDKs' pages. An SDK with no section gets a placeholder page, and one
+with some must have as many as the most complete. A code block with `title="make-invoice.mjs"` must equal the file of that name
+in `guides/public/<guide>/files/<sdk>/` (or `files/`), which the reader downloads, so the code on a page is the code that was
+run. The page's title is also the browser tab's. The build fails on a title over 65 characters (the docs' limit is 60, but a
+guide's names its SDK too) or a description outside 120 to 160.
+
+The pages are generated and ignored by git; the hand-written ones are `.mdx`. A page has a switch to the same guide in the
+other SDKs, and the sidebar has one entry for the guide, which `guides/src/route-data.ts` keeps current on all of them. A new
+guide is a source file in `guides/content`, its files in `guides/public`, and one line in the sidebar of
+`guides/astro.config.mjs`.
+
+The deploy builds it after the docs (`npm run build:guides`), and `assemble-site.sh` puts it at `/guides`. Its sitemap,
+`/guides/sitemap-index.xml`, is not in the `robots.txt` that `set-stage.sh` writes for prod.
+
 ## The engine copy
 
 The demo and the docs run on the engine copy committed in this repo: `lpdf-web.js`, `lpdf_bg.wasm` and `browser.js` in

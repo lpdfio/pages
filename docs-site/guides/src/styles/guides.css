@@ -1,0 +1,47 @@
+/* The switch to the same guide in another SDK, at the top of each guide page. scripts/build-guides.mjs writes it, with
+   `not-content` so Starlight's styles for page text leave it alone. */
+.guide-languages {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block: 0 1.5rem;
+    font-size: var(--sl-text-sm);
+}
+
+.guide-languages > :first-child {
+    margin-inline-end: 0.25rem;
+    color: var(--sl-color-gray-3);
+}
+
+.guide-languages a,
+.guide-languages [aria-current],
+.guide-languages [aria-disabled] {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    line-height: 1.25;
+}
+
+.guide-languages a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.guide-languages a:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-white);
+}
+
+/* The SDK this page is in. */
+.guide-languages [aria-current] {
+    border-color: var(--sl-color-accent);
+    background-color: var(--sl-color-accent-low);
+    color: var(--sl-color-white);
+}
+
+/* An SDK whose guide is not written yet. */
+.guide-languages [aria-disabled] {
+    color: var(--sl-color-gray-3);
+}

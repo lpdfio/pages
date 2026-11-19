@@ -1,0 +1,46 @@
+---
+title: Factur-X / ZUGFeRD invoices
+description: Make a Factur-X / ZUGFeRD PDF/A-3 invoice from the XML your accounting software writes, with an Lpdf template and one call. One guide for each SDK.
+head:
+    - tag: title
+      content: Factur-X and ZUGFeRD invoices with Lpdf
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice twice: as pages people read, and as XML
+that accounting software reads. France and Germany accept it as an electronic invoice.
+
+Your accounting software, or an e-invoice library, already writes the XML. These guides turn it into the PDF with a
+template for the look and one call. The pages are read from the XML, so the two cannot disagree.
+
+## Pick your language
+
+Each guide takes the same sample invoice and the same template through the same steps, in one SDK.
+
+<CardGrid>
+    <LinkCard title="Node.js" description="@lpdfio/lpdf" href="/guides/factur-x-zugferd/node/" />
+    <LinkCard title="Python" description="lpdfio-lpdf" href="/guides/factur-x-zugferd/python/" />
+    <LinkCard title="Java" description="io.lpdf:lpdf" href="/guides/factur-x-zugferd/java/" />
+    <LinkCard title=".NET" description="Lpdfio.Lpdf" href="/guides/factur-x-zugferd/dotnet/" />
+    <LinkCard title="PHP" description="lpdfio/lpdf" href="/guides/factur-x-zugferd/php/" />
+</CardGrid>
+
+## What each guide covers
+
+1. Write the template: how the invoice looks, with values taken from the XML.
+2. Make the PDF: one call that fills the template, embeds the font, writes the file as PDF/A-3 and attaches the XML.
+3. Check the result with the Mustang CLI, an open-source Factur-X checker.
+4. What to do when it fails: the errors a first invoice usually meets.
+
+## What Lpdf does, and what is yours
+
+Lpdf reads the XML, fills the template, writes the file as PDF/A-3, attaches the XML and writes the Factur-X metadata
+that names its profile. It does not write the XML, and it does not check the XML's content against the rules of EN 16931:
+check the XML your software writes with the Mustang CLI or the KoSIT validator before you rely on it.
+
+## In the docs
+
+- [Factur-X / ZUGFeRD from the invoice XML](/docs/cross-industry-invoice/): the map, the format functions, a document built in code
+- [Factur-X e-invoices](/docs/facturx/): attaching an XML you fill the pages for yourself
+- [PDF/A](/docs/pdfa/): the levels, and what a PDF/A file can't hold

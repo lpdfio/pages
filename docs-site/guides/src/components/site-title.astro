@@ -1,0 +1,58 @@
+---
+// The docs' lockup (docs-site/src/components/site-title.astro) with "Guides" for the label: the mark and the word go
+// to the lpdf.io home page, the label to the guides' home. The docs' code language picker and build stamp are the
+// docs', and a guide is written for one language, so neither is here.
+import mark from '../../../src/assets/lpdf-mark.svg';
+
+const { siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<div class="brand">
+    <a href="/" class="site-title">
+        <img src={mark.src} width={mark.width} height={mark.height} alt="" />
+        <span class="word" translate="no">Lpdf</span>
+    </a>
+    <a href={siteTitleHref} class="label">Guides</a>
+</div>
+
+<style>
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-width: 0;
+    }
+    .site-title {
+        display: flex;
+        align-items: center;
+        gap: 0.42em;
+        color: var(--sl-color-white);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    img {
+        height: 24px;
+        width: auto;
+        flex: none;
+    }
+    .word {
+        font-family: 'Radley', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.125rem;
+        line-height: 1;
+    }
+    .label {
+        padding-inline-start: 1rem;
+        border-inline-start: 1px solid var(--sl-color-gray-5);
+        color: var(--sl-color-white);
+        font-size: 0.875rem;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: color 0.15s;
+    }
+    .label:hover {
+        color: var(--lpdf-brand);
+    }
+</style>

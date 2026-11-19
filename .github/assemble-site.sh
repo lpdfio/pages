@@ -1,19 +1,25 @@
 #!/usr/bin/env bash
 #
 # Builds the folder that gets deployed: the static site in www/, with the docs site's build
-# (docs-site/dist) served at /docs in place of the old docs.
+# (docs-site/dist) served at /docs in place of the old docs, and the guides' build (docs-site/guides/dist) at /guides.
 #
 # www/docs is left out. It holds the docs markdown, which docs-site reads at build time, and the old
-# docs page; neither is served any more. Run it after `npm run build` in docs-site.
+# docs page; neither is served any more. Run it after `npm run build` and `npm run build:guides` in docs-site.
 #
 # Usage: assemble-site.sh <output-dir>
 set -euo pipefail
 
 out=${1:?usage: assemble-site.sh <output-dir>}
 docs=docs-site/dist
+guides=docs-site/guides/dist
 
 if [ ! -f "$docs/index.html" ]; then
     echo "::error::$docs/index.html is missing — build the docs first ('npm run build' in docs-site)"
+    exit 1
+fi
+
+if [ ! -f "$guides/index.html" ]; then
+    echo "::error::$guides/index.html is missing — build the guides first ('npm run build:guides' in docs-site)"
     exit 1
 fi
 
@@ -23,6 +29,8 @@ cp -a www/. "$out/"
 rm -rf "$out/docs"
 mkdir -p "$out/docs"
 cp -a "$docs/." "$out/docs/"
+mkdir -p "$out/guides"
+cp -a "$guides/." "$out/guides/"
 
 # The pre stage is served from a branch, and Pages runs Jekyll over a branch: it drops every folder
 # whose name starts with an underscore, which is where Starlight puts its CSS and JS (_astro).
@@ -54,4 +62,9 @@ if [ ! -f "$out/docs/pagefind/pagefind.js" ]; then
     exit 1
 fi
 
-echo "Assembled $out: $(find "$out" -type f | wc -l) files, docs at /docs"
+if [ ! -f "$out/guides/pagefind/pagefind.js" ]; then
+    echo "::error::the guides' search index is missing from $out/guides/pagefind"
+    exit 1
+fi
+
+echo "Assembled $out: $(find "$out" -type f | wc -l) files, docs at /docs, guides at /guides"

@@ -103,6 +103,12 @@ jobs:
         env:
           DOCS_REVISION: ${{ steps.revision.outputs.revision }}
 
+      # The guides are a second Starlight site, built with the docs' install. Its pages are written from
+      # docs-site/guides/content/*.md, which fails here when a code block on a page is not the file the reader downloads.
+      - name: Build the guides
+        run: npm run build:guides
+        working-directory: docs-site
+
       - name: Assemble the site
         run: bash ./.github/assemble-site.sh _site
 

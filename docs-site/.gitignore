@@ -4,6 +4,8 @@ src/content/docs/
 src/build-info.json
 # Rendered by scripts/render-examples.mjs from each example's document.xml, with the engine in ../www/assets/js/lpdf-demo
 public/examples/*/document.pdf
+# The guides' pages, written by guides/scripts/build-guides.mjs from guides/content/*.md. The hand-written ones are .mdx
+guides/src/content/docs/*/*.md
 # Astro
 .astro/
 dist/

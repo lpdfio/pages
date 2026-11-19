@@ -66,7 +66,7 @@ A Factur-X invoice, called ZUGFeRD in Germany, is one PDF that holds an invoice 
 :::
 
 - The invoice's XML: an EN 16931 invoice in the Cross Industry Invoice format, the XML every Factur-X and ZUGFeRD invoice carries, of the profile BASIC, EN 16931, EXTENDED or XRECHNUNG. This guide uses a sample, [in/invoice-2026-0412.xml](../files/in/invoice-2026-0412.xml). No XML yet? A library writes it, such as Mustang for Java, horstoeko/zugferd for PHP or ZUGFeRD-csharp for .NET.
-- A font file to embed, since a PDF/A file embeds every font it uses. This guide uses [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3), free under the SIL Open Font License, saved as `fonts/SourceSans3-Regular.otf`
+- A font file to embed, since a PDF/A file embeds every font it uses. This guide uses [Source Sans 3](https://fonts.google.com/specimen/Source+Sans+3), free under the SIL Open Font License. It is in the downloads: save [SourceSans3-Regular.otf](../files/fonts/SourceSans3-Regular.otf) as `fonts/SourceSans3-Regular.otf`, and keep its license, [OFL-SourceSans3.txt](../files/fonts/OFL-SourceSans3.txt), beside it
 - A logo for the header: PNG, JPEG, SVG and other image files work. This guide uses [logo.png](../files/logo.png), made up for the sample seller, saved as `logo.png`
 
 ## 1. Write the template
@@ -1298,7 +1298,9 @@ It writes `invoice-2026-0412-code.pdf`, which renders the same page as step 2's 
 
 ## Check the result
 
-Open `invoice-2026-0412.pdf` in a PDF reader and look at its attachments: `factur-x.xml` is there.
+Open `invoice-2026-0412.pdf` in Adobe Acrobat. A bar at the top says the file claims compliance with the PDF/A standard, and **View > Show/Hide > Navigation Panes > Standards** shows PDF/A-3B. **View > Show/Hide > Navigation Panes > Attachments** lists `factur-x.xml`. Other PDF readers list the attachments too.
+
+Acrobat's Standards panel says "not yet verified": it reads what the file says about itself, and does not check it. Acrobat Pro's Preflight tool can check the PDF/A; the checker below checks that and the XML as well.
 
 The [Mustang CLI](https://www.mustangproject.org/commandline/), an open-source Factur-X checker, checks the whole file: the PDF/A-3, the Factur-X metadata, and the XML against the rules of EN 16931. It needs Java 11 or later, and the file you download carries its version in its name, such as `Mustang-CLI-2.26.0.jar`.
 

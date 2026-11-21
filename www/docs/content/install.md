@@ -646,7 +646,7 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 | `Ocg` | Print, Screen | `ocg` of an element, a layer and a ruling |
 | `Orientation` | Portrait, Landscape | `orientation` of a document and a section |
 | `PageScope` | Each, First, Last, Odd, Even | `page` of a layer and a region; a range stays a string |
-| `PageSize` | A4, A3, A5, Letter, Legal | `size` of a document and a section; a custom size stays a string |
+| `PageSize` | A0, A1, A2, A3, A4, A5, A6, B4, B5, Letter, Legal, Tabloid | `size` of a document and a section; a custom size stays a string |
 | `Paginate` | No, BreakBefore, BreakAfter, KeepNext | `paginate` |
 | `Pdf417EcLevel` | Level0, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8 | `ec` of a `pdf417` |
 | `PdfALevel` | Level2a, Level2b, Level2u, Level3a, Level3b, Level3u | `pdfa` of the output |
@@ -663,7 +663,7 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 | `TextAlign` | Left, Center, Right, Justify | `align` of a text, a `text-at` and the markdown rules |
 | `TextRole` | H1, H2, H3, H4, H5, H6 | `role` of a text |
 
-These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a4`, `a3`, `a5`, `letter` and `legal`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
+These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a0` to `a6`, `b4`, `b5`, `letter`, `legal` and `tabloid`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
 
 In TypeScript an attribute that takes one word of a constant has the constant's type, so a word that is none of its values doesn't compile: `orientation: 'landscpe'` is an error, and `'landscape'` and `Orientation.Landscape` both pass. `size` takes a named size or a width and a height with their units, `'210mm 297mm'`. `page`, which takes a range beside its named words, and `allow`, which takes several words separated by spaces, are strings. A variable of type `string` needs a cast. In the other SDKs an attribute takes a string, and a word that is none of its values is an error when the document is rendered, which names the words it takes, as it does for XML: `invalid orientation value: 'landscpe' — expected portrait or landscape`.
 

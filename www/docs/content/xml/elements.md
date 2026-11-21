@@ -190,7 +190,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 
 | Attribute     | Type    | Default    | Description |
 |---------------|---------|------------|-------------|
-| `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` or `"210mm 297mm"`, each size 3pt at least |
+| `size`        | string  | `a4`       | `a0` `a1` `a2` `a3` `a4` `a5` `a6` `b4` `b5` `letter` `legal` `tabloid`, or a custom `"200pt 300pt"` or `"210mm 297mm"`, each size 3pt at least. See [Page sizes](?p=xml/schema#page-sizes) |
 | `orientation` | string  | —          | `portrait` `landscape`: the shape of the page, taller than wide or wider than tall, whatever its size. Without it the page is the size as written. See [Orientation](?p=xml/schema#orientation) |
 | `bleed`       | length | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |

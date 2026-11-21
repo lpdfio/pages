@@ -608,7 +608,7 @@ Asset names use lowercase letters, digits, and `-`, and start with a letter: `lo
 
 ## Constants
 
-A document built in code can name each word an attribute takes as a constant. Every closed enumeration of the schema has one in each SDK, named as the schema names its type, with a member for each word in the language's case:
+A document built in code can name each word an attribute takes as a constant. Every closed enumeration of the schema has one in each SDK, but for the words that stand beside a length (below). A constant is named as the schema names its type, with a member for each word in the language's case:
 
 | JavaScript and C# | PHP | Python and Java | The word |
 |---|---|---|---|
@@ -617,6 +617,8 @@ A document built in code can name each word an attribute takes as a constant. Ev
 | `PdfALevel.Level2a` | `PdfALevel::Level2a` | `PdfALevel.LEVEL_2A` | `2a` |
 
 A constant is its word, so `Orientation.Landscape` and `'landscape'` are the same value, and the PDF is the same. A word that starts with a digit takes the last word of its constant's name in front, since no language accepts a name that starts with one: `Level2a` in `PdfALevel`, `Part1` in `PdfUaPart`, `Version4` in `PdfXVersion` and `Level0` to `Level8` in `Pdf417EcLevel`.
+
+In JavaScript the constants are exported by the package, `import { Orientation } from '@lpdfio/lpdf'`, in Python by `lpdf`, `from lpdf import Orientation`, and in Java by `io.lpdf`, which `import io.lpdf.*;` brings in. In C# and PHP each is in the namespace of the elements that take it, `Lpdf.Layout`, `Lpdf.Canvas`, `Lpdf.Kit` or `Lpdf.Engine`, and in `Lpdf.Shared` where more than one place takes it: `using Lpdf.Layout;` in C#, `use Lpdf\Layout\Paginate;` in PHP. The code tabs of these docs show the imports of each example.
 
 | Constant | Members | For |
 |---|---|---|
@@ -661,7 +663,7 @@ A constant is its word, so `Orientation.Landscape` and `'landscape'` are the sam
 | `TextAlign` | Left, Center, Right, Justify | `align` of a text, a `text-at` and the markdown rules |
 | `TextRole` | H1, H2, H3, H4, H5, H6 | `role` of a text |
 
-These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a4`, `a3`, `a5`, `letter` and `legal`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl`, which an attribute that takes a length takes beside a length and an alias.
+These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a4`, `a3`, `a5`, `letter` and `legal`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
 
 In TypeScript an attribute that takes one word of a constant has the constant's type, so a word that is none of its values doesn't compile: `orientation: 'landscpe'` is an error, and `'landscape'` and `Orientation.Landscape` both pass. `size` takes a named size or a width and a height with their units, `'210mm 297mm'`. `page`, which takes a range beside its named words, and `allow`, which takes several words separated by spaces, are strings. A variable of type `string` needs a cast. In the other SDKs an attribute takes a string, and a word that is none of its values is an error when the document is rendered, which names the words it takes, as it does for XML: `invalid orientation value: 'landscpe' — expected portrait or landscape`.
 

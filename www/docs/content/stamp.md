@@ -143,6 +143,8 @@ The names are written in each language's case: `maxGrow` in JavaScript, Java and
 | `scale` | `fit` `fill` | `fit` | How the image is sized in the box |
 | `maxGrow` | number from 1 | `1` | How many times its natural size `fit` may grow an image |
 
+`anchor`, `align`, `justify` and `scale` have constants in each SDK: `Anchor`, `Align` and `StampScale`, such as `Anchor.BottomRight`, `Align.End` and `StampScale.Fill`, in the language's case, as under [Constants](?p=install#constants). In TypeScript each option takes its constant's type, so a word that is none of its values doesn't compile.
+
 The box is placed as a [layer element](?p=doc/layer) is, on the page as a viewer shows it: its crop box, turned the way the PDF turns it. On a page the PDF rotates, the box turns with the page, so the image stands upright to the reader. A page shown in landscape has its `x` across the landscape width.
 
 ## How the image is sized

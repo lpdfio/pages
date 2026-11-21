@@ -778,19 +778,12 @@ function mergeRequest(sources, options = {}) {
 }
 
 // src/constants.ts
-var FieldType = {
-  Text: "text",
-  Checkbox: "checkbox",
-  Dropdown: "dropdown",
-  Radio: "radio",
-  Button: "button"
-};
-var Pin = {
-  Top: "top",
-  Bottom: "bottom",
-  Left: "left",
-  Right: "right",
-  Inset: "inset"
+var PageSize = {
+  A4: "a4",
+  A3: "a3",
+  A5: "a5",
+  Letter: "letter",
+  Legal: "legal"
 };
 var Orientation = {
   Portrait: "portrait",
@@ -798,11 +791,6 @@ var Orientation = {
 };
 var SectionType = {
   Toc: "toc"
-};
-var FootnoteCounter = {
-  Page: "page",
-  Section: "section",
-  Document: "document"
 };
 var ColumnFill = {
   Auto: "auto",
@@ -813,9 +801,36 @@ var Grow = {
   Height: "height",
   WidthHeight: "width height"
 };
+var FootnoteCounter = {
+  Page: "page",
+  Section: "section",
+  Document: "document"
+};
 var Cipher = {
   Aes256: "aes-256",
   Rc4128: "rc4-128"
+};
+var PdfALevel = {
+  Level2a: "2a",
+  Level2b: "2b",
+  Level2u: "2u",
+  Level3a: "3a",
+  Level3b: "3b",
+  Level3u: "3u"
+};
+var PdfUaPart = {
+  Part1: "1"
+};
+var PdfXVersion = {
+  Version4: "4"
+};
+var TextRole = {
+  H1: "h1",
+  H2: "h2",
+  H3: "h3",
+  H4: "h4",
+  H5: "h5",
+  H6: "h6"
 };
 var Permission = {
   All: "all",
@@ -834,6 +849,155 @@ var FileRelationship = {
   Supplement: "supplement",
   Unspecified: "unspecified"
 };
+var GradientType = {
+  Linear: "linear",
+  Radial: "radial"
+};
+var RulingOrigin = {
+  Page: "page",
+  Margin: "margin"
+};
+var BoxAlign = {
+  Start: "start",
+  Center: "center",
+  End: "end",
+  Stretch: "stretch"
+};
+var Align = {
+  Start: "start",
+  Center: "center",
+  End: "end"
+};
+var BoxJustify = {
+  Start: "start",
+  Center: "center",
+  End: "end",
+  Between: "between"
+};
+var CaptureMode = {
+  First: "first",
+  Last: "last"
+};
+var Paginate = {
+  No: "no",
+  BreakBefore: "break-before",
+  BreakAfter: "break-after",
+  KeepNext: "keep-next"
+};
+var RowKeep = {
+  WithNext: "with-next"
+};
+var Ocg = {
+  Print: "print",
+  Screen: "screen"
+};
+var ListType = {
+  Bullet: "bullet",
+  Number: "number"
+};
+var ListFormat = {
+  Decimal: "decimal",
+  LowerAlpha: "lower-alpha",
+  UpperAlpha: "upper-alpha",
+  LowerRoman: "lower-roman",
+  UpperRoman: "upper-roman"
+};
+var ListBullet = {
+  Disc: "disc",
+  Circle: "circle",
+  Square: "square",
+  Dash: "dash"
+};
+var TextAlign = {
+  Left: "left",
+  Center: "center",
+  Right: "right",
+  Justify: "justify"
+};
+var Anchor = {
+  TopLeft: "top-left",
+  TopCenter: "top-center",
+  TopRight: "top-right",
+  CenterLeft: "center-left",
+  Center: "center",
+  CenterRight: "center-right",
+  BottomLeft: "bottom-left",
+  BottomCenter: "bottom-center",
+  BottomRight: "bottom-right"
+};
+var PageScope = {
+  Each: "each",
+  First: "first",
+  Last: "last",
+  Odd: "odd",
+  Even: "even"
+};
+var LineCap = {
+  Butt: "butt",
+  Round: "round",
+  Square: "square"
+};
+var FillRule = {
+  Nonzero: "nonzero",
+  Evenodd: "evenodd"
+};
+var Pin = {
+  Top: "top",
+  Bottom: "bottom",
+  Left: "left",
+  Right: "right",
+  Inset: "inset"
+};
+var BarcodeType = {
+  Qr: "qr",
+  Code128: "code128",
+  Ean13: "ean13",
+  Code39: "code39",
+  Ean8: "ean8",
+  Upca: "upca",
+  Datamatrix: "datamatrix",
+  Pdf417: "pdf417",
+  Gs1128: "gs1-128",
+  Gs1Datamatrix: "gs1-datamatrix"
+};
+var QrEcLevel = {
+  L: "L",
+  M: "M",
+  Q: "Q",
+  H: "H"
+};
+var Pdf417EcLevel = {
+  Level0: "0",
+  Level1: "1",
+  Level2: "2",
+  Level3: "3",
+  Level4: "4",
+  Level5: "5",
+  Level6: "6",
+  Level7: "7",
+  Level8: "8"
+};
+var DividerDirection = {
+  Horizontal: "horizontal",
+  Vertical: "vertical"
+};
+var ShapeType = {
+  Rect: "rect",
+  Circle: "circle",
+  Ellipse: "ellipse"
+};
+var CellVAlign = {
+  Top: "top",
+  Middle: "middle",
+  Bottom: "bottom"
+};
+var FieldType = {
+  Text: "text",
+  Checkbox: "checkbox",
+  Dropdown: "dropdown",
+  Radio: "radio",
+  Button: "button"
+};
 var BuiltinFont = {
   Courier: "Courier",
   CourierBold: "Courier-Bold",
@@ -850,12 +1014,9 @@ var BuiltinFont = {
   Symbol: "Symbol",
   ZapfDingbats: "ZapfDingbats"
 };
-var PageScope = {
-  Each: "each",
-  First: "first",
-  Last: "last",
-  Odd: "odd",
-  Even: "even"
+var StampScale = {
+  Fit: "fit",
+  Fill: "fill"
 };
 
 // src/browser.ts
@@ -985,19 +1146,47 @@ async function initLpdf(wasmSource, licenseKey = "", options = {}) {
   };
 }
 export {
+  Align,
+  Anchor,
+  BarcodeType,
+  BoxAlign,
+  BoxJustify,
   BuiltinFont,
+  CaptureMode,
+  CellVAlign,
   Cipher,
   ColumnFill,
+  DividerDirection,
   FieldType,
   FileRelationship,
+  FillRule,
   FootnoteCounter,
+  GradientType,
   Grow,
+  LineCap,
+  ListBullet,
+  ListFormat,
+  ListType,
   LpdfRenderError,
   NoAttr,
+  Ocg,
   Orientation,
   PageScope,
+  PageSize,
+  Paginate,
+  Pdf417EcLevel,
+  PdfALevel,
+  PdfUaPart,
+  PdfXVersion,
   Permission,
   Pin,
+  QrEcLevel,
+  RowKeep,
+  RulingOrigin,
   SectionType,
+  ShapeType,
+  StampScale,
+  TextAlign,
+  TextRole,
   initLpdf
 };

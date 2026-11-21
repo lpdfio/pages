@@ -55,20 +55,20 @@ In code, the attribute objects of each SDK take the same types: `bold: true`, a 
 
 Set on `document`, and overridden per `section`, with `size`. Without one, a document is A4.
 
-| Value     | Dimensions         |
-|-----------|--------------------|
-| `a0`      | 841 × 1189 mm      |
-| `a1`      | 594 × 841 mm       |
-| `a2`      | 420 × 594 mm       |
-| `a3`      | 297 × 420 mm       |
-| `a4`      | 210 × 297 mm       |
-| `a5`      | 148 × 210 mm       |
-| `a6`      | 105 × 148 mm       |
+| Value     | Dimensions           |
+|-----------|----------------------|
+| `a0`      | 841 × 1189 mm        |
+| `a1`      | 594 × 841 mm         |
+| `a2`      | 420 × 594 mm         |
+| `a3`      | 297 × 420 mm         |
+| `a4`      | 210 × 297 mm         |
+| `a5`      | 148 × 210 mm         |
+| `a6`      | 105 × 148 mm         |
 | `b4`      | 250 × 353 mm (ISO B) |
 | `b5`      | 176 × 250 mm (ISO B) |
-| `letter`  | 8.5 × 11 in        |
-| `legal`   | 8.5 × 14 in        |
-| `tabloid` | 11 × 17 in         |
+| `letter`  | 8.5 × 11 in          |
+| `legal`   | 8.5 × 14 in          |
+| `tabloid` | 11 × 17 in           |
 
 Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`.
 

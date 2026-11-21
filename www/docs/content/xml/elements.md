@@ -191,7 +191,7 @@ A file the PDF carries. Child of `attachments`. The SDK reads it from `src`, or 
 | Attribute     | Type    | Default    | Description |
 |---------------|---------|------------|-------------|
 | `size`        | string  | `a4`       | `letter` `legal` `a3` `a4` `a5`, or a custom `"200pt 300pt"` or `"210mm 297mm"`, each size 3pt at least |
-| `orientation` | string  | `portrait` | `portrait` `landscape` |
+| `orientation` | string  | `portrait` | `portrait` `landscape`: the shape of the page, taller than wide or wider than tall, whatever its size. See [Orientation](?p=xml/schema#orientation) |
 | `bleed`       | length | —         | How far each page reaches past its trim edge, such as `3mm`, for a background or an image that runs off the page when it is cut. The page grows by it, its background fills it, and the layout keeps to the trimmed page. See [PDF/X](?p=pdfx#bleed) |
 | `font`        | string  | `Helvetica` | Default font: a built-in name or an asset name |
 | `background`  | color or `gradient:name` | — | Page background: a color, or a [gradient](?p=xml/schema#gradients) that spans the page |
@@ -205,7 +205,7 @@ A document holds an optional `meta`, an optional `output`, optional `attachments
 | Attribute     | Type    | Default  | Description |
 |---------------|---------|----------|-------------|
 | `size`        | string  | inherit  | Override page size for this section, each size 3pt at least. With `grow`, the starting size |
-| `orientation` | string  | inherit  | Override orientation |
+| `orientation` | string  | inherit  | Override the shape of the page, in either direction. A section with its own `size` and no `orientation` takes the size as written. See [Orientation](?p=xml/schema#orientation) |
 | `bleed`       | length | inherit | Override the bleed for this section's pages; `0mm` takes it away |
 | `background`  | color or `gradient:name` | inherit | Section background. A gradient spans the page |
 | `ruling`      | string  | —        | The name of a [ruling](?p=xml/schema#rulings) of the tokens, whose lines are drawn on every page, under everything else and over the background |

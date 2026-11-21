@@ -7,7 +7,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
 | `size`        | string  | inherit | Page size override: `letter`, `legal`, `a3`, `a4`, `a5`, or a custom `"200pt 300pt"`, each size 3pt at least. With `grow`, the starting size |
-| `orientation` | string  | inherit | `portrait` or `landscape` |
+| `orientation` | string  | inherit | `portrait` or `landscape`: the shape of the page, whatever its size, in either direction. Overrides the document's. A section with its own `size` and no `orientation` takes the size as written. See [Orientation](?p=xml/schema#orientation) |
 | `background`  | color   | inherit | Page background color |
 | `ruling`      | string  | —       | Draws a [ruling](?p=xml/schema#rulings) of the tokens on every page. See [Ruled and squared pages](#ruled-and-squared-pages) |
 | `footnote-counter` | string | inherit | Where the numbers of the [footnotes](?p=doc/layout/footnote) in this section start over: `page`, `section` or `document`. Overrides the document's |
@@ -103,6 +103,8 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
   </layout>
 </section>
 ```
+
+`orientation` names the shape of the page, so a `portrait` section in a landscape document has upright pages. See [Orientation](?p=xml/schema#orientation).
 
 ## A page that grows
 

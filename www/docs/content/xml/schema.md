@@ -63,9 +63,32 @@ Set on `document`, and overridden per `section`, with `size`. Without one, a doc
 | `a4`     | 210 × 297 mm      |
 | `a5`     | 148 × 210 mm      |
 
-Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`. `orientation="landscape"` swaps the two.
+Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`.
 
 Each size is 3pt at least, the smallest page PDF 1.7 recommends. A smaller one is an error: `page size '80mm 0' is under 3pt high, the smallest page PDF 1.7 recommends`. A page as long as its content, such as a till receipt, is a section that [grows](?p=doc/section#a-page-that-grows), with `size` as its starting size.
+
+### Orientation
+
+`orientation` on `document` or `section` names the shape of the page: `portrait` is taller than wide and `landscape` is wider than tall. It does so whatever size the page starts from, a named size or a custom one, so `size="297mm 210mm" orientation="portrait"` is a page of 210 × 297 mm, and `size="297mm 210mm" orientation="landscape"` stays 297 × 210 mm. A page that already has the shape, and a square page, is left as it is. Without `orientation`, the page is the size as written.
+
+A section starts from the page of its document, with the document's orientation applied, and its own `orientation` sets the shape in either direction: a `portrait` section of a landscape document has upright pages, and a `landscape` section of a portrait document has pages on their side. A section that sets its own `size` and no `orientation` takes that size as written, so `<section size="a3">` in a landscape document is an upright A3. Add `orientation="landscape"` to put it on its side.
+
+```xml
+<document size="a4" orientation="landscape">
+  <section>
+    <layout><text>A4 on its side</text></layout>
+  </section>
+  <section orientation="portrait">
+    <layout><text>A4 upright</text></layout>
+  </section>
+  <section size="a3">
+    <layout><text>A3 upright, as written</text></layout>
+  </section>
+  <section size="a3" orientation="landscape">
+    <layout><text>A3 on its side</text></layout>
+  </section>
+</document>
+```
 
 ## Units
 

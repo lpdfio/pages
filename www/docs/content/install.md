@@ -646,7 +646,7 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 | `Ocg` | Print, Screen | `ocg` of an element, a layer and a ruling |
 | `Orientation` | Portrait, Landscape | `orientation` of a document and a section |
 | `PageScope` | Each, First, Last, Odd, Even | `page` of a layer and a region; a range stays a string |
-| `PageSize` | A4, A3, A5, Letter, Legal | `size` of a document and a section; a custom size stays a string |
+| `PageSize` | A0, A1, A2, A3, A4, A5, A6, B4, B5, Letter, Legal, Tabloid | `size` of a document and a section; a custom size stays a string |
 | `Paginate` | No, BreakBefore, BreakAfter, KeepNext | `paginate` |
 | `Pdf417EcLevel` | Level0, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8 | `ec` of a `pdf417` |
 | `PdfALevel` | Level2a, Level2b, Level2u, Level3a, Level3b, Level3u | `pdfa` of the output |

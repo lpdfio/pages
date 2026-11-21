@@ -55,17 +55,53 @@ In code, the attribute objects of each SDK take the same types: `bold: true`, a 
 
 Set on `document`, and overridden per `section`, with `size`. Without one, a document is A4.
 
-| Value    | Dimensions        |
-|----------|-------------------|
-| `letter` | 8.5 × 11 in       |
-| `legal`  | 8.5 × 14 in       |
-| `a3`     | 297 × 420 mm      |
-| `a4`     | 210 × 297 mm      |
-| `a5`     | 148 × 210 mm      |
+| Value     | Dimensions         |
+|-----------|--------------------|
+| `a0`      | 841 × 1189 mm      |
+| `a1`      | 594 × 841 mm       |
+| `a2`      | 420 × 594 mm       |
+| `a3`      | 297 × 420 mm       |
+| `a4`      | 210 × 297 mm       |
+| `a5`      | 148 × 210 mm       |
+| `a6`      | 105 × 148 mm       |
+| `b4`      | 250 × 353 mm (ISO B) |
+| `b5`      | 176 × 250 mm (ISO B) |
+| `letter`  | 8.5 × 11 in        |
+| `legal`   | 8.5 × 14 in        |
+| `tabloid` | 11 × 17 in         |
 
 Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`.
 
 Each size is 3pt at least, the smallest page PDF 1.7 recommends. A smaller one is an error: `page size '80mm 0' is under 3pt high, the smallest page PDF 1.7 recommends`. A page as long as its content, such as a till receipt, is a section that [grows](?p=doc/section#a-page-that-grows), with `size` as its starting size.
+
+### Sizes without a name
+
+Every other paper size is a custom size. These are the ones people ask for most, with the `size` to write:
+
+| Paper | `size` |
+|-------|--------|
+| A7, A8, A9, A10 | `74mm 105mm`, `52mm 74mm`, `37mm 52mm`, `26mm 37mm` |
+| ISO B0, B1, B2, B3 | `1000mm 1414mm`, `707mm 1000mm`, `500mm 707mm`, `353mm 500mm` |
+| ISO B6, B7, B8, B9, B10 | `125mm 176mm`, `88mm 125mm`, `62mm 88mm`, `44mm 62mm`, `31mm 44mm` |
+| JIS B4, JIS B5, which are larger than the ISO sizes of the same name | `257mm 364mm`, `182mm 257mm` |
+| Executive | `7.25in 10.5in` |
+| Half letter | `5.5in 8.5in` |
+| Ledger, the tabloid page on its side | `tabloid` with `orientation="landscape"`, or `17in 11in` |
+| ANSI C, D, E | `17in 22in`, `22in 34in`, `34in 44in` |
+| Envelope C4, C5, C6 | `229mm 324mm`, `162mm 229mm`, `114mm 162mm` |
+| Envelope DL | `110mm 220mm` |
+
+A DL envelope, for example:
+
+```xml
+<document size="110mm 220mm">
+  <section>
+    <layout margin="12mm">
+      <text>Brightwork Studio</text>
+    </layout>
+  </section>
+</document>
+```
 
 ### Orientation
 

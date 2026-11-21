@@ -605,3 +605,66 @@ Past the cap the render throws an `EngineException`. Through `wasmtime`, after a
 An image or a font that comes from a file is declared in `assets` with a `src` path. The SDK reads the file from the machine that renders the PDF, so a relative path is relative to the working directory: JavaScript, Python and PHP on their own, Java and C# only through the engine's `SrcFallback` (`srcFallback` in Java), as under [Attachments](?p=attachments). The engine does not fetch URLs or read data URIs. An image file the SDK cannot read is an error, and a font file it cannot read falls back to Helvetica without one. To supply the bytes yourself, call `loadImage(name, bytes)` or `loadFont(name, bytes)` on the engine and leave `src` out.
 
 Asset names use lowercase letters, digits, and `-`, and start with a letter: `logo`, `serif-bold`.
+
+## Constants
+
+A document built in code can name each word an attribute takes as a constant. Every closed enumeration of the schema has one in each SDK, but for the words that stand beside a length (below). A constant is named as the schema names its type, with a member for each word in the language's case:
+
+| JavaScript and C# | PHP | Python and Java | The word |
+|---|---|---|---|
+| `Orientation.Landscape` | `Orientation::Landscape` | `Orientation.LANDSCAPE` | `landscape` |
+| `Paginate.KeepNext` | `Paginate::KeepNext` | `Paginate.KEEP_NEXT` | `keep-next` |
+| `PdfALevel.Level2a` | `PdfALevel::Level2a` | `PdfALevel.LEVEL_2A` | `2a` |
+
+A constant is its word, so `Orientation.Landscape` and `'landscape'` are the same value, and the PDF is the same. A word that starts with a digit takes the last word of its constant's name in front, since no language accepts a name that starts with one: `Level2a` in `PdfALevel`, `Part1` in `PdfUaPart`, `Version4` in `PdfXVersion` and `Level0` to `Level8` in `Pdf417EcLevel`.
+
+In JavaScript the constants are exported by the package, `import { Orientation } from '@lpdfio/lpdf'`, in Python by `lpdf`, `from lpdf import Orientation`, and in Java by `io.lpdf`, which `import io.lpdf.*;` brings in. In C# and PHP each is in the namespace of the elements that take it, `Lpdf.Layout`, `Lpdf.Canvas`, `Lpdf.Kit` or `Lpdf.Engine`, and in `Lpdf.Shared` where more than one place takes it: `using Lpdf.Layout;` in C#, `use Lpdf\Layout\Paginate;` in PHP. The code tabs of these docs show the imports of each example.
+
+| Constant | Members | For |
+|---|---|---|
+| `Align` | Start, Center, End | `align` of a cell; `align` and `justify` of a stamp |
+| `Anchor` | TopLeft, TopCenter, TopRight, CenterLeft, Center, CenterRight, BottomLeft, BottomCenter, BottomRight | `anchor` of a layer shape, a `text-at`, an `img-at` and a `barcode-at`, and of a stamp |
+| `BarcodeType` | Qr, Code128, Ean13, Code39, Ean8, Upca, Datamatrix, Pdf417, Gs1128, Gs1Datamatrix | `type` of a barcode |
+| `BoxAlign` | Start, Center, End, Stretch | `align` of a column and a row |
+| `BoxJustify` | Start, Center, End, Between | `justify` of a column and a row |
+| `BuiltinFont` | Courier, CourierBold, CourierOblique, CourierBoldOblique, Helvetica, HelveticaBold, HelveticaOblique, HelveticaBoldOblique, TimesRoman, TimesBold, TimesItalic, TimesBoldItalic, Symbol, ZapfDingbats | `core` of a font |
+| `CaptureMode` | First, Last | `capture-mode` of a text |
+| `CellVAlign` | Top, Middle, Bottom | `valign` of a cell |
+| `Cipher` | Aes256, Rc4128 | `encrypt` of the output |
+| `ColumnFill` | Auto, Balance | `column-fill` of a section |
+| `DividerDirection` | Horizontal, Vertical | `direction` of a divider |
+| `FieldType` | Text, Checkbox, Dropdown, Radio, Button | `type` of a field |
+| `FileRelationship` | Source, Data, Alternative, Supplement, Unspecified | `relationship` of a file |
+| `FillRule` | Nonzero, Evenodd | `fill-rule` of a path |
+| `FootnoteCounter` | Page, Section, Document | `footnote-counter` of a document and a section |
+| `GradientType` | Linear, Radial | `type` of a gradient |
+| `Grow` | Width, Height, WidthHeight | `grow` of a section |
+| `LineCap` | Butt, Round, Square | `line-cap` of a line and a path |
+| `ListBullet` | Disc, Circle, Square, Dash | `bullet` of a list and an item |
+| `ListFormat` | Decimal, LowerAlpha, UpperAlpha, LowerRoman, UpperRoman | `format` of a list and `page-format` of a section |
+| `ListType` | Bullet, Number | `type` of a list |
+| `Ocg` | Print, Screen | `ocg` of an element, a layer and a ruling |
+| `Orientation` | Portrait, Landscape | `orientation` of a document and a section |
+| `PageScope` | Each, First, Last, Odd, Even | `page` of a layer and a region; a range stays a string |
+| `PageSize` | A4, A3, A5, Letter, Legal | `size` of a document and a section; a custom size stays a string |
+| `Paginate` | No, BreakBefore, BreakAfter, KeepNext | `paginate` |
+| `Pdf417EcLevel` | Level0, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8 | `ec` of a `pdf417` |
+| `PdfALevel` | Level2a, Level2b, Level2u, Level3a, Level3b, Level3u | `pdfa` of the output |
+| `PdfUaPart` | Part1 | `pdfua` of the output |
+| `PdfXVersion` | Version4 | `pdfx` of the output |
+| `Permission` | All, Print, Modify, Copy, Annotate, FillForms, Accessibility, Assemble | the words of `allow` of the output |
+| `Pin` | Top, Bottom, Left, Right, Inset | `pin` of a region |
+| `QrEcLevel` | L, M, Q, H | `ec` of a `qr` |
+| `RowKeep` | WithNext | `keep` of a row |
+| `RulingOrigin` | Page, Margin | `origin` of a ruling |
+| `SectionType` | Toc | `type` of a section |
+| `ShapeType` | Rect, Circle, Ellipse | `type` of a shape |
+| `StampScale` | Fit, Fill | `scale` of a stamp |
+| `TextAlign` | Left, Center, Right, Justify | `align` of a text, a `text-at` and the markdown rules |
+| `TextRole` | H1, H2, H3, H4, H5, H6 | `role` of a text |
+
+These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a4`, `a3`, `a5`, `letter` and `legal`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
+
+In TypeScript an attribute that takes one word of a constant has the constant's type, so a word that is none of its values doesn't compile: `orientation: 'landscpe'` is an error, and `'landscape'` and `Orientation.Landscape` both pass. `size` takes a named size or a width and a height with their units, `'210mm 297mm'`. `page`, which takes a range beside its named words, and `allow`, which takes several words separated by spaces, are strings. A variable of type `string` needs a cast. In the other SDKs an attribute takes a string, and a word that is none of its values is an error when the document is rendered, which names the words it takes, as it does for XML: `invalid orientation value: 'landscpe' — expected portrait or landscape`.
+
+The code tabs of these docs, and `lpdf codegen`, write a constant where the schema has one.

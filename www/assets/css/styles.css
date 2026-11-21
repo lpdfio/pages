@@ -1007,8 +1007,10 @@ nav.sidebar {
 }
 
 /* ── 404 page ── */
-.nav-logo-only { max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
-.fourohfour { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }
+/* The message sits in the middle of what the nav and the footer leave, and the footer stays at the foot of a short page. */
+.page-404 { display: flex; flex-direction: column; }
+.page-404 main { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; padding: 2rem var(--gutter); text-align: center; }
+.fourohfour { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; margin: 0; }
 /* Was a hardcoded #f97316 — a second orange, close enough to --brand to look
    deliberate and far enough to drift. Reads the token now, so it follows the brand
    instead of shadowing it. */

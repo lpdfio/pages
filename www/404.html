@@ -7,27 +7,23 @@
     <meta name="robots" content="noindex" />
     <meta name="description" content="Page not found — lpdf.io" />
     <title>404 — lpdf.io</title>
-    <link rel="icon" href="assets/favicon.ico" />
-    <link rel="stylesheet" href="assets/css/relayout.min.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <script src="assets/js/md-html.min.js"></script>
+    <!-- GitHub Pages serves this file for every address it can't find, at the address that was asked for
+         (/docs/dotnet, /pricing/nope). What it loads and links to is written from the site's root, since a path
+         without its leading slash would be read from that address's folder. -->
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/relayout.min.css" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <script defer src="/assets/js/lpdf-pages.js"></script>
     <script defer src="/assets/js/analytics.js" data-client-id="47c9883c-f384-4593-b013-a1f6bb166797"></script>
 </head>
-<body>
-    <nav class="nav">
-        <div class="nav-logo-only">
-            <a href="/" class="nav-logo">
-                <img src="assets/images/lpdf-light-48.png" alt="lpdf" class="logo-light" />
-                <img src="assets/images/lpdf-dark-48.png" alt="lpdf" class="logo-dark" />
-            </a>
-            <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"></button>
-        </div>
-    </nav>
-    <main style="min-height: calc(100vh - var(--nav-h)); display: flex; align-items: center; justify-content: center;">
-        <div class="rl-column rl-gap-l rl-align-center" style="text-align: center;">
-            <div class="fourohfour">Page not found</div>
+<body class="page-404">
+    <site-nav variant="home"></site-nav>
+    <main>
+        <div class="rl-column rl-gap-l rl-align-center">
+            <h1 class="fourohfour">Page not found</h1>
             <a href="/" class="home-link">Home</a>
         </div>
     </main>
+    <lpdf-footer></lpdf-footer>
 </body>
 </html>

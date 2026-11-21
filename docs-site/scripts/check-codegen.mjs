@@ -20,7 +20,11 @@ import path from 'node:path';
 import { CREATED_ON, FONT, PIXEL, PLACEHOLDER_IMAGES, PROFILE, SRC, declaredFiles, declaredFonts, declaredImages, declaredProfiles, loadEngine, walk, wrap, xmlFences } from './lib/doc-xml.mjs';
 
 const sdkDir = process.env.LPDF_SDK_DIR ? path.resolve(process.env.LPDF_SDK_DIR) : undefined;
-const { L, LMarkdown, NoAttr } = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
+const sdk = createRequire(import.meta.url)(sdkDir ?? '@lpdfio/lpdf');
+const { L } = sdk;
+// The code is run with every name the SDK exports (`L`, `LMarkdown`, `NoAttr`, and the constants such as `PageSize`),
+// which a document's code imports; a list of them here would miss each constant the generator learns to write.
+const scope = Object.keys(sdk).filter((name) => /^[A-Z][A-Za-z0-9]*$/.test(name));
 const verbose = process.argv.includes('--verbose');
 console.log(`SDK: ${sdkDir ?? '@lpdfio/lpdf of node_modules'}`);
 
@@ -52,7 +56,7 @@ for (const file of await walk())
             // No passwords: an example that asks for encryption in its <output> renders unencrypted, as a preview does.
             const options = { skipEncryption: true, createdOn: CREATED_ON };
             const fromXml = await engine.render(wrapped.xml, options);
-            const fromCode = await engine.render(new Function('L', 'LMarkdown', 'NoAttr', `return ${code};`)(L, LMarkdown, NoAttr), options);
+            const fromCode = await engine.render(new Function(...scope, `return ${code};`)(...scope.map((name) => sdk[name])), options);
             if (Buffer.compare(Buffer.from(fromXml), Buffer.from(fromCode)) !== 0)
             {
                 failed.push(`${where}  the code renders another PDF than the XML`);

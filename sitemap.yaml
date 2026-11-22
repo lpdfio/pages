@@ -27,7 +27,7 @@ pages:
 
   - path: /
     canonical: https://lpdf.io/
-    title: "Lpdf — PDF as Code"
+    title: "Lpdf — PDF as code"
     description: "Generate pixel-perfect PDFs in JavaScript, Python, Java, C#, and PHP using a declarative XML or code-based document model. No cloud dependency, no seat limits."
     index: true
 

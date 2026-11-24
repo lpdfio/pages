@@ -3,7 +3,7 @@
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
     <image name="logo" src="logo.png"/>
   </assets>
-  <document size="a4" font="body">
+  <document size="A4" font="body">
     <meta title="Invoice" author="Northwind Paper SAS" lang="en"/>
     <section>
       <layout margin="48pt">

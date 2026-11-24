@@ -64,7 +64,7 @@ A flyer for a press: a brand ink that bleeds past the trim, a tint of the same i
       <spot name="varnish" ink="Varnish" value="cmyk(0, 0, 0, 10)" overprint="true"/>
     </spots>
   </tokens>
-  <document size="a5" font="body" bleed="3mm">
+  <document size="A5" font="body" bleed="3mm">
     <meta title="Spring flyer"/>
     <output pdfx="4" profile="press"/>
     <section>

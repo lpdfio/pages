@@ -8,7 +8,7 @@ PDF/X (ISO 15930) is the PDF that commercial printers ask for: a file that holds
     <font name="body" src="fonts/Radley-Regular.ttf"/>
     <profile name="press" src="profiles/FOGRA39L_coated.icc"/>
   </assets>
-  <document size="a4" font="body" bleed="3mm" background="cmyk(0, 2, 6, 0)">
+  <document size="A4" font="body" bleed="3mm" background="cmyk(0, 2, 6, 0)">
     <meta title="Spring brochure"/>
     <output pdfx="4" profile="press"/>
     <section>

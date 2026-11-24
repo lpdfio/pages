@@ -20,7 +20,7 @@ A straight line between two points in a [layer](?p=doc/layer). All four coordina
 
 ```xml
 <layer page="each">
-  <!-- rule 48pt from the bottom, spanning the full letter width -->
+  <!-- rule 48pt from the bottom, spanning the full Letter width -->
   <line x1="0pt" y1="744pt" x2="612pt" y2="744pt"
         stroke="#e0e0e0" stroke-width="0.5pt"/>
 </layer>

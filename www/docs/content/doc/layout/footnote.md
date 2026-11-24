@@ -34,7 +34,7 @@ A section that counts across the document goes on from the notes of the earlier 
 
 ```xml
 <lpdf version="1">
-  <document size="a4" footnote-counter="document">
+  <document size="A4" footnote-counter="document">
     <section>
       <layout margin="48pt">
         <text>This section is the first to count across the document<fn>The first note of the document.</fn>.</text>

@@ -27,7 +27,7 @@
     {
       "id": "report",
       "label": "Report",
-      "description": "A data-driven report on data centers: tables across pages, charts, and a tabloid world map.",
+      "description": "A data-driven report on data centers: tables across pages, charts, and a Tabloid world map.",
       "xml": "report/document.xml",
       "data": "report/document.json",
       "markdown": null

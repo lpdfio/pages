@@ -74,7 +74,7 @@ public class MakeInvoiceCode {
 
         var doc = L.document(
             new DocumentAttr()
-                .size("a4")
+                .size("A4")
                 .font("body")
                 .assets(new DocumentAssets()
                     .fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf")))

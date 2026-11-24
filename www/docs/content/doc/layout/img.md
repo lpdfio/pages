@@ -11,7 +11,7 @@ Images must be declared in `assets` before use. The `src` attribute is the path 
   <assets>
     <image name="logo" src="logo.png"/>
   </assets>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <img name="logo" width="120pt"/>
@@ -48,7 +48,7 @@ An SVG is drawn as vector: it stays sharp at any size, the PDF holds its shapes 
   <assets>
     <image name="chart" src="chart.svg"/>
   </assets>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <img name="chart" width="300pt" alt="Sales by month"/>

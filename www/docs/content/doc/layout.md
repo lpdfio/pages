@@ -4,7 +4,7 @@
 
 ```xml
 <lpdf version="1">
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <column gap="16pt">

@@ -30,7 +30,7 @@ const cell       = { padding: 'xs 0' }
 const endRow     = { gap: 'xs', justify: 'end' }
 
 const doc = L.document({
-    size: 'a4',
+    size: 'A4',
     font: 'body',
     assets: {
         fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }],

@@ -218,7 +218,7 @@ lpdf convert --input notes.md --template markdown-template.xml --output notes.pd
 
 ```xml
 <lpdf version="1">
-  <document size="a4">
+  <document size="A4">
     <section>
       <layer>
         <text-at anchor="bottom-center" y="-24pt" font-size="xs" color="text-muted">Page {page} of {pages}</text-at>

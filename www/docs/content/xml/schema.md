@@ -29,7 +29,7 @@ A container narrower than 2.5 mm (about 7.1pt), or with a `height` set lower, is
 A document holds sections, and a section holds any number of layers and at most one `layout` or one [`markdown`](?p=doc/markdown), painted in the order they are written. The schema also allows `layout` directly inside `document` for a single section, but the engine does not accept that form yet: it stops with "unexpected element in document". Always put it in a `section`.
 
 ```xml
-<document size="letter">
+<document size="Letter">
   <section>
     <layout margin="48pt">
       <text>Hello world</text>
@@ -57,18 +57,18 @@ Set on `document`, and overridden per `section`, with `size`. Without one, a doc
 
 | Value     | Dimensions           |
 |-----------|----------------------|
-| `a0`      | 841 × 1189 mm        |
-| `a1`      | 594 × 841 mm         |
-| `a2`      | 420 × 594 mm         |
-| `a3`      | 297 × 420 mm         |
-| `a4`      | 210 × 297 mm         |
-| `a5`      | 148 × 210 mm         |
-| `a6`      | 105 × 148 mm         |
-| `b4`      | 250 × 353 mm (ISO B) |
-| `b5`      | 176 × 250 mm (ISO B) |
-| `letter`  | 8.5 × 11 in          |
-| `legal`   | 8.5 × 14 in          |
-| `tabloid` | 11 × 17 in           |
+| `A0`      | 841 × 1189 mm        |
+| `A1`      | 594 × 841 mm         |
+| `A2`      | 420 × 594 mm         |
+| `A3`      | 297 × 420 mm         |
+| `A4`      | 210 × 297 mm         |
+| `A5`      | 148 × 210 mm         |
+| `A6`      | 105 × 148 mm         |
+| `B4`      | 250 × 353 mm (ISO B) |
+| `B5`      | 176 × 250 mm (ISO B) |
+| `Letter`  | 8.5 × 11 in          |
+| `Legal`   | 8.5 × 14 in          |
+| `Tabloid` | 11 × 17 in           |
 
 Custom: `size="200pt 300pt"` or `size="210mm 297mm"`, the width then the height, each a length in `pt`, `mm` or `in`.
 
@@ -85,8 +85,8 @@ Every other paper size is a custom size. These are the ones people ask for most,
 | ISO B6, B7, B8, B9, B10 | `125mm 176mm`, `88mm 125mm`, `62mm 88mm`, `44mm 62mm`, `31mm 44mm` |
 | JIS B4, JIS B5, which are larger than the ISO sizes of the same name | `257mm 364mm`, `182mm 257mm` |
 | Executive | `7.25in 10.5in` |
-| Half letter | `5.5in 8.5in` |
-| Ledger, the tabloid page on its side | `tabloid` with `orientation="landscape"`, or `17in 11in` |
+| Half Letter | `5.5in 8.5in` |
+| Ledger, the Tabloid page on its side | `Tabloid` with `orientation="landscape"`, or `17in 11in` |
 | ANSI C, D, E | `17in 22in`, `22in 34in`, `34in 44in` |
 | Envelope C4, C5, C6 | `229mm 324mm`, `162mm 229mm`, `114mm 162mm` |
 | Envelope DL | `110mm 220mm` |
@@ -107,20 +107,20 @@ A DL envelope, for example:
 
 `orientation` on `document` or `section` names the shape of the page: `portrait` is taller than wide and `landscape` is wider than tall. It does so whatever size the page starts from, a named size or a custom one, so `size="297mm 210mm" orientation="portrait"` is a page of 210 × 297 mm, and `size="297mm 210mm" orientation="landscape"` stays 297 × 210 mm. A page that already has the shape, and a square page, is left as it is. Without `orientation`, the page is the size as written.
 
-A section starts from the page of its document, with the document's orientation applied, and its own `orientation` sets the shape in either direction: a `portrait` section of a landscape document has upright pages, and a `landscape` section of a portrait document has pages on their side. A section that sets its own `size` and no `orientation` takes that size as written, so `<section size="a3">` in a landscape document is an upright A3. Add `orientation="landscape"` to put it on its side.
+A section starts from the page of its document, with the document's orientation applied, and its own `orientation` sets the shape in either direction: a `portrait` section of a landscape document has upright pages, and a `landscape` section of a portrait document has pages on their side. A section that sets its own `size` and no `orientation` takes that size as written, so `<section size="A3">` in a landscape document is an upright A3. Add `orientation="landscape"` to put it on its side.
 
 ```xml
-<document size="a4" orientation="landscape">
+<document size="A4" orientation="landscape">
   <section>
     <layout><text>A4 on its side</text></layout>
   </section>
   <section orientation="portrait">
     <layout><text>A4 upright</text></layout>
   </section>
-  <section size="a3">
+  <section size="A3">
     <layout><text>A3 upright, as written</text></layout>
   </section>
-  <section size="a3" orientation="landscape">
+  <section size="A3" orientation="landscape">
     <layout><text>A3 on its side</text></layout>
   </section>
 </document>
@@ -168,7 +168,7 @@ To change a scale, or to name colors, spot colors, gradients or rulings, add `to
       <color name="text" value="#222222"/>
     </colors>
   </tokens>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <column gap="m" padding="l" background="brand">
@@ -194,7 +194,7 @@ An alias is a name of your own for a slot of the scale. Define it in `aliases` i
       <alias name="body" value="m"/>
     </aliases>
   </tokens>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <column gap="body">
@@ -256,7 +256,7 @@ A spot color is an ink of its own, printed from a plate of its own: a brand colo
       <spot name="die"     ink="Dieline"        value="#ff00ff"           overprint="true"/>
     </spots>
   </tokens>
-  <document size="a4">
+  <document size="A4">
     <section>
       <layout margin="48pt">
         <column gap="m">
@@ -337,7 +337,7 @@ One document with each kind: two colors, three stops, and a radial gradient on a
       <gradient name="spotlight" type="radial" from="#ffffff" to="#1763cf"/>
     </gradients>
   </tokens>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layout margin="48pt">
         <column gap="m">
@@ -404,7 +404,7 @@ Graph paper in two sets, and ruled paper:
       </ruling>
     </rulings>
   </tokens>
-  <document size="a4">
+  <document size="A4">
     <section ruling="graph">
       <layout margin="40pt">
         <text font-size="l">Graph paper</text>

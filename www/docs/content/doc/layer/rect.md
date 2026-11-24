@@ -37,7 +37,7 @@ A rectangle with no `fill` is drawn as an outline. The stroke is centred on the 
 
 ```xml
 <layer page="each">
-  <!-- inset border 20pt from each edge on letter size -->
+  <!-- inset border 20pt from each edge on Letter size -->
   <rect x="20pt" y="20pt" width="572pt" height="752pt"
         stroke="#cccccc" stroke-width="1pt"/>
 </layer>

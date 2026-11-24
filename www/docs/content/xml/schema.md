@@ -86,7 +86,7 @@ Every other paper size is a custom size. These are the ones people ask for most,
 | JIS B4, JIS B5, which are larger than the ISO sizes of the same name | `257mm 364mm`, `182mm 257mm` |
 | Executive | `7.25in 10.5in` |
 | Half Letter | `5.5in 8.5in` |
-| Ledger, the tabloid page on its side | `Tabloid` with `orientation="landscape"`, or `17in 11in` |
+| Ledger, the Tabloid page on its side | `Tabloid` with `orientation="landscape"`, or `17in 11in` |
 | ANSI C, D, E | `17in 22in`, `22in 34in`, `34in 44in` |
 | Envelope C4, C5, C6 | `229mm 324mm`, `162mm 229mm`, `114mm 162mm` |
 | Envelope DL | `110mm 220mm` |

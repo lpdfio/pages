@@ -6,7 +6,7 @@ A `section` is a run of pages inside a document. Each section paginates on its o
 
 | Attribute     | Type    | Default | Description |
 |---------------|---------|---------|-------------|
-| `size`        | string  | inherit | Page size override: `a0` `a1` `a2` `a3` `a4` `a5` `a6` `b4` `b5` `letter` `legal` `tabloid`, or a custom `"200pt 300pt"`, each size 3pt at least. See [Page sizes](?p=xml/schema#page-sizes). With `grow`, the starting size |
+| `size`        | string  | inherit | Page size override: `A0` `A1` `A2` `A3` `A4` `A5` `A6` `B4` `B5` `Letter` `Legal` `Tabloid`, or a custom `"200pt 300pt"`, each size 3pt at least. See [Page sizes](?p=xml/schema#page-sizes). With `grow`, the starting size |
 | `orientation` | string  | inherit | `portrait` or `landscape`: the shape of the page, whatever its size, in either direction. Overrides the document's. A section with its own `size` and no `orientation` takes the size as written. See [Orientation](?p=xml/schema#orientation) |
 | `background`  | color   | inherit | Page background color |
 | `ruling`      | string  | —       | Draws a [ruling](?p=xml/schema#rulings) of the tokens on every page. See [Ruled and squared pages](#ruled-and-squared-pages) |
@@ -63,7 +63,7 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 ## Multiple sections
 
 ```xml
-<document size="letter">
+<document size="Letter">
   <section>
     <layout margin="48pt">
       <text font-size="14pt">First page</text>
@@ -81,12 +81,12 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 
 ```xml
 <document>
-  <section size="letter">
+  <section size="Letter">
     <layout margin="48pt">
       <text>Letter page content</text>
     </layout>
   </section>
-  <section size="a4">
+  <section size="A4">
     <layout margin="40pt">
       <text>A4 page content</text>
     </layout>
@@ -97,7 +97,7 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 ## Landscape section
 
 ```xml
-<section size="letter" orientation="landscape">
+<section size="Letter" orientation="landscape">
   <layout margin="72pt">
     <text font-size="18pt">Wide page content</text>
   </layout>
@@ -139,7 +139,7 @@ A section with only layers is one page, such as a cover. A second `layout` in a 
 A table wider than the page gets a page as wide as it needs, each `auto` column as wide as its cells on one line, where it would otherwise squeeze its columns until long words break:
 
 ```xml
-<document size="a4">
+<document size="A4">
   <section grow="width">
     <layout margin="36pt">
       <text font-size="l">Delivery routes, week 47</text>
@@ -198,7 +198,7 @@ A page grows to 14,400pt (200in) at most in each size, the largest page PDF 1.7 
 `columns` sets the section's flow in columns: a long text, or a long list of short items, runs down the first column, carries on at the top of the next, and goes on to the next page after the last. Each column fills like a small page, so what comes from data lays itself out: a glossary, a price list, a directory, terms and conditions in small print, a newsletter. It works the same for a `layout` and a [`markdown`](?p=doc/markdown), since both are the section's flow. Headers and footers ([regions](?p=doc/layout#pinned-regions) pinned to the top or the bottom), the notes of [footnotes](?p=doc/layout/footnote) and [layers](?p=doc/layer) keep the full width of the page.
 
 ```xml
-<document size="a4">
+<document size="A4">
   <section columns="3" column-gap="m" column-rule="0.5pt #c5ccd6">
     <layout margin="40pt">
       <region pin="top">
@@ -231,7 +231,7 @@ Lpdf doesn't hyphenate words, so justified text in a narrow column can show wide
 An inset is a block at a spot inside the columns that the flow goes around: a picture across two columns of a newsletter, a quote, a box of opening hours. It is a [`region`](?p=doc/layout#pinned-regions) with `pin="inset"`, written in the layout, and holds what any region holds. The columns it covers fill above it and carry on below it; the others run straight down.
 
 ```xml
-<document size="a4">
+<document size="A4">
   <section columns="4" column-gap="m" column-rule="0.5pt #c5ccd6">
     <layout margin="36pt">
       <region pin="inset" col="2" colspan="2" top="110pt" height="210pt">
@@ -280,7 +280,7 @@ An inset is a block at a spot inside the columns that the flow goes around: a pi
       </ruling>
     </rulings>
   </tokens>
-  <document size="a4">
+  <document size="A4">
     <section ruling="squares">
       <layout margin="40pt">
         <text font-size="l">Squared paper</text>
@@ -302,7 +302,7 @@ A step keeps its size on a page of any size, and a count its number of parts. Wi
 A bookmark as the section's first child adds its first page to the PDF's outline, the bookmarks panel of a viewer. A section's `title` adds no entry.
 
 ```xml
-<document size="a4">
+<document size="A4">
   <section>
     <bookmark label="Introduction"/>
     <layout margin="48pt">
@@ -329,7 +329,7 @@ A document's pages count on from one section to the next, from 1, in decimal. `{
 A section that sets none of the three carries on the count, the format and the prefix of the section before. A book numbers its front matter in roman numerals from the cover, its chapters from 1 and its appendix from A-1:
 
 ```xml
-<document size="a5">
+<document size="A5">
   <section page-format="lower-roman">
     <layout margin="48pt">
       <text font-size="xl">The Lamplighter's Almanac</text>

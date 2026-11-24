@@ -53,7 +53,7 @@ cell = TdAttr(padding="xs 0")
 end_row = RowAttr(gap="xs", justify="end")
 
 doc = L.document(DocumentAttr(
-    size="a4",
+    size="A4",
     font="body",
     assets=DocumentAssets(
         fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")],

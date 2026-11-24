@@ -45,7 +45,7 @@ A bookmark needs an element after it in the same container. One that comes last,
 A bookmark placed directly in a [`section`](?p=doc/section), before its layers and its `layout`, marks the section's first page. Use it for a page that has no layout to put a bookmark in, such as a cover drawn in a layer.
 
 ```xml
-<document size="a4">
+<document size="A4">
   <section>
     <bookmark label="Cover"/>
     <layer>

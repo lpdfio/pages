@@ -47,7 +47,7 @@ var endRow = new RowAttr { Gap = "xs", Justify = "end" };
 
 var doc = L.Document(new()
 {
-    Size = "a4",
+    Size = "A4",
     Font = "body",
     Assets = new(
         Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }],

@@ -35,7 +35,7 @@ An image needs `width` or `height`. Without either the engine stops with an erro
   <assets>
     <image name="logo" src="logo.png"/>
   </assets>
-  <document size="letter">
+  <document size="Letter">
     <section>
       <layer page="each">
         <img-at name="logo" anchor="top-right" x="-18pt" y="18pt" width="80pt" height="24pt"/>

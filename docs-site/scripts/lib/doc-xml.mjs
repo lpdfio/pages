@@ -205,7 +205,7 @@ export function wrap(xml)
 
     if (level === 'content') { body = `<layout margin="48pt">${body}</layout>`; level = 'layout'; }
     if (level === 'layout' || level === 'layer' || level === 'markdown') { body = `<section>${body}</section>`; level = 'section'; }
-    if (level === 'section') { body = `<document size="letter">${body}</document>`; level = 'document'; }
+    if (level === 'section') { body = `<document size="Letter">${body}</document>`; level = 'document'; }
     if (level === 'document') { body = `<lpdf version="1">${assets}${body}</lpdf>`; level = 'lpdf'; }
     return { xml: body };
 }

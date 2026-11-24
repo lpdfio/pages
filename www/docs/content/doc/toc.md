@@ -10,7 +10,7 @@ The page numbers count the table of contents' own pages. When it runs onto a sec
 
 ```xml
 <lpdf version="1">
-  <document size="a4">
+  <document size="A4">
     <section type="toc">
       <layout margin="56pt">
         <column gap="m">

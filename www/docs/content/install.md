@@ -24,7 +24,7 @@ import { L } from '@lpdfio/lpdf'
 import { writeFileSync } from 'node:fs'
 
 const xml = `<lpdf version="1">
-  <document size="a4">
+  <document size="A4">
     <section>
       <layout margin="48pt">
         <column gap="m">
@@ -57,7 +57,7 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 import { L, NoAttr } from '@lpdfio/lpdf'
 import { writeFileSync } from 'node:fs'
 
-const doc = L.document({ size: 'a4' }, [
+const doc = L.document({ size: 'A4' }, [
     L.section(NoAttr, [
         L.layout({ margin: '48pt' }, [
             L.column({ gap: 'm' }, [
@@ -103,7 +103,7 @@ from pathlib import Path
 from lpdf import L
 
 xml = """<lpdf version="1">
-  <document size="a4">
+  <document size="A4">
     <section>
       <layout margin="48pt">
         <column gap="m">
@@ -130,7 +130,7 @@ The same document, built with `L` instead of written as XML. `render` takes eith
 from pathlib import Path
 from lpdf import L, NoAttr, DocumentAttr, LayoutAttr, ColumnAttr, TextAttr
 
-doc = L.document(DocumentAttr(size='a4'), [
+doc = L.document(DocumentAttr(size='A4'), [
     L.section(NoAttr, [
         L.layout(LayoutAttr(margin='48pt'), [
             L.column(ColumnAttr(gap='m'), [
@@ -198,7 +198,7 @@ public class Hello {
     public static void main(String[] args) throws Exception {
         var xml = """
             <lpdf version="1">
-              <document size="a4">
+              <document size="A4">
                 <section>
                   <layout margin="48pt">
                     <column gap="m">
@@ -233,7 +233,7 @@ import static io.lpdf.L.NoAttr;
 
 public class Hello {
     public static void main(String[] args) throws Exception {
-        var doc = L.document(new DocumentAttr().size("a4"), List.of(
+        var doc = L.document(new DocumentAttr().size("A4"), List.of(
             L.section(NoAttr, List.of(
                 L.layout(new LayoutAttr().margin("48pt"), List.of(
                     L.column(new ColumnAttr().gap("m"), List.of(
@@ -293,7 +293,7 @@ using Lpdf;
 
 var xml = """
     <lpdf version="1">
-      <document size="a4">
+      <document size="A4">
         <section>
           <layout margin="48pt">
             <column gap="m">
@@ -323,7 +323,7 @@ The same document, built with `L` instead of written as XML. `Render` takes eith
 using Lpdf;
 using static Lpdf.L;
 
-var doc = L.Document(new() { Size = "a4" }, [
+var doc = L.Document(new() { Size = "A4" }, [
     L.Section(NoAttr, [
         L.Layout(new() { Margin = "48pt" }, [
             L.Column(new() { Gap = "m" }, [
@@ -375,7 +375,7 @@ use Lpdf\L;
 
 $xml = <<<'XML'
 <lpdf version="1">
-  <document size="a4">
+  <document size="A4">
     <section>
       <layout margin="48pt">
         <column gap="m">
@@ -410,7 +410,7 @@ use Lpdf\Layout\ColumnAttr;
 use Lpdf\Layout\TextAttr;
 use const Lpdf\NoAttr;
 
-$doc = L::document(new DocumentAttr(size: 'a4'), [
+$doc = L::document(new DocumentAttr(size: 'A4'), [
     L::section(NoAttr, [
         L::layout(new LayoutAttr(margin: '48pt'), [
             L::column(new ColumnAttr(gap: 'm'), [
@@ -663,7 +663,7 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 | `TextAlign` | Left, Center, Right, Justify | `align` of a text, a `text-at` and the markdown rules |
 | `TextRole` | H1, H2, H3, H4, H5, H6 | `role` of a text |
 
-These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a0` to `a6`, `b4`, `b5`, `letter`, `legal` and `tabloid`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
+These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `A0` to `A6`, `B4`, `B5`, `Letter`, `Legal` and `Tabloid`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
 
 In TypeScript an attribute that takes one word of a constant has the
 constant's type, so a word that is none of its values doesn't compile:

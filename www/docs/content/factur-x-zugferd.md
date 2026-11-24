@@ -120,7 +120,7 @@ The template binds the invoice's values under the prefix `invoice:`, and your ow
   <assets>
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
   </assets>
-  <document size="a4" font="body">
+  <document size="A4" font="body">
     <meta title="Invoice" lang="en"/>
     <section>
       <layout margin="48pt">

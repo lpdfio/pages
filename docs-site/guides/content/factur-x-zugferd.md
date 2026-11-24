@@ -85,7 +85,7 @@ The logo is declared in `assets`, as the font is, and the `img` at the top of th
     <font name="body" src="fonts/SourceSans3-Regular.otf"/>
     <image name="logo" src="logo.png"/>
   </assets>
-  <document size="a4" font="body">
+  <document size="A4" font="body">
     <meta title="Invoice" author="Northwind Paper SAS" lang="en"/>
     <section>
       <layout margin="48pt">
@@ -484,7 +484,7 @@ const cell       = { padding: 'xs 0' }
 const endRow     = { gap: 'xs', justify: 'end' }
 
 const doc = L.document({
-    size: 'a4',
+    size: 'A4',
     font: 'body',
     assets: {
         fonts: [{ name: 'body', src: 'fonts/SourceSans3-Regular.otf' }],
@@ -655,7 +655,7 @@ cell = TdAttr(padding="xs 0")
 end_row = RowAttr(gap="xs", justify="end")
 
 doc = L.document(DocumentAttr(
-    size="a4",
+    size="A4",
     font="body",
     assets=DocumentAssets(
         fonts=[FontAttr(name="body", src="fonts/SourceSans3-Regular.otf")],
@@ -869,7 +869,7 @@ public class MakeInvoiceCode {
 
         var doc = L.document(
             new DocumentAttr()
-                .size("a4")
+                .size("A4")
                 .font("body")
                 .assets(new DocumentAssets()
                     .fonts(List.of(new FontAttr().name("body").src("fonts/SourceSans3-Regular.otf")))
@@ -1054,7 +1054,7 @@ var endRow = new RowAttr { Gap = "xs", Justify = "end" };
 
 var doc = L.Document(new()
 {
-    Size = "a4",
+    Size = "A4",
     Font = "body",
     Assets = new(
         Fonts: [new() { Name = "body", Src = "fonts/SourceSans3-Regular.otf" }],
@@ -1229,7 +1229,7 @@ $cell       = new TdAttr(padding: 'xs 0');
 $endRow     = new RowAttr(gap: 'xs', justify: 'end');
 
 $doc = L::document(new DocumentAttr(
-    size: 'a4',
+    size: 'A4',
     font: 'body',
     assets: new DocumentAssets(
         fonts: [new FontAttr(name: 'body', src: 'fonts/SourceSans3-Regular.otf')],

@@ -1,6 +1,6 @@
 # Report
 
-A data-driven report on data centers: tables across pages, charts, and a tabloid world map.
+A data-driven report on data centers: tables across pages, charts, and a Tabloid world map.
 
 [document.xml](/docs/examples/report/document.xml) · [document.json](/docs/examples/report/document.json)
 
@@ -24,7 +24,7 @@ sentences about them come from document.json, as in the invoice. What this adds:
   page scope   page="each", "first" or "2-last" says which pages a region or a layer
                is on. {page} and {pages} become the page number and the page count. Pages
                count on from one section to the next, so the count takes in the map
-  sections     each section sets its own page. The last one here is tabloid, landscape, and
+  sections     each section sets its own page. The last one here is Tabloid, landscape, and
                holds only layers: a world map drawn as paths, with a marker for each site
   paginate     paginate="no" on a box keeps it whole: a heading column moves to the next page
                with its paragraph instead of stranding the heading. It is set on each section

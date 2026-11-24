@@ -665,6 +665,19 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 
 These stay strings, since a constant is for a word a person chooses by name and an attribute that takes them takes more: a custom page size, such as `100pt 200pt`, where `PageSize` names `a0` to `a6`, `b4`, `b5`, `letter`, `legal` and `tabloid`; a range of pages, such as `2-4`, where `PageScope` names `each`, `first`, `last`, `odd` and `even`; and the slots `xs` to `xxl` and the keywords `fill` of a width and `full` and `fill` of a height, which an attribute that takes a length takes beside a length and an alias.
 
-In TypeScript an attribute that takes one word of a constant has the constant's type, so a word that is none of its values doesn't compile: `orientation: 'landscpe'` is an error, and `'landscape'` and `Orientation.Landscape` both pass. `size` takes a named size or a width and a height with their units, `'210mm 297mm'`. `page`, which takes a range beside its named words, and `allow`, which takes several words separated by spaces, are strings. A variable of type `string` needs a cast. In the other SDKs an attribute takes a string, and a word that is none of its values is an error when the document is rendered, which names the words it takes, as it does for XML: `invalid orientation value: 'landscpe' — expected portrait or landscape`.
+In TypeScript an attribute that takes one word of a constant has the
+constant's type, so a word that is none of its values doesn't compile:
+`orientation: 'landscpe'` is an error, and `'landscape'` and
+`Orientation.Landscape` both pass. `size` takes a named size or a width
+and a height with their units, `'210mm 297mm'`. TypeScript checks that a
+custom size is two numbers, each with `pt`, `mm` or `in`, so `'210mm'`
+doesn't compile. The numbers are checked when the document is rendered: a
+page under 3pt wide or high, such as `'-5pt 3mm'`, is an error then.
+`page`, which takes a range beside its named words, and `allow`, which
+takes several words separated by spaces, are strings. A variable of type
+`string` needs a cast. In the other SDKs an attribute takes a string, and
+a word that is none of its values is an error when the document is
+rendered, which names the words it takes, as it does for XML:
+`invalid orientation value: 'landscpe' — expected portrait or landscape`.
 
 The code tabs of these docs, and `lpdf codegen`, write a constant where the schema has one.

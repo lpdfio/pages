@@ -40,7 +40,7 @@ The document names 1 file, which go in an `assets` folder next to it. In Visual 
     <image name="crest" src="assets/images/crest.png" />
   </assets>
 
-  <document size="letter">
+  <document size="Letter">
     <meta title="Offer of admission" author="Linden Vale University" />
     <section>
 

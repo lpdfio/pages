@@ -70,7 +70,7 @@ format numbers and dates in the JSON, or in the code that writes it.
     </colors>
   </tokens>
 
-  <document size="letter">
+  <document size="Letter">
     <meta title="Invoice" subject="Invoice" author="Brightwork Studio" />
     <section background="surface">
 

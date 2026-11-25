@@ -553,10 +553,10 @@ A chart drawn from numbers, written like a table: `series` are its columns, each
 | `thousands-mark` | string       | `,`     | One character between the groups of three digits, or empty for none |
 | `decimal-mark`   | string       | `.`     | One character before the decimals |
 | `gap`            | token/length | `s`     | The space between the plot and its step labels, its category labels and its legend |
-| `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
-| `category-gap`   | token/length | a quarter of a category | The space between categories |
+| `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category. Bars only |
+| `category-gap`   | token/length | a quarter of a category | The space between categories. Bars only |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom` `top` `right` `none` |
-| `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point |
+| `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point, or under it at a low point |
 | `stroke-width`   | length       | `1.5pt`, `1pt` for a sparkline | The width of every line of a line, an area or a sparkline |
 | `font`, `font-size`, `color` | | the text's around it | The chart's text, and the color of its zero line, or a sparkline's line |
 | `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). Required with `pdfua` on each chart outside a header or a footer |

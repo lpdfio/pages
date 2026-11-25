@@ -33,7 +33,7 @@ The engine draws a value axis on the left, from zero in round steps, `$0`, `$10,
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category. Bars only |
 | `category-gap`   | token/length | a quarter of a category | The space between categories. Bars only |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom`, `top`, `right` or `none` |
-| `value-labels`   | boolean      | false   | Writes each value at the end of its bar, or over its point and under a low point |
+| `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point, or under it at a low point |
 | `stroke-width`   | length       | `1.5pt`, `1pt` for a sparkline | The width of every line of a line, an area or a sparkline. `0` draws none, so an area is its fill alone |
 | `font`, `font-size`, `color` | | the text's around it | The chart's text: its labels, steps and legend, and the color of its zero line. A sparkline, which has no text, draws its line in `color` |
 | `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). See [Accessibility](#accessibility) |
@@ -115,7 +115,7 @@ A negative value takes the axis below zero and draws a zero line, so a change ca
 - **A missing value breaks the line**: an empty `<value/>`, or `null` in the data, ends the line at the point before, and it starts again at the point after, so the reader sees the gap. A value with no value next to it, on either side, is a dot.
 - **The labels** under the plot are every one where they all fit on one line, and else every 2nd, 3rd or 5th, starting with the first: the smallest step at which they fit. Every point keeps its place, so thirty days in 300pt write `Nov 1`, `Nov 6`, `Nov 11` and on. A label still too wide on its own wraps and shortens, as on bars.
 - **`stroke-width`** sets the width of every line, `1.5pt` by default. Every line takes the same width: which line is the current one and which the comparison is told by the series' `color`.
-- **`value-labels`** writes each value over its point, and under a point lower than the points beside it, the first and the last included, where its line doesn't run. A label that would cover another series' label there stays over its point.
+- **`value-labels`** writes each value over its point, or under it where the point is lower than the points beside it, the first and the last included, since its line doesn't run there. A label that would cover another series' label there stays over its point.
 
 A share price between $98.40 and $103.95, on an axis from $98 to $104, with its values written:
 

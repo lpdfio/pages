@@ -44,9 +44,9 @@ Lpdf's own tests check a document at each of the six levels with veraPDF, the PD
 
 ## Level a
 
-Level a, `2a` or `3a`, is level u with the structure of a tagged PDF: what each text, heading, table, list, link, footnote and image is, in reading order, with headers, footers and borders marked as decoration. Lpdf writes the same structure as for [PDF/UA](?p=pdfua), from the same attributes: `role` makes a text a heading, `alt` describes an image or a barcode, and `lang` on `meta` gives the language.
+Level a, `2a` or `3a`, is level u with the structure of a tagged PDF: what each text, heading, table, list, link, footnote and image is, in reading order, with headers, footers and borders marked as decoration. Lpdf writes the same structure as for [PDF/UA](?p=pdfua), from the same attributes: `role` makes a text a heading, `alt` describes an image, a barcode or a chart, and `lang` on `meta` gives the language.
 
-Level a asks for the structure and not for what PDF/UA asks of the document. Without `pdfua`, a level-a document may have no `title` and no `lang`, its headings may skip levels, and an `img` or a `barcode` without `alt` is decoration, which a screen reader skips. That file is valid PDF/A-2a, but a screen reader can't tell what its images show. For a file a screen reader can use, write `pdfua="1"` beside it: the render then refuses what PDF/UA refuses, and the file is PDF/A and PDF/UA both.
+Level a asks for the structure and not for what PDF/UA asks of the document. Without `pdfua`, a level-a document may have no `title` and no `lang`, its headings may skip levels, and an `img`, a `barcode` or a `chart` without `alt` is decoration, which a screen reader skips. That file is valid PDF/A-2a, but a screen reader can't tell what its images show. For a file a screen reader can use, write `pdfua="1"` beside it: the render then refuses what PDF/UA refuses, and the file is PDF/A and PDF/UA both.
 
 ```xml
 <lpdf version="1">

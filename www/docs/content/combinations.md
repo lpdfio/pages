@@ -64,7 +64,7 @@ Each refusal stops the render with an error that says what to change:
 - **A barcode's printed digits:** `a barcode's digits (hrt) are drawn in Helvetica, which is not embedded`. Set `hrt="false"` on the barcode, and write the digits as text in a font of `assets` if they are needed.
 - **CMYK in PDF/A:** `the color cmyk(…) is CMYK, and the sRGB output intent of a PDF/A file covers RGB colors only`. A spot color whose `value` is `cmyk()` gets the same error. Give the color as a hex one, or give the spot color an RGB `value`.
 - **CMYK in PDF/X with a gray or an RGB press profile:** `the profile 'name' prints in an RGB color space, not CMYK`, or in a gray one. Use a CMYK profile of the press, or give the color as RGB.
-- **An image or a barcode without `alt` in PDF/UA:** `the image 'name' has no alt, and a PDF/UA file says what each image shows`. Add `alt` with a description, or `alt=""` when it is decoration. A barcode or an image in a header or a footer needs none.
+- **An image, a barcode or a chart without `alt` in PDF/UA:** `the image 'name' has no alt, and a PDF/UA file says what each image shows`, and `a chart has no alt` for a chart. Add `alt` with a description, or `alt=""` when it is decoration. A barcode, an image or a chart in a header or a footer needs none.
 - **Bulk records in PDF/UA and in PDF/A at level a:** `a bulk table is not tagged for a reader`. Render the document without `bulk`, or take a PDF/A of level b or u.
 
 [Color and print](?p=color-and-print) has the colors of each kind of file in one place, and [Standards and print](?p=standards) says which standard fits which job.

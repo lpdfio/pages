@@ -29,7 +29,7 @@ The engine draws a value axis on the left, from zero in round steps, `$0`, `$10,
 | `min`, `max`     | number       | —       | A number the value axis reaches at least. They only widen it. See [The axis and the labels](#the-axis-and-the-labels) |
 | `thousands-mark` | string       | `,`     | One character between the groups of three digits, or empty for none |
 | `decimal-mark`   | string       | `.`     | One character before the decimals |
-| `gap`            | token/length | `s`     | The space between the bars, the axis labels and the legend |
+| `gap`            | token/length | `s`     | The space between the plot and its step labels, its category labels and its legend |
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
 | `category-gap`   | token/length | a quarter of a category | The space between categories |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom`, `top`, `right` or `none` |
@@ -146,7 +146,8 @@ The number of series can come from the data too: `data-source` on `series` repea
 - **A negative value** takes the axis below zero, and a zero line is drawn in the chart's `color`.
 - **`min` and `max`** only widen the axis: `max="100"` makes it reach 100 at least, for percentages, or for charts meant to be compared side by side, and a value past them still fits. No bar is cut off, and none starts above zero.
 - **A category label** wider than its room wraps at spaces onto three lines at most, and what still doesn't fit ends in an ellipsis, so a chart always renders.
-- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it.
+- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it. Under or above the chart it takes half its height at most, and at the right its height and a third of its width: the entries that don't fit give way to an ellipsis.
+- **In a horizontal chart**, a category thinner than a line of text has no label, so the labels don't run into each other.
 
 ## Numbers
 
@@ -179,6 +180,17 @@ Without `color`, the series take a fixed palette of eight in order, and it start
 
 A chart is a leaf, as an image is: it takes no `padding`, `background` or `border`. A `column` around it gives them.
 
+## In code
+
+The builders have a `chart` that holds `LChart.series` and `LChart.category`, and each category holds an `LChart.value`, in the language's case. A builder has no data binding, so the program turns its own list into categories. `LChart.value` takes one number, written in full with no culture's marks and no exponent, or a string that is a number, such as `'0.250'`, whose decimals a value label keeps. No number is no value.
+
+```js
+import { L, LChart, NoAttr, ChartType } from '@lpdfio/lpdf'
+
+const chart = L.chart({ type: ChartType.Bar, height: '160pt', prefix: '$' },
+  months.map((month) => LChart.category({ label: month.name }, [LChart.value(NoAttr, [month.revenue])])))
+```
+
 ## Pages
 
 A chart never splits across pages. When it doesn't fit, it moves whole to the next page, and one taller than a page is cut at its bottom. Its title is a `text` of its own, which could stay behind at the foot of a page: `paginate="no"` on a `column` that holds both keeps them together, as in the first example.
@@ -190,3 +202,5 @@ In a tagged document, with [`pdfua`](?p=pdfua) or a `pdfa` of [level a](?p=pdfa#
 ## Limits
 
 A chart holds 10,000 categories and 100 series at most, counted after the data is bound. More is an error that names the limit and the list: `a chart holds 10,000 categories at most; the data of 'fixtures' gives 50,000`. A chart at both limits renders inside the render's [time limit](?p=install#time-limit).
+
+A value, the total of a stack, `min` and `max` are 1,000,000,000,000,000 at most either side of zero, where every whole number is still exact. Past it is an error that names the category: `category 'Q1' has the value 1.7e308, and a chart holds values of 1,000,000,000,000,000 at most, either side of zero`.

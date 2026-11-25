@@ -59,7 +59,7 @@ Container for custom scales, colors and spot colors, placed before `document`. S
 
 | Child | Description |
 |-------|-------------|
-| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as lengths in `pt`, `mm` or `in`. `height` is the row for the heights of boxes, tables, images, shapes and barcodes: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
+| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as lengths in `pt`, `mm` or `in`. `height` is the row for the heights of boxes, tables, images, shapes, barcodes and charts: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
 | `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not lengths: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
 | `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
@@ -552,7 +552,7 @@ A chart drawn from numbers, written like a table: `series` are its columns, each
 | `min`, `max`     | number       | —       | A number the value axis reaches at least; they only widen it |
 | `thousands-mark` | string       | `,`     | One character between the groups of three digits, or empty for none |
 | `decimal-mark`   | string       | `.`     | One character before the decimals |
-| `gap`            | token/length | `s`     | The space between the bars, the axis labels and the legend |
+| `gap`            | token/length | `s`     | The space between the plot and its step labels, its category labels and its legend |
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
 | `category-gap`   | token/length | a quarter of a category | The space between categories |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom` `top` `right` `none` |

@@ -55,9 +55,9 @@ A heading is a `text` with a `role`, `h1` to `h6`. A screen reader lists the hea
 
 A [Markdown](?p=doc/markdown) heading is tagged with its level.
 
-## Images, barcodes and layers
+## Images, barcodes, charts and layers
 
-An image says what it shows with `alt`, as in HTML, and `alt=""` marks it as decoration, which a screen reader skips. A barcode says what it is for: the data it encodes means nothing read aloud.
+An image says what it shows with `alt`, as in HTML, and `alt=""` marks it as decoration, which a screen reader skips. A barcode says what it is for: the data it encodes means nothing read aloud. A [chart](?p=doc/layout/chart#accessibility) says what it shows, since its bars mean nothing read aloud.
 
 ```xml
 <img name="logo" width="80pt" alt="Acme Corp"/>
@@ -103,7 +103,7 @@ Lpdf writes what PDF/UA needs and repairs nothing of the document's own. Each of
 
 - no `title` on `meta`: a reader shows it in place of the file name
 - no `lang` on `meta`, or one that is not a language tag
-- an `img`, a `barcode` or a `chart` of the layout without `alt`, but in a header or a footer: the error names it
+- an `img`, a `barcode` or a `chart` of the layout without `alt`, but in a header or a footer: the error names the image by its name and the barcode by its data
 - a first heading that is not an `h1`, or a heading that skips a level going down
 - text in a built-in font, such as the default Helvetica, which is not embedded: declare a font in `assets` and set it with `font` on the document or the text. The error names the text
 - a font declared in `assets` whose file was not loaded, and a font whose license forbids embedding it

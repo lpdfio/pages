@@ -1005,6 +1005,19 @@ var FieldType = {
   Radio: "radio",
   Button: "button"
 };
+var ChartType = {
+  Bar: "bar"
+};
+var ChartDirection = {
+  Vertical: "vertical",
+  Horizontal: "horizontal"
+};
+var ChartLegend = {
+  Bottom: "bottom",
+  Top: "top",
+  Right: "right",
+  None: "none"
+};
 var BuiltinFont = {
   Courier: "Courier",
   CourierBold: "Courier-Bold",
@@ -1161,6 +1174,9 @@ export {
   BuiltinFont,
   CaptureMode,
   CellVAlign,
+  ChartDirection,
+  ChartLegend,
+  ChartType,
   Cipher,
   ColumnFill,
   DividerDirection,

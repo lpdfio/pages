@@ -117,7 +117,7 @@ A negative value takes the axis below zero and draws a zero line, so a change ca
 - **`stroke-width`** sets the width of every line, `1.5pt` by default. Which line is the current one and which the comparison is told by the series' `color`.
 - **`value-labels`** writes each value over its point.
 
-A share price between $98 and $104 on an axis from $96 to $106, with its values written:
+A share price between $98.40 and $103.95, on an axis from $98 to $104, with its values written:
 
 ```xml
 <chart type="line" height="150pt" prefix="$" decimals="2" value-labels="true" stroke-width="2pt">

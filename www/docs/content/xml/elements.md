@@ -542,11 +542,11 @@ A chart drawn from numbers, written like a table: `series` are its columns, each
 
 | Attribute        | Type         | Default | Description |
 |------------------|--------------|---------|-------------|
-| `type`           | string       | —       | **Required.** `bar` |
+| `type`           | string       | —       | **Required.** `bar` `line` `area` `sparkline` |
 | `height`         | token/length | —       | **Required.** Height of the whole chart: a length, or a name from the `height` row of `tokens` |
 | `width`          | token/length | `fill`  | Width of the whole chart |
-| `direction`      | string       | `vertical` | `vertical` `horizontal` |
-| `stacked`        | boolean      | false   | Stacks the bars of a category |
+| `direction`      | string       | `vertical` | `vertical` `horizontal`. Bars only |
+| `stacked`        | boolean      | false   | Stacks the bars of a category, or the areas of the series. Bars and areas only |
 | `prefix`, `suffix` | string     | —       | Written around every number of the chart |
 | `decimals`       | 0–6          | as written | The decimals of the value labels |
 | `min`, `max`     | number       | —       | A number the value axis reaches at least; they only widen it |
@@ -556,11 +556,12 @@ A chart drawn from numbers, written like a table: `series` are its columns, each
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
 | `category-gap`   | token/length | a quarter of a category | The space between categories |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom` `top` `right` `none` |
-| `value-labels`   | boolean      | false   | Writes each value at the end of its bar |
-| `font`, `font-size`, `color` | | the text's around it | The chart's text, and the color of its zero line |
+| `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point |
+| `stroke-width`   | length       | `1.5pt`, `1pt` for a sparkline | The width of every line of a line, an area or a sparkline |
+| `font`, `font-size`, `color` | | the text's around it | The chart's text, and the color of its zero line, or a sparkline's line |
 | `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). Required with `pdfua` on each chart outside a header or a footer |
 
-A `series` takes `label` and `color`, a `category` takes `label` and `color`, and a `value` holds a plain number, or nothing for no value. `series` and `category` take `data-label` and `data-color`, and `value` takes `data-value`. All three take `data-source`, `data-if` and `data-if-not`.
+A `series` takes `label` and `color`, a `category` takes `label` and `color`, and a `value` holds a plain number, or nothing for no value. A sparkline takes no `series`. `series` and `category` take `data-label` and `data-color`, and `value` takes `data-value`. All three take `data-source`, `data-if` and `data-if-not`.
 
 ### `link`
 

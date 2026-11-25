@@ -1,6 +1,6 @@
 # Chart
 
-A chart drawn from numbers, written like a table: `series` are its columns, each `category` a row and each `value` a cell, a value for each series in the series' order. A chart with one series needs no `series`. It takes its box in the flow as an [image](?p=doc/layout/img) does, and the engine draws its axis, its steps, its labels and its legend by fixed rules, so a chart has few attributes and no styling language.
+A chart drawn from numbers, written like a table: `series` are its columns, each `category` a row and each `value` a cell, a value for each series in the series' order. A chart with one series needs no `series`. It takes its box in the flow as an [image](?p=doc/layout/img) does, and the engine draws its axis, its steps, its labels and its legend by fixed rules, so a chart has few attributes and no styling language. It draws bars, [lines](#lines), [areas](#areas) and [sparklines](#sparklines).
 
 ```xml
 <column gap="s" paginate="no">
@@ -19,11 +19,11 @@ The engine draws a value axis on the left, from zero in round steps, `$0`, `$10,
 
 | Attribute        | Type         | Default | Description |
 |------------------|--------------|---------|-------------|
-| `type`           | string       | —       | **Required.** The kind of chart: `bar` |
-| `height`         | token/length | —       | **Required.** Height of the whole chart: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). The axis, the labels and the legend take room inside it and the width, and the bars get the rest |
+| `type`           | string       | —       | **Required.** The kind of chart: `bar`, `line`, `area` or `sparkline` |
+| `height`         | token/length | —       | **Required.** Height of the whole chart: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). The axis, the labels and the legend take room inside it and the width, and the plot gets the rest |
 | `width`          | token/length | `fill`  | Width of the whole chart |
-| `direction`      | string       | `vertical` | `vertical`, or `horizontal`, which lists the categories down the left side. See [Horizontal bars](#horizontal-bars) |
-| `stacked`        | boolean      | false   | Stacks the bars of a category. See [Stacked bars](#stacked-bars) |
+| `direction`      | string       | `vertical` | Bars only: `vertical`, or `horizontal`, which lists the categories down the left side. See [Horizontal bars](#horizontal-bars) |
+| `stacked`        | boolean      | false   | Bars and areas only: stacks the bars of a category, or the areas of the series. See [Stacked bars](#stacked-bars) and [Areas](#areas) |
 | `prefix`, `suffix` | string     | —       | Written around every number of the chart: `$`, `%`, ` ms`. See [Numbers](#numbers) |
 | `decimals`       | 0–6          | as written | The decimals of the value labels |
 | `min`, `max`     | number       | —       | A number the value axis reaches at least. They only widen it. See [The axis and the labels](#the-axis-and-the-labels) |
@@ -33,11 +33,14 @@ The engine draws a value axis on the left, from zero in round steps, `$0`, `$10,
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
 | `category-gap`   | token/length | a quarter of a category | The space between categories |
 | `legend`         | string       | `bottom` with two series, `none` with one | `bottom`, `top`, `right` or `none` |
-| `value-labels`   | boolean      | false   | Writes each value at the end of its bar |
-| `font`, `font-size`, `color` | | the text's around it | The chart's text: its labels, steps and legend, and the color of its zero line |
+| `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point |
+| `stroke-width`   | length       | `1.5pt`, `1pt` for a sparkline | The width of every line of a line, an area or a sparkline. `0` draws none, so an area is its fill alone |
+| `font`, `font-size`, `color` | | the text's around it | The chart's text: its labels, steps and legend, and the color of its zero line. A sparkline, which has no text, draws its line in `color` |
 | `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). See [Accessibility](#accessibility) |
 
-A `series` takes `label`, its entry in the legend, and `color`, its bars'. A `category` takes `label`, written by its bars, and `color`, the color of its bar in a chart of one series. A `value` is a plain number, such as `41200`, `-3.5` or `0.25`, and an empty `<value/>` is no value: no bar. All three take `data-source`, `data-if` and `data-if-not`, `series` and `category` `data-label` and `data-color`, and `value` `data-value`. See [From the data](#from-the-data).
+A `series` takes `label`, its entry in the legend, and `color`, its bars', line's or area's. A `category` takes `label`, written by its bars or under its point, and `color`, the color of its bar in a bar chart of one series. A `value` is a plain number, such as `41200`, `-3.5` or `0.25`, and an empty `<value/>` is no value: no bar, and a gap in a line. All three take `data-source`, `data-if` and `data-if-not`, `series` and `category` `data-label` and `data-color`, and `value` `data-value`. See [From the data](#from-the-data).
+
+`direction` is for bars, and `stacked` for bars and areas: on another kind each is an error that names it, such as `direction is for a bar chart, and this is a line chart`.
 
 ## Bars side by side
 
@@ -91,6 +94,107 @@ A negative value takes the axis below zero and draws a zero line, so a change ca
 </chart>
 ```
 
+## Lines
+
+`type="line"` draws a line through the values of each series, a point at the middle of each category. Visits per week, this year against last:
+
+```xml
+<chart type="line" height="170pt">
+  <series label="This year" color="primary"/>
+  <series label="Last year" color="text-muted"/>
+  <category label="W1"><value>1210</value><value>1005</value></category>
+  <category label="W2"><value>1340</value><value>980</value></category>
+  <category label="W3"><value>1285</value><value/></category>
+  <category label="W4"><value>1502</value><value>1100</value></category>
+  <category label="W5"><value>1460</value><value>1150</value></category>
+  <category label="W6"><value>1620</value><value>1090</value></category>
+</chart>
+```
+
+- **The axis fits the values**: it runs from a round step under the lowest to one over the highest. A point is read by its height, and on an axis from zero a line far from it comes out flat. The axis doesn't cross zero where the values don't, so a count never shows below it, and `min="0"` brings it down to zero.
+- **A missing value breaks the line**: an empty `<value/>`, or `null` in the data, ends the line at the point before, and it starts again at the point after, so the reader sees the gap. A value alone between two missing ones is a dot.
+- **The labels** under the plot are every one where they all fit on one line, and else every 2nd, 3rd or 5th, starting with the first: the smallest step at which they fit. Every point keeps its place, so thirty days in 300pt write `Nov 1`, `Nov 6`, `Nov 11` and on. A label still too wide on its own wraps and shortens, as on bars.
+- **`stroke-width`** sets the width of every line, `1.5pt` by default. Which line is the current one and which the comparison is told by the series' `color`.
+- **`value-labels`** writes each value over its point.
+
+A share price between $98 and $104 on an axis from $96 to $106, with its values written:
+
+```xml
+<chart type="line" height="150pt" prefix="$" decimals="2" value-labels="true" stroke-width="2pt">
+  <category label="Mon"><value>98.40</value></category>
+  <category label="Tue"><value>101.15</value></category>
+  <category label="Wed"><value>99.80</value></category>
+  <category label="Thu"><value>103.95</value></category>
+  <category label="Fri"><value>102.30</value></category>
+</chart>
+```
+
+## Areas
+
+`type="area"` draws the line of each series and fills it down to zero, faded so that the gridlines, and an area behind it, show through. Its axis keeps zero, as an axis of bars does. With `stacked="true"`, each series is filled down to the one under it, and the axis runs to the largest total: the parts of a whole over time.
+
+```xml
+<chart type="area" stacked="true" height="170pt" suffix=" GB" value-labels="true">
+  <series label="Images"/>
+  <series label="Documents"/>
+  <series label="Backups"/>
+  <category label="Jan"><value>120</value><value>40</value><value>65</value></category>
+  <category label="Feb"><value>132</value><value>44</value><value>70</value></category>
+  <category label="Mar"><value>141</value><value/><value>72</value></category>
+  <category label="Apr"><value>150</value><value>51</value><value>80</value></category>
+</chart>
+```
+
+- **A missing value** breaks an area that isn't stacked, as it breaks a line. In a stacked area it counts as zero, so the series above still sit on something: in March, the backups sit on the images.
+- **A stacked value** can't be negative, and with `value-labels` a stacked area writes the total of each category over its top.
+- **The labels** under the plot skip as a line's do.
+- **`stroke-width="0"`** draws no line: the area is its fill alone.
+
+## Sparklines
+
+`type="sparkline"` draws one small line through its whole box, with no axis, no labels and no legend, for a table cell: the first value at the left edge and the last at the right, the lowest at the bottom and the highest at the top. The trend of the last weeks, for each product:
+
+```xml
+<table cols="2fr 1fr 80pt">
+  <tr data-source="products">
+    <td><text data-value="name">Product</text></td>
+    <td><text data-value="total" align="right">0</text></td>
+    <td>
+      <chart type="sparkline" height="14pt">
+        <category data-source="weeks">
+          <value data-value="sales">0</value>
+        </category>
+      </chart>
+    </td>
+  </tr>
+</table>
+```
+
+```json
+{
+  "products": [
+    { "name": "Desk lamp", "total": "1,284", "weeks": [{ "sales": 80 }, { "sales": 91 }, { "sales": 88 }, { "sales": 131 }] },
+    { "name": "Standing desk", "total": "412", "weeks": [{ "sales": 60 }, { "sales": null }, { "sales": 41 }, { "sales": 22 }] }
+  ]
+}
+```
+
+`weeks` is read from each product, as paths inside a `data-source` are.
+
+- **One series.** A sparkline takes no `series`: one is an error that names it, `a sparkline has one series, and takes no <series>`.
+- **Its color** is the chart's own `color`, since a sparkline has no text: `color="text-muted"`. Without it, the line is the palette's first color, whatever the color of the text around it. `stroke-width` sets its width, `1pt` by default.
+- **`min` and `max`** widen it as they widen an axis: the same `min="0" max="150"` on each sparkline of a table draws them all on one scale.
+- **A missing value** breaks it, as it breaks a line.
+
+```xml
+<chart type="sparkline" height="40pt" width="160pt" color="text-muted" stroke-width="2pt" min="0">
+  <category><value>3</value></category>
+  <category><value>7</value></category>
+  <category><value>4</value></category>
+  <category><value>9</value></category>
+</chart>
+```
+
 ## From the data
 
 `data-source` repeats a `category` for each item of a list, as it repeats any element, and `data-label` sets its `label` from the item. With no data, the chart renders as written: one bar for Jan.
@@ -134,7 +238,7 @@ The number of series can come from the data too: `data-source` on `series` repea
 }
 ```
 
-- A value from the data is a number, or a string that is a plain number. `null` and a missing key are no value: no bar. Anything else is an error that names the path, such as `<value data-value="amount">: '41,200' is not a plain number`.
+- A value from the data is a number, or a string that is a plain number. `null` and a missing key are no value: no bar, and a gap in a line. Anything else is an error that names the path, such as `<value data-value="amount">: '41,200' is not a plain number`.
 - `data-label` takes a string or a number, so a year or a week number of the data is a label as it is.
 - `data-color` sets the `color` of a series or a category: a script that writes the data can mark a bar red.
 - A category holds a value for each series, after the data is bound. One with more or fewer is an error that names it: `category 'Q1' has 1 value, and the chart has 2 series`. The order of the values is the data's to keep.
@@ -142,11 +246,11 @@ The number of series can come from the data too: `data-source` on `series` repea
 
 ## The axis and the labels
 
-- **The value axis** starts at zero and runs in about five round steps, each 1, 2 or 5 times a power of ten, with a light gridline at each. Fewer steps are drawn where their labels would crowd.
+- **The value axis** of bars and areas starts at zero, and a line's fits its values (see [Lines](#lines)). It runs in about five round steps, each 1, 2 or 5 times a power of ten, with a light gridline at each. Fewer steps are drawn where their labels would crowd.
 - **A negative value** takes the axis below zero, and a zero line is drawn in the chart's `color`.
-- **`min` and `max`** only widen the axis: `max="100"` makes it reach 100 at least, for percentages, or for charts meant to be compared side by side, and a value past them still fits. No bar is cut off, and none starts above zero.
+- **`min` and `max`** only widen the axis: `max="100"` makes it reach 100 at least, for percentages, or for charts meant to be compared side by side, and a value past them still fits. No bar is cut off, and none starts above zero. On a line, `min="0"` brings the axis down to zero.
 - **A category label** wider than its room wraps at spaces onto three lines at most, and what still doesn't fit ends in an ellipsis, so a chart always renders.
-- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it. Under or above the chart it takes half its height at most, and at the right its height and a third of its width: the entries that don't fit give way to an ellipsis.
+- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it. A sparkline has none. Under or above the chart it takes half its height at most, and at the right its height and a third of its width: the entries that don't fit give way to an ellipsis.
 - **In a horizontal chart**, a category thinner than a line of text has no label, so the labels don't run into each other.
 
 ## Numbers
@@ -182,7 +286,7 @@ A chart is a leaf, as an image is: it takes no `padding`, `background` or `borde
 
 ## In code
 
-The builders have a `chart` that holds `LChart.series` and `LChart.category`, and each category holds an `LChart.value`, in the language's case. A builder has no data binding, so the program turns its own list into categories. `LChart.value` takes one number, written in full with no culture's marks and no exponent, or a string that is a number, such as `'0.250'`, whose decimals a value label keeps. No number is no value.
+The builders have a `chart` that holds `LChart.series` and `LChart.category`, and each category holds an `LChart.value`, in the language's case. `ChartType` names the kinds: `ChartType.Bar`, `ChartType.Line`, `ChartType.Area` and `ChartType.Sparkline`. A builder has no data binding, so the program turns its own list into categories. `LChart.value` takes one number, written in full with no culture's marks and no exponent, or a string that is a number, such as `'0.250'`, whose decimals a value label keeps. No number is no value.
 
 ```js
 import { L, LChart, NoAttr, ChartType } from '@lpdfio/lpdf'

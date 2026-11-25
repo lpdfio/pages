@@ -631,7 +631,7 @@ In JavaScript the constants are exported by the package, `import { Orientation }
 | `CaptureMode` | First, Last | `capture-mode` of a text |
 | `ChartDirection` | Vertical, Horizontal | `direction` of a chart |
 | `ChartLegend` | Bottom, Top, Right, None | `legend` of a chart |
-| `ChartType` | Bar | `type` of a chart |
+| `ChartType` | Bar, Line, Area, Sparkline | `type` of a chart |
 | `CellVAlign` | Top, Middle, Bottom | `valign` of a cell |
 | `Cipher` | Aes256, Rc4128 | `encrypt` of the output |
 | `ColumnFill` | Auto, Balance | `column-fill` of a section |

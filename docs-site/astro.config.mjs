@@ -79,6 +79,7 @@ export default defineConfig({
                                 { slug: 'doc/layout/grid', label: 'Grid' },
                                 { slug: 'doc/layout/table', label: 'Table' },
                                 { slug: 'doc/layout/barcode', label: 'Barcode' },
+                                { slug: 'doc/layout/chart', label: 'Chart' },
                                 { slug: 'doc/layout/link', label: 'Link' },
                                 { slug: 'doc/layout/bookmark', label: 'Bookmark' },
                                 { slug: 'doc/layout/field', label: 'Field' },

@@ -38,7 +38,7 @@ PDF/UA (ISO 14289-1) is the PDF a screen reader can read: a tagged PDF that says
 | [`output`](?p=xml/elements#output) | `pdfua` | `1` | Writes the PDF as PDF/UA-1, a tagged PDF. Without it, or a `pdfa` of [level a](?p=pdfa#level-a), which tags the file too, nothing is tagged, and the attributes below change nothing |
 | [`meta`](?p=xml/elements#meta) | `lang` | language tag | The language of the text, such as `en`, `en-US` or `de-CH`, which a screen reader reads it in. Required with `pdfua` |
 | [`text`](?p=xml/elements#text) | `role` | `h1` … `h6` | Makes the text a heading. A text without it is a paragraph |
-| [`img`](?p=xml/elements#img-layout), [`barcode`](?p=xml/elements#barcode) | `alt` | string | What the image shows, or what the barcode is for; `alt=""` marks it as decoration. Required with `pdfua` on every image and barcode of the layout but a header's or a footer's, which are decoration |
+| [`img`](?p=xml/elements#img-layout), [`barcode`](?p=xml/elements#barcode), [`chart`](?p=xml/elements#chart) | `alt` | string | What the image or the chart shows, or what the barcode is for; `alt=""` marks it as decoration. Required with `pdfua` on every image, barcode and chart of the layout but a header's or a footer's, which are decoration |
 | [`layer`](?p=xml/elements#layer) | `alt` | string | Makes the layer one figure with that description. Without it a layer is decoration |
 
 `pdfua` combines with [`pdfa`](?p=pdfa): `<output pdfa="2u" pdfua="1"/>` writes an accessible file for the archive, and `<output pdfa="2a" pdfua="1"/>` one that is PDF/A [level a](?p=pdfa#level-a) too, the level for tagged files. Level a alone tags the file the same way, without the checks of PDF/UA. `pdfua` combines with [`pdfx`](?p=pdfx) too, for a print file a screen reader reads; a PDF/X file has no links, so its link text is read as text. [What combines with what](?p=combinations) has every pair, and what each kind of file holds.
@@ -84,8 +84,8 @@ A [layer](?p=doc/layer) is decoration unless it says otherwise, as a header is: 
 | `fn` | A note at the foot of the page, with its number |
 | A `toc` section | A table of contents with its entries |
 | `markdown` | Headings with their level, paragraphs, lists, tables, and images with their alt text |
-| `img`, `barcode`, and a `layer` with `alt` | A figure with its description |
-| A `region` (a header or a footer), a `layer` without `alt`, a `divider`, a `shape`, backgrounds, borders, and an image or a barcode with `alt=""` | Decoration, which a reader skips |
+| `img`, `barcode`, `chart`, and a `layer` with `alt` | A figure with its description |
+| A `region` (a header or a footer), a `layer` without `alt`, a `divider`, a `shape`, backgrounds, borders, and an image, a barcode or a chart with `alt=""` | Decoration, which a reader skips |
 | The header row of a table, repeated on the next page | Decoration: it is read once |
 | [Print and screen content](?p=print-and-screen) (`ocg`) | Read as any other: a PDF/UA file shows everything, so a reader reads all of it |
 
@@ -103,7 +103,7 @@ Lpdf writes what PDF/UA needs and repairs nothing of the document's own. Each of
 
 - no `title` on `meta`: a reader shows it in place of the file name
 - no `lang` on `meta`, or one that is not a language tag
-- an `img` or a `barcode` of the layout without `alt`, but in a header or a footer: the error names it
+- an `img`, a `barcode` or a `chart` of the layout without `alt`, but in a header or a footer: the error names it
 - a first heading that is not an `h1`, or a heading that skips a level going down
 - text in a built-in font, such as the default Helvetica, which is not embedded: declare a font in `assets` and set it with `font` on the document or the text. The error names the text
 - a font declared in `assets` whose file was not loaded, and a font whose license forbids embedding it

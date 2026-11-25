@@ -194,9 +194,10 @@ A value is falsy when it is missing, `null`, `false`, `0`, an empty string, an e
 |-------------------|----|------|
 | `data-href`       | `link` | `href`, the link's destination |
 | `data-name`       | `img`, `img-at` | `name`, which of the images declared in `assets` is drawn |
-| `data-color`      | `text`, `text-at`, the boxes (`column`, `row`, `grid`, `frame`, `td`), `divider`, `barcode`, `barcode-at` | `color` |
+| `data-color`      | `text`, `text-at`, the boxes (`column`, `row`, `grid`, `frame`, `td`), `divider`, `barcode`, `barcode-at`, a chart's `series` and `category` | `color` |
 | `data-background` | the boxes (`column`, `row`, `grid`, `frame`, `td`), `barcode`, `barcode-at` | `background` |
 | `data-fill`       | `shape` | `fill` |
+| `data-label`      | a chart's `series` and `category` | `label`, its entry in the legend or its label by the axis. See [Chart](?p=doc/layout/chart#from-the-data) |
 
 ```xml
 <column data-source="products" gap="s">
@@ -222,7 +223,7 @@ With this data, the first product links to its page, shows the `photo` image and
 ```
 
 - **The attribute without `data-` stays.** It is the value used when no data is passed, and when the path has no value or the value is an empty string. `link` still needs an `href` and `img` still needs a `name`.
-- **A value is a string**, and it is checked as the attribute is: `data-color` takes a [color](?p=xml/schema#colors) (hex, `cmyk()`, `rgb()` or `hsl()`), a name from the `colors` of the [tokens](?p=xml/schema#tokens), or a [spot color](?p=xml/schema#spot-colors) of the `spots`, alone or as a tint (`brand 30%`), and `data-background` and `data-fill` also take `gradient:name`. A number, a boolean, an object or an array is an error, and so is a color that is not one. The error names the attribute and the path, such as `data-color="item.status": unknown color token: 'chartreuse'`.
+- **A value is a string**, and `data-label` takes a number too. It is checked as the attribute is: `data-color` takes a [color](?p=xml/schema#colors) (hex, `cmyk()`, `rgb()` or `hsl()`), a name from the `colors` of the [tokens](?p=xml/schema#tokens), or a [spot color](?p=xml/schema#spot-colors) of the `spots`, alone or as a tint (`brand 30%`), and `data-background` and `data-fill` also take `gradient:name`. A number, a boolean, an object or an array is an error, and so is a color that is not one. The error names the attribute and the path, such as `data-color="item.status": unknown color token: 'chartreuse'`.
 - **An image is picked, not loaded.** `data-name` chooses among the images the document declares in `assets` and your code loaded before the render. The data can't bring a new image: declare and load one for each image the data may name (a builder loop, or a few lines of XML). A name that is not declared is an error that names the path.
 - **Not everywhere.** An element without the attribute refuses the `data-` form when the document is read. A `span` has no data attributes, and a table of contents section refuses these five.
 

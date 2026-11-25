@@ -59,7 +59,7 @@ Container for custom scales, colors and spot colors, placed before `document`. S
 
 | Child | Description |
 |-------|-------------|
-| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as lengths in `pt`, `mm` or `in`. `height` is the row for the heights of boxes, tables, images, shapes and barcodes: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
+| `space`, `text-size`, `border`, `radius`, `width`, `height`, `grid` | Replace one scale. Each takes all six of `xs` `s` `m` `l` `xl` `xxl`, as lengths in `pt`, `mm` or `in`. `height` is the row for the heights of boxes, tables, images, shapes, barcodes and charts: `xs` 16pt, `s` 24pt, `m` 32pt, `l` 48pt, `xl` 64pt, `xxl` 96pt |
 | `line-height` | Replaces the line-height scale. It takes all six too, but as factors of the font size, not lengths: `xs` 1.0, `s` 1.1, `m` 1.2, `l` 1.4, `xl` 1.6, `xxl` 2.0 |
 | `aliases` | Holds `alias` elements |
 | `colors` | Holds `color` elements |
@@ -163,7 +163,7 @@ How the PDF file is written, apart from what its pages show: whether it is [encr
 | `encrypt` | string | — | `aes-256` `rc4-128`: encrypts the PDF with this cipher, with the passwords of the render call. Without it the PDF is not encrypted, and passwords given to the render are an error |
 | `allow`   | list   | nothing    | What a reader may do without the owner password, separated by spaces: `all`, or any of `print` `modify` `copy` `annotate` `fill-forms` `accessibility` `assemble`. Without it, or with `allow=""`, nothing is allowed. It needs `encrypt` |
 | `pdfa`    | string | — | `2a` `2b` `2u` `3a` `3b` `3u`: writes the PDF as PDF/A-2a, PDF/A-2b, PDF/A-2u, PDF/A-3a, PDF/A-3b or PDF/A-3u. Level a tags the file as `pdfua` does, without PDF/UA's checks. The render needs `createdOn`, every text a font of `assets`, and the document no CMYK color, form field, barcode digits, `encrypt`, or `attachments` in part 2, and at level a no `lang` that is not a language tag and no character of Unicode's private use area, each an error that says what to change. With `3a`, `3b` or `3u`, an attachment named `factur-x.xml` or `xrechnung.xml` makes the PDF a [Factur-X e-invoice](?p=factur-x-zugferd) |
-| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`, and with `2a` or `3a` the file is PDF/A level a too. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img` and `barcode` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
+| `pdfua`   | string | — | `1`: writes the PDF as PDF/UA-1, a tagged PDF a screen reader can read. It combines with `pdfa`, and with `2a` or `3a` the file is PDF/A level a too. The render needs `createdOn`, `meta` a `title` and a `lang`, every `img`, `barcode` and `chart` of the layout outside a header or a footer an `alt`, and every text a font of `assets`, each an error that says what to change |
 | `pdfx`    | string | — | `4`: writes the PDF as PDF/X-4, for a commercial printer, made for the press profile `profile` names. It combines with `pdfua`. Every page gets a `TrimBox` and a `BleedBox`, RGB is tied to sRGB, and links print as text. The render needs `createdOn`, `meta` a `title`, and every text a font of `assets`, and the document no form field, barcode digits, `encrypt`, `pdfa` or `attachments`, each an error that says what to change |
 | `profile` | string | — | The [`profile`](#profile) of `assets` a PDF/X file is made for: the ICC profile of the printing press. It needs `pdfx`, and `pdfx` needs it |
 | `linearize` | boolean | `false` | Writes the PDF linearized, for [fast web view](?p=fast-web-view): page 1 and hints that say where every other page is come first, so a viewer that fetches the file by ranges shows page 1 while the rest downloads. Each page then names only the fonts and images it draws. With `encrypt` the file is encrypted first and linearized last. Any change to the file afterwards ends the linearization |
@@ -267,7 +267,7 @@ The Markdown, inside `markdown`: written inline, best in a CDATA section, with t
 
 ## Layout elements
 
-Layout elements live inside `layout`. Every one except `region`, `span` and `bookmark` takes `data-source`, `data-if` and `data-if-not`, and `text` and `barcode` take `data-value`. See [Data Binding](?p=data/binding).
+Layout elements live inside `layout`. Every one except `region`, `span` and `bookmark` takes `data-source`, `data-if` and `data-if-not`, and `text`, `barcode` and a chart's `value` take `data-value`. See [Data Binding](?p=data/binding).
 
 ### Shared box attributes
 
@@ -535,6 +535,32 @@ Takes the shared box attributes, except `width`, which includes `color`, `opacit
 | `paginate`  | string  | —         | Page breaks: `no` `break-before` `break-after` `keep-next`. See [Page breaks](?p=doc/layout#page-breaks) |
 | `debug`     | boolean | false     | Draw the box outline |
 | `ocg` | string | — | `print` or `screen`: shown only in print, or only on screen. See [Print and screen content](?p=print-and-screen) |
+
+### `chart`
+
+A chart drawn from numbers, written like a table: `series` are its columns, each `category` a row and each `value` a cell. See [Chart](?p=doc/layout/chart).
+
+| Attribute        | Type         | Default | Description |
+|------------------|--------------|---------|-------------|
+| `type`           | string       | —       | **Required.** `bar` |
+| `height`         | token/length | —       | **Required.** Height of the whole chart: a length, or a name from the `height` row of `tokens` |
+| `width`          | token/length | `fill`  | Width of the whole chart |
+| `direction`      | string       | `vertical` | `vertical` `horizontal` |
+| `stacked`        | boolean      | false   | Stacks the bars of a category |
+| `prefix`, `suffix` | string     | —       | Written around every number of the chart |
+| `decimals`       | 0–6          | as written | The decimals of the value labels |
+| `min`, `max`     | number       | —       | A number the value axis reaches at least; they only widen it |
+| `thousands-mark` | string       | `,`     | One character between the groups of three digits, or empty for none |
+| `decimal-mark`   | string       | `.`     | One character before the decimals |
+| `gap`            | token/length | `s`     | The space between the plot and its step labels, its category labels and its legend |
+| `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category |
+| `category-gap`   | token/length | a quarter of a category | The space between categories |
+| `legend`         | string       | `bottom` with two series, `none` with one | `bottom` `top` `right` `none` |
+| `value-labels`   | boolean      | false   | Writes each value at the end of its bar |
+| `font`, `font-size`, `color` | | the text's around it | The chart's text, and the color of its zero line |
+| `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). Required with `pdfua` on each chart outside a header or a footer |
+
+A `series` takes `label` and `color`, a `category` takes `label` and `color`, and a `value` holds a plain number, or nothing for no value. `series` and `category` take `data-label` and `data-color`, and `value` takes `data-value`. All three take `data-source`, `data-if` and `data-if-not`.
 
 ### `link`
 

@@ -153,7 +153,7 @@ A token is a name for a length. Each attribute reads its own scale, so `m` is 8p
 | `xl`  | 20pt | 20pt | 3pt   | 16pt | 440pt | 64pt | 220pt | 1.6 |
 | `xxl` | 32pt | 28pt | 4pt   | 24pt | 515pt | 96pt | 280pt | 2.0 |
 
-`width` is a scale of page-wide measures, with no use for the height of a card or a row, so `height` has a row of its own: `height="m"` works on a box, a table, an `img`, a `shape` and a barcode. Before v0.29.0 a barcode or a form field read a token `height` from the `width` row.
+`width` is a scale of page-wide measures, with no use for the height of a card or a row, so `height` has a row of its own: `height="m"` works on a box, a table, an `img`, a `shape`, a barcode and a chart. Before v0.29.0 a barcode or a form field read a token `height` from the `width` row.
 
 `padding` and `margin` take one to four values, written like CSS, and each can be a token: `padding="m 24pt"` is 8pt top and bottom and 24pt left and right.
 

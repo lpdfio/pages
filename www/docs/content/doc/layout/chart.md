@@ -112,7 +112,7 @@ A negative value takes the axis below zero and draws a zero line, so a change ca
 ```
 
 - **The axis fits the values**: it runs from a round step under the lowest to one over the highest. A point is read by its height, and on an axis from zero a line far from it comes out flat. The axis doesn't cross zero where the values don't, so a count never shows below it, and `min="0"` brings it down to zero.
-- **A missing value breaks the line**: an empty `<value/>`, or `null` in the data, ends the line at the point before, and it starts again at the point after, so the reader sees the gap. A value alone between two missing ones is a dot.
+- **A missing value breaks the line**: an empty `<value/>`, or `null` in the data, ends the line at the point before, and it starts again at the point after, so the reader sees the gap. A value with no value next to it, on either side, is a dot.
 - **The labels** under the plot are every one where they all fit on one line, and else every 2nd, 3rd or 5th, starting with the first: the smallest step at which they fit. Every point keeps its place, so thirty days in 300pt write `Nov 1`, `Nov 6`, `Nov 11` and on. A label still too wide on its own wraps and shortens, as on bars.
 - **`stroke-width`** sets the width of every line, `1.5pt` by default. Which line is the current one and which the comparison is told by the series' `color`.
 - **`value-labels`** writes each value over its point.

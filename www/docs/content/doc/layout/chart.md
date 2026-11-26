@@ -182,6 +182,7 @@ With no data, it renders as written: one slice for Rent.
 - **A zero or a missing value** draws no slice. A zero still has its entry in the legend, `0%`, and a missing value, an empty `<value/>`, has its label alone.
 - **`hole`** sets a donut's hole as a share of its size, from `0.1` to `0.9`, `0.6` by default: `0.8` is a thin ring and `0.5` a thick one.
 - **`hole-text`**, or `data-hole-text` from the data, is written in the middle of the hole as it is given, such as a total or a share. The engine adds nothing up. A text too wide for the hole wraps at spaces onto three lines at most, and what still doesn't fit ends in an ellipsis. A hole too small for a line of text holds none.
+- **`value-labels`, `min`, `max` and `stroke-width`** change nothing on a pie or a donut: it has no axis, writes no value beside a slice and draws no line. They are still read, so a `min` that isn't a number is refused.
 - **Refused**, with an error that names it: a negative value, values that add up to zero, a `series`, `direction` or `stacked`, and `hole` or `hole-text` on any kind but a donut.
 
 A share of a whole, such as a task that is 72% done, is a thin ring with its text in the hole and no legend:

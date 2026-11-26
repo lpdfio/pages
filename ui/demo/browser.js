@@ -1009,6 +1009,8 @@ var ChartType = {
   Bar: "bar",
   Line: "line",
   Area: "area",
+  Pie: "pie",
+  Donut: "donut",
   Sparkline: "sparkline"
 };
 var ChartDirection = {

@@ -1006,7 +1006,10 @@ var FieldType = {
   Button: "button"
 };
 var ChartType = {
-  Bar: "bar"
+  Bar: "bar",
+  Line: "line",
+  Area: "area",
+  Sparkline: "sparkline"
 };
 var ChartDirection = {
   Vertical: "vertical",

@@ -23,7 +23,7 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 
 ## Font
 
-A field's text is set in the font around it, as a text's is: the `font` of the document, of a section, or of a box the field sits in. With no font set it is Helvetica.
+A field's text is set in the font around it, as a text's is: the `font` of the document, or of a box around the field. With no font set it is Helvetica.
 
 What a user types is drawn in that font, so a font declared in `assets` is written into the PDF whole, not as the subset of glyphs the document uses. A form in an embedded font makes the file bigger by about the size of the font file.
 

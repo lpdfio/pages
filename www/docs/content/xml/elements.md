@@ -597,7 +597,7 @@ PDF form field.
 |---------------|---------|---------|-------------|
 | `type`       | string  | —       | **Required.** `text` `checkbox` `dropdown` `radio` `button` |
 | `name`       | string  | —       | **Required.** Field name in the PDF form |
-| `value`      | string  | —       | Default value |
+| `value`      | string  | —       | Default value. A text field and a dropdown draw it in the field: see [Value](?p=doc/layout/field#value) |
 | `label`      | string  | —       | Visible label (checkbox, radio, button) |
 | `options`    | string  | —       | Comma-separated options (dropdown) |
 | `group`      | string  | —       | Radio group name |

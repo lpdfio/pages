@@ -43,7 +43,7 @@ A standard limits what a document may contain. This table says what each kind of
 |---------|-----------|-------|--------|-------|
 | Text in an embedded font | Yes | Yes | Yes | Yes |
 | Text in a built-in font | Yes | Refused | Refused | Refused |
-| Form fields | Yes | Refused | Refused | Refused |
+| Form fields | Yes | Yes, in an embedded font, but no push button | Refused | Refused |
 | A barcode's printed digits (`hrt`) | Yes | Refused | Refused | Refused |
 | RGB colors: hex, `rgb()`, `hsl()` | Yes | Yes | Yes | Yes, tied to sRGB |
 | CMYK colors, and spot colors with a `cmyk()` value | Yes | Refused | Yes | With a CMYK press profile: yes. With a gray or an RGB one: refused |
@@ -60,7 +60,8 @@ A file of two standards keeps to both columns: what either refuses is refused. W
 Each refusal stops the render with an error that says what to change:
 
 - **Text in a built-in font:** `the text "…" is in Helvetica, a font built into PDF readers, which is not embedded`. Declare a font in `assets` and set it with `font` on the document or on the text.
-- **A form field:** `the form field 'name' can't be in a PDF/X file`, and the same for PDF/A and PDF/UA. In PDF/A and PDF/UA the reason is that a field draws its text in Helvetica, which is not embedded. In PDF/X it is that a field is something to click and type in on the printed page. Remove the field, or remove the standard.
+- **A form field in PDF/X or PDF/UA:** `the form field 'name' can't be in a PDF/X file`, and the same for PDF/UA. In PDF/X the reason is that a field is something to click and type in on the printed page. In PDF/UA it is that a field is not a Form element of the file's structure, which Lpdf doesn't write yet. Remove the field, or remove the standard.
+- **A form field in PDF/A:** a field is set in the font around it, so one in a built-in font gives `the form field 'name' is in Helvetica, a font built into PDF readers, which is not embedded`. Declare a font in `assets` and set it with `font` on the document or on a box around the field. A push button gives `the push button 'name' can't be in a PDF/A file yet`: remove it, or remove `pdfa`.
 - **A barcode's printed digits:** `a barcode's digits (hrt) are drawn in Helvetica, which is not embedded`. Set `hrt="false"` on the barcode, and write the digits as text in a font of `assets` if they are needed.
 - **CMYK in PDF/A:** `the color cmyk(…) is CMYK, and the sRGB output intent of a PDF/A file covers RGB colors only`. A spot color whose `value` is `cmyk()` gets the same error. Give the color as a hex one, or give the spot color an RGB `value`.
 - **CMYK in PDF/X with a gray or an RGB press profile:** `the profile 'name' prints in an RGB color space, not CMYK`, or in a gray one. Use a CMYK profile of the press, or give the color as RGB.

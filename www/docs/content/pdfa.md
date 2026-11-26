@@ -157,7 +157,8 @@ Lpdf writes what PDF/A needs and repairs nothing of the document's own. Each of 
 - a font whose license forbids embedding it
 - a character the font has no glyph for, which a reader would draw as an empty box
 - a CMYK color or gradient, or a [spot color](?p=xml/schema#spot-colors) whose `value` is `cmyk()`: the sRGB output intent covers RGB colors only
-- a form field, whose text is drawn in Helvetica
+- a form field in a built-in font, such as the default Helvetica: a field is set in the font around it, so declare a font in `assets` and set it with `font` on the document or on a box around the field. A field whose value, options or caption have a character its font has no glyph for is refused too
+- a push button (`<field type="button">`): PDF/A asks the appearance of a button to be a set of states, and macOS Preview doesn't draw a push button that has them. Text fields, dropdowns, checkboxes and radio buttons are carried
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
 - `encrypt` on the same `output`: PDF/A forbids encryption, so that an archive can always open the file
 - `pdfx` on the same `output`: a PDF/A file keeps to the sRGB profile, and a [PDF/X](?p=pdfx) file to the press profile

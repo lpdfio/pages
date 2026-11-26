@@ -21,6 +21,14 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 | `height`     | token/length | —      | Field height: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens) |
 | `ocg` | string | — | `screen`: shown only on screen. `print` is an error: a field in print content could be filled nowhere. See [Print and screen content](?p=print-and-screen#links-and-form-fields) |
 
+## Font
+
+A field's text is set in the font around it, as a text's is: the `font` of the document, of a section, or of a box the field sits in. With no font set it is Helvetica.
+
+What a user types is drawn in that font, so a font declared in `assets` is written into the PDF whole, not as the subset of glyphs the document uses. A form in an embedded font makes the file bigger by about the size of the font file.
+
+A [PDF/A](?p=pdfa) file embeds every font, so a form in it needs a font declared in `assets` and set on the document: the fields then take it with nothing more to write. A push button (`type="button"`) is the one kind PDF/A refuses.
+
 ## Text form
 
 ```xml

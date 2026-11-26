@@ -57,7 +57,7 @@ A [Markdown](?p=doc/markdown) heading is tagged with its level.
 
 ## Images, barcodes, charts and layers
 
-An image says what it shows with `alt`, as in HTML, and `alt=""` marks it as decoration, which a screen reader skips. A barcode says what it is for: the data it encodes means nothing read aloud. A [chart](?p=doc/layout/chart#accessibility) says what it shows, since its bars mean nothing read aloud.
+An image says what it shows with `alt`, as in HTML, and `alt=""` marks it as decoration, which a screen reader skips. A barcode says what it is for: the data it encodes means nothing read aloud. A [chart](?p=doc/layout/chart#accessibility) says what it shows, since its bars and lines mean nothing read aloud.
 
 ```xml
 <img name="logo" width="80pt" alt="Acme Corp"/>

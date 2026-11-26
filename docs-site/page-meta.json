@@ -76,7 +76,7 @@
         "description": "The img element in Lpdf XML: place an image declared in assets in the flow, by width, height or both, with rounded corners. It is never stretched."
     },
     "doc/layout/chart": {
-        "description": "The chart element in Lpdf XML: bar charts drawn from numbers or from data, vertical, horizontal, side by side and stacked, with an axis and a legend."
+        "description": "The chart element in Lpdf XML: bar, line, area and sparkline charts drawn from numbers or from data, with an axis, labels and a legend by fixed rules."
     },
     "doc/layout/shape": {
         "description": "The shape element in Lpdf XML: draw a rectangle, circle or ellipse in the flow, for a status dot, a color swatch or a progress bar. It takes room like an image."

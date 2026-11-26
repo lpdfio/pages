@@ -109,7 +109,7 @@ Lpdf writes what PDF/UA needs and repairs nothing of the document's own. Each of
 - a font declared in `assets` whose file was not loaded, and a font whose license forbids embedding it
 - a character the font has no glyph for, which a reader would draw as an empty box
 - the digits of a barcode, drawn in Helvetica: set `hrt="false"` and write the digits as text if they are needed
-- a form field, whose text is drawn in Helvetica
+- a form field: a PDF/UA file holds one as a Form element of its structure, which Lpdf doesn't write yet
 - an [encrypted](?p=encryption) file whose `allow` leaves out `accessibility`: a screen reader must be allowed to read it
 - a render without `createdOn`, or with one that is not a date
 

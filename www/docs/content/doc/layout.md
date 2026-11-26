@@ -44,7 +44,7 @@ The margin belongs to the layout because only the flow uses it. The document and
 | [`grid`](?p=doc/layout/grid) | Equal columns, filled left to right |
 | [`table`](?p=doc/layout/table) | Table with rows, cells, and repeating header |
 | [`barcode`](?p=doc/layout/barcode) | A QR code, Data Matrix, PDF417, Code 128, Code 39, EAN-13, EAN-8, UPC-A or GS1-128 barcode |
-| [`chart`](?p=doc/layout/chart) | A bar, line, area or sparkline chart drawn from numbers, written like a table, or from data |
+| [`chart`](?p=doc/layout/chart) | A bar, line, area, pie, donut or sparkline chart drawn from numbers, written like a table, or from data |
 | [`link`](?p=doc/layout/link) | Clickable hyperlink wrapper |
 | [`bookmark`](?p=doc/layout/bookmark) | Entry in the PDF's outline and target for links. Draws nothing |
 | [`list`](?p=doc/layout/list) | Bulleted or numbered list. Its `li` items hold a layout, a list inside an item nests, and the engine writes the numbers |

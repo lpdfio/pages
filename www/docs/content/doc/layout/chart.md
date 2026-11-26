@@ -1,6 +1,6 @@
 # Chart
 
-A chart drawn from numbers, written like a table: `series` are its columns, each `category` a row and each `value` a cell, a value for each series in the series' order. A chart with one series needs no `series`. It takes its box in the flow as an [image](?p=doc/layout/img) does, and the engine draws its axis, its steps, its labels and its legend by fixed rules, so a chart has few attributes and no styling language. It draws bars, [lines](#lines), [areas](#areas) and [sparklines](#sparklines).
+A chart drawn from numbers, written like a table: `series` are its columns, each `category` a row and each `value` a cell, a value for each series in the series' order. A chart with one series needs no `series`. It takes its box in the flow as an [image](?p=doc/layout/img) does, and the engine draws its axis, its steps, its labels and its legend by fixed rules, so a chart has few attributes and no styling language. It draws bars, [lines](#lines), [areas](#areas), [pies and donuts](#pies-and-donuts), and [sparklines](#sparklines).
 
 ```xml
 <column gap="s" paginate="no">
@@ -19,28 +19,30 @@ The engine draws a value axis on the left, from zero in round steps, `$0`, `$10,
 
 | Attribute        | Type         | Default | Description |
 |------------------|--------------|---------|-------------|
-| `type`           | string       | —       | **Required.** The kind of chart: `bar`, `line`, `area` or `sparkline` |
+| `type`           | string       | —       | **Required.** The kind of chart: `bar`, `line`, `area`, `pie`, `donut` or `sparkline` |
 | `height`         | token/length | —       | **Required.** Height of the whole chart: a length, or a name from the `height` row of [tokens](?p=xml/schema#tokens). The axis, the labels and the legend take room inside it and the width, and the plot gets the rest |
 | `width`          | token/length | `fill`  | Width of the whole chart |
 | `direction`      | string       | `vertical` | Bars only: `vertical`, or `horizontal`, which lists the categories down the left side. See [Horizontal bars](#horizontal-bars) |
 | `stacked`        | boolean      | false   | Bars and areas only: stacks the bars of a category, or the areas of the series. See [Stacked bars](#stacked-bars) and [Areas](#areas) |
 | `prefix`, `suffix` | string     | —       | Written around every number of the chart: `$`, `%`, ` ms`. See [Numbers](#numbers) |
-| `decimals`       | 0–6          | as written | The decimals of the value labels |
+| `decimals`       | 0–6          | as written | The decimals of the value labels, and of the shares in the legend of a pie or a donut, which are whole numbers unless it says otherwise |
 | `min`, `max`     | number       | —       | A number the value axis reaches at least. They only widen it. See [The axis and the labels](#the-axis-and-the-labels) |
 | `thousands-mark` | string       | `,`     | One character between the groups of three digits, or empty for none |
 | `decimal-mark`   | string       | `.`     | One character before the decimals |
 | `gap`            | token/length | `s`     | The space between the plot and its step labels, its category labels and its legend |
 | `bar-gap`        | token/length | a tenth of a bar | The space between the bars of one category. Bars only |
 | `category-gap`   | token/length | a quarter of a category | The space between categories. Bars only |
-| `legend`         | string       | `bottom` with two series, `none` with one | `bottom`, `top`, `right` or `none` |
+| `legend`         | string       | `bottom` with two series, `none` with one, `right` for a pie or a donut | `bottom`, `top`, `right` or `none` |
 | `value-labels`   | boolean      | false   | Writes each value at the end of its bar or over its point, or under it at a low point |
 | `stroke-width`   | length       | `1.5pt`, `1pt` for a sparkline | The width of every line of a line, an area or a sparkline. `0` draws none, so an area is its fill alone |
+| `hole`           | `0.1` to `0.9` | `0.6` | Donuts only: the hole as a share of the donut's size. See [Pies and donuts](#pies-and-donuts) |
+| `hole-text`      | string       | —       | Donuts only: a text in the middle of the hole, as it should read. `data-hole-text` reads it from the data |
 | `font`, `font-size`, `color` | | the text's around it | The chart's text: its labels, steps and legend, and the color of its zero line. A sparkline, which has no text, draws its line in `color` |
 | `alt`            | string       | —       | What the chart shows, for a [tagged document](?p=pdfua). See [Accessibility](#accessibility) |
 
-A `series` takes `label`, its entry in the legend, and `color`, its bars', line's or area's. A `category` takes `label`, written by its bars or under its point, and `color`, the color of its bar in a bar chart of one series. A `value` is a plain number, such as `41200`, `-3.5` or `0.25`, and an empty `<value/>` is no value: no bar, and a gap in a line. All three take `data-source`, `data-if` and `data-if-not`, `series` and `category` `data-label` and `data-color`, and `value` `data-value`. See [From the data](#from-the-data).
+A `series` takes `label`, its entry in the legend, and `color`, its bars', line's or area's. A `category` takes `label`, written by its bars or under its point, and `color`, the color of its bar in a bar chart of one series, or of its slice in a pie or a donut. A `value` is a plain number, such as `41200`, `-3.5` or `0.25`, and an empty `<value/>` is no value: no bar, and a gap in a line. All three take `data-source`, `data-if` and `data-if-not`, `series` and `category` `data-label` and `data-color`, and `value` `data-value`. See [From the data](#from-the-data).
 
-`direction` is for bars, and `stacked` for bars and areas: on another kind each is an error that names it, such as `direction is for a bar chart, and this is a line chart`.
+`direction` is for bars, and `stacked` for bars and areas: on another kind each is an error that names it, such as `direction is for a bar chart, and this is a line chart`. `hole` and `hole-text` are for donuts, and an error on any other kind.
 
 ## Bars side by side
 
@@ -150,6 +152,59 @@ A share price between $98.40 and $103.95, on an axis from $98 to $104, with its 
 - **The labels** under the plot skip as a line's do.
 - **`stroke-width="0"`** draws no line: the area is its fill alone.
 
+## Pies and donuts
+
+`type="pie"` draws a slice for each category, clockwise from the top, as wide as its share of the whole, in the largest circle the plot holds. It has no axis and takes no `series`. `type="donut"` is a pie with a hole. Where the money went, with the color of each slice from the data:
+
+```xml
+<chart type="donut" height="160pt" hole-text="$11,100" data-hole-text="total">
+  <category data-source="expenses" label="Rent" data-label="name" color="#737373" data-color="color">
+    <value data-value="amount">2400</value>
+  </category>
+</chart>
+```
+
+```json
+{
+  "total": "$11,100",
+  "expenses": [
+    { "name": "Rent", "amount": 2400, "color": "#1763cf" },
+    { "name": "Salaries", "amount": 8100, "color": "#2f9e44" },
+    { "name": "Travel", "amount": 600, "color": "#e8590c" }
+  ]
+}
+```
+
+With no data, it renders as written: one slice for Rent.
+
+- **The legend** is at the right, and lists each slice's color, its label and its share of the whole as a percent: `Rent 22%`, `Salaries 73%`, `Travel 5%`. `legend` places it at the `bottom` or the `top`, and `none` drops it, for a chart that something else names. The share is a whole number unless `decimals` gives it decimals, and it is written with `decimal-mark`. `prefix` and `suffix` belong to values, so a share has neither. A label too wide for the legend shortens, and its share stays.
+- **The colors** are the palette's, in the order of the categories, started over past the eighth. `color`, or `data-color` from the data, sets the color of a slice.
+- **A zero or a missing value** draws no slice. A zero still has its entry in the legend, `0%`, and a missing value, an empty `<value/>`, has its label alone.
+- **`hole`** sets a donut's hole as a share of its size, from `0.1` to `0.9`, `0.6` by default: `0.8` is a thin ring and `0.5` a thick one.
+- **`hole-text`**, or `data-hole-text` from the data, is written in the middle of the hole as it is given, such as a total or a share. The engine adds nothing up. A text too wide for the hole wraps at spaces onto three lines at most, and what still doesn't fit ends in an ellipsis. A hole too small for a line of text holds none.
+- **`value-labels`, `min`, `max` and `stroke-width`** change nothing on a pie or a donut: it has no axis, writes no value beside a slice and draws no line. They are still read, so a `min` that isn't a number is refused.
+- **Refused**, with an error that names it: a negative value, values that add up to zero, a `series`, `direction` or `stacked`, and `hole` or `hole-text` on any kind but a donut.
+
+A share of a whole, such as a task that is 72% done, is a thin ring with its text in the hole and no legend:
+
+```xml
+<chart type="donut" width="150pt" height="150pt" hole="0.8" hole-text="72%" legend="none">
+  <category label="Done" color="#2f9e44"><value>72</value></category>
+  <category label="Left" color="#e9ecef"><value>28</value></category>
+</chart>
+```
+
+A pie with the shares to a decimal, its legend at the bottom:
+
+```xml
+<chart type="pie" height="170pt" decimals="1" legend="bottom">
+  <category label="Chrome"><value>6120</value></category>
+  <category label="Safari"><value>2740</value></category>
+  <category label="Firefox"><value>780</value></category>
+  <category label="Other"><value>760</value></category>
+</chart>
+```
+
 ## Sparklines
 
 `type="sparkline"` draws one small line through its whole box, with no axis, no labels and no legend, for a table cell: the first value at the left edge and the last at the right, the lowest at the bottom and the highest at the top. The trend of the last weeks, for each product:
@@ -250,7 +305,7 @@ The number of series can come from the data too: `data-source` on `series` repea
 - **A negative value** takes the axis below zero, and a zero line is drawn in the chart's `color`.
 - **`min` and `max`** only widen the axis: `max="100"` makes it reach 100 at least, for percentages, or for charts meant to be compared side by side, and a value past them still fits. No bar is cut off, and none starts above zero. On a line, `min="0"` brings the axis down to zero.
 - **A category label** wider than its room wraps at spaces onto three lines at most, and what still doesn't fit ends in an ellipsis, so a chart always renders.
-- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it. A sparkline has none. Under or above the chart it takes half its height at most, and at the right its height and a third of its width: the entries that don't fit give way to an ellipsis.
+- **The legend** lists each series with its label and its color: under the chart with two series or more, and none with one, unless `legend` places it. A pie or a donut lists each slice instead, at the right (see [Pies and donuts](#pies-and-donuts)). A sparkline has none. Under or above the chart it takes half its height at most, and at the right its height and a third of its width: the entries that don't fit give way to an ellipsis.
 - **In a horizontal chart**, a category thinner than a line of text has no label, so the labels don't run into each other.
 
 ## Numbers
@@ -269,7 +324,7 @@ The steps of the axis and the value labels are numbers the engine writes. The ma
 
 ## Colors and spacing
 
-Without `color`, the series take a fixed palette of eight in order, and it starts over past the eighth. `color` takes a color or a name from the document's [colors](?p=xml/schema#colors), on a series, or on a category in a bar chart of one series, as `data-color` does from the data.
+Without `color`, the series, or the categories of a pie or a donut, take a fixed palette of eight in order, and it starts over past the eighth. `color` takes a color or a name from the document's [colors](?p=xml/schema#colors), on a series, or on a category in a bar chart of one series, a pie or a donut, as `data-color` does from the data.
 
 `gap`, `bar-gap` and `category-gap` set the room, and `legend` picks one of fixed places:
 
@@ -286,7 +341,7 @@ A chart is a leaf, as an image is: it takes no `padding`, `background` or `borde
 
 ## In code
 
-The builders have a `chart` that holds `LChart.series` and `LChart.category`, and each category holds an `LChart.value`, in the language's case. `ChartType` names the kinds: `ChartType.Bar`, `ChartType.Line`, `ChartType.Area` and `ChartType.Sparkline`. A builder has no data binding, so the program turns its own list into categories. `LChart.value` takes one number, written in full with no culture's marks and no exponent, or a string that is a number, such as `'0.250'`, whose decimals a value label keeps. No number is no value.
+The builders have a `chart` that holds `LChart.series` and `LChart.category`, and each category holds an `LChart.value`, in the language's case. `ChartType` names the kinds: `ChartType.Bar`, `ChartType.Line`, `ChartType.Area`, `ChartType.Pie`, `ChartType.Donut` and `ChartType.Sparkline`. A builder has no data binding, so the program turns its own list into categories. `LChart.value` takes one number, written in full with no culture's marks and no exponent, or a string that is a number, such as `'0.250'`, whose decimals a value label keeps. No number is no value.
 
 ```js
 import { L, LChart, NoAttr, ChartType } from '@lpdfio/lpdf'

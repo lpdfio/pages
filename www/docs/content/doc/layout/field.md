@@ -25,7 +25,7 @@ Creates an interactive PDF form element. Fields are only active in PDF viewers t
 
 A field's text is set in the font around it, as a text's is: the `font` of the document, or of a box around the field. With no font set it is Helvetica.
 
-What a user types is drawn in that font, so a font declared in `assets` is written into the PDF whole, not as the subset of glyphs the document uses. A form in an embedded font makes the file bigger by about the size of the font file.
+What a user types into a text field is drawn in that font, so the font of a text field that is not `readonly` is written into the PDF whole, not as the subset of glyphs the document uses. That adds up to the size of the font file. A checkbox, a radio button, a dropdown, a push button and a `readonly` field keep the subset with the characters they show.
 
 A [PDF/A](?p=pdfa) file embeds every font, so a form in it needs a font declared in `assets` and set on the document: the fields then take it with nothing more to write. A push button (`type="button"`) is the one kind PDF/A refuses.
 
